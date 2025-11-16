@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="EvilHop/EvilHop.csproj" />
+  <Project Path="src/EvilHop/EvilHop.csproj" />
+  <Project Path="tests/EvilHop.Tests/EvilHop.Tests.csproj" />
 </Solution>
