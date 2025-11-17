@@ -1,7 +1,6 @@
-﻿namespace EvilHop
-{
-    public class HipFile
-    {
+﻿namespace EvilHop;
 
-    }
+public class HipFile
+{
+    public HipFile() { }
 }
