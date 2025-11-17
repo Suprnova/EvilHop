@@ -5,22 +5,22 @@ namespace EvilHop.Blocks;
 
 public abstract class Block
 {
-    protected string _id;
-    protected uint _length;
-    protected List<Block> _children;
+    public string Id { get; }
+    public uint Length { get; set; }
+    public List<Block> Children;
 
     public Block(string id, uint length, List<Block> children)
     {
-        _id = id;
-        _length = length;
-        _children = children;
+        Id = id;
+        Length = length;
+        Children = children;
     }
 
     public Block(uint id, uint length, List<Block> children)
     {
-        _id = Encoding.ASCII.GetString(id.ToEvilBytes());
-        _length = length;
-        _children = children;
+        Id = Encoding.ASCII.GetString(id.ToEvilBytes());
+        Length = length;
+        Children = children;
     }
 
     // TODO: pass file format for blocks that have dependent styles

@@ -10,7 +10,7 @@ public class HIPA : Block
 
     public HIPA(BinaryReader reader) : base(reader.ReadEvilInt(), reader.ReadEvilInt(), [])
     {
-        if (!this._id.Equals("HIPA")) throw new ArgumentException("Invalid magic number; not a HIPA block.");
+        if (!this.Id.Equals("HIPA")) throw new ArgumentException("Invalid magic number; not a HIPA block.");
     }
 }
 

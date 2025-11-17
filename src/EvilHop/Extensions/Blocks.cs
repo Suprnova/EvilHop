@@ -1,5 +1,4 @@
 ﻿using EvilHop.Blocks;
-using System.Buffers.Binary;
 
 namespace EvilHop.Extensions;
 
@@ -11,5 +10,11 @@ public static class Blocks
     extension(BinaryReader reader)
     {
         public HIPA ReadHIPA() => new(reader);
+        public Package ReadPACK() => new(reader);
+        public Package.PackageVersion ReadPVER() => new(reader);
+        public Package.PackageFlags ReadPFLG() => new(reader);
+        public Package.PackageCount ReadPCNT() => new(reader);
+        public Package.PackageCreated ReadPCRT() => new(reader);
+        public Package.PackageModified ReadPMOD() => new(reader);
     }
 }
