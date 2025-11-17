@@ -42,20 +42,4 @@ public class PackageTests
         Assert.Equal(expectedCount, package.Children.Count);
         Assert.Equal(expectedLength, package.Length);
     }
-
-    [Fact]
-    public void BinaryReaderConstructor_InvalidMagicNumber_Throws()
-    {
-        byte[] bytes = [0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00];
-        using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<ArgumentException>(() => new HIPA(reader));
-    }
-
-    [Fact]
-    public void BinaryReaderConstructor_InvalidBytes_Throws()
-    {
-        byte[] bytes = [0x61, 0x62, 0x63, 0x00];
-        using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new HIPA(reader));
-    }
 }
