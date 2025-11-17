@@ -13,7 +13,7 @@ public static class EvilInt
         /// <summary>
         /// Reads a 4-byte unsigned integer in big endian from the stream and advances the stream by 4 bytes.
         /// </summary>
-        /// <exception cref="EndOfStreamException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
         /// <returns>A 4-byte unsigned integer read from this stream.</returns>
         public uint ReadEvilInt() => BinaryPrimitives.ReadUInt32BigEndian(reader.ReadBytes(4));
     }
