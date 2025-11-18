@@ -1,4 +1,5 @@
-﻿using EvilHop.Extensions;
+﻿using EvilHop.Exceptions;
+using EvilHop.Extensions;
 
 namespace EvilHop.Blocks;
 
@@ -43,6 +44,8 @@ public class Package : Block
             reader.ReadPMOD(),
             // reader.ReadPLAT()
         ]);
+        // TODO: validate length is valid, else throw. add to all constructors
+        // implement in Block class, accept argument for known data size
     }
 
     public class PackageVersion : Block
@@ -69,7 +72,7 @@ public class Package : Block
             get;
             set => field = Enum.IsDefined(value)
                 ? value
-                : throw new ArgumentOutOfRangeException(nameof(value), "Unrecognized SubVersion value.");
+                : throw new UnrecognizedEnumValueException<SubVersion>(nameof(value), value);
         }
 
         public ClientVersion ClientVer
@@ -77,7 +80,7 @@ public class Package : Block
             get;
             set => field = Enum.IsDefined(value)
                 ? value
-                : throw new ArgumentOutOfRangeException(nameof(value), "Unrecognized ClientVersion value.");
+                : throw new UnrecognizedEnumValueException<ClientVersion>(nameof(value), value);
         }
 
         public CompatVersion CompatVer
@@ -85,7 +88,7 @@ public class Package : Block
             get;
             set => field = Enum.IsDefined(value)
                 ? value
-                : throw new ArgumentOutOfRangeException(nameof(value), "Unrecognized CompatVersion value.");
+                : throw new UnrecognizedEnumValueException<CompatVersion>(nameof(value), value);
         }
 
         public PackageVersion() : base("PVER", 12, [])

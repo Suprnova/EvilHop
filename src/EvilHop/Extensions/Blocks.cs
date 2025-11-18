@@ -1,9 +1,10 @@
 ﻿using EvilHop.Blocks;
+using static EvilHop.Blocks.Package;
 
 namespace EvilHop.Extensions;
 
 /// <summary>
-/// This class extends multiple types to support handling block types for input.
+/// This class extends the BinaryReader class to support handling block types for input.
 /// </summary>
 public static class Blocks
 {
@@ -11,10 +12,10 @@ public static class Blocks
     {
         public HIPA ReadHIPA() => new(reader);
         public Package ReadPACK() => new(reader);
-        public Package.PackageVersion ReadPVER() => new(reader);
-        public Package.PackageFlags ReadPFLG() => new(reader);
-        public Package.PackageCount ReadPCNT() => new(reader);
-        public Package.PackageCreated ReadPCRT() => new(reader);
-        public Package.PackageModified ReadPMOD() => new(reader);
+        public PackageVersion ReadPVER() => new(reader);
+        public PackageFlags ReadPFLG() => new(reader);
+        public PackageCount ReadPCNT() => new(reader);
+        public PackageCreated ReadPCRT() => new(reader);
+        public PackageModified ReadPMOD() => new(reader);
     }
 }
