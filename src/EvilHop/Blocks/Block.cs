@@ -1,5 +1,4 @@
-﻿using System.Text;
-using EvilHop.Extensions;
+﻿using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
@@ -45,7 +44,7 @@ public abstract class Block
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Block"/> to be found.</typeparam>
     /// <returns>The first occurrence of a <see cref="Block"/> of type <typeparamref name="T"/>, if found; otherwise, <see langword="null"/>.</returns>
-    protected T? GetChild<T>() where T : Block
+    protected internal T? GetChild<T>() where T : Block
     {
         return Children.OfType<T>().FirstOrDefault();
     }

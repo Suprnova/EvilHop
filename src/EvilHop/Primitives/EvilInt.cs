@@ -1,8 +1,6 @@
 ﻿using System.Buffers.Binary;
 
-namespace EvilHop.Extensions;
-
-// todo: rename this namespace to Primitives or something
+namespace EvilHop.Primitives;
 
 /// <summary>
 /// Integers in EvilEngine's HIP files are unsigned, 32-bit, and in big endian regardless of platform.

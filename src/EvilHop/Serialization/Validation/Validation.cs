@@ -1,8 +1,4 @@
 ﻿using EvilHop.Blocks;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 
 namespace EvilHop.Serialization.Validation;
 
@@ -16,7 +12,7 @@ public class ValidationIssue
     public required Block Context { get; set; }
 }
 
-public enum ValidationMode { None, Lazy, Strict };
+public enum ValidationMode { None, Warn, Strict };
 
 public class SerializerOptions
 {

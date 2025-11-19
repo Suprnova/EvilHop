@@ -1,5 +1,5 @@
 ﻿using EvilHop.Blocks;
-using EvilHop.Extensions;
+using EvilHop.Primitives;
 
 namespace EvilHop.Serialization;
 

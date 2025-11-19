@@ -1,21 +1,14 @@
 ﻿using EvilHop.Blocks;
-using EvilHop.Exceptions;
 using EvilHop.Serialization;
+using EvilHop.Serialization.Validation;
 using static EvilHop.Blocks.PackageVersion;
 
 namespace EvilHop.Tests.Blocks;
 
 public class PackageTests
 {
-    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(1);
-
-    [Fact]
-    public void Package_EmptyConstructor_InitializesCorrectly()
-    {
-        Package package = new();
-        Assert.Equal(6, package.Children.Count);
-        Assert.Equal(144U, package.Length);
-    }
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Version1);
+    private readonly SerializerOptions _strict = new() { Mode = ValidationMode.Strict };
 
     [Fact]
     public void Package_ExplicitConstructor_InitializesCorrectly()
@@ -50,7 +43,7 @@ public class PackageTests
     public void Package_V1_ValidBytes_InitializesCorrectly(byte[] bytes, int expectedCount, uint expectedLength)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Package package = _v1.Read<Package>(reader);
+        Package package = _v1.Read<Package>(reader, _strict);
         Assert.Equal(expectedCount, package.Children.Count);
         Assert.Equal(expectedLength, package.Length);
     }
@@ -84,7 +77,7 @@ public class PackageTests
     public void PackageVersion_V1_ValidBytes_InitializesCorrectly(byte[] bytes, SubVersion subVersion, ClientVersion clientVersion, CompatVersion compatVersion)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        PackageVersion packageVersion = _v1.Read<PackageVersion>(reader);
+        PackageVersion packageVersion = _v1.Read<PackageVersion>(reader, _strict);
         Assert.Empty(packageVersion.Children);
         Assert.Equal(12U, packageVersion.Length);
         Assert.Equal(subVersion, packageVersion.SubVer);
@@ -115,23 +108,29 @@ public class PackageTests
     public void PackageVersion_V1_MalformedLength_Throws(byte[] bytes)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read<PackageVersion>(reader));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read<PackageVersion>(reader, _strict));
     }
 
     [Fact]
     public void PackageVersion_V1_MalformedSubVersion_Throws()
     {
-        byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00];
+        byte[] bytes = [
+            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x0F,
+            0x00, 0x00, 0x00, 0x01
+        ];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<SubVersion>>(() => _v1.Read<PackageVersion>(reader));
+        Assert.Throws<InvalidDataException>(() => _v1.Read<PackageVersion>(reader, _strict));
     }
 
     [Fact]
     public void PackageVersion_V1_MalformedClientVersion_Throws()
     {
-        byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00];
+        byte[] bytes = [
+            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x01
+        ];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<ClientVersion>>(() => _v1.Read<PackageVersion>(reader));
+        Assert.Throws<InvalidDataException>(() => _v1.Read<PackageVersion>(reader, _strict));
     }
 
     [Fact]
@@ -142,6 +141,6 @@ public class PackageTests
             0x00, 0x00, 0x00, 0x00
         ];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<CompatVersion>>(() => _v1.Read<PackageVersion>(reader));
+        Assert.Throws<InvalidDataException>(() => _v1.Read<PackageVersion>(reader, _strict));
     }
 }

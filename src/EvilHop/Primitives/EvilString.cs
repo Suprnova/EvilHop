@@ -1,8 +1,6 @@
 ﻿using System.Text;
 
-namespace EvilHop.Extensions;
-
-// todo: rename this namespace to Primitives or something
+namespace EvilHop.Primitives;
 
 /// <summary>
 /// Strings in EvilEngine's HIP files are 7-bit ASCII (?) and null-terminated. Strings are padded with nulls

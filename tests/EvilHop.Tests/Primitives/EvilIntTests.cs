@@ -1,6 +1,6 @@
-﻿using EvilHop.Extensions;
+﻿using EvilHop.Primitives;
 
-namespace EvilHop.Tests.Extensions;
+namespace EvilHop.Tests.Primitives;
 
 public class EvilIntTests
 {

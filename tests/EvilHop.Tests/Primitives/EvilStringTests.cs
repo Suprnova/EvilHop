@@ -1,7 +1,6 @@
-﻿using EvilHop.Extensions;
-using System.Text;
+﻿using EvilHop.Primitives;
 
-namespace EvilHop.Tests.Extensions;
+namespace EvilHop.Tests.Primitives;
 
 public class EvilStringTests
 {

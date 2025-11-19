@@ -1,5 +1,5 @@
 ﻿using EvilHop.Exceptions;
-using EvilHop.Extensions;
+using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
@@ -25,35 +25,14 @@ public class PackageVersion : Block
         Default = 0x00000001
     }
 
-    public SubVersion SubVer
-    {
-        get;
-        set => field = Enum.IsDefined(value)
-            ? value
-            : throw new UnrecognizedEnumValueException<SubVersion>(nameof(value), value);
-    }
+    public SubVersion SubVer { get; set; } = SubVersion.Default;
 
-    public ClientVersion ClientVer
-    {
-        get;
-        set => field = Enum.IsDefined(value)
-            ? value
-            : throw new UnrecognizedEnumValueException<ClientVersion>(nameof(value), value);
-    }
+    public ClientVersion ClientVer { get; set; } = ClientVersion.Default;
 
-    public CompatVersion CompatVer
-    {
-        get;
-        set => field = Enum.IsDefined(value)
-            ? value
-            : throw new UnrecognizedEnumValueException<CompatVersion>(nameof(value), value);
-    }
+    public CompatVersion CompatVer { get; set; } = CompatVersion.Default;
 
     public PackageVersion()
     {
-        SubVer = SubVersion.Default;
-        ClientVer = ClientVersion.Default;
-        CompatVer = CompatVersion.Default;
     }
 
     public PackageVersion(SubVersion subVer, ClientVersion clientVer, CompatVersion compatVer)
@@ -117,11 +96,10 @@ public class PackageFlags : Block
         DE_PS2_BFBB_2 = Unknown26 | Unknown25
     }
 
-    public PFLG_Flags Flags { get; set; }
+    public PFLG_Flags Flags { get; set; } = PFLG_Flags.Default;
 
     public PackageFlags()
     {
-        Flags = PFLG_Flags.Default;
     }
 
     public PackageFlags(PFLG_Flags flags)
@@ -138,32 +116,26 @@ public class PackageCount : Block
     /// <summary>
     /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
     /// </summary>
-    internal uint AssetCount { get; set; }
+    internal uint AssetCount { get; set; } = 0;
     /// <summary>
     /// The number of layers present in the archive, and by conjunction the number of <see cref="LHDR"/> blocks present.
     /// </summary>
-    internal uint LayerCount { get; set; }
+    internal uint LayerCount { get; set; } = 0;
     /// <summary>
     /// The largest asset size among all of the assets in the archive, in bytes.
     /// </summary>
-    internal uint MaxAssetSize { get; set; }
+    internal uint MaxAssetSize { get; set; } = 0;
     /// <summary>
     /// The largest layer size, excluding padding, among all of the layers in the archive, in bytes.
     /// </summary>
-    internal uint MaxLayerSize { get; set; }
+    internal uint MaxLayerSize { get; set; } = 0;
     /// <summary>
     /// The largest asset size among all of the assets in the archive with the <see cref="ADHR.ADHR_Flags.READ_TRANSFORM"/> flag set, in bytes.
     /// </summary>
-    internal uint MaxXFormAssetSize { get; set; }
+    internal uint MaxXFormAssetSize { get; set; } = 0;
 
     public PackageCount()
     {
-        // todo: determine reasonable defaults
-        AssetCount = 0;
-        LayerCount = 0;
-        MaxAssetSize = 0;
-        MaxLayerSize = 0;
-        MaxXFormAssetSize = 0;
     }
 
     public PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, uint maxLayerSize, uint maxXFormAssetSize)
@@ -292,16 +264,9 @@ public class Package : Block
         set => SetChild(value);
     }
 
-    public Package()
+    // todo: implement public default based on file version
+    internal Package()
     {
-        Children.AddRange([
-            new PackageVersion(),
-            new PackageFlags(),
-            new PackageCount(),
-            new PackageCreated(),
-            new PackageModified(),
-            new PackagePlatform()
-            ]);
     }
 
     public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
@@ -317,30 +282,4 @@ public class Package : Block
         ]);
         if (packagePlatform != null) Children.Add(packagePlatform);
     }
-
-    //public Package(BinaryReader reader) : base(reader.ReadEvilInt(), reader.ReadEvilInt(), [])
-    //{
-    //    if (!this.Id.Equals("PACK")) throw new ArgumentException("Invalid magic number; not a Package block.");
-    //    Children.AddRange([
-    //        reader.ReadPVER(),
-    //        reader.ReadPFLG(),
-    //        reader.ReadPCNT(),
-    //        reader.ReadPCRT(),
-    //        reader.ReadPMOD(),
-    //        // reader.ReadPLAT()
-    //    ]);
-    //    // TODO: validate length is valid, else throw. add to all constructors
-    //    // implement in Block class, accept argument for known data size
-    //}
-
-
-
-
-
-
-
-
-
-
 }
-

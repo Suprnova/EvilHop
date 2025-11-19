@@ -1,5 +1,5 @@
 ﻿using EvilHop.Blocks;
-using EvilHop.Extensions;
+using EvilHop.Primitives;
 using EvilHop.Serialization.Validation;
 using System.Text;
 
@@ -26,7 +26,7 @@ public partial class V1Serializer() : IFormatSerializer
             options.OnValidationIssue?.Invoke(issue);
 
             // todo: make Context nullable, we wouldn't need it for HipFile validation since it's cross-referential
-            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Error)
+            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
                 throw new InvalidDataException($"Strict Validation Failed: {issue.Message} on {issue.Context.Id} block.");
         }
 
@@ -63,8 +63,8 @@ public partial class V1Serializer() : IFormatSerializer
         {
             options.OnValidationIssue?.Invoke(issue);
 
-            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Error)
-                throw new InvalidDataException($"Strict Validation Failed: {issue.Message} on {issue.Context.Id} block.");
+            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
+                throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}' on {issue.Context.Id} block.");
         }
 
         return block;
@@ -103,7 +103,7 @@ public partial class V1Serializer() : IFormatSerializer
 
     public virtual IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
     {
-        yield break;
+        return _validator.ValidateArchive(hip);
     }
 
     protected virtual Block ReadBlockData(BinaryReader reader, string id)
