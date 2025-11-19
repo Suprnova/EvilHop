@@ -1,12 +1,15 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Exceptions;
+using EvilHop.Serialization;
 using static EvilHop.Blocks.PackageVersion;
 
 namespace EvilHop.Tests.Blocks;
 
 public class PackageTests
 {
-    [Fact]
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(1);
+
+    [Fact(Skip = "pending Constructor implementation")]
     public void Package_EmptyConstructor_InitializesCorrectly()
     {
         Package package = new();
@@ -15,17 +18,16 @@ public class PackageTests
     }
 
     // todo: write this test
-    [Fact]
+    [Fact(Skip = "pending Constructor implementation")]
     public void Package_ExplicitConstructor_InitializesCorrectly()
     {
-        Assert.True(true);
     }
 
-    [Theory(Skip = "pending Serializer implementation")]
+    [Theory]
     [InlineData(
         new byte[]
         {
-            0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x90, 0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C,
+            0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x6E, 0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C,
             0x00, 0x00, 0x00, 0x02, 0x00, 0x0A, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x01, 0x50, 0x46, 0x4C, 0x47,
             0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x2E, 0x50, 0x43, 0x4E, 0x54, 0x00, 0x00, 0x00, 0x14,
             0x00, 0x00, 0x00, 0x34, 0x00, 0x00, 0x00, 0x0D, 0x0D, 0x88, 0xCF, 0x1C, 0x0D, 0x88, 0xCF, 0x1C,
@@ -34,14 +36,15 @@ public class PackageTests
             0x3A, 0x34, 0x38, 0x20, 0x32, 0x30, 0x30, 0x36, 0x00, 0x00, 0x50, 0x4D, 0x4F, 0x44, 0x00, 0x00,
             0x00, 0x04, 0x43, 0xC4, 0xD2, 0xA0,
         },
-        5, 144
+        5, 110
     )]
-    public void Package_BinaryReaderConstructor_ValidBytes_InitializesCorrectly(byte[] bytes, int expectedCount, uint expectedLength)
+    public void Package_V1_ValidBytes_InitializesCorrectly(byte[] bytes, int expectedCount, uint expectedLength)
     {
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Package package = new(reader);
-        //Assert.Equal(expectedCount, package.Children.Count);
-        //Assert.Equal(expectedLength, package.Length);
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Package package = _v1.Read(reader) as Package ?? throw new NullReferenceException();
+        Assert.IsType<Package>(package);
+        Assert.Equal(expectedCount, package.Children.Count);
+        Assert.Equal(expectedLength, package.Length);
     }
 
     [Fact]
@@ -55,7 +58,7 @@ public class PackageTests
         Assert.Equal(CompatVersion.Default, packageVersion.CompatVer);
     }
 
-    [Theory(Skip = "pending Serializer implementation")]
+    [Theory]
     [InlineData(
         new byte[]
         {
@@ -70,26 +73,18 @@ public class PackageTests
             0x00, 0x00, 0x00, 0x01,
         }, SubVersion.Default, ClientVersion.Default, CompatVersion.Default
     )]
-    public void PackageVersion_BinaryReaderConstructor_ValidBytes_InitializesCorrectly(byte[] bytes, SubVersion subVersion, ClientVersion clientVersion, CompatVersion compatVersion)
+    public void PackageVersion_V1_ValidBytes_InitializesCorrectly(byte[] bytes, SubVersion subVersion, ClientVersion clientVersion, CompatVersion compatVersion)
     {
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //PackageVersion packageVersion = new(reader);
-        //Assert.Empty(packageVersion.Children);
-        //Assert.Equal(12U, packageVersion.Length);
-        //Assert.Equal(subVersion, packageVersion.SubVer);
-        //Assert.Equal(clientVersion, packageVersion.ClientVer);
-        //Assert.Equal(compatVersion, packageVersion.CompatVer);
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        PackageVersion packageVersion = _v1.Read(reader) as PackageVersion ?? throw new NullReferenceException();
+        Assert.Empty(packageVersion.Children);
+        Assert.Equal(12U, packageVersion.Length);
+        Assert.Equal(subVersion, packageVersion.SubVer);
+        Assert.Equal(clientVersion, packageVersion.ClientVer);
+        Assert.Equal(compatVersion, packageVersion.CompatVer);
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void PackageVersion_BinaryReaderConstructor_MalformedMagicNumber_Throws()
-    {
-        //byte[] bytes = [0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<ArgumentException>(() => new PackageVersion(reader));
-    }
-
-    [Theory(Skip = "pending Serializer implementation")]
+    [Theory]
     [InlineData(
         new byte[]
         {
@@ -109,36 +104,36 @@ public class PackageTests
             0x00, 0x00,
         }
     )]
-    public void PackageVersion_BinaryReaderConstructor_MalformedLength_Throws(byte[] bytes)
+    public void PackageVersion_V1_MalformedLength_Throws(byte[] bytes)
     {
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<ArgumentOutOfRangeException>(() => new PackageVersion(reader));
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read(reader));
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void PackageVersion_BinaryReaderConstructor_MalformedSubVersion_Throws()
+    [Fact]
+    public void PackageVersion_V1_MalformedSubVersion_Throws()
     {
-        //byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<UnrecognizedEnumValueException<SubVersion>>(() => new PackageVersion(reader));
+        byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<UnrecognizedEnumValueException<SubVersion>>(() => _v1.Read(reader));
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void PackageVersion_BinaryReaderConstructor_MalformedClientVersion_Throws()
+    [Fact]
+    public void PackageVersion_V1_MalformedClientVersion_Throws()
     {
-        //byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<UnrecognizedEnumValueException<ClientVersion>>(() => new PackageVersion(reader));
+        byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<UnrecognizedEnumValueException<ClientVersion>>(() => _v1.Read(reader));
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void PackageVersion_BinaryReaderConstructor_MalformedCompatVersion_Throws()
+    [Fact]
+    public void PackageVersion_V1_MalformedCompatVersion_Throws()
     {
-        //byte[] bytes = [
-        //    0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0A, 0x00, 0x0F,
-        //    0x00, 0x00, 0x00, 0x00
-        //];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<UnrecognizedEnumValueException<CompatVersion>>(() => new PackageVersion(reader));
+        byte[] bytes = [
+            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0A, 0x00, 0x0F,
+            0x00, 0x00, 0x00, 0x00
+        ];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<UnrecognizedEnumValueException<CompatVersion>>(() => _v1.Read(reader));
     }
 }

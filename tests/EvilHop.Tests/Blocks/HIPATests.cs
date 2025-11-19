@@ -1,10 +1,13 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Extensions;
+using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Blocks;
 
 public class HIPATests
 {
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(1);
+
     [Fact]
     public void EmptyConstructor_DoesNotThrow()
     {
@@ -12,28 +15,29 @@ public class HIPATests
         Assert.True(true);
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void BinaryReaderConstructor_ValidBytes_CorrectOffset()
+    [Fact]
+    public void HIPA_V1_ValidBytes_CorrectOffset()
     {
-        //byte[] bytes = [0x48, 0x49, 0x50, 0x41, 0x00, 0x00, 0x00, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //_ = new HIPA(reader);
-        //Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
+        byte[] bytes = [0x48, 0x49, 0x50, 0x41, 0x00, 0x00, 0x00, 0x00];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Block block = _v1.Read(reader);
+        Assert.IsType<HIPA>(block);
+        Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void BinaryReaderConstructor_InvalidMagicNumber_Throws()
+    [Fact]
+    public void HIPA_V1_InvalidMagicNumber_Throws()
     {
-        //byte[] bytes = [0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<ArgumentException>(() => new HIPA(reader));
+        byte[] bytes = [0x00, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<InvalidDataException>(() => _v1.Read(reader));
     }
 
-    [Fact(Skip = "pending Serializer implementation")]
-    public void BinaryReaderConstructor_InvalidBytes_Throws()
+    [Fact]
+    public void HIPA_V1_InvalidBytes_Throws()
     {
-        //byte[] bytes = [0x61, 0x62, 0x63, 0x00];
-        //using BinaryReader reader = new(new MemoryStream(bytes));
-        //Assert.Throws<ArgumentOutOfRangeException>(() => new HIPA(reader));
+        byte[] bytes = [0x61, 0x62, 0x63, 0x00];
+        using BinaryReader reader = new(new MemoryStream(bytes));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read(reader));
     }
 }

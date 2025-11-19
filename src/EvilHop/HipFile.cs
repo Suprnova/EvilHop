@@ -4,7 +4,7 @@ namespace EvilHop;
 
 public class HipFile
 {
-    protected HIPA HIPA {  get; set; }
+    internal HIPA HIPA { get; set; }
     public Package Package { get; set; }
     // public Dictionary Dictionary { get; set; }
     // public AssetDataStream AssetDataStream { get; set; }
@@ -13,5 +13,11 @@ public class HipFile
     {
         HIPA = new HIPA();
         Package = new Package();
+    }
+
+    public HipFile(HIPA hipa, Package package)
+    {
+        HIPA = hipa;
+        Package = package;
     }
 }

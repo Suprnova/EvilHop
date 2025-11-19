@@ -5,7 +5,7 @@ namespace EvilHop.Blocks;
 
 public class PackageVersion : Block
 {
-    protected override string Id => "PVER";
+    protected internal override string Id => "PVER";
     protected override uint DataLength => 12;
 
     public enum SubVersion : uint
@@ -66,7 +66,7 @@ public class PackageVersion : Block
 
 public class PackageFlags : Block
 {
-    protected override string Id => "PFLG";
+    protected internal override string Id => "PFLG";
     protected override uint DataLength => 4;
 
     // TODO: validate
@@ -132,7 +132,7 @@ public class PackageFlags : Block
 
 public class PackageCount : Block
 {
-    protected override string Id => "PCNT";
+    protected internal override string Id => "PCNT";
     protected override uint DataLength => 20;
 
     /// <summary>
@@ -178,7 +178,7 @@ public class PackageCount : Block
 
 public class PackageCreated : Block
 {
-    protected override string Id => "PCRT";
+    protected internal override string Id => "PCRT";
     // Always 30, even in n100f where CreatedDateString ends in '\n', due to EvilString handling
     protected override uint DataLength => 30;
 
@@ -217,7 +217,7 @@ public class PackageCreated : Block
 
 public class PackageModified : Block
 {
-    protected override string Id => "PMOD";
+    protected internal override string Id => "PMOD";
     protected override uint DataLength => 4;
 
     // TODO: should be in UTC-7
@@ -242,7 +242,7 @@ public class PackageModified : Block
 
 public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
 {
-    protected override string Id => "PLAT";
+    protected internal override string Id => "PLAT";
     protected override uint DataLength
     {
         get
@@ -264,22 +264,10 @@ public class PackagePlatform(string platformId, string? platformName, string reg
     }
 }
 
-public class Package : Block
+public class Package() : Block
 {
-    protected override string Id => "PACK";
+    protected internal override string Id => "PACK";
     protected override uint DataLength => 0;
-
-    public Package()
-    {
-        // todo: add PackagePlatform to range, or drop this function
-        Children.AddRange([
-            new PackageVersion(),
-            new PackageFlags(),
-            new PackageCount(),
-            new PackageCreated(),
-            new PackageModified()
-        ]);
-    }
 
     public PackageVersion Versions
     {
@@ -319,7 +307,7 @@ public class Package : Block
 
     public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
         PackagePlatform? packagePlatform
-        )
+        ) : this()
     {
         Children.AddRange([
             packageVersion,

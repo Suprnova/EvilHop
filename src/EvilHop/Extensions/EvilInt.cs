@@ -18,6 +18,15 @@ public static class EvilInt
         public uint ReadEvilInt() => BinaryPrimitives.ReadUInt32BigEndian(reader.ReadBytes(4));
     }
 
+    extension(BinaryWriter writer)
+    {
+        /// <summary>
+        /// Writes a <see cref="uint"/> formatted as an EvilInt to the underlying stream.
+        /// </summary>
+        /// <param name="value">The <see cref="uint"/> to write.</param>
+        public void WriteEvilInt(uint value) => writer.Write(value.ToEvilBytes());
+    }
+
     extension(uint val)
     {
         /// <summary>

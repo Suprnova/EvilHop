@@ -35,6 +35,15 @@ public static class EvilString
         }
     }
 
+    extension(BinaryWriter writer)
+    {
+        /// <summary>
+        /// Writes a <see cref="string"/> formatted as an EvilString to the underlying stream.
+        /// </summary>
+        /// <param name="str">The <see cref="string"/> to write.</param>
+        public void WriteEvilString(string str) => writer.Write(str.ToEvilBytes());
+    }
+
     extension(string str)
     {
         /// <summary>

@@ -8,7 +8,7 @@ public abstract class Block
     /// <summary>
     /// A 4-character <see cref="string"/> that identifies the type of the block.
     /// </summary>
-    protected abstract string Id { get; }
+    protected internal abstract string Id { get; }
 
     /// <summary>
     /// The length of this block's body, including its data and its children blocks.
