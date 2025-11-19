@@ -41,8 +41,7 @@ public class PackageTests
     public void Package_V1_ValidBytes_InitializesCorrectly(byte[] bytes, int expectedCount, uint expectedLength)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Package package = _v1.Read(reader) as Package ?? throw new NullReferenceException();
-        Assert.IsType<Package>(package);
+        Package package = _v1.Read<Package>(reader);
         Assert.Equal(expectedCount, package.Children.Count);
         Assert.Equal(expectedLength, package.Length);
     }
@@ -76,7 +75,7 @@ public class PackageTests
     public void PackageVersion_V1_ValidBytes_InitializesCorrectly(byte[] bytes, SubVersion subVersion, ClientVersion clientVersion, CompatVersion compatVersion)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        PackageVersion packageVersion = _v1.Read(reader) as PackageVersion ?? throw new NullReferenceException();
+        PackageVersion packageVersion = _v1.Read<PackageVersion>(reader);
         Assert.Empty(packageVersion.Children);
         Assert.Equal(12U, packageVersion.Length);
         Assert.Equal(subVersion, packageVersion.SubVer);
@@ -107,7 +106,7 @@ public class PackageTests
     public void PackageVersion_V1_MalformedLength_Throws(byte[] bytes)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read(reader));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read<PackageVersion>(reader));
     }
 
     [Fact]
@@ -115,7 +114,7 @@ public class PackageTests
     {
         byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<SubVersion>>(() => _v1.Read(reader));
+        Assert.Throws<UnrecognizedEnumValueException<SubVersion>>(() => _v1.Read<PackageVersion>(reader));
     }
 
     [Fact]
@@ -123,7 +122,7 @@ public class PackageTests
     {
         byte[] bytes = [0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<ClientVersion>>(() => _v1.Read(reader));
+        Assert.Throws<UnrecognizedEnumValueException<ClientVersion>>(() => _v1.Read<PackageVersion>(reader));
     }
 
     [Fact]
@@ -134,6 +133,6 @@ public class PackageTests
             0x00, 0x00, 0x00, 0x00
         ];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<UnrecognizedEnumValueException<CompatVersion>>(() => _v1.Read(reader));
+        Assert.Throws<UnrecognizedEnumValueException<CompatVersion>>(() => _v1.Read<PackageVersion>(reader));
     }
 }

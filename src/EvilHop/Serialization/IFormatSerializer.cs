@@ -10,5 +10,7 @@ public interface IFormatSerializer
 
     Block Read(BinaryReader reader);
 
+    T Read<T>(BinaryReader reader) where T : Block;
+
     void Write(BinaryWriter writer, Block block);
 }

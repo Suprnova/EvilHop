@@ -6,7 +6,6 @@ namespace EvilHop.Serialization;
 
 public partial class V1Serializer : IFormatSerializer
 {
-    // todo: implement generic T Read
     public virtual HipFile ReadArchive(BinaryReader reader)
     {
         HIPA hipa = Read(reader) as HIPA ?? throw new InvalidDataException();
@@ -37,6 +36,17 @@ public partial class V1Serializer : IFormatSerializer
         }
 
         return block;
+    }
+
+    public T Read<T>(BinaryReader reader) where T : Block
+    {
+        long peekOffset = reader.BaseStream.Position;
+        Type type = BlockFactory.GetBlockType(Encoding.ASCII.GetString(reader.ReadBytes(4)));
+        reader.BaseStream.Position = peekOffset;
+        
+        if (type != typeof(T)) throw new InvalidCastException($"Read block is {type.Name}, expected {typeof(T).Name}.");
+
+        return (Read(reader) as T)!;
     }
 
     protected virtual Block ReadBlockData(BinaryReader reader, string id)

@@ -20,8 +20,7 @@ public class HIPATests
     {
         byte[] bytes = [0x48, 0x49, 0x50, 0x41, 0x00, 0x00, 0x00, 0x00];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Block block = _v1.Read(reader);
-        Assert.IsType<HIPA>(block);
+        _ = _v1.Read<HIPA>(reader);
         Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
     }
 
@@ -30,14 +29,14 @@ public class HIPATests
     {
         byte[] bytes = [0x00, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<InvalidDataException>(() => _v1.Read(reader));
+        Assert.Throws<InvalidDataException>(() => _v1.Read<HIPA>(reader));
     }
 
     [Fact]
     public void HIPA_V1_InvalidBytes_Throws()
     {
-        byte[] bytes = [0x61, 0x62, 0x63, 0x00];
+        byte[] bytes = [0x48, 0x49, 0x50, 0x41];
         using BinaryReader reader = new(new MemoryStream(bytes));
-        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read(reader));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _v1.Read<HIPA>(reader));
     }
 }
