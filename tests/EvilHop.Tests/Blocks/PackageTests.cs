@@ -9,18 +9,27 @@ public class PackageTests
 {
     private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(1);
 
-    [Fact(Skip = "pending Constructor implementation")]
+    [Fact]
     public void Package_EmptyConstructor_InitializesCorrectly()
     {
         Package package = new();
-        Assert.NotEmpty(package.Children);
-        Assert.NotEqual(0U, package.Length);
+        Assert.Equal(6, package.Children.Count);
+        Assert.Equal(144U, package.Length);
     }
 
-    // todo: write this test
-    [Fact(Skip = "pending Constructor implementation")]
+    [Fact]
     public void Package_ExplicitConstructor_InitializesCorrectly()
     {
+        // todo: technically invalid, default initializers for children expect a file version with PackagePlatform
+        Package package = new(
+            new PackageVersion(),
+            new PackageFlags(),
+            new PackageCount(),
+            new PackageCreated(),
+            new PackageModified()
+            );
+        Assert.Equal(5, package.Children.Count);
+        Assert.Equal(110U, package.Length);
     }
 
     [Theory]

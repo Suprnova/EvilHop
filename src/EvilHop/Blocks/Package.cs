@@ -138,23 +138,23 @@ public class PackageCount : Block
     /// <summary>
     /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
     /// </summary>
-    public uint AssetCount { get; internal set; }
+    internal uint AssetCount { get; set; }
     /// <summary>
     /// The number of layers present in the archive, and by conjunction the number of <see cref="LHDR"/> blocks present.
     /// </summary>
-    public uint LayerCount { get; internal set; }
+    internal uint LayerCount { get; set; }
     /// <summary>
     /// The largest asset size among all of the assets in the archive, in bytes.
     /// </summary>
-    public uint MaxAssetSize { get; internal set; }
+    internal uint MaxAssetSize { get; set; }
     /// <summary>
     /// The largest layer size, excluding padding, among all of the layers in the archive, in bytes.
     /// </summary>
-    public uint MaxLayerSize { get; internal set; }
+    internal uint MaxLayerSize { get; set; }
     /// <summary>
     /// The largest asset size among all of the assets in the archive with the <see cref="ADHR.ADHR_Flags.READ_TRANSFORM"/> flag set, in bytes.
     /// </summary>
-    public uint MaxXFormAssetSize { get; internal set; }
+    internal uint MaxXFormAssetSize { get; set; }
 
     public PackageCount()
     {
@@ -206,13 +206,6 @@ public class PackageCreated : Block
         CreatedDate = createdDate;
         CreatedDateString = CreatedDate.ToString("ddd MMM dd HH:mm:ss yyyy");
     }
-
-    //public PackageCreated(BinaryReader reader)
-    //{
-    //    if (!this.Id.Equals("PCRT")) throw new ArgumentException("Invalid magic number; not a PackageCreated block.");
-    //    CreatedDate = DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt());
-    //    reader.ReadEvilString();
-    //}
 }
 
 public class PackageModified : Block
@@ -232,12 +225,6 @@ public class PackageModified : Block
     {
         ModifiedDate = modifiedDate;
     }
-
-    //public PackageModified(BinaryReader reader)
-    //{
-    //    if (!this.Id.Equals("PMOD")) throw new ArgumentException("Invalid magic number; not a PackageModified block.");
-    //    ModifiedDate = DateTime.MinValue.AddSeconds(reader.ReadEvilInt());
-    //}
 }
 
 public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
@@ -264,7 +251,7 @@ public class PackagePlatform(string platformId, string? platformName, string reg
     }
 }
 
-public class Package() : Block
+public class Package : Block
 {
     protected internal override string Id => "PACK";
     protected override uint DataLength => 0;
@@ -305,9 +292,21 @@ public class Package() : Block
         set => SetChild(value);
     }
 
+    public Package()
+    {
+        Children.AddRange([
+            new PackageVersion(),
+            new PackageFlags(),
+            new PackageCount(),
+            new PackageCreated(),
+            new PackageModified(),
+            new PackagePlatform()
+            ]);
+    }
+
     public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
-        PackagePlatform? packagePlatform
-        ) : this()
+        PackagePlatform? packagePlatform = null
+        )
     {
         Children.AddRange([
             packageVersion,

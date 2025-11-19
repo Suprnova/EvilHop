@@ -2,6 +2,8 @@
 
 namespace EvilHop.Extensions;
 
+// todo: rename this namespace to Primitives or something
+
 /// <summary>
 /// Integers in EvilEngine's HIP files are unsigned, 32-bit, and in big endian regardless of platform.
 /// This class extends multiple types to support handling these specifications for both input and output.
