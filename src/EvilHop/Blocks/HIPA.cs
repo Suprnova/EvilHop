@@ -1,16 +1,11 @@
-﻿using EvilHop.Extensions;
-
-namespace EvilHop.Blocks;
+﻿namespace EvilHop.Blocks;
 
 public class HIPA : Block
 {
-    public HIPA() : base("HIPA", 0, [])
+    protected override string Id => "HIPA";
+    protected override uint DataLength => 0;
+    public HIPA()
     {
-    }
-
-    public HIPA(BinaryReader reader) : base(reader.ReadEvilInt(), reader.ReadEvilInt(), [])
-    {
-        if (!this.Id.Equals("HIPA")) throw new ArgumentException("Invalid magic number; not a HIPA block.");
     }
 }
 

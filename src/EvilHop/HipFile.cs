@@ -14,10 +14,4 @@ public class HipFile
         HIPA = new HIPA();
         Package = new Package();
     }
-
-    public HipFile(BinaryReader reader)
-    {
-        HIPA = new HIPA(reader);
-        Package = new Package(reader);
-    }
 }

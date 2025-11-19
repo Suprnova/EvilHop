@@ -8,14 +8,15 @@ namespace EvilHop.Extensions;
 /// </summary>
 public static class Blocks
 {
+    // TODO: drop this class, implement a serializer?
     extension(BinaryReader reader)
     {
-        public HIPA ReadHIPA() => new(reader);
-        public Package ReadPACK() => new(reader);
-        public PackageVersion ReadPVER() => new(reader);
-        public PackageFlags ReadPFLG() => new(reader);
-        public PackageCount ReadPCNT() => new(reader);
-        public PackageCreated ReadPCRT() => new(reader);
-        public PackageModified ReadPMOD() => new(reader);
+        //public HIPA ReadHIPA() => new(reader);
+        //public Package ReadPACK() => new(reader);
+        //public PackageVersion ReadPVER() => new(reader);
+        //public PackageFlags ReadPFLG() => new(reader);
+        //public PackageCount ReadPCNT() => new(reader);
+        //public PackageCreated ReadPCRT() => new(reader);
+        //public PackageModified ReadPMOD() => new(reader);
     }
 }

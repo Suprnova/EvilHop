@@ -38,12 +38,18 @@ public static class EvilString
     extension(string str)
     {
         /// <summary>
+        /// Returns the length of this <see cref="string"/> where it formatted as an EvilEngine string.
+        /// </summary>
+        /// <returns>The length of this <see cref="string"/> where it formatted as an EvilEngine string.</returns>
+        public uint GetEvilStringLength() => (uint)(str.Length % 2 == 0 ? str.Length + 2 : str.Length + 1);
+
+        /// <summary>
         /// Returns the EvilEngine byte representation of this <see cref="string"/>.
         /// </summary>
         /// <remarks>
         /// Any byte that cannot be represented in ASCII will be displayed as <c>?</c>.
         /// </remarks>
-        /// <returns>the EvilEngine byte representation of this <see cref="string"/>.</returns>
+        /// <returns>The EvilEngine byte representation of this <see cref="string"/>.</returns>
         public byte[] ToEvilBytes()
         {
             str = str.Length % 2 == 0 ? str + "\0\0" : str + '\0';
@@ -62,7 +68,7 @@ public static class EvilString
         /// Terminates at first occurrence of null byte, does not validate.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"/>
-        /// <returns>the <see cref="string"/> representation of this <see cref="Span{T}"/>.</returns>
+        /// <returns>The <see cref="string"/> representation of this <see cref="Span{T}"/>.</returns>
         public String ToEvilString() => Encoding.ASCII.GetString(bytes[..bytes.IndexOf(new byte[] { 0x00 })]);
     }
 }
