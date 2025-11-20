@@ -1,5 +1,4 @@
-﻿using EvilHop.Blocks;
-using EvilHop.Serialization;
+﻿using EvilHop.Serialization;
 using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Tests.Serialization;
@@ -55,7 +54,7 @@ public class HipFileTests
         using BinaryReader reader = new(new MemoryStream(bytes));
         HipFile hip = _v1.ReadArchive(reader);
         Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues));
-        // Assert.Empty(issues); // pending BKDR algorithm
+        Assert.Empty(issues); // pending BKDR algorithm
         byte[] write = new byte[bytes.Length];
         using BinaryWriter writer = new(new MemoryStream(write));
         _v1.WriteArchive(writer, hip);

@@ -3,6 +3,12 @@ using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Serialization;
 
+public class SerializerOptions
+{
+    public ValidationMode Mode { get; set; } = ValidationMode.None;
+    public Action<ValidationIssue>? OnValidationIssue { get; set; }
+}
+
 public interface IFormatSerializer
 {
     HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null);

@@ -14,12 +14,6 @@ public class ValidationIssue
 
 public enum ValidationMode { None, Warn, Strict };
 
-public class SerializerOptions
-{
-    public ValidationMode Mode { get; set; } = ValidationMode.None;
-    public Action<ValidationIssue>? OnValidationIssue { get; set; }
-}
-
 public static class ValidationExtensions
 {
     public static bool IsValid(this Block block, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
