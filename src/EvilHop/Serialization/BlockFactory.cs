@@ -16,6 +16,15 @@ public static class BlockFactory
             "PCRT" => typeof(PackageCreated),
             "PMOD" => typeof(PackageModified),
             "PLAT" => typeof(PackagePlatform),
+            "DICT" => typeof(Dictionary),
+            "ATOC" => typeof(AssetTable),
+            "AINF" => typeof(AssetInf),
+            "AHDR" => typeof(AssetHeader),
+            "ADBG" => typeof(AssetDebug),
+            "LTOC" => typeof(LayerTable),
+            "LINF" => typeof(LayerInf),
+            "LHDR" => typeof(LayerHeader),
+            "LDBG" => typeof(LayerDebug),
             _ => throw new InvalidDataException()
         };
     }

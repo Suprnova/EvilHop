@@ -4,21 +4,23 @@ namespace EvilHop.Serialization.Validation;
 
 public partial class V1Validator : IFormatValidator
 {
+    // todo: implement a generic method that generates the "Child block missing from this block" string
+
     public IEnumerable<ValidationIssue> Validate(Block block)
     {
         foreach (var issue in ValidateBlockData(block)) yield return issue;
 
         foreach (var child in block.Children)
         {
-            foreach (var issue in ValidateBlockData(child)) yield return issue;
+            foreach (var issue in Validate(child)) yield return issue;
         }
     }
 
     public IEnumerable<ValidationIssue> ValidateArchive(HipFile hipFile)
     {
-        foreach (var issue in ValidateBlockData(hipFile.HIPA)) yield return issue;
-        foreach (var issue in ValidateBlockData(hipFile.Package)) yield return issue;
-        //foreach (var issue in ValidateBlockData(hipFile.Dictionary)) yield return issue;
+        foreach (var issue in Validate(hipFile.HIPA)) yield return issue;
+        foreach (var issue in Validate(hipFile.Package)) yield return issue;
+        foreach (var issue in Validate(hipFile.Dictionary)) yield return issue;
         //foreach (var issue in ValidateBlockData(hipFile.AssetDataStream)) yield return issue;
         // todo: perform cross-referential validation here, probably call to protected virtual methods for each one
         // i.e. validate PackageCount against AHDR, LHDR, and DPAK
@@ -36,6 +38,15 @@ public partial class V1Validator : IFormatValidator
             PackageCreated created => ValidatePackageCreated(created),
             PackageModified modified => ValidatePackageModified(modified),
             PackagePlatform platform => ValidatePackagePlatform(platform),
+            Dictionary dictionary => ValidateDictionary(dictionary),
+            AssetTable table => ValidateAssetTable(table),
+            AssetInf inf => ValidateAssetInf(inf),
+            AssetHeader header => ValidateAssetHeader(header),
+            AssetDebug debug => ValidateAssetDebug(debug),
+            LayerTable table => ValidateLayerTable(table),
+            LayerInf inf => ValidateLayerInf(inf),
+            LayerHeader header => ValidateLayerHeader(header),
+            LayerDebug debug => ValidateLayerDebug(debug),
             _ => throw new NotImplementedException()
         };
     }

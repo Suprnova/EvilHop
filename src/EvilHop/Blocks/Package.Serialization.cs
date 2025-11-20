@@ -70,7 +70,7 @@ public partial class V1Serializer
         // todo: implement timezone (UTC-7)
         // todo: implement fallback for Y2106 lol
         writer.WriteEvilInt(Convert.ToUInt32((created.CreatedDate - DateTime.UnixEpoch).TotalSeconds));
-        writer.WriteEvilString(created.CreatedDateString + '\n');
+        writer.WriteEvilString(created.CreatedDateString.Last() == '\n' ? created.CreatedDateString : created.CreatedDateString + '\n');
     }
 
     protected virtual PackageModified ReadPackageModified(BinaryReader reader)

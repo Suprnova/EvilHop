@@ -6,18 +6,20 @@ public class HipFile
 {
     internal HIPA HIPA { get; set; }
     public Package Package { get; set; }
-    // public Dictionary Dictionary { get; set; }
+    public Dictionary Dictionary { get; set; }
     // public AssetDataStream AssetDataStream { get; set; }
 
     public HipFile()
     {
         HIPA = new HIPA();
         Package = new Package();
+        Dictionary = new Dictionary();
     }
 
-    public HipFile(HIPA hipa, Package package)
+    public HipFile(HIPA hipa, Package package, Dictionary dictionary)
     {
         HIPA = hipa;
         Package = package;
+        Dictionary = dictionary;
     }
 }

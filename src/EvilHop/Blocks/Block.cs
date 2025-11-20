@@ -37,7 +37,7 @@ public abstract class Block
     /// <summary>
     /// The list containing all child blocks to this block.
     /// </summary>
-    public List<Block> Children { get; } = [];
+    protected internal List<Block> Children { get; } = [];
 
     /// <summary>
     /// Searches for a <see cref="Block"/> of the specified type and returns the first occurrence from this <see cref="Block"/>'s children.
@@ -63,6 +63,18 @@ public abstract class Block
     }
 
     /// <summary>
+    /// Searches for a <see cref="Block"/> of the specified type and returns all instances of it from this <see cref="Block"/>'s children.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Block"/> to be found.</typeparam>
+    /// <returns>An <see cref="IEnumerable{T}"/> of all instances of a <see cref="Block"/> of type <typeparamref name="T"/>.</returns>
+    protected internal IEnumerable<T> GetVariableChildren<T>() where T : Block
+    {
+        return Children.OfType<T>();
+    }
+
+    protected void AddChild<T>(T child) where T : Block => Children.Add(child);
+
+    /// <summary>
     /// Replaces the <see cref="Block"/> of the specified type within this <see cref="Block"/>'s children with the provided <paramref name="value"/>.
     /// If <paramref name="value"/> is <see langword="null"/>, removes the <see cref="Block"/> instead.
     /// </summary>
@@ -75,5 +87,11 @@ public abstract class Block
 
         if (value == null) Children.RemoveAt(index);
         else Children[index] = value;
+    }
+
+    protected void SetVariableChildren<T>(IEnumerable<T> values) where T : Block
+    {
+        Children.Clear();
+        foreach (var value in values) AddChild<T>(value);
     }
 }

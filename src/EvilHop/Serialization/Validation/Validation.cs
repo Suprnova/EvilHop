@@ -22,9 +22,15 @@ public class SerializerOptions
 
 public static class ValidationExtensions
 {
-    public static bool IsValid(this Block block, IFormatSerializer serializer, out List<ValidationIssue> issues)
+    public static bool IsValid(this Block block, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
     {
         issues = [.. serializer.Validate(block)];
+        return !issues.Any(i => i.Severity == ValidationSeverity.Error);
+    }
+
+    public static bool IsValid(this HipFile hip, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
+    {
+        issues = [.. serializer.ValidateArchive(hip)];
         return !issues.Any(i => i.Severity == ValidationSeverity.Error);
     }
 }

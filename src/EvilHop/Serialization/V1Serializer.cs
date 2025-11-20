@@ -13,10 +13,11 @@ public partial class V1Serializer() : IFormatSerializer
     public virtual HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
-        HIPA hipa = Read(reader, options) as HIPA ?? throw new InvalidDataException();
-        Package package = Read(reader, options) as Package ?? throw new InvalidDataException();
+        HIPA hipa = Read<HIPA>(reader, options);
+        Package package = Read<Package>(reader, options);
+        Dictionary dictionary = Read<Dictionary>(reader, options);
 
-        HipFile hipFile = new(hipa, package);
+        HipFile hipFile = new(hipa, package, dictionary);
         if (options.Mode == ValidationMode.None) return hipFile;
 
         var issues = ValidateArchive(hipFile);
@@ -37,6 +38,7 @@ public partial class V1Serializer() : IFormatSerializer
     {
         Write(writer, archive.HIPA);
         Write(writer, archive.Package);
+        Write(writer, archive.Dictionary);
     }
 
     public virtual Block Read(BinaryReader reader, SerializerOptions? options = null)
@@ -85,7 +87,7 @@ public partial class V1Serializer() : IFormatSerializer
     {
         if (!IsValidType(block)) return;
 
-        writer.Write(block.Id.ToEvilBytes());
+        writer.Write(block.Id.ToEvilBytes()[..^2]);
         writer.Write(block.Length.ToEvilBytes());
 
         WriteBlockData(writer, block);
@@ -119,6 +121,15 @@ public partial class V1Serializer() : IFormatSerializer
             Type t when t == typeof(PackageCreated) => ReadPackageCreated(reader),
             Type t when t == typeof(PackageModified) => ReadPackageModified(reader),
             Type t when t == typeof(PackagePlatform) => ReadPackagePlatform(reader),
+            Type t when t == typeof(Dictionary) => new Dictionary(),
+            Type t when t == typeof(AssetTable) => new AssetTable(),
+            Type t when t == typeof(AssetInf) => ReadAssetInf(reader),
+            Type t when t == typeof(AssetHeader) => ReadAssetHeader(reader),
+            Type t when t == typeof(AssetDebug) => ReadAssetDebug(reader),
+            Type t when t == typeof(LayerTable) => new LayerTable(),
+            Type t when t == typeof(LayerInf) => ReadLayerInf(reader),
+            Type t when t == typeof(LayerHeader) => ReadLayerHeader(reader),
+            Type t when t == typeof(LayerDebug) => ReadLayerDebug(reader),
             _ => throw new NotImplementedException()
         };
     }
@@ -139,8 +150,23 @@ public partial class V1Serializer() : IFormatSerializer
                 WritePackageModified(writer, modified); break;
             case PackagePlatform platform:
                 WritePackagePlatform(writer, platform); break;
+            case AssetInf assetInf:
+                WriteAssetInf(writer, assetInf); break;
+            case AssetHeader assetHeader:
+                WriteAssetHeader(writer, assetHeader); break;
+            case AssetDebug assetDebug:
+                WriteAssetDebug(writer, assetDebug); break;
+            case LayerInf layerInf:
+                WriteLayerInf(writer, layerInf); break;
+            case LayerHeader layerHeader:
+                WriteLayerHeader(writer, layerHeader); break;
+            case LayerDebug layerDebug:
+                WriteLayerDebug(writer, layerDebug); break;
             case HIPA:
             case Package:
+            case Dictionary:
+            case AssetTable:
+            case LayerTable:
                 break;
             default:
                 throw new NotImplementedException();

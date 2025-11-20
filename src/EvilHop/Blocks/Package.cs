@@ -1,12 +1,71 @@
-﻿using EvilHop.Exceptions;
-using EvilHop.Primitives;
+﻿using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
+public class Package : Block
+{
+    protected internal override string Id => "PACK";
+    protected override uint DataLength => 0;
+
+    public PackageVersion Versions
+    {
+        get => GetRequiredChild<PackageVersion>();
+        set => SetChild(value);
+    }
+
+    public PackageFlags Flags
+    {
+        get => GetRequiredChild<PackageFlags>();
+        set => SetChild(value);
+    }
+
+    public PackageCount Counts
+    {
+        get => GetRequiredChild<PackageCount>();
+        set => SetChild(value);
+    }
+
+    public PackageCreated Created
+    {
+        get => GetRequiredChild<PackageCreated>();
+        set => SetChild(value);
+    }
+
+    public PackageModified Modified
+    {
+        get => GetRequiredChild<PackageModified>();
+        set => SetChild(value);
+    }
+
+    public PackagePlatform? Platform
+    {
+        get => GetChild<PackagePlatform>();
+        set => SetChild(value);
+    }
+
+    // todo: implement public default based on file version
+    internal Package()
+    {
+    }
+
+    public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
+        PackagePlatform? packagePlatform = null
+        )
+    {
+        Children.AddRange([
+            packageVersion,
+            packageFlags,
+            packageCount,
+            packageCreated,
+            packageModified
+        ]);
+        if (packagePlatform != null) Children.Add(packagePlatform);
+    }
+}
 public class PackageVersion : Block
 {
     protected internal override string Id => "PVER";
-    protected override uint DataLength => 12;
+    protected override uint DataLength => sizeof(uint) * 3;
 
     public enum SubVersion : uint
     {
@@ -46,7 +105,7 @@ public class PackageVersion : Block
 public class PackageFlags : Block
 {
     protected internal override string Id => "PFLG";
-    protected override uint DataLength => 4;
+    protected override uint DataLength => sizeof(uint);
 
     // TODO: validate
     [Flags]
@@ -111,7 +170,7 @@ public class PackageFlags : Block
 public class PackageCount : Block
 {
     protected internal override string Id => "PCNT";
-    protected override uint DataLength => 20;
+    protected override uint DataLength => sizeof(uint) * 5;
 
     /// <summary>
     /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
@@ -151,8 +210,8 @@ public class PackageCount : Block
 public class PackageCreated : Block
 {
     protected internal override string Id => "PCRT";
-    // Always 30, even in n100f where CreatedDateString ends in '\n', due to EvilString handling
-    protected override uint DataLength => 30;
+    // Always 26 for string size, even in n100f where CreatedDateString ends in '\n', due to EvilString handling
+    protected override uint DataLength => sizeof(uint) + 26;
 
     // TODO: should be in UTC-7
     public DateTime CreatedDate
@@ -183,7 +242,7 @@ public class PackageCreated : Block
 public class PackageModified : Block
 {
     protected internal override string Id => "PMOD";
-    protected override uint DataLength => 4;
+    protected override uint DataLength => sizeof(uint);
 
     // TODO: should be in UTC-7
     public DateTime ModifiedDate { get; set; }
@@ -220,66 +279,5 @@ public class PackagePlatform(string platformId, string? platformName, string reg
 
     public PackagePlatform() : this("GC", null, "NTSC", "US", "Incredibles")
     {
-    }
-}
-
-public class Package : Block
-{
-    protected internal override string Id => "PACK";
-    protected override uint DataLength => 0;
-
-    public PackageVersion Versions
-    {
-        get => GetRequiredChild<PackageVersion>();
-        set => SetChild(value);
-    }
-
-    public PackageFlags Flags
-    {
-        get => GetRequiredChild<PackageFlags>();
-        set => SetChild(value);
-    }
-
-    public PackageCount Counts
-    {
-        get => GetRequiredChild<PackageCount>();
-        set => SetChild(value);
-    }
-
-    public PackageCreated Created
-    {
-        get => GetRequiredChild<PackageCreated>();
-        set => SetChild(value);
-    }
-
-    public PackageModified Modified
-    {
-        get => GetRequiredChild<PackageModified>();
-        set => SetChild(value);
-    }
-
-    public PackagePlatform? Platform
-    {
-        get => GetChild<PackagePlatform>();
-        set => SetChild(value);
-    }
-
-    // todo: implement public default based on file version
-    internal Package()
-    {
-    }
-
-    public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
-        PackagePlatform? packagePlatform = null
-        )
-    {
-        Children.AddRange([
-            packageVersion,
-            packageFlags,
-            packageCount,
-            packageCreated,
-            packageModified
-        ]);
-        if (packagePlatform != null) Children.Add(packagePlatform);
     }
 }
