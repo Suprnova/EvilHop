@@ -1,5 +1,4 @@
-﻿using EvilHop.Helpers;
-using EvilHop.Primitives;
+﻿using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
@@ -97,7 +96,7 @@ public class AssetHeader : Block
     internal uint Offset { get; set; }
     internal uint Size { get; set; }
     internal uint Padding { get; set; }
-    internal AssetFlags Flags { get; set; } // todo: make enum
+    internal AssetFlags Flags { get; set; }
 }
 
 public class AssetDebug : Block
@@ -142,7 +141,7 @@ public class LayerInf : Block
     protected internal override string Id => "LINF";
     protected internal override uint DataLength => sizeof(uint);
 
-    internal uint Value { get; set; }
+    internal uint Value { get; set; } = 0;
 }
 
 public class LayerHeader : Block

@@ -21,7 +21,8 @@ public partial class V1Validator : IFormatValidator
         foreach (var issue in Validate(hipFile.HIPA)) yield return issue;
         foreach (var issue in Validate(hipFile.Package)) yield return issue;
         foreach (var issue in Validate(hipFile.Dictionary)) yield return issue;
-        //foreach (var issue in ValidateBlockData(hipFile.AssetDataStream)) yield return issue;
+        foreach (var issue in ValidateBlockData(hipFile.AssetStream)) yield return issue;
+
         // todo: perform cross-referential validation here, probably call to protected virtual methods for each one
         // i.e. validate PackageCount against AHDR, LHDR, and DPAK
     }
@@ -47,6 +48,9 @@ public partial class V1Validator : IFormatValidator
             LayerInf inf => ValidateLayerInf(inf),
             LayerHeader header => ValidateLayerHeader(header),
             LayerDebug debug => ValidateLayerDebug(debug),
+            AssetStream stream => ValidateAssetStream(stream),
+            StreamHeader header => ValidateStreamHeader(header),
+            StreamData data => ValidateStreamData(data),
             _ => throw new NotImplementedException()
         };
     }

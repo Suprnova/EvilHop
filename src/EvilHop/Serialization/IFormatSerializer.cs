@@ -9,6 +9,7 @@ public class SerializerOptions
     public Action<ValidationIssue>? OnValidationIssue { get; set; }
 }
 
+// todo: abstract this into serializers for each game, with base serializers for common functionality
 public interface IFormatSerializer
 {
     HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null);

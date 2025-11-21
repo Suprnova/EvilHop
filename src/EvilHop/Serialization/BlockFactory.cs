@@ -25,6 +25,9 @@ public static class BlockFactory
             "LINF" => typeof(LayerInf),
             "LHDR" => typeof(LayerHeader),
             "LDBG" => typeof(LayerDebug),
+            "STRM" => typeof(AssetStream),
+            "DHDR" => typeof(StreamHeader),
+            "DPAK" => typeof(StreamData),
             _ => throw new InvalidDataException()
         };
     }

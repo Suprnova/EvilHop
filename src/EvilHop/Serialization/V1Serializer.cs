@@ -17,8 +17,9 @@ public partial class V1Serializer() : IFormatSerializer
         HIPA hipa = Read<HIPA>(reader, options);
         Package package = Read<Package>(reader, options);
         Dictionary dictionary = Read<Dictionary>(reader, options);
+        AssetStream stream = Read<AssetStream>(reader, options);
 
-        HipFile hipFile = new(hipa, package, dictionary);
+        HipFile hipFile = new(hipa, package, dictionary, stream);
         if (options.Mode == ValidationMode.None) return hipFile;
 
         var issues = ValidateArchive(hipFile);
@@ -51,7 +52,7 @@ public partial class V1Serializer() : IFormatSerializer
         uint blockLength = reader.ReadEvilInt();
 
         // parse block-specific data
-        Block block = ReadBlockData(reader, blockId);
+        Block block = ReadBlockData(reader, blockId, blockLength);
 
         while (GetBlockLength(block) < blockLength)
         {
@@ -109,7 +110,7 @@ public partial class V1Serializer() : IFormatSerializer
         return _validator.ValidateArchive(hip);
     }
 
-    protected virtual Block ReadBlockData(BinaryReader reader, string id)
+    protected virtual Block ReadBlockData(BinaryReader reader, string id, uint length)
     {
         Type blockType = BlockFactory.GetBlockType(id);
         return blockType switch
@@ -131,6 +132,9 @@ public partial class V1Serializer() : IFormatSerializer
             Type t when t == typeof(LayerInf) => ReadLayerInf(reader),
             Type t when t == typeof(LayerHeader) => ReadLayerHeader(reader),
             Type t when t == typeof(LayerDebug) => ReadLayerDebug(reader),
+            Type t when t == typeof(AssetStream) => new AssetStream(),
+            Type t when t == typeof(StreamHeader) => ReadStreamHeader(reader),
+            Type t when t == typeof(StreamData) => ReadStreamData(reader, length),
             _ => throw new NotImplementedException()
         };
     }
@@ -163,11 +167,16 @@ public partial class V1Serializer() : IFormatSerializer
                 WriteLayerHeader(writer, layerHeader); break;
             case LayerDebug layerDebug:
                 WriteLayerDebug(writer, layerDebug); break;
+            case StreamHeader streamHeader:
+                WriteStreamHeader(writer, streamHeader); break;
+            case StreamData streamData:
+                WriteStreamData(writer, streamData); break;
             case HIPA:
             case Package:
             case Dictionary:
             case AssetTable:
             case LayerTable:
+            case AssetStream:
                 break;
             default:
                 throw new NotImplementedException();

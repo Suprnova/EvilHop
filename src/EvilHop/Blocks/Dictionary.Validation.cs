@@ -48,8 +48,8 @@ public partial class V1Validator
         {
             yield return new ValidationIssue
             {
-                Severity = ValidationSeverity.None,
-                Message = $"{typeof(AssetInf).Name} value '{inf.Value}' is unknown, likely undocumented.",
+                Severity = ValidationSeverity.Warning,
+                Message = $"{typeof(AssetInf).Name} value '{inf.Value}' is unknown.",
                 Context = inf
             };
         }

@@ -2,6 +2,7 @@
 
 namespace EvilHop.Serialization.Validation;
 
+// todo: maybe something between None and Warning, where we know it's not right but also know it won't affect the game
 public enum ValidationSeverity { None, Warning, Error }
 
 public class ValidationIssue
