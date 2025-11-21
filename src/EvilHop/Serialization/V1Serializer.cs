@@ -7,6 +7,7 @@ namespace EvilHop.Serialization;
 
 public partial class V1Serializer() : IFormatSerializer
 {
+    // todo: ensure any v2+ serializer uses their respective functions
     protected readonly IFormatValidator _validator = new V1Validator();
     protected readonly SerializerOptions _defaultOptions = new();
 
@@ -27,7 +28,7 @@ public partial class V1Serializer() : IFormatSerializer
             options.OnValidationIssue?.Invoke(issue);
 
             // todo: make Context nullable, we wouldn't need it for HipFile validation since it's cross-referential
-            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
+            if (options.Mode == ValidationMode.Strict && issue.Severity >= ValidationSeverity.Warning)
                 throw new InvalidDataException($"Strict Validation Failed: {issue.Message} on {issue.Context.Id} block.");
         }
 
@@ -52,7 +53,7 @@ public partial class V1Serializer() : IFormatSerializer
         // parse block-specific data
         Block block = ReadBlockData(reader, blockId);
 
-        while (block.Length < blockLength)
+        while (GetBlockLength(block) < blockLength)
         {
             block.Children.Add(Read(reader));
         }
@@ -88,7 +89,7 @@ public partial class V1Serializer() : IFormatSerializer
         if (!IsValidType(block)) return;
 
         writer.Write(block.Id.ToEvilBytes()[..^2]);
-        writer.Write(block.Length.ToEvilBytes());
+        writer.Write(GetBlockLength(block).ToEvilBytes());
 
         WriteBlockData(writer, block);
 
@@ -179,6 +180,16 @@ public partial class V1Serializer() : IFormatSerializer
         {
             PackagePlatform => false,
             _ => true,
+        };
+    }
+
+    public uint GetBlockLength(Block block) => GetBlockDataLength(block) + (uint)block.Children.Sum(c => c.HeaderLength + this.GetBlockLength(c));
+
+    protected virtual uint GetBlockDataLength(Block block)
+    {
+        return block switch
+        {
+            _ => block.DataLength
         };
     }
 }

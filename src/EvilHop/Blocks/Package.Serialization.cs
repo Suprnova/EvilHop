@@ -102,11 +102,11 @@ public partial class V2Serializer
 
     protected override void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
     {
-        writer.WriteEvilString(platform.PlatformID);
-        // todo: should not be null in V1
-        writer.WriteEvilString(platform.PlatformName ?? "");
-        writer.WriteEvilString(platform.Region);
-        writer.WriteEvilString(platform.Language);
-        writer.WriteEvilString(platform.GameName);
+        //writer.WriteEvilString(platform.PlatformID);
+        //// todo: should not be null in V1
+        //writer.WriteEvilString(platform.PlatformName ?? "");
+        //writer.WriteEvilString(platform.Region);
+        //writer.WriteEvilString(platform.Language);
+        //writer.WriteEvilString(platform.GameName);
     }
 }

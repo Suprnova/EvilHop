@@ -3,10 +3,37 @@ using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
+public enum LayerType : uint
+{
+    Default = 0,
+    Texture,
+    TextureStream,
+    BSP,
+    Model,
+    Animation,
+    VRAM,
+    SRAM,
+    SoundTable,
+    Cutscene,
+    CutsceneTable,
+    JSPInfo,
+    Unknown = uint.MaxValue
+}
+
+[Flags]
+public enum AssetFlags : uint
+{
+    None = 0U,
+    SourceFile = 1U << 0,
+    SourceVirtual = 1U << 1,
+    ReadTransform = 1U << 2,
+    WriteTransform = 1U << 3
+}
+
 public class Dictionary : Block
 {
     protected internal override string Id => "DICT";
-    protected override uint DataLength => 0;
+    protected internal override uint DataLength => 0;
 
     public AssetTable Table
     {
@@ -30,7 +57,7 @@ public class Dictionary : Block
 public class AssetTable : Block
 {
     protected internal override string Id => "ATOC";
-    protected override uint DataLength => 0;
+    protected internal override uint DataLength => 0;
 
     public AssetInf AssetInf
     {
@@ -48,7 +75,7 @@ public class AssetTable : Block
 public class AssetInf : Block
 {
     protected internal override string Id => "AINF";
-    protected override uint DataLength => sizeof(uint);
+    protected internal override uint DataLength => sizeof(uint);
 
     internal uint Value { get; set; } = 0;
 }
@@ -56,7 +83,7 @@ public class AssetInf : Block
 public class AssetHeader : Block
 {
     protected internal override string Id => "AHDR";
-    protected override uint DataLength => sizeof(uint) * 6;
+    protected internal override uint DataLength => sizeof(uint) * 6;
 
     public AssetDebug Debug
     {
@@ -70,13 +97,13 @@ public class AssetHeader : Block
     internal uint Offset { get; set; }
     internal uint Size { get; set; }
     internal uint Padding { get; set; }
-    internal uint Flags { get; set; } // todo: make enum
+    internal AssetFlags Flags { get; set; } // todo: make enum
 }
 
 public class AssetDebug : Block
 {
     protected internal override string Id => "ADBG";
-    protected override uint DataLength
+    protected internal override uint DataLength
     {
         get
         {
@@ -95,7 +122,7 @@ public class AssetDebug : Block
 public class LayerTable : Block
 {
     protected internal override string Id => "LTOC";
-    protected override uint DataLength => 0;
+    protected internal override uint DataLength => 0;
 
     public LayerInf LayerInf
     {
@@ -113,7 +140,7 @@ public class LayerTable : Block
 public class LayerInf : Block
 {
     protected internal override string Id => "LINF";
-    protected override uint DataLength => sizeof(uint);
+    protected internal override uint DataLength => sizeof(uint);
 
     internal uint Value { get; set; }
 }
@@ -121,7 +148,7 @@ public class LayerInf : Block
 public class LayerHeader : Block
 {
     protected internal override string Id => "LHDR";
-    protected override uint DataLength
+    protected internal override uint DataLength
     {
         get
         {
@@ -135,7 +162,7 @@ public class LayerHeader : Block
         set => SetChild(value);
     }
 
-    internal uint Type { get; set; }
+    internal LayerType Type { get; set; }
     // todo: asset abstraction should handle this binding to AssetIds.Count()
     internal uint AssetCount { get; set; }
     internal IEnumerable<uint> AssetIds { get; set; } = [];
@@ -144,7 +171,7 @@ public class LayerHeader : Block
 public class LayerDebug : Block
 {
     protected internal override string Id => "LDBG";
-    protected override uint DataLength => sizeof(uint);
+    protected internal override uint DataLength => sizeof(uint);
 
     internal uint Value { get; set; }
 }

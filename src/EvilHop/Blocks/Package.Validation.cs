@@ -60,7 +60,7 @@ public partial class V1Validator
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"SubVersion {(int)version.SubVer} is unknown.",
+                Message = $"SubVersion {(uint)version.SubVer} is unknown.",
                 Context = version
             };
         }
@@ -69,7 +69,7 @@ public partial class V1Validator
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"ClientVersion {(int)version.ClientVer} is unknown.",
+                Message = $"ClientVersion {(uint)version.ClientVer} is unknown.",
                 Context = version
             };
         }
@@ -78,7 +78,7 @@ public partial class V1Validator
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"CompatVersion {(int)version.CompatVer} is unknown.",
+                Message = $"CompatVersion {(uint)version.CompatVer} is unknown.",
                 Context = version
             };
         }
@@ -90,7 +90,7 @@ public partial class V1Validator
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.None,
-                Message = $"PackageFlags value {(int)flags.Flags} is unknown, likely undocumented.",
+                Message = $"PackageFlags value {(uint)flags.Flags} is unknown, likely undocumented.",
                 Context = flags
             };
         }

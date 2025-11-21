@@ -22,7 +22,7 @@ public class PackageTests
             new PackageModified()
             );
         //Assert.Equal(5, package.Children.Count);
-        Assert.Equal(110U, package.Length);
+        Assert.Equal(110U, _v1.GetBlockLength(package));
     }
 
     [Theory]
@@ -45,7 +45,7 @@ public class PackageTests
         using BinaryReader reader = new(new MemoryStream(bytes));
         Package package = _v1.Read<Package>(reader, _strict);
         //Assert.Equal(expectedCount, package.Children.Count);
-        Assert.Equal(expectedLength, package.Length);
+        Assert.Equal(expectedLength, _v1.GetBlockLength(package));
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class PackageTests
     {
         PackageVersion packageVersion = new();
         //Assert.Empty(packageVersion.Children);
-        Assert.Equal(12U, packageVersion.Length);
+        Assert.Equal(12U, _v1.GetBlockLength(packageVersion));
         Assert.Equal(SubVersion.Default, packageVersion.SubVer);
         Assert.Equal(ClientVersion.Default, packageVersion.ClientVer);
         Assert.Equal(CompatVersion.Default, packageVersion.CompatVer);
@@ -79,7 +79,7 @@ public class PackageTests
         using BinaryReader reader = new(new MemoryStream(bytes));
         PackageVersion packageVersion = _v1.Read<PackageVersion>(reader, _strict);
         //Assert.Empty(packageVersion.Children);
-        Assert.Equal(12U, packageVersion.Length);
+        Assert.Equal(12U, _v1.GetBlockLength(packageVersion));
         Assert.Equal(subVersion, packageVersion.SubVer);
         Assert.Equal(clientVersion, packageVersion.ClientVer);
         Assert.Equal(compatVersion, packageVersion.CompatVer);

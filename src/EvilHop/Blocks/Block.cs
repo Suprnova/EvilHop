@@ -10,29 +10,14 @@ public abstract class Block
     protected internal abstract string Id { get; }
 
     /// <summary>
-    /// The length of this block's body, including its data and its children blocks.
-    /// </summary>
-    public virtual uint Length => DataLength + ChildrenLength;
-
-    /// <summary>
-    /// The length of this block, including its header, data, and children blocks.
-    /// </summary>
-    protected virtual uint StoredLength => HeaderLength + DataLength + ChildrenLength;
-
-    /// <summary>
     /// The length of this block's header, containing its ID and its length.
     /// </summary>
-    protected virtual uint HeaderLength => 8;
+    protected internal virtual uint HeaderLength => 8;
 
     /// <summary>
     /// The length of this block's data.
     /// </summary>
-    protected abstract uint DataLength { get; }
-
-    /// <summary>
-    /// The length of all of this block's children.
-    /// </summary>
-    protected uint ChildrenLength => (uint)Children.Sum(c => c.StoredLength);
+    protected internal abstract uint DataLength { get; }
 
     /// <summary>
     /// The list containing all child blocks to this block.

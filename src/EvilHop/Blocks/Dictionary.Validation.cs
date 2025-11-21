@@ -1,6 +1,5 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Helpers;
-using System.Reflection.PortableExecutable;
 
 namespace EvilHop.Serialization.Validation;
 
@@ -57,7 +56,25 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header)
     {
-        // todo: validate flags as enum
+        if (header.Flags.HasFlag(AssetFlags.SourceFile) && header.Flags.HasFlag(AssetFlags.SourceVirtual))
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"{typeof(AssetFlags).Name} has conflicting values: {Enum.GetName(AssetFlags.SourceFile)} & {Enum.GetName(AssetFlags.SourceVirtual)}.",
+                Context = header
+            };
+        }
+
+        if ((uint)header.Flags > 0xF)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"{typeof(AssetFlags).Name} value '{(uint)header.Flags}' is unknown.",
+                Context = header
+            };
+        }
 
         if (header.GetChild<AssetDebug>() == null)
         {
@@ -82,7 +99,19 @@ public partial class V1Validator
                 };
             }
 
-            // todo: validate Flags.SOURCE_FILE correlates with population of AssetDebug.FileName
+            if (header.Flags.HasFlag(AssetFlags.SourceFile))
+            {
+                string fileName = header.GetChild<AssetDebug>()!.FileName;
+                if (String.IsNullOrEmpty(fileName))
+                {
+                    yield return new ValidationIssue
+                    {
+                        Severity = ValidationSeverity.Warning,
+                        Message = $"File Name for {Enum.GetName(AssetFlags.SourceFile)} enabled asset is missing from {typeof(AssetDebug).Name} child block.",
+                        Context = header
+                    };
+                }
+            }
         }
 
         // todo: validate asset type as enum
@@ -133,7 +162,24 @@ public partial class V1Validator
             };
         }
 
-        // todo: validate type as enum
+        if (header.Type == LayerType.TextureStream || header.Type == LayerType.JSPInfo)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Error,
+                Message = $"Layer Type '{Enum.GetName(header.Type)}' (ID = '{(uint)header.Type}') is not valid in HIP Version 1.",
+                Context = header
+            };
+        }
+        else if (!Enum.IsDefined(header.Type) || header.Type == LayerType.Unknown)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"Layer Type '{(uint)header.Type}' is unknown.",
+                Context = header
+            };
+        }
 
         uint expectedCount = (uint)header.AssetIds.Count();
         if (header.AssetCount != expectedCount)

@@ -2,10 +2,59 @@
 
 namespace EvilHop.Blocks;
 
+public enum ArchivePlatform
+{
+    GameCube,
+    PlayStation2,
+    Xbox,
+    Unknown
+}
+
+public enum ArchiveRegion
+{
+    NTSC,
+    PAL,
+    Unknown
+}
+
+public enum ArchiveLanguage
+{
+    Belarusian,
+    Unknown_Switzerland,
+    Czech,
+    German,
+    Danish,
+    Spanish,
+    Finnish,
+    French,
+    Italian,
+    Japanese,
+    Korean,
+    Dutch,
+    Norwegian,
+    Polish,
+    Portuguese,
+    Russian,
+    Sami,
+    Slovak,
+    Chinese_Taiwan,
+    English_UnitedKingdom,
+    English_UnitedStates,
+    Unknown
+}
+
+public enum ArchiveGame
+{
+    SpongeBob,
+    Incredibles,
+    JimmyNewtron,
+    Unknown
+}
+
 public class Package : Block
 {
     protected internal override string Id => "PACK";
-    protected override uint DataLength => 0;
+    protected internal override uint DataLength => 0;
 
     public PackageVersion Versions
     {
@@ -65,7 +114,7 @@ public class Package : Block
 public class PackageVersion : Block
 {
     protected internal override string Id => "PVER";
-    protected override uint DataLength => sizeof(uint) * 3;
+    protected internal override uint DataLength => sizeof(uint) * 3;
 
     public enum SubVersion : uint
     {
@@ -105,7 +154,7 @@ public class PackageVersion : Block
 public class PackageFlags : Block
 {
     protected internal override string Id => "PFLG";
-    protected override uint DataLength => sizeof(uint);
+    protected internal override uint DataLength => sizeof(uint);
 
     // TODO: validate
     [Flags]
@@ -170,7 +219,7 @@ public class PackageFlags : Block
 public class PackageCount : Block
 {
     protected internal override string Id => "PCNT";
-    protected override uint DataLength => sizeof(uint) * 5;
+    protected internal override uint DataLength => sizeof(uint) * 5;
 
     /// <summary>
     /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
@@ -211,7 +260,7 @@ public class PackageCreated : Block
 {
     protected internal override string Id => "PCRT";
     // Always 26 for string size, even in n100f where CreatedDateString ends in '\n', due to EvilString handling
-    protected override uint DataLength => sizeof(uint) + 26;
+    protected internal override uint DataLength => sizeof(uint) + 26;
 
     // TODO: should be in UTC-7
     public DateTime CreatedDate
@@ -242,7 +291,7 @@ public class PackageCreated : Block
 public class PackageModified : Block
 {
     protected internal override string Id => "PMOD";
-    protected override uint DataLength => sizeof(uint);
+    protected internal override uint DataLength => sizeof(uint);
 
     // TODO: should be in UTC-7
     public DateTime ModifiedDate { get; set; }
@@ -258,26 +307,19 @@ public class PackageModified : Block
     }
 }
 
-public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
+public class PackagePlatform : Block
 {
     protected internal override string Id => "PLAT";
-    protected override uint DataLength
-    {
-        get
-        {
-            return
-                PlatformID.GetEvilStringLength() + (PlatformName?.GetEvilStringLength() ?? 0) +
-                Region.GetEvilStringLength() + Language.GetEvilStringLength() + GameName.GetEvilStringLength();
-        }
-    }
+    // not accurate, must be determined by serializer
+    protected internal override uint DataLength => 0;
 
-    public string PlatformID { get; set; } = platformId; // todo: make enum
-    public string? PlatformName { get; set; } = platformName;
-    public string Region { get; set; } = region; // make enum
-    public string Language { get; set; } = language; // make enum
-    public string GameName { get; set; } = gameName; // make enum
+    public ArchivePlatform PlatformID { get; set; }
+    public string? PlatformName { get; set; }
+    public ArchiveRegion Region { get; set; }
+    public ArchiveLanguage Language { get; set; }
+    public ArchiveGame GameName { get; set; }
 
-    public PackagePlatform() : this("GC", null, "NTSC", "US", "Incredibles")
+    public PackagePlatform()
     {
     }
 }

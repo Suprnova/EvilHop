@@ -24,4 +24,6 @@ public interface IFormatSerializer
     IEnumerable<ValidationIssue> Validate(Block block);
 
     IEnumerable<ValidationIssue> ValidateArchive(HipFile hip);
+
+    uint GetBlockLength(Block block);
 }

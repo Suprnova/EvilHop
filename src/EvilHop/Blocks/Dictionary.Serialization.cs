@@ -28,7 +28,7 @@ public partial class V1Serializer
             Offset = reader.ReadEvilInt(),
             Size = reader.ReadEvilInt(),
             Padding = reader.ReadEvilInt(),
-            Flags = reader.ReadEvilInt()
+            Flags = (AssetFlags)reader.ReadEvilInt()
         };
     }
 
@@ -39,7 +39,7 @@ public partial class V1Serializer
         writer.WriteEvilInt(header.Offset);
         writer.WriteEvilInt(header.Size);
         writer.WriteEvilInt(header.Padding);
-        writer.WriteEvilInt(header.Flags);
+        writer.WriteEvilInt((uint)header.Flags);
     }
 
     protected virtual AssetDebug ReadAssetDebug(BinaryReader reader)
@@ -76,7 +76,23 @@ public partial class V1Serializer
 
     protected virtual LayerHeader ReadLayerHeader(BinaryReader reader)
     {
-        uint type = reader.ReadEvilInt();
+        uint layerValue = reader.ReadEvilInt();
+        LayerType layerType = layerValue switch
+        {
+            0 => LayerType.Default,
+            1 => LayerType.Texture,
+            2 => LayerType.BSP,
+            3 => LayerType.Model,
+            4 => LayerType.Animation,
+            5 => LayerType.VRAM,
+            6 => LayerType.SRAM,
+            7 => LayerType.SoundTable,
+            8 => LayerType.Cutscene,
+            9 => LayerType.CutsceneTable,
+            10 => LayerType.JSPInfo,
+            _ => (LayerType)layerValue,
+        };
+
         uint assetCount = reader.ReadEvilInt();
         uint[] assetIds = new uint[assetCount];
         for (int i = 0; i < assetCount; i++)
@@ -84,7 +100,7 @@ public partial class V1Serializer
 
         return new LayerHeader
         {
-            Type = type,
+            Type = layerType,
             AssetCount = assetCount,
             AssetIds = assetIds
         };
@@ -92,7 +108,23 @@ public partial class V1Serializer
 
     protected virtual void WriteLayerHeader(BinaryWriter writer, LayerHeader header)
     {
-        writer.WriteEvilInt(header.Type);
+        uint layerType = header.Type switch
+        {
+            LayerType.Default => 0,
+            LayerType.Texture => 1,
+            LayerType.BSP => 2,
+            LayerType.Model => 3,
+            LayerType.Animation => 4,
+            LayerType.VRAM => 5,
+            LayerType.SRAM => 6,
+            LayerType.SoundTable => 7,
+            LayerType.Cutscene => 8,
+            LayerType.CutsceneTable => 9,
+            LayerType.JSPInfo => 10,
+            _ => uint.MaxValue,
+        };
+        writer.WriteEvilInt(layerType);
+
         writer.WriteEvilInt(header.AssetCount);
 
         foreach (var assetId in header.AssetIds)
