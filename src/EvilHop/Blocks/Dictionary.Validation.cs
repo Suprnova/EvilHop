@@ -44,7 +44,8 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf)
     {
-        if (inf.Value != 0) {
+        if (inf.Value != 0)
+        {
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.None,

@@ -86,7 +86,8 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidatePackageFlags(PackageFlags flags)
     {
-        if (!Enum.IsDefined(flags.Flags)) {
+        if (!Enum.IsDefined(flags.Flags))
+        {
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.None,

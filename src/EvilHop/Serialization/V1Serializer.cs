@@ -78,7 +78,7 @@ public partial class V1Serializer() : IFormatSerializer
         long peekOffset = reader.BaseStream.Position;
         Type type = BlockFactory.GetBlockType(Encoding.ASCII.GetString(reader.ReadBytes(4)));
         reader.BaseStream.Position = peekOffset;
-        
+
         if (type != typeof(T)) throw new InvalidCastException($"Read block is {type.Name}, expected {typeof(T).Name}.");
 
         return (Read(reader, options) as T)!;
