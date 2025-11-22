@@ -1,6 +1,5 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Serialization;
-using EvilHop.Serialization.Serializers;
 
 namespace EvilHop.Tests.Blocks;
 

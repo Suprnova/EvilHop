@@ -1,8 +1,6 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Serialization;
-using EvilHop.Serialization.Serializers;
 using EvilHop.Serialization.Validation;
-using static EvilHop.Blocks.PackageVersion;
 
 namespace EvilHop.Tests.Blocks;
 
