@@ -67,7 +67,7 @@ public partial class V1Validator
             };
         }
 
-        if ((uint)header.Flags > 0xF)
+        if ((uint)(header.Flags & ~AssetFlags.UnknownScooby) > 0xF)
         {
             yield return new ValidationIssue
             {
@@ -90,7 +90,7 @@ public partial class V1Validator
         {
             string assetName = header.GetChild<AssetDebug>()!.Name;
             uint expectedHash = BKDRHash.Calculate(assetName);
-            if (expectedHash != header.AssetId)
+            if (expectedHash != header.AssetId && header.Debug.Name.Length < 31)
             {
                 yield return new ValidationIssue
                 {

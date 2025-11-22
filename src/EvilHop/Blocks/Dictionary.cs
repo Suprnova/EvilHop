@@ -26,7 +26,8 @@ public enum AssetFlags : uint
     SourceFile = 1U << 0,
     SourceVirtual = 1U << 1,
     ReadTransform = 1U << 2,
-    WriteTransform = 1U << 3
+    WriteTransform = 1U << 3,
+    UnknownScooby = 1U << 31
 }
 
 public class Dictionary : Block
