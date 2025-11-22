@@ -2,9 +2,9 @@
 using EvilHop.Primitives;
 using System.Text;
 
-namespace EvilHop.Serialization;
+namespace EvilHop.Serialization.Serializers;
 
-public partial class V1Serializer
+public abstract partial class V1Serializer
 {
     protected virtual AssetInf ReadAssetInf(BinaryReader reader)
     {
@@ -89,7 +89,6 @@ public partial class V1Serializer
             7 => LayerType.SoundTable,
             8 => LayerType.Cutscene,
             9 => LayerType.CutsceneTable,
-            10 => LayerType.JSPInfo,
             _ => (LayerType)layerValue,
         };
 
@@ -120,7 +119,6 @@ public partial class V1Serializer
             LayerType.SoundTable => 7,
             LayerType.Cutscene => 8,
             LayerType.CutsceneTable => 9,
-            LayerType.JSPInfo => 10,
             _ => uint.MaxValue,
         };
         writer.WriteEvilInt(layerType);

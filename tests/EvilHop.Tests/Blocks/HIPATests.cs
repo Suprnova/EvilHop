@@ -1,11 +1,12 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Serialization;
+using EvilHop.Serialization.Serializers;
 
 namespace EvilHop.Tests.Blocks;
 
 public class HIPATests
 {
-    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Version1);
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Scooby);
 
     [Fact]
     public void EmptyConstructor_DoesNotThrow()

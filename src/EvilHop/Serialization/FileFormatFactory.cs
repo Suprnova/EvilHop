@@ -1,10 +1,15 @@
-﻿namespace EvilHop.Serialization;
+﻿using EvilHop.Serialization.Serializers;
+
+namespace EvilHop.Serialization;
 
 public enum FileFormatVersion
 {
-    Version1 = 1,
-    Version2 = 2,
-    Version3 = 3,
+    Scooby,
+    Battle,
+    Movie,
+    Incredibles,
+    ROTU,
+    Rat
 }
 
 public static class FileFormatFactory
@@ -14,9 +19,8 @@ public static class FileFormatFactory
     {
         return version switch
         {
-            FileFormatVersion.Version1 => new V1Serializer(),
-            FileFormatVersion.Version2 => new V2Serializer(),
-            FileFormatVersion.Version3 => throw new NotImplementedException(),
+            FileFormatVersion.Scooby => new ScoobySerializer(),
+            FileFormatVersion.Battle => new BattleSerializer(),
             _ => throw new NotImplementedException()
         };
     }

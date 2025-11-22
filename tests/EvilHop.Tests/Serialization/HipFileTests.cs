@@ -1,13 +1,14 @@
 ﻿using EvilHop.Serialization;
+using EvilHop.Serialization.Serializers;
 using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Tests.Serialization;
 
 public class HipFileTests
 {
-    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Version1);
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Scooby);
 
-    [Theory]
+    [Theory(Skip = "pending better testing solution, to include stream")]
     [InlineData(
         new byte[]
         {

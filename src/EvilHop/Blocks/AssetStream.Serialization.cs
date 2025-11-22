@@ -1,9 +1,9 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Primitives;
 
-namespace EvilHop.Serialization;
+namespace EvilHop.Serialization.Serializers;
 
-public partial class V1Serializer
+public abstract partial class V1Serializer
 {
     protected virtual StreamHeader ReadStreamHeader(BinaryReader reader)
     {

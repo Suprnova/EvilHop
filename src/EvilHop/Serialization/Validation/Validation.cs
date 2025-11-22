@@ -1,4 +1,5 @@
 ﻿using EvilHop.Blocks;
+using EvilHop.Serialization.Serializers;
 
 namespace EvilHop.Serialization.Validation;
 

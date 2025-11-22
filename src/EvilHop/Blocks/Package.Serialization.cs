@@ -1,9 +1,9 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Primitives;
 
-namespace EvilHop.Serialization;
+namespace EvilHop.Serialization.Serializers;
 
-public partial class V1Serializer
+public abstract partial class V1Serializer
 {
     protected virtual PackageVersion ReadPackageVersion(BinaryReader reader)
     {
@@ -88,7 +88,6 @@ public partial class V1Serializer
     }
 
     protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader) => throw new InvalidOperationException();
-    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform) => throw new InvalidOperationException();
 }
 
 public partial class V2Serializer
@@ -100,7 +99,7 @@ public partial class V2Serializer
         writer.WriteEvilString(created.CreatedDateString);
     }
 
-    protected override void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
+    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
     {
         //writer.WriteEvilString(platform.PlatformID);
         //// todo: should not be null in V1

@@ -29,8 +29,13 @@ public class StreamHeader : Block
 public class StreamData : Block
 {
     protected internal override string Id => "DPAK";
-    // todo: dynamic
-    protected internal override uint DataLength => 0;
+    protected internal override uint DataLength
+    {
+        get
+        {
+            return (uint)(sizeof(uint) + PaddingAmount + Data.Length);
+        }
+    }
 
     internal uint PaddingAmount { get; set; }
     internal byte[] Data { get; set; } = [];

@@ -1,7 +1,7 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Serialization.Validation;
 
-namespace EvilHop.Serialization;
+namespace EvilHop.Serialization.Serializers;
 
 public class SerializerOptions
 {

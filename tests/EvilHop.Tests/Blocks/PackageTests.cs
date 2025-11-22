@@ -1,5 +1,6 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Serialization;
+using EvilHop.Serialization.Serializers;
 using EvilHop.Serialization.Validation;
 using static EvilHop.Blocks.PackageVersion;
 
@@ -7,7 +8,8 @@ namespace EvilHop.Tests.Blocks;
 
 public class PackageTests
 {
-    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Version1);
+    private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Scooby);
+    private readonly IFormatSerializer _v2 = FileFormatFactory.GetSerializer(FileFormatVersion.Battle);
     private readonly SerializerOptions _strict = new() { Mode = ValidationMode.Strict };
 
     [Fact]
