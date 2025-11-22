@@ -1,4 +1,4 @@
-﻿using EvilHop.Helpers;
+﻿using EvilHop.Common;
 
 namespace EvilHop.Tests.Helpers;
 

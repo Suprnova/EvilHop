@@ -23,8 +23,12 @@ public partial class V1Validator : IFormatValidator
         foreach (var issue in Validate(hipFile.Dictionary)) yield return issue;
         foreach (var issue in ValidateBlockData(hipFile.AssetStream)) yield return issue;
 
-        // todo: perform cross-referential validation here, probably call to protected virtual methods for each one
-        // i.e. validate PackageCount against AHDR, LHDR, and DPAK
+
+        // todo: validate PCNT fields against AHDR, LHDR, and DPAK
+
+        // todo: validate AHDR against STRM (?)
+
+        // todo: validate ADBG checksum against STRM
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateBlockData(Block block)

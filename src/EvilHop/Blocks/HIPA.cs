@@ -18,11 +18,6 @@ namespace EvilHop.Serialization.Validation
     {
         protected virtual IEnumerable<ValidationIssue> ValidateHIPA(HIPA hipa)
         {
-            // todo: validate PCNT fields against AHDR, LHDR, and DPAK
-
-            // todo: validate AHDR against STRM (?)
-
-            // todo: validate ADBG checksum against STRM
             yield break;
         }
     }

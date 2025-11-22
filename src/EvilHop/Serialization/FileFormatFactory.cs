@@ -1,9 +1,12 @@
-﻿using EvilHop.Serialization.Serializers;
+﻿using EvilHop.Blocks;
+using EvilHop.Primitives;
+using EvilHop.Serialization.Serializers;
 
 namespace EvilHop.Serialization;
 
 public enum FileFormatVersion
 {
+    ScoobyPrototype,
     Scooby,
     Battle,
     Movie,
@@ -14,14 +17,28 @@ public enum FileFormatVersion
 
 public static class FileFormatFactory
 {
-    // todo: maybe not in this class, but implement a Peek function to determine a file format automatically
     public static IFormatSerializer GetSerializer(FileFormatVersion version)
     {
         return version switch
         {
+            FileFormatVersion.ScoobyPrototype => new ScoobyPrototypeSerializer(),
             FileFormatVersion.Scooby => new ScoobySerializer(),
             FileFormatVersion.Battle => new BattleSerializer(),
             _ => throw new NotImplementedException()
         };
+    }
+
+    public static FileFormatVersion SniffVersion(BinaryReader reader)
+    {
+        long currentOffset = reader.BaseStream.Position;
+
+        reader.BaseStream.Seek(28, SeekOrigin.Current);
+        var clientVersion = (ClientVersion)reader.ReadEvilInt();
+        reader.BaseStream.Position = currentOffset;
+
+        if (clientVersion == ClientVersion.N100FPrototype) return FileFormatVersion.ScoobyPrototype;
+        else if (clientVersion == ClientVersion.N100FRelease) return FileFormatVersion.Scooby;
+
+        throw new NotImplementedException();
     }
 }

@@ -1,6 +1,6 @@
 ﻿using EvilHop.Primitives;
 
-namespace EvilHop.Helpers;
+namespace EvilHop.Common;
 
 public class BKDRHash
 {

@@ -9,9 +9,9 @@ public abstract partial class V1Serializer
     {
         return new PackageVersion
         {
-            SubVer = (PackageVersion.SubVersion)reader.ReadEvilInt(),
-            ClientVer = (PackageVersion.ClientVersion)reader.ReadEvilInt(),
-            CompatVer = (PackageVersion.CompatVersion)reader.ReadEvilInt()
+            SubVer = (SubVersion)reader.ReadEvilInt(),
+            ClientVer = (ClientVersion)reader.ReadEvilInt(),
+            CompatVer = (CompatVersion)reader.ReadEvilInt()
         };
     }
 

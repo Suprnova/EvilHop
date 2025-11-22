@@ -185,6 +185,10 @@ public abstract partial class V1Serializer : IFormatSerializer
     }
 }
 
+public partial class ScoobyPrototypeSerializer : V1Serializer
+{
+}
+
 public partial class ScoobySerializer : V1Serializer
 {
 }

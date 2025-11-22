@@ -1,52 +1,20 @@
 ﻿namespace EvilHop.Blocks;
 
-public enum ArchivePlatform
+public enum SubVersion : uint
 {
-    GameCube,
-    PlayStation2,
-    Xbox,
-    Unknown
+    Default = 0x00000002
 }
 
-public enum ArchiveRegion
+public enum ClientVersion : uint
 {
-    NTSC,
-    PAL,
-    Unknown
+    N100FPrototype = 0x00000001,
+    N100FRelease = 0x00040006,
+    Default = 0x000A000F
 }
 
-public enum ArchiveLanguage
+public enum CompatVersion : uint
 {
-    Belarusian,
-    Unknown_Switzerland,
-    Czech,
-    German,
-    Danish,
-    Spanish,
-    Finnish,
-    French,
-    Italian,
-    Japanese,
-    Korean,
-    Dutch,
-    Norwegian,
-    Polish,
-    Portuguese,
-    Russian,
-    Sami,
-    Slovak,
-    Chinese_Taiwan,
-    English_UnitedKingdom,
-    English_UnitedStates,
-    Unknown
-}
-
-public enum ArchiveGame
-{
-    SpongeBob,
-    Incredibles,
-    JimmyNewtron,
-    Unknown
+    Default = 0x00000001
 }
 
 public class Package : Block
@@ -113,23 +81,6 @@ public class PackageVersion : Block
 {
     protected internal override string Id => "PVER";
     protected internal override uint DataLength => sizeof(uint) * 3;
-
-    public enum SubVersion : uint
-    {
-        Default = 0x00000002
-    }
-
-    public enum ClientVersion : uint
-    {
-        N100FPrototype = 0x00000001,
-        N100FRelease = 0x00040006,
-        Default = 0x000A000F
-    }
-
-    public enum CompatVersion : uint
-    {
-        Default = 0x00000001
-    }
 
     public SubVersion SubVer { get; set; } = SubVersion.Default;
 
@@ -311,13 +262,9 @@ public class PackagePlatform : Block
     // not accurate, must be determined by serializer
     protected internal override uint DataLength => 0;
 
-    public ArchivePlatform PlatformID { get; set; }
+    public string PlatformID { get; set; } = "";
     public string? PlatformName { get; set; }
-    public ArchiveRegion Region { get; set; }
-    public ArchiveLanguage Language { get; set; }
-    public ArchiveGame GameName { get; set; }
-
-    public PackagePlatform()
-    {
-    }
+    public string Region { get; set; } = "";
+    public string Language { get; set; } = "";
+    public string GameName { get; set; } = "";
 }
