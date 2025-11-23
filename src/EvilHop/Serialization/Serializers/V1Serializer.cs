@@ -52,7 +52,12 @@ public abstract partial class V1Serializer : IFormatSerializer
         }
     }
 
-    public virtual HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null)
+    public HipFile ReadArchive(BinaryReader reader)
+    {
+        return ReadArchive(reader, null);
+    }
+
+    public HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
         HIPA hipa = Read<HIPA>(reader, options);
@@ -77,7 +82,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         return hipFile;
     }
 
-    public virtual void WriteArchive(BinaryWriter writer, HipFile archive)
+    public void WriteArchive(BinaryWriter writer, HipFile archive)
     {
         Write(writer, archive.HIPA);
         Write(writer, archive.Package);
@@ -85,7 +90,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         Write(writer, archive.AssetStream);
     }
 
-    public virtual Block Read(BinaryReader reader, SerializerOptions? options = null)
+    public Block Read(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
 
@@ -135,7 +140,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         return (Read(reader, options) as T)!;
     }
 
-    public virtual void Write(BinaryWriter writer, Block block)
+    public void Write(BinaryWriter writer, Block block)
     {
         if (!_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
             return;
@@ -151,12 +156,12 @@ public abstract partial class V1Serializer : IFormatSerializer
         }
     }
 
-    public virtual IEnumerable<ValidationIssue> Validate(Block block)
+    public IEnumerable<ValidationIssue> Validate(Block block)
     {
         return _validator.Validate(block);
     }
 
-    public virtual IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
+    public IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
     {
         return _validator.ValidateArchive(hip);
     }
