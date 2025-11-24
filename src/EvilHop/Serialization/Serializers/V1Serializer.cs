@@ -8,7 +8,7 @@ namespace EvilHop.Serialization.Serializers;
 public abstract partial class V1Serializer : IFormatSerializer
 {
     protected readonly SerializerOptions _defaultOptions = new();
-    protected readonly IFormatValidator _validator = new V1Validator();
+    protected readonly IFormatValidator _validator;
 
     /// <summary>
     /// Stores pointers to a Block's ReadBlockData() method as well as the block's type. Indexed via its 4-byte ID.
@@ -19,7 +19,7 @@ public abstract partial class V1Serializer : IFormatSerializer
     /// </summary>
     protected readonly Dictionary<Type, Action<BinaryWriter, Block>> _writeFactory = [];
 
-    protected internal V1Serializer()
+    protected internal V1Serializer(IFormatValidator validator)
     {
         Register("HIPA", (r, l) => new HIPA());
 
@@ -50,6 +50,7 @@ public abstract partial class V1Serializer : IFormatSerializer
             Register("DHDR", (r, l) => ReadStreamHeader(r), WriteStreamHeader);
             Register("DPAK", ReadStreamData, WriteStreamData);
         }
+        _validator = validator;
     }
 
     public HipFile ReadArchive(BinaryReader reader)
@@ -190,10 +191,10 @@ public abstract partial class V1Serializer : IFormatSerializer
     }
 }
 
-public partial class ScoobyPrototypeSerializer : V1Serializer
+public partial class ScoobyPrototypeSerializer() : V1Serializer(new ScoobyPrototypeValidator())
 {
 }
 
-public partial class ScoobySerializer : V1Serializer
+public partial class ScoobySerializer() : V1Serializer(new ScoobyValidator())
 {
 }

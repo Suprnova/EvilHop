@@ -2,9 +2,13 @@
 
 namespace EvilHop.Serialization.Validation;
 
-public partial class V1Validator : IFormatValidator
+public abstract partial class V1Validator : IFormatValidator
 {
     // todo: implement a generic method that generates the "Child block missing from this block" string
+
+    protected internal V1Validator()
+    {
+    }
 
     public IEnumerable<ValidationIssue> Validate(Block block)
     {
@@ -58,4 +62,12 @@ public partial class V1Validator : IFormatValidator
             _ => throw new NotImplementedException()
         };
     }
+}
+
+public partial class ScoobyPrototypeValidator : V1Validator
+{
+}
+
+public partial class ScoobyValidator : V1Validator
+{
 }

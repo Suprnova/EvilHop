@@ -128,7 +128,7 @@ public partial class V1Validator
 
 public partial class V2Validator
 {
-    protected virtual IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
+    protected override IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
     {
         yield break;
     }
