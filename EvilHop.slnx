@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="src/EvilHop.Audit/EvilHop.Audit.csproj" Id="1544ada4-5842-471b-8ed1-1d7293719ccd" />
   <Project Path="src/EvilHop/EvilHop.csproj" />
   <Project Path="tests/EvilHop.Tests/EvilHop.Tests.csproj" />
 </Solution>

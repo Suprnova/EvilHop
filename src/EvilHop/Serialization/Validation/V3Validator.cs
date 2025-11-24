@@ -2,7 +2,7 @@
 
 public abstract partial class V3Validator : V2Validator
 {
-    protected internal V3Validator() 
+    protected internal V3Validator()
     {
     }
 }
