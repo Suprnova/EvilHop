@@ -8,6 +8,7 @@ public class BKDRHashTests
     [InlineData("GLOVE_INTRO_TRIG", 10382301)]
     [InlineData("CHECKPOINT_ANIMLIST_01", 10770806)]
     [InlineData("GARY_SB_MARK", 35375619)]
+    [InlineData("CAULDRON 1`", 2099001917)]
     public static void Calculate_FromString_CorrectHash(string input, uint expectedHash)
     {
         Assert.Equal(expectedHash, BKDRHash.Calculate(input));

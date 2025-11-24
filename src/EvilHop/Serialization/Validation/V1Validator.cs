@@ -22,17 +22,12 @@ public abstract partial class V1Validator : IFormatValidator
 
     public IEnumerable<ValidationIssue> ValidateArchive(HipFile hipFile)
     {
-        foreach (var issue in Validate(hipFile.HIPA)) yield return issue;
-        foreach (var issue in Validate(hipFile.Package)) yield return issue;
-        foreach (var issue in Validate(hipFile.Dictionary)) yield return issue;
-        foreach (var issue in ValidateBlockData(hipFile.AssetStream)) yield return issue;
-
-
         // todo: validate PCNT fields against AHDR, LHDR, and DPAK
 
         // todo: validate AHDR against STRM (?)
 
         // todo: validate ADBG checksum against STRM
+        yield break;
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateBlockData(Block block)
