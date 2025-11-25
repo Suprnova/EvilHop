@@ -12,11 +12,10 @@ public class SerializerOptions
 public interface IFormatSerializer
 {
     /// <summary>
-    /// Reads a <see cref="HipFile"/> from the <paramref name="reader"/>.
+    /// Initializes a new <see cref="HipFile"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
     /// </summary>
-    /// <param name="reader">The <see cref="BinaryReader"/> to read from.</param>
-    /// <returns>A <see cref="HipFile"/> read from this <see cref="BinaryReader"/>.</returns>
-    HipFile ReadArchive(BinaryReader reader);
+    /// <returns>A <see cref="HipFile"/> with default values.</returns>
+    HipFile NewArchive();
 
     /// <summary>
     /// Reads a <see cref="HipFile"/> from the <paramref name="reader"/>.
@@ -35,6 +34,13 @@ public interface IFormatSerializer
     /// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
     /// <param name="archive">The <see cref="HipFile"/> to write.</param>
     void WriteArchive(BinaryWriter writer, HipFile archive);
+
+    /// <summary>
+    /// Initializes a <see cref="Block"/> of type <typeparamref name="TBlock"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
+    /// </summary>
+    /// <typeparam name="TBlock">The type of block to initialize.</typeparam>
+    /// <returns>A <typeparamref name="TBlock"/> with default values.</returns>
+    TBlock New<TBlock>() where TBlock : Block;
 
     // todo: use a better exception for invalid block read?
     /// <summary>

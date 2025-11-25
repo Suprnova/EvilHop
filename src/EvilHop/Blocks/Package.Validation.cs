@@ -126,8 +126,8 @@ public partial class V1Validator
     {
         yield return new ValidationIssue
         {
-            Severity = ValidationSeverity.None,
-            Message = $"Block Type {typeof(PackagePlatform).Name} is not valid in HIP Version 1, will not write.",
+            Severity = ValidationSeverity.Error,
+            Message = $"Block Type {typeof(PackagePlatform).Name} is not valid in HIP Version 1.",
             Context = platform
         };
     }

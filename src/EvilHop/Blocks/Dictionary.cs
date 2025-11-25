@@ -52,6 +52,10 @@ public class Dictionary : Block
         get => GetRequiredChild<LayerTable>();
         set => SetChild(value);
     }
+
+    internal Dictionary()
+    {
+    }
 }
 
 public class AssetTable : Block
@@ -70,20 +74,28 @@ public class AssetTable : Block
         get => GetVariableChildren<AssetHeader>();
         set => SetVariableChildren(value);
     }
+
+    internal AssetTable()
+    {
+    }
 }
 
-public class AssetInf : Block
+public class AssetInf(uint value) : Block
 {
     protected internal override string Id => "AINF";
     protected internal override uint DataLength => sizeof(uint);
 
-    internal uint Value { get; set; } = 0;
+    public uint Value { get; set; } = value;
+
+    internal AssetInf() : this(0)
+    {
+    }
 }
 
 public class AssetHeader : Block
 {
     protected internal override string Id => "AHDR";
-    protected internal override uint DataLength => sizeof(uint) * 6;
+    protected internal override uint DataLength => sizeof(uint) * 6; // Type is 4 bytes, not an EvilString, so it's okay
 
     public AssetDebug Debug
     {
@@ -92,15 +104,19 @@ public class AssetHeader : Block
     }
 
     // todo: Asset abstraction should handle this binding to Debug.Name
-    internal uint AssetId { get; set; }
-    internal string Type { get; set; } = ""; // todo: make enum
-    internal uint Offset { get; set; }
-    internal uint Size { get; set; }
-    internal uint Padding { get; set; }
-    internal AssetFlags Flags { get; set; }
+    public uint AssetId { get; set; }
+    public string Type { get; set; } = ""; // todo: make enum
+    public uint Offset { get; set; }
+    public uint Size { get; set; }
+    public uint Padding { get; set; }
+    public AssetFlags Flags { get; set; }
+
+    internal AssetHeader()
+    {
+    }
 }
 
-public class AssetDebug : Block
+public class AssetDebug(uint alignment, string name, string fileName, uint checksum) : Block
 {
     protected internal override string Id => "ADBG";
     protected internal override uint DataLength
@@ -111,12 +127,15 @@ public class AssetDebug : Block
         }
     }
 
-    internal uint Alignment { get; set; }
-    internal string Name { get; set; } = "";
-    internal string FileName { get; set; } = "";
+    public uint Alignment { get; set; } = alignment;
+    public string Name { get; set; } = name;
+    public string FileName { get; set; } = fileName;
     // todo: asset abstraction should handle binding this to the checksum of the asset's data
-    internal uint Checksum { get; set; }
+    public uint Checksum { get; set; } = checksum;
 
+    internal AssetDebug() : this(0, "", "", 0)
+    {
+    }
 }
 
 public class LayerTable : Block
@@ -135,14 +154,22 @@ public class LayerTable : Block
         get => GetVariableChildren<LayerHeader>();
         set => SetVariableChildren(value);
     }
+
+    internal LayerTable()
+    {
+    }
 }
 
-public class LayerInf : Block
+public class LayerInf(uint value) : Block
 {
     protected internal override string Id => "LINF";
     protected internal override uint DataLength => sizeof(uint);
 
-    internal uint Value { get; set; } = 0;
+    public uint Value { get; set; } = value;
+
+    internal LayerInf() : this(0)
+    {
+    }
 }
 
 public class LayerHeader : Block
@@ -162,16 +189,24 @@ public class LayerHeader : Block
         set => SetChild(value);
     }
 
-    internal LayerType Type { get; set; }
+    public LayerType Type { get; set; }
     // todo: asset abstraction should handle this binding to AssetIds.Count()
-    internal uint AssetCount { get; set; }
-    internal IEnumerable<uint> AssetIds { get; set; } = [];
+    public uint AssetCount { get; set; }
+    public IEnumerable<uint> AssetIds { get; set; } = [];
+
+    internal LayerHeader()
+    {
+    }
 }
 
-public class LayerDebug : Block
+public class LayerDebug(uint value) : Block
 {
     protected internal override string Id => "LDBG";
     protected internal override uint DataLength => sizeof(uint);
 
-    internal uint Value { get; set; }
+    public uint Value { get; set; } = value;
+
+    internal LayerDebug() : this(0)
+    {
+    }
 }

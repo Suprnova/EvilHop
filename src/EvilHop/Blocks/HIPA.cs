@@ -2,13 +2,10 @@
 
 namespace EvilHop.Blocks
 {
-    public class HIPA : Block
+    public class HIPA() : Block
     {
         protected internal override string Id => "HIPA";
         protected internal override uint DataLength => 0;
-        public HIPA()
-        {
-        }
     }
 }
 

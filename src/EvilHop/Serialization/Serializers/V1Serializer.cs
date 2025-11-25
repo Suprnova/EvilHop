@@ -11,6 +11,10 @@ public abstract partial class V1Serializer : IFormatSerializer
     protected readonly IFormatValidator _validator;
 
     /// <summary>
+    /// Stores pointers to a Block's initialization logic. Indexed via its 4-byte ID.
+    /// </summary>
+    protected readonly Dictionary<Type, Func<Block>> _initFactory = [];
+    /// <summary>
     /// Stores pointers to a Block's ReadBlockData() method as well as the block's type. Indexed via its 4-byte ID.
     /// </summary>
     protected readonly Dictionary<string, (Func<BinaryReader, uint, Block> Read, Type Type)> _readFactory = [];
@@ -21,41 +25,46 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     protected internal V1Serializer(IFormatValidator validator)
     {
-        Register("HIPA", (r, l) => new HIPA());
+        Register("HIPA", () => new HIPA());
 
-        Register("PACK", (r, l) => new Package());
+        Register("PACK", InitPackage, (r, l) => new Package());
         {
-            Register("PVER", (r, l) => ReadPackageVersion(r), WritePackageVersion);
-            Register("PFLG", (r, l) => ReadPackageFlags(r), WritePackageFlags);
-            Register("PCNT", (r, l) => ReadPackageCount(r), WritePackageCount);
-            Register("PCRT", (r, l) => ReadPackageCreated(r), WritePackageCreated);
-            Register("PMOD", (r, l) => ReadPackageModified(r), WritePackageModified);
-            Register("PLAT", (r, l) => ReadPackagePlatform(r));
+            Register("PVER", InitPackageVersion, (r, l) => ReadPackageVersion(r), WritePackageVersion);
+            Register("PFLG", InitPackageFlags, (r, l) => ReadPackageFlags(r), WritePackageFlags);
+            Register("PCNT", () => new PackageCount(), (r, l) => ReadPackageCount(r), WritePackageCount);
+            Register("PCRT", () => new PackageCreated(), (r, l) => ReadPackageCreated(r), WritePackageCreated);
+            Register("PMOD", () => new PackageModified(), (r, l) => ReadPackageModified(r), WritePackageModified);
         }
 
-        Register("DICT", (r, l) => new Dictionary());
+        Register("DICT", () => new Dictionary());
         {
-            Register("ATOC", (r, l) => new AssetTable());
-            Register("AINF", (r, l) => ReadAssetInf(r), WriteAssetInf);
-            Register("AHDR", (r, l) => ReadAssetHeader(r), WriteAssetHeader);
-            Register("ADBG", (r, l) => ReadAssetDebug(r), WriteAssetDebug);
-            Register("LTOC", (r, l) => new LayerTable());
-            Register("LINF", (r, l) => ReadLayerInf(r), WriteLayerInf);
-            Register("LHDR", (r, l) => ReadLayerHeader(r), WriteLayerHeader);
-            Register("LDBG", (r, l) => ReadLayerDebug(r), WriteLayerDebug);
+            Register("ATOC", () => new AssetTable());
+            Register("AINF", () => new AssetInf(), (r, l) => ReadAssetInf(r), WriteAssetInf);
+            Register("AHDR", InitAssetHeader, (r, l) => ReadAssetHeader(r), WriteAssetHeader);
+            Register("ADBG", () => new AssetDebug(), (r, l) => ReadAssetDebug(r), WriteAssetDebug);
+            Register("LTOC", () => new LayerTable());
+            Register("LINF", () => new LayerInf(), (r, l) => ReadLayerInf(r), WriteLayerInf);
+            Register("LHDR", InitLayerHeader, (r, l) => ReadLayerHeader(r), WriteLayerHeader);
+            Register("LDBG", () => new LayerDebug(), (r, l) => ReadLayerDebug(r), WriteLayerDebug);
         }
 
-        Register("STRM", (r, l) => new AssetStream());
+        Register("STRM", () => new AssetStream());
         {
-            Register("DHDR", (r, l) => ReadStreamHeader(r), WriteStreamHeader);
-            Register("DPAK", ReadStreamData, WriteStreamData);
+            Register("DHDR", () => new StreamHeader(), (r, l) => ReadStreamHeader(r), WriteStreamHeader);
+            // todo: could probably benefit with serializer specific values
+            Register("DPAK", () => new StreamData(), ReadStreamData, WriteStreamData);
         }
         _validator = validator;
     }
 
-    public HipFile ReadArchive(BinaryReader reader)
+    public HipFile NewArchive()
     {
-        return ReadArchive(reader, null);
+        HIPA hipa = New<HIPA>();
+        Package package = New<Package>();
+        Dictionary dictionary = New<Dictionary>();
+        AssetStream stream = New<AssetStream>();
+
+        return new HipFile(hipa, package, dictionary, stream);
     }
 
     public HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null)
@@ -89,6 +98,13 @@ public abstract partial class V1Serializer : IFormatSerializer
         Write(writer, archive.Package);
         Write(writer, archive.Dictionary);
         Write(writer, archive.AssetStream);
+    }
+
+    public TBlock New<TBlock>() where TBlock : Block
+    {
+        return _initFactory.TryGetValue(typeof(TBlock), out var initHandler)
+            ? (initHandler() as TBlock)!
+            : throw new InvalidDataException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
     }
 
     public Block Read(BinaryReader reader, SerializerOptions? options = null)
@@ -143,11 +159,12 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     public void Write(BinaryWriter writer, Block block)
     {
-        if (!_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
-            return;
-
+        // all IDs are 4 bytes, this trims the null characters
         writer.Write(block.Id.ToEvilBytes()[..^2]);
         writer.Write(GetBlockLength(block).ToEvilBytes());
+        
+        if (!_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
+            return;
 
         writeHandler(writer, block);
 
@@ -179,11 +196,16 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     protected void Register<T>(
         string id,
-        Func<BinaryReader, uint, T> readHandler,
+        Func<T> initHandler,
+        Func<BinaryReader, uint, T>? readHandler = null,
         Action<BinaryWriter, T>? writeHandler = null
         ) where T : Block
     {
-        _readFactory[id] = ((reader, length) => readHandler(reader, length), typeof(T));
+        _initFactory[typeof(T)] = () => initHandler();
+
+        // if readHandler is null, there's no special data to read, so we just use the initHandler
+        _readFactory[id] = ((reader, length) => readHandler?.Invoke(reader, length) ?? initHandler(), typeof(T));
+
         if (writeHandler != null)
         {
             _writeFactory[typeof(T)] = (writer, block) => writeHandler(writer, (T)block);
@@ -193,8 +215,10 @@ public abstract partial class V1Serializer : IFormatSerializer
 
 public partial class ScoobyPrototypeSerializer() : V1Serializer(new ScoobyPrototypeValidator())
 {
+    protected override PackageVersion InitPackageVersion() => new(ClientVersion.N100FPrototype);
 }
 
 public partial class ScoobySerializer() : V1Serializer(new ScoobyValidator())
 {
+    protected override PackageVersion InitPackageVersion() => new(ClientVersion.N100FRelease);
 }

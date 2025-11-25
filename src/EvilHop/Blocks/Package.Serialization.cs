@@ -5,6 +5,13 @@ namespace EvilHop.Serialization.Serializers;
 
 public abstract partial class V1Serializer
 {
+    protected virtual Package InitPackage()
+    {
+        return New<Package>();
+    }
+
+    protected abstract PackageVersion InitPackageVersion();
+
     protected virtual PackageVersion ReadPackageVersion(BinaryReader reader)
     {
         return new PackageVersion(
@@ -21,6 +28,10 @@ public abstract partial class V1Serializer
         writer.WriteEvilInt(version.CompatVersion);
     }
 
+    protected virtual PackageFlags InitPackageFlags()
+    {
+        return New<PackageFlags>();
+    }
     protected virtual PackageFlags ReadPackageFlags(BinaryReader reader)
     {
         return new PackageFlags(

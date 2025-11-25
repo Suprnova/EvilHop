@@ -76,7 +76,6 @@ public class Package : Block
         set => SetChild(value);
     }
 
-    // todo: implement public default based on file version
     internal Package()
     {
     }
@@ -145,7 +144,7 @@ public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, u
     /// </summary>
     public uint MaxXFormAssetSize { get; set; } = maxXFormAssetSize;
 
-    public PackageCount() : this(0, 0, 0, 0, 0) 
+    internal PackageCount() : this(0, 0, 0, 0, 0) 
     {
     }
 }
@@ -162,7 +161,7 @@ public class PackageCreated(DateTime createdDate, string createdDateString) : Bl
     public DateTime CreatedDate { get; set; } = createdDate;
     public string CreatedDateString { get; set; } = createdDateString;
 
-    public PackageCreated() : this(DateTime.Now, DateTime.Now.ToString(_dateTimeFormat))
+    internal PackageCreated() : this(DateTime.Now, DateTime.Now.ToString(_dateTimeFormat))
     {
     }
 
@@ -179,7 +178,7 @@ public class PackageModified(DateTime modifiedDate) : Block
     // TODO: should be in UTC-7
     public DateTime ModifiedDate { get; set; } = modifiedDate;
 
-    public PackageModified() : this(DateTime.Now)
+    internal PackageModified() : this(DateTime.Now)
     {
     }
 }

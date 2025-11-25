@@ -8,15 +8,17 @@ public abstract partial class V1Serializer
 {
     protected virtual AssetInf ReadAssetInf(BinaryReader reader)
     {
-        return new AssetInf
-        {
-            Value = reader.ReadEvilInt()
-        };
+        return new AssetInf(reader.ReadEvilInt());
     }
 
     protected virtual void WriteAssetInf(BinaryWriter writer, AssetInf inf)
     {
         writer.WriteEvilInt(inf.Value);
+    }
+
+    protected virtual AssetHeader InitAssetHeader()
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual AssetHeader ReadAssetHeader(BinaryReader reader)
@@ -63,15 +65,17 @@ public abstract partial class V1Serializer
 
     protected virtual LayerInf ReadLayerInf(BinaryReader reader)
     {
-        return new LayerInf
-        {
-            Value = reader.ReadEvilInt(),
-        };
+        return new LayerInf(reader.ReadEvilInt());
     }
 
     protected virtual void WriteLayerInf(BinaryWriter writer, LayerInf inf)
     {
         writer.WriteEvilInt(inf.Value);
+    }
+
+    protected virtual LayerHeader InitLayerHeader()
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual LayerHeader ReadLayerHeader(BinaryReader reader)
