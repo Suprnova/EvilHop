@@ -7,27 +7,25 @@ public abstract partial class V1Serializer
 {
     protected virtual PackageVersion ReadPackageVersion(BinaryReader reader)
     {
-        return new PackageVersion
-        {
-            SubVer = (SubVersion)reader.ReadEvilInt(),
-            ClientVer = (ClientVersion)reader.ReadEvilInt(),
-            CompatVer = (CompatVersion)reader.ReadEvilInt()
-        };
+        return new PackageVersion(
+            reader.ReadEvilInt(),
+            (ClientVersion)reader.ReadEvilInt(),
+            reader.ReadEvilInt()
+            );
     }
 
     protected virtual void WritePackageVersion(BinaryWriter writer, PackageVersion version)
     {
-        writer.WriteEvilInt((uint)version.SubVer);
-        writer.WriteEvilInt((uint)version.ClientVer);
-        writer.WriteEvilInt((uint)version.CompatVer);
+        writer.WriteEvilInt(version.SubVersion);
+        writer.WriteEvilInt((uint)version.ClientVersion);
+        writer.WriteEvilInt(version.CompatVersion);
     }
 
     protected virtual PackageFlags ReadPackageFlags(BinaryReader reader)
     {
-        return new PackageFlags
-        {
-            Flags = (PackageFlags.PFLG_Flags)reader.ReadEvilInt()
-        };
+        return new PackageFlags(
+            (PFLG_Flags)reader.ReadEvilInt()
+        );
     }
 
     protected virtual void WritePackageFlags(BinaryWriter writer, PackageFlags flags)
@@ -37,14 +35,13 @@ public abstract partial class V1Serializer
 
     protected virtual PackageCount ReadPackageCount(BinaryReader reader)
     {
-        return new PackageCount
-        {
-            AssetCount = reader.ReadEvilInt(),
-            LayerCount = reader.ReadEvilInt(),
-            MaxAssetSize = reader.ReadEvilInt(),
-            MaxLayerSize = reader.ReadEvilInt(),
-            MaxXFormAssetSize = reader.ReadEvilInt()
-        };
+        return new PackageCount(
+            reader.ReadEvilInt(),
+            reader.ReadEvilInt(),
+            reader.ReadEvilInt(),
+            reader.ReadEvilInt(),
+            reader.ReadEvilInt()
+        );
     }
 
     protected virtual void WritePackageCount(BinaryWriter writer, PackageCount count)
@@ -58,11 +55,10 @@ public abstract partial class V1Serializer
 
     protected virtual PackageCreated ReadPackageCreated(BinaryReader reader)
     {
-        return new PackageCreated
-        {
-            CreatedDate = DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt()),
-            CreatedDateString = reader.ReadEvilString()
-        };
+        return new PackageCreated(
+            DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt()),
+            reader.ReadEvilString()
+        );
     }
 
     protected virtual void WritePackageCreated(BinaryWriter writer, PackageCreated created)
@@ -75,10 +71,9 @@ public abstract partial class V1Serializer
 
     protected virtual PackageModified ReadPackageModified(BinaryReader reader)
     {
-        return new PackageModified
-        {
-            ModifiedDate = DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt())
-        };
+        return new PackageModified(
+            DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt())
+        );
     }
 
     protected virtual void WritePackageModified(BinaryWriter writer, PackageModified modified)

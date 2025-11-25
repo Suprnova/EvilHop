@@ -55,37 +55,46 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidatePackageVersion(PackageVersion version)
     {
-        if (!Enum.IsDefined(version.SubVer))
+        if (version.SubVersion != 0x00000002)
         {
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"SubVersion {(uint)version.SubVer} is unknown.",
+                Message = $"SubVersion '{version.SubVersion}' is unknown.",
                 Context = version
             };
         }
-        if (!Enum.IsDefined(version.ClientVer))
+
+        if (!Enum.IsDefined(version.ClientVersion))
         {
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"ClientVersion {(uint)version.ClientVer} is unknown.",
+                Message = $"ClientVersion '{(uint)version.ClientVersion}' is unknown.",
                 Context = version
             };
         }
-        if (!Enum.IsDefined(version.CompatVer))
+        else
+            foreach (var issue in ValidateClientVersion(version))
+                yield return issue;
+
+        if (version.CompatVersion != 0x00000001)
         {
             yield return new ValidationIssue
             {
                 Severity = ValidationSeverity.Warning,
-                Message = $"CompatVersion {(uint)version.CompatVer} is unknown.",
+                Message = $"CompatVersion '{version.CompatVersion}' is unknown.",
                 Context = version
             };
         }
     }
 
+    protected abstract IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version);
+
     protected virtual IEnumerable<ValidationIssue> ValidatePackageFlags(PackageFlags flags)
     {
+        // todo: this should check for undefined flags, combinations should be alright
+        // or we could check for both i dunno
         if (!Enum.IsDefined(flags.Flags))
         {
             yield return new ValidationIssue
@@ -105,7 +114,6 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidatePackageCreated(PackageCreated created)
     {
-        // todo: maybe ensure CreatedDate.ToString() == CreatedDateString() ?
         yield break;
     }
 
@@ -116,18 +124,62 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
     {
-        // todo: should be an error of None? we should still let this happen, since the serializer can just not write it
         yield return new ValidationIssue
         {
-            Severity = ValidationSeverity.Error,
-            Message = $"Block Type {typeof(PackagePlatform).Name} is not valid in HIP Version 1.",
+            Severity = ValidationSeverity.None,
+            Message = $"Block Type {typeof(PackagePlatform).Name} is not valid in HIP Version 1, will not write.",
             Context = platform
         };
     }
 }
 
+public partial class ScoobyPrototypeValidator
+{
+    protected override IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version)
+    {
+        if (version.ClientVersion != ClientVersion.N100FPrototype)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"ClientVersion '{version.ClientVersion}' is not valid for Scooby Prototype, expected '{ClientVersion.N100FPrototype}'",
+                Context = version
+            };
+        }
+    }
+}
+
+public partial class ScoobyValidator
+{
+    protected override IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version)
+    {
+        if (version.ClientVersion != ClientVersion.N100FRelease)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"ClientVersion '{version.ClientVersion}' is not valid for Scooby, expected '{ClientVersion.N100FRelease}'.",
+                Context = version
+            };
+        }
+    }
+}
+
 public partial class V2Validator
 {
+    protected override IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version)
+    {
+        if (version.ClientVersion != ClientVersion.Default)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"ClientVersion '{version.ClientVersion}' is not valid for non-Scooby games, expected '{ClientVersion.Default}'.",
+                Context = version
+            };
+        }
+    }
+
     protected override IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
     {
         yield break;

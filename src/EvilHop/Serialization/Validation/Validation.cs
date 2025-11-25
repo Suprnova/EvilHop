@@ -20,12 +20,12 @@ public static class ValidationExtensions
     public static bool IsValid(this Block block, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
     {
         issues = [.. serializer.Validate(block)];
-        return !issues.Any(i => i.Severity == ValidationSeverity.Error);
+        return !issues.Any(i => i.Severity == ValidationSeverity.Warning);
     }
 
     public static bool IsValid(this HipFile hip, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
     {
         issues = [.. serializer.ValidateArchive(hip)];
-        return !issues.Any(i => i.Severity == ValidationSeverity.Error);
+        return !issues.Any(i => i.Severity == ValidationSeverity.Warning);
     }
 }
