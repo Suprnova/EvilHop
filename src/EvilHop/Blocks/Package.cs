@@ -144,7 +144,7 @@ public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, u
     /// </summary>
     public uint MaxXFormAssetSize { get; set; } = maxXFormAssetSize;
 
-    internal PackageCount() : this(0, 0, 0, 0, 0) 
+    internal PackageCount() : this(0, 0, 0, 0, 0)
     {
     }
 }
@@ -165,7 +165,7 @@ public class PackageCreated(DateTime createdDate, string createdDateString) : Bl
     {
     }
 
-    public PackageCreated(DateTime createdDate) : this(createdDate,createdDate.ToString(_dateTimeFormat))
+    public PackageCreated(DateTime createdDate) : this(createdDate, createdDate.ToString(_dateTimeFormat))
     {
     }
 }

@@ -162,7 +162,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         // all IDs are 4 bytes, this trims the null characters
         writer.Write(block.Id.ToEvilBytes()[..^2]);
         writer.Write(GetBlockLength(block).ToEvilBytes());
-        
+
         if (!_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
             return;
 

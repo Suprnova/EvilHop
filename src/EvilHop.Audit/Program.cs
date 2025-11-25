@@ -1,4 +1,5 @@
 ﻿using EvilHop;
+using EvilHop.Models;
 using EvilHop.Serialization;
 
 string ARTIFACTS_FOLDER = Path.GetFullPath("../../../../../artifacts");
@@ -21,5 +22,9 @@ foreach (string file in scoobyFiles)
     FileFormatVersion fileVersion = FileFormatFactory.SniffVersion(reader);
     IFormatSerializer serializer = FileFormatFactory.GetSerializer(fileVersion);
 
-    HipFile archive = serializer.ReadArchive(reader, options);
+    HipFile hipFile = serializer.ReadArchive(reader, options);
+    Archive archive = new(hipFile, serializer);
+
+    foreach (var asset in archive.Assets)
+        _ = asset.GetBytes();
 }

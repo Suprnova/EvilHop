@@ -1,4 +1,5 @@
-﻿using EvilHop.Primitives;
+﻿using EvilHop.Common;
+using EvilHop.Primitives;
 
 namespace EvilHop.Blocks;
 
@@ -34,12 +35,6 @@ public class Dictionary : Block
 {
     protected internal override string Id => "DICT";
     protected internal override uint DataLength => 0;
-
-    public AssetTable Table
-    {
-        get => GetRequiredChild<AssetTable>();
-        set => SetChild(value);
-    }
 
     public AssetTable AssetTable
     {
@@ -105,7 +100,7 @@ public class AssetHeader : Block
 
     // todo: Asset abstraction should handle this binding to Debug.Name
     public uint AssetId { get; set; }
-    public string Type { get; set; } = ""; // todo: make enum
+    public AssetType Type { get; set; }
     public uint Offset { get; set; }
     public uint Size { get; set; }
     public uint Padding { get; set; }

@@ -56,6 +56,19 @@ public class HIPATests
     }
 
     [Fact]
+    public void IFormatSerializer_WriteFromNew_Matches()
+    {
+        foreach (var s in serializers)
+        {
+            byte[] writeBytes = new byte[validHIPA.Length];
+            using BinaryWriter writer = new(new MemoryStream(writeBytes));
+
+            s.Write(writer, s.New<HIPA>());
+            Assert.Equal(validHIPA, writeBytes);
+        }
+    }
+
+    [Fact]
     public void IFormatSerializer_WriteFromRead_Matches()
     {
         using BinaryReader reader = new(new MemoryStream(validHIPA));
@@ -68,19 +81,6 @@ public class HIPATests
 
             HIPA hipa = s.Read<HIPA>(reader);
             s.Write(writer, hipa);
-            Assert.Equal(validHIPA, writeBytes);
-        }
-    }
-
-    [Fact]
-    public void IFormatSerializer_WriteFromNew_Matches()
-    {
-        foreach (var s in serializers)
-        {
-            byte[] writeBytes = new byte[validHIPA.Length];
-            using BinaryWriter writer = new(new MemoryStream(writeBytes));
-
-            s.Write(writer, s.New<HIPA>());
             Assert.Equal(validHIPA, writeBytes);
         }
     }

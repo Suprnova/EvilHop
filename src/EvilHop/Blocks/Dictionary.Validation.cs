@@ -91,8 +91,8 @@ public partial class V1Validator
             string assetName = header.GetChild<AssetDebug>()!.Name;
 
             // special validation for these assets
-            if (header.Type.Equals("ANIM")) assetName = Path.ChangeExtension(assetName, ".anm");
-            else if (header.Type.Equals("MPHT")) assetName = Path.ChangeExtension(assetName, ".mph");
+            if (header.Type == AssetType.Animation) assetName = Path.ChangeExtension(assetName, ".anm");
+            else if (header.Type == AssetType.MorphTarget) assetName = Path.ChangeExtension(assetName, ".mph");
 
             uint expectedHash = BKDRHash.Calculate(assetName);
             if (expectedHash != header.AssetId && header.Debug.Name.Length < 31)

@@ -1,6 +1,6 @@
 ﻿using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
-using System.Text;
 
 namespace EvilHop.Serialization.Serializers;
 
@@ -26,7 +26,7 @@ public abstract partial class V1Serializer
         return new AssetHeader
         {
             AssetId = reader.ReadEvilInt(),
-            Type = Encoding.ASCII.GetString(reader.ReadBytes(4)),
+            Type = (AssetType)reader.ReadEvilInt(),
             Offset = reader.ReadEvilInt(),
             Size = reader.ReadEvilInt(),
             Padding = reader.ReadEvilInt(),
@@ -37,7 +37,7 @@ public abstract partial class V1Serializer
     protected virtual void WriteAssetHeader(BinaryWriter writer, AssetHeader header)
     {
         writer.WriteEvilInt(header.AssetId);
-        writer.Write(header.Type.ToEvilBytes()[..^2]);
+        writer.WriteEvilInt((uint)header.Type);
         writer.WriteEvilInt(header.Offset);
         writer.WriteEvilInt(header.Size);
         writer.WriteEvilInt(header.Padding);
