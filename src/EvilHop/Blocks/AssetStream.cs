@@ -3,7 +3,6 @@
 public class AssetStream : Block
 {
     protected internal override string Id => "STRM";
-    protected internal override uint DataLength => 0;
 
     public StreamHeader Header
     {
@@ -25,7 +24,6 @@ public class AssetStream : Block
 public class StreamHeader(uint value) : Block
 {
     protected internal override string Id => "DHDR";
-    protected internal override uint DataLength => sizeof(uint);
 
     internal uint Value { get; set; } = value;
 
@@ -37,13 +35,6 @@ public class StreamHeader(uint value) : Block
 public class StreamData(uint paddingAmount, byte[] data) : Block
 {
     protected internal override string Id => "DPAK";
-    protected internal override uint DataLength
-    {
-        get
-        {
-            return (uint)(sizeof(uint) + PaddingAmount + Data.Length);
-        }
-    }
 
     internal uint PaddingAmount { get; set; } = paddingAmount;
     internal byte[] Data { get; set; } = data;

@@ -115,14 +115,17 @@ public abstract partial class V1Serializer : IFormatSerializer
         string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
         uint blockLength = reader.ReadEvilInt();
 
+        long currentOffset = reader.BaseStream.Position;
         // parse block-specific data
         Block block = _readFactory.TryGetValue(blockId, out var readHandler)
             ? readHandler.Read(reader, blockLength)
             : throw new InvalidDataException($"Unknown block type '{blockId}' at address '{reader.BaseStream.Position - 8}'.");
 
-        while (GetBlockLength(block) < blockLength)
+        long offset = reader.BaseStream.Position - currentOffset;
+        while (offset < blockLength)
         {
             block.Children.Add(Read(reader));
+            offset = reader.BaseStream.Position - currentOffset;
         }
 
         if (options.Mode == ValidationMode.None) return block;
@@ -161,17 +164,26 @@ public abstract partial class V1Serializer : IFormatSerializer
     {
         // all IDs are 4 bytes, this trims the null characters
         writer.Write(block.Id.ToEvilBytes()[..^2]);
-        writer.Write(GetBlockLength(block).ToEvilBytes());
 
-        if (!_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
-            return;
+        // save count to write to later
+        long countOffset = writer.BaseStream.Position;
+        long beginDataOffset = writer.Seek(4, SeekOrigin.Current);
 
-        writeHandler(writer, block);
+        if (_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
+            writeHandler(writer, block);
 
         foreach (var child in block.Children)
         {
             Write(writer, child);
         }
+
+        long endDataOffset = writer.BaseStream.Position;
+        long blockSize = writer.BaseStream.Position - beginDataOffset;
+
+        writer.BaseStream.Seek(countOffset, SeekOrigin.Begin);
+        writer.Write(Convert.ToUInt32(blockSize).ToEvilBytes());
+
+        writer.Seek((int)endDataOffset, SeekOrigin.Begin);
     }
 
     public IEnumerable<ValidationIssue> Validate(Block block)
@@ -182,16 +194,6 @@ public abstract partial class V1Serializer : IFormatSerializer
     public IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
     {
         return _validator.ValidateArchive(hip);
-    }
-
-    public uint GetBlockLength(Block block) => GetBlockDataLength(block) + (uint)block.Children.Sum(c => c.HeaderLength + this.GetBlockLength(c));
-
-    protected virtual uint GetBlockDataLength(Block block)
-    {
-        return block switch
-        {
-            _ => block.DataLength
-        };
     }
 
     protected void Register<T>(

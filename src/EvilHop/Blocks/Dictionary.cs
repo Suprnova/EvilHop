@@ -34,7 +34,6 @@ public enum AssetFlags : uint
 public class Dictionary : Block
 {
     protected internal override string Id => "DICT";
-    protected internal override uint DataLength => 0;
 
     public AssetTable AssetTable
     {
@@ -56,7 +55,6 @@ public class Dictionary : Block
 public class AssetTable : Block
 {
     protected internal override string Id => "ATOC";
-    protected internal override uint DataLength => 0;
 
     public AssetInf AssetInf
     {
@@ -78,7 +76,6 @@ public class AssetTable : Block
 public class AssetInf(uint value) : Block
 {
     protected internal override string Id => "AINF";
-    protected internal override uint DataLength => sizeof(uint);
 
     public uint Value { get; set; } = value;
 
@@ -90,7 +87,6 @@ public class AssetInf(uint value) : Block
 public class AssetHeader : Block
 {
     protected internal override string Id => "AHDR";
-    protected internal override uint DataLength => sizeof(uint) * 6; // Type is 4 bytes, not an EvilString, so it's okay
 
     public AssetDebug Debug
     {
@@ -114,13 +110,6 @@ public class AssetHeader : Block
 public class AssetDebug(uint alignment, string name, string fileName, uint checksum) : Block
 {
     protected internal override string Id => "ADBG";
-    protected internal override uint DataLength
-    {
-        get
-        {
-            return sizeof(uint) + Name.GetEvilStringLength() + FileName.GetEvilStringLength() + sizeof(uint);
-        }
-    }
 
     public uint Alignment { get; set; } = alignment;
     public string Name { get; set; } = name;
@@ -136,7 +125,6 @@ public class AssetDebug(uint alignment, string name, string fileName, uint check
 public class LayerTable : Block
 {
     protected internal override string Id => "LTOC";
-    protected internal override uint DataLength => 0;
 
     public LayerInf LayerInf
     {
@@ -158,7 +146,6 @@ public class LayerTable : Block
 public class LayerInf(uint value) : Block
 {
     protected internal override string Id => "LINF";
-    protected internal override uint DataLength => sizeof(uint);
 
     public uint Value { get; set; } = value;
 
@@ -170,13 +157,6 @@ public class LayerInf(uint value) : Block
 public class LayerHeader : Block
 {
     protected internal override string Id => "LHDR";
-    protected internal override uint DataLength
-    {
-        get
-        {
-            return sizeof(uint) + sizeof(uint) + AssetCount * sizeof(uint);
-        }
-    }
 
     public LayerDebug LayerDebug
     {
@@ -197,7 +177,6 @@ public class LayerHeader : Block
 public class LayerDebug(uint value) : Block
 {
     protected internal override string Id => "LDBG";
-    protected internal override uint DataLength => sizeof(uint);
 
     public uint Value { get; set; } = value;
 

@@ -9,24 +9,14 @@ public class Archive(HipFile hipFile, IFormatSerializer serializer)
     private readonly IFormatSerializer serializer = serializer;
 
     // TODO: this will have a lot more functions and fields, it's designed to be the high level abstraction of HipFile
+    // todo 2: tbh don't like having this model, can't validate the assets on HipFile since you have to initialize this first. bad?
+    // also it's readonly LOL. pretty bad but it's a nice middle-ground i guess
 
     public IEnumerable<AssetView> Assets
     {
         get
         {
-            var assetTable = hipFile.Dictionary.AssetTable;
-            var streamData = hipFile.AssetStream.Data;
-
-            uint streamOffset = hipFile.HIPA.HeaderLength + serializer.GetBlockLength(hipFile.HIPA)
-                + hipFile.Package.HeaderLength + serializer.GetBlockLength(hipFile.Package)
-                + hipFile.Dictionary.HeaderLength + serializer.GetBlockLength(hipFile.Dictionary)
-                + hipFile.AssetStream.HeaderLength + serializer.GetBlockLength(hipFile.AssetStream)
-                - (uint)streamData.Data.Length;
-
-            foreach (var assetHeader in assetTable.GetVariableChildren<AssetHeader>())
-            {
-                yield return new AssetView(assetHeader, streamData, streamOffset);
-            }
+            throw new NotImplementedException();
         }
     }
 }

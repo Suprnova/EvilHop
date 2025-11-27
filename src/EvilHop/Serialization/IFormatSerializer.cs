@@ -93,11 +93,4 @@ public interface IFormatSerializer
     /// <param name="hip">The <see cref="HipFile"/> to validate.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
     IEnumerable<ValidationIssue> ValidateArchive(HipFile hip);
-
-    /// <summary>
-    /// Determines the size of the <paramref name="block"/> were it to be written by <see langword="this"/> <see cref="IFormatSerializer"/>.
-    /// </summary>
-    /// <param name="block">The <see cref="Block"/> to determine the size of.</param>
-    /// <returns>The written size of the <paramref name="block"/>.</returns>
-    uint GetBlockLength(Block block);
 }

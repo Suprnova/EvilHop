@@ -10,16 +10,6 @@ public abstract class Block
     protected internal abstract string Id { get; }
 
     /// <summary>
-    /// The length of this block's header, containing its ID and its length.
-    /// </summary>
-    protected internal virtual uint HeaderLength => 8;
-
-    /// <summary>
-    /// The length of this block's data.
-    /// </summary>
-    protected internal abstract uint DataLength { get; }
-
-    /// <summary>
     /// The list containing all child blocks to this block.
     /// </summary>
     protected internal List<Block> Children { get; } = [];

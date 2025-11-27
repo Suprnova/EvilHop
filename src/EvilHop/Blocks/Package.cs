@@ -38,7 +38,6 @@ public enum PFLG_Flags : uint
 public class Package : Block
 {
     protected internal override string Id => "PACK";
-    protected internal override uint DataLength => 0;
 
     public PackageVersion Versions
     {
@@ -94,10 +93,10 @@ public class Package : Block
         if (packagePlatform != null) Children.Add(packagePlatform);
     }
 }
+
 public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint compatVersion) : Block
 {
     protected internal override string Id => "PVER";
-    protected internal override uint DataLength => sizeof(uint) * 3;
 
     public uint SubVersion { get; set; } = subVersion;
 
@@ -113,7 +112,6 @@ public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint c
 public class PackageFlags(PFLG_Flags flags) : Block
 {
     protected internal override string Id => "PFLG";
-    protected internal override uint DataLength => sizeof(uint);
 
     public PFLG_Flags Flags { get; set; } = flags;
 }
@@ -121,7 +119,6 @@ public class PackageFlags(PFLG_Flags flags) : Block
 public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, uint maxLayerSize, uint maxXFormAssetSize) : Block
 {
     protected internal override string Id => "PCNT";
-    protected internal override uint DataLength => sizeof(uint) * 5;
 
     /// <summary>
     /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
@@ -154,8 +151,6 @@ public class PackageCreated(DateTime createdDate, string createdDateString) : Bl
     private static readonly String _dateTimeFormat = "ddd MMM dd HH:mm:ss yyyy";
 
     protected internal override string Id => "PCRT";
-    // Always 26 for string size, even in n100f where CreatedDateString ends in '\n', due to EvilString handling
-    protected internal override uint DataLength => sizeof(uint) + 26;
 
     // TODO: should be in UTC-7
     public DateTime CreatedDate { get; set; } = createdDate;
@@ -173,7 +168,6 @@ public class PackageCreated(DateTime createdDate, string createdDateString) : Bl
 public class PackageModified(DateTime modifiedDate) : Block
 {
     protected internal override string Id => "PMOD";
-    protected internal override uint DataLength => sizeof(uint);
 
     // TODO: should be in UTC-7
     public DateTime ModifiedDate { get; set; } = modifiedDate;
@@ -186,8 +180,6 @@ public class PackageModified(DateTime modifiedDate) : Block
 public class PackagePlatform(string platformId, string region, string language, string gameName, string? platformName = null) : Block
 {
     protected internal override string Id => "PLAT";
-    // not accurate, must be determined by serializer
-    protected internal override uint DataLength => 0;
 
     public string PlatformID { get; set; } = platformId;
     public string? PlatformName { get; set; } = platformName;
