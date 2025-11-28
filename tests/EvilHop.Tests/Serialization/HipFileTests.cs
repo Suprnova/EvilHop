@@ -52,12 +52,12 @@ public class HipFileTests
     public void HipFile_V1_Parses(byte[] bytes)
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
-        HipFile hip = _v1.ReadArchive(reader);
+        HipFile hip = _v1.ReadHip(reader);
         Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues));
         Assert.Empty(issues); // pending BKDR algorithm
         byte[] write = new byte[bytes.Length];
         using BinaryWriter writer = new(new MemoryStream(write));
-        _v1.WriteArchive(writer, hip);
+        _v1.WriteHip(writer, hip);
         Assert.Equal(bytes, write);
     }
 }

@@ -15,7 +15,7 @@ public interface IFormatSerializer
     /// Initializes a new <see cref="HipFile"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
     /// </summary>
     /// <returns>A <see cref="HipFile"/> with default values.</returns>
-    HipFile NewArchive();
+    HipFile NewHip();
 
     /// <summary>
     /// Reads a <see cref="HipFile"/> from the <paramref name="reader"/>.
@@ -26,21 +26,21 @@ public interface IFormatSerializer
     /// <exception cref="InvalidDataException">
     /// If the <see cref="HipFile"/> is invalid and <see cref="SerializerOptions.Mode"/> is set to <see cref="ValidationMode.Strict"/>.
     /// </exception>
-    HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null);
+    HipFile ReadHip(BinaryReader reader, SerializerOptions? options = null);
 
     /// <summary>
     /// Writes a <see cref="HipFile"/> to the <paramref name="writer"/>.
     /// </summary>
     /// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
     /// <param name="archive">The <see cref="HipFile"/> to write.</param>
-    void WriteArchive(BinaryWriter writer, HipFile archive);
+    void WriteHip(BinaryWriter writer, HipFile archive);
 
     /// <summary>
     /// Returns the size of the provided <paramref name="archive"/> were it to be written by this serializer.
     /// </summary>
     /// <param name="archive">The <see cref="HipFile"/> to determine the size of.</param>
     /// <returns>The size of the provided <paramref name="archive"/>.</returns>
-    uint GetArchiveSize(HipFile archive);
+    uint GetHipSize(HipFile archive);
 
     /// <summary>
     /// Initializes a <see cref="Block"/> of type <typeparamref name="TBlock"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
@@ -99,7 +99,7 @@ public interface IFormatSerializer
     /// </summary>
     /// <param name="hip">The <see cref="HipFile"/> to validate.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
-    IEnumerable<ValidationIssue> ValidateArchive(HipFile hip);
+    IEnumerable<ValidationIssue> ValidateHip(HipFile hip);
 
     /// <summary>
     /// Returns the size of the provided <paramref name="block"/> were it to be written by this serializer.

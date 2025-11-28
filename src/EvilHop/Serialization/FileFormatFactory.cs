@@ -17,6 +17,8 @@ public enum FileFormatVersion
 
 public static class FileFormatFactory
 {
+    public static IFormatSerializer GetSerializer(BinaryReader reader) => GetSerializer(SniffVersion(reader));
+
     public static IFormatSerializer GetSerializer(FileFormatVersion version)
     {
         return version switch

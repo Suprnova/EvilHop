@@ -22,7 +22,7 @@ foreach (string file in scoobyFiles)
     FileFormatVersion fileVersion = FileFormatFactory.SniffVersion(reader);
     IFormatSerializer serializer = FileFormatFactory.GetSerializer(fileVersion);
 
-    HipFile hipFile = serializer.ReadArchive(reader, options);
+    HipFile hipFile = serializer.ReadHip(reader, options);
     Archive archive = new(hipFile, serializer);
 
     foreach (var asset in archive.Assets)
@@ -31,5 +31,5 @@ foreach (string file in scoobyFiles)
     }
 
     using BinaryWriter writer = new(new MemoryStream());
-    serializer.WriteArchive(writer, hipFile);
+    serializer.WriteHip(writer, hipFile);
 }

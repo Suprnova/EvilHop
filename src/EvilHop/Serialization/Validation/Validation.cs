@@ -1,4 +1,5 @@
 ﻿using EvilHop.Blocks;
+using EvilHop.Models;
 
 namespace EvilHop.Serialization.Validation;
 
@@ -25,7 +26,7 @@ public static class ValidationExtensions
 
     public static bool IsValid(this HipFile hip, IFormatSerializer serializer, out IEnumerable<ValidationIssue> issues)
     {
-        issues = [.. serializer.ValidateArchive(hip)];
+        issues = [.. serializer.ValidateHip(hip)];
         return !issues.Any(i => i.Severity == ValidationSeverity.Warning);
     }
 }

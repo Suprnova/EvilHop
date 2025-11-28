@@ -57,7 +57,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         _validator = validator;
     }
 
-    public HipFile NewArchive()
+    public HipFile NewHip()
     {
         HIPA hipa = New<HIPA>();
         Package package = New<Package>();
@@ -67,7 +67,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         return new HipFile(hipa, package, dictionary, stream);
     }
 
-    public HipFile ReadArchive(BinaryReader reader, SerializerOptions? options = null)
+    public HipFile ReadHip(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
         HIPA hipa = Read<HIPA>(reader, options);
@@ -78,7 +78,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         HipFile hipFile = new(hipa, package, dictionary, stream);
         if (options.Mode == ValidationMode.None) return hipFile;
 
-        var issues = ValidateArchive(hipFile);
+        var issues = ValidateHip(hipFile);
 
         foreach (var issue in issues)
         {
@@ -86,7 +86,8 @@ public abstract partial class V1Serializer : IFormatSerializer
             {
                 options.OnValidationIssue?.Invoke(issue);
             }
-            catch { };
+            catch { }
+            ;
 
             // todo: make Context nullable, we wouldn't need it for HipFile validation since it's cross-referential
             if (options.Mode == ValidationMode.Strict && issue.Severity >= ValidationSeverity.Warning)
@@ -96,7 +97,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         return hipFile;
     }
 
-    public void WriteArchive(BinaryWriter writer, HipFile archive)
+    public void WriteHip(BinaryWriter writer, HipFile archive)
     {
         Write(writer, archive.HIPA);
         Write(writer, archive.Package);
@@ -143,7 +144,8 @@ public abstract partial class V1Serializer : IFormatSerializer
             {
                 options.OnValidationIssue?.Invoke(issue);
             }
-            catch { };
+            catch { }
+            ;
 
             if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
                 throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}' on {issue.Context.Id} block.");
@@ -210,12 +212,12 @@ public abstract partial class V1Serializer : IFormatSerializer
         return (uint)writer.BaseStream.Length;
     }
 
-    public IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
+    public IEnumerable<ValidationIssue> ValidateHip(HipFile hip)
     {
         return _validator.ValidateArchive(hip);
     }
 
-    public uint GetArchiveSize(HipFile archive)
+    public uint GetHipSize(HipFile archive)
     {
         return GetBlockSize(archive.HIPA) + GetBlockSize(archive.Package)
             + GetBlockSize(archive.Dictionary) + GetBlockSize(archive.AssetStream);

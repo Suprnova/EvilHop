@@ -22,6 +22,10 @@ public abstract partial class V1Validator : IFormatValidator
 
     public IEnumerable<ValidationIssue> ValidateArchive(HipFile hipFile)
     {
+        foreach (var issue in ValidateBlockData(hipFile.HIPA)) yield return issue;
+        foreach (var issue in ValidateBlockData(hipFile.Package)) yield return issue;
+        foreach (var issue in ValidateBlockData(hipFile.Dictionary)) yield return issue;
+        foreach (var issue in ValidateBlockData(hipFile.AssetStream)) yield return issue;
         // todo: validate PCNT fields against AHDR, LHDR, and DPAK
 
         // todo: validate AHDR against STRM (?)
@@ -29,7 +33,6 @@ public abstract partial class V1Validator : IFormatValidator
         // todo: validate ADBG checksum against STRM
 
         // todo: validate no assetheaders overlap
-        yield break;
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateBlockData(Block block)
