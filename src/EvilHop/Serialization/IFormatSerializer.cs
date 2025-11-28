@@ -6,7 +6,7 @@ namespace EvilHop.Serialization;
 public class SerializerOptions
 {
     public ValidationMode Mode { get; set; } = ValidationMode.None;
-    public Action<ValidationIssue>? OnValidationIssue { get; set; }
+    public Action<ValidationIssue>? OnValidationIssue { get; set; } // make event?
 }
 
 public interface IFormatSerializer
@@ -34,6 +34,13 @@ public interface IFormatSerializer
     /// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
     /// <param name="archive">The <see cref="HipFile"/> to write.</param>
     void WriteArchive(BinaryWriter writer, HipFile archive);
+
+    /// <summary>
+    /// Returns the size of the provided <paramref name="archive"/> were it to be written by this serializer.
+    /// </summary>
+    /// <param name="archive">The <see cref="HipFile"/> to determine the size of.</param>
+    /// <returns>The size of the provided <paramref name="archive"/>.</returns>
+    uint GetArchiveSize(HipFile archive);
 
     /// <summary>
     /// Initializes a <see cref="Block"/> of type <typeparamref name="TBlock"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
@@ -93,4 +100,11 @@ public interface IFormatSerializer
     /// <param name="hip">The <see cref="HipFile"/> to validate.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
     IEnumerable<ValidationIssue> ValidateArchive(HipFile hip);
+
+    /// <summary>
+    /// Returns the size of the provided <paramref name="block"/> were it to be written by this serializer.
+    /// </summary>
+    /// <param name="block">The <see cref="Block"/> to determine the size of.</param>
+    /// <returns>The size of the provided <paramref name="block"/>.</returns>
+    uint GetBlockSize(Block block);
 }

@@ -3,11 +3,11 @@ using EvilHop.Common;
 
 namespace EvilHop.Models;
 
-public readonly struct AssetView(AssetHeader header, StreamData stream, uint streamOffset)
+public readonly struct AssetView(AssetHeader header, StreamData stream, uint offset)
 {
     private readonly AssetHeader _header = header;
     private readonly StreamData _stream = stream;
-    private readonly uint _streamOffset = streamOffset;
+    private readonly uint _offset = offset;
 
     private readonly AssetDebug? _debug = header.Debug;
 
@@ -37,10 +37,5 @@ public readonly struct AssetView(AssetHeader header, StreamData stream, uint str
         set => _header.Flags = value;
     }
 
-    public ReadOnlySpan<byte> GetBytes()
-    {
-        uint assetIndex = _header.Offset - _streamOffset;
-
-        return new Span<byte>(_stream.Data, (int)assetIndex, (int)_header.Size);
-    }
+    public ReadOnlySpan<byte> GetBytes() => new Span<byte>(_stream.Data, (int)_offset, (int)_header.Size);
 }

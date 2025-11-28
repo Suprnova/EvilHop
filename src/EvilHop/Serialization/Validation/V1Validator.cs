@@ -27,6 +27,8 @@ public abstract partial class V1Validator : IFormatValidator
         // todo: validate AHDR against STRM (?)
 
         // todo: validate ADBG checksum against STRM
+
+        // todo: validate no assetheaders overlap
         yield break;
     }
 

@@ -82,7 +82,11 @@ public abstract partial class V1Serializer : IFormatSerializer
 
         foreach (var issue in issues)
         {
-            options.OnValidationIssue?.Invoke(issue);
+            try
+            {
+                options.OnValidationIssue?.Invoke(issue);
+            }
+            catch { };
 
             // todo: make Context nullable, we wouldn't need it for HipFile validation since it's cross-referential
             if (options.Mode == ValidationMode.Strict && issue.Severity >= ValidationSeverity.Warning)
@@ -102,6 +106,7 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     public TBlock New<TBlock>() where TBlock : Block
     {
+        // todo: these should populate children, they don't right now
         return _initFactory.TryGetValue(typeof(TBlock), out var initHandler)
             ? (initHandler() as TBlock)!
             : throw new InvalidDataException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
@@ -134,7 +139,11 @@ public abstract partial class V1Serializer : IFormatSerializer
 
         foreach (var issue in issues)
         {
-            options.OnValidationIssue?.Invoke(issue);
+            try
+            {
+                options.OnValidationIssue?.Invoke(issue);
+            }
+            catch { };
 
             if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
                 throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}' on {issue.Context.Id} block.");
@@ -191,9 +200,25 @@ public abstract partial class V1Serializer : IFormatSerializer
         return _validator.Validate(block);
     }
 
+    public uint GetBlockSize(Block block)
+    {
+        // yea yea it's inefficient, but the only alternatives (i think) are hardcoding lengths for
+        // each block, or using reflection (ew!) to try to write every field which is bad anyways
+        // cuz it gives individual blocks more power than they should have
+        using BinaryWriter writer = new(new MemoryStream());
+        Write(writer, block);
+        return (uint)writer.BaseStream.Length;
+    }
+
     public IEnumerable<ValidationIssue> ValidateArchive(HipFile hip)
     {
         return _validator.ValidateArchive(hip);
+    }
+
+    public uint GetArchiveSize(HipFile archive)
+    {
+        return GetBlockSize(archive.HIPA) + GetBlockSize(archive.Package)
+            + GetBlockSize(archive.Dictionary) + GetBlockSize(archive.AssetStream);
     }
 
     protected void Register<T>(
