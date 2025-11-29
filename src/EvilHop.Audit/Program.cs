@@ -27,6 +27,7 @@ foreach (string file in scoobyFiles)
 
     foreach (var asset in archive.Assets)
     {
+        Console.WriteLine($"{asset.Name} - {asset.FileName} - {asset.Type}");
         _ = asset.GetBytes();
     }
 

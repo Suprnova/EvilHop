@@ -1,10 +1,10 @@
 ﻿namespace EvilHop.Common;
 
-// todo: set to uint value at some point, only done to calculate hashes correctly
+// todo: set to uint value at some point
 public enum AssetType : uint
 {
     Animation = 0x414E494D,
-    AnimationList,
+    AnimationList = 0x414C5354,
     AnimationTable,
     BSP,
     Button,

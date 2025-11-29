@@ -9,19 +9,10 @@ public abstract partial class V3Serializer : V2Serializer
     }
 }
 
-// todo: replace with proper validator
 public partial class MovieSerializer() : V3Serializer(new MovieValidator())
 {
 }
 
 public partial class IncrediblesSerializer() : V3Serializer(new IncrediblesValidator())
-{
-}
-
-public partial class ROTUSerializer() : V3Serializer(new ROTUValidator())
-{
-}
-
-public partial class RatSerializer() : V3Serializer(new RatValidator())
 {
 }

@@ -1,5 +1,10 @@
 ﻿namespace EvilHop.Assets;
 
+public abstract class Asset
+{
+    public string? Name { get; set; } // todo: make not nullable once constructors are set up
+}
+
 [Flags]
 public enum BaseFlags : ushort
 {
@@ -10,7 +15,7 @@ public enum BaseFlags : ushort
     ReceiveShadows = 1 << 4,
 }
 
-abstract class BaseAsset
+abstract class BaseAsset : Asset
 {
     public uint Id { get; set; }
     public byte BaseType { get; set; }

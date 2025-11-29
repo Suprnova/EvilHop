@@ -14,11 +14,3 @@ public partial class MovieValidator : V3Validator
 public partial class IncrediblesValidator : V3Validator
 {
 }
-
-public partial class ROTUValidator : V3Validator
-{
-}
-
-public partial class RatValidator : V3Validator
-{
-}

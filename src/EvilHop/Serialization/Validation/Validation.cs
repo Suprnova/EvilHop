@@ -1,5 +1,4 @@
 ﻿using EvilHop.Blocks;
-using EvilHop.Models;
 
 namespace EvilHop.Serialization.Validation;
 
@@ -10,8 +9,7 @@ public class ValidationIssue
 {
     public ValidationSeverity Severity { get; set; }
     public required string Message { get; set; }
-    // todo: is this required? are there validation issues without context?
-    public required Block Context { get; set; }
+    public required Block? Context { get; set; }
 }
 
 public enum ValidationMode { None, Warn, Strict };
