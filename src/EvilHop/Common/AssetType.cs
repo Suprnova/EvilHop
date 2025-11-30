@@ -53,5 +53,6 @@ public enum AssetType : uint
     Trigger,
     UI,
     UIFont,
-    Volume
+    Volume,
+    Unknown = 0x00000000
 }

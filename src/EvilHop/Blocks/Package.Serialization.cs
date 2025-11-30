@@ -7,7 +7,7 @@ public abstract partial class V1Serializer
 {
     protected virtual Package InitPackage()
     {
-        return New<Package>();
+        return new Package(NewBlock<PackageVersion>(), NewBlock<PackageFlags>(), NewBlock<PackageCount>(), NewBlock<PackageCreated>(), NewBlock<PackageModified>());
     }
 
     protected abstract PackageVersion InitPackageVersion();
@@ -30,8 +30,9 @@ public abstract partial class V1Serializer
 
     protected virtual PackageFlags InitPackageFlags()
     {
-        return New<PackageFlags>();
+        return new PackageFlags(PFLG_Flags.Default);
     }
+
     protected virtual PackageFlags ReadPackageFlags(BinaryReader reader)
     {
         return new PackageFlags(
@@ -92,8 +93,6 @@ public abstract partial class V1Serializer
         // todo: implement timezone (UTC-7)
         writer.WriteEvilInt(Convert.ToUInt32((modified.ModifiedDate - DateTime.UnixEpoch).TotalSeconds));
     }
-
-    protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader) => throw new InvalidOperationException();
 }
 
 public partial class V2Serializer
@@ -105,13 +104,7 @@ public partial class V2Serializer
         writer.WriteEvilString(created.CreatedDateString);
     }
 
-    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
-    {
-        //writer.WriteEvilString(platform.PlatformID);
-        //// todo: should not be null in V1
-        //writer.WriteEvilString(platform.PlatformName ?? "");
-        //writer.WriteEvilString(platform.Region);
-        //writer.WriteEvilString(platform.Language);
-        //writer.WriteEvilString(platform.GameName);
-    }
+    protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader) => throw new NotImplementedException();
+
+    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform) => throw new NotImplementedException();
 }

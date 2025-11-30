@@ -27,7 +27,7 @@ public class HIPATests
     public void IFormatSerializer_New_IsValid()
     {
         foreach (var s in serializers)
-            Assert.True(s.New<HIPA>().IsValid(s, out _));
+            Assert.True(s.NewBlock<HIPA>().IsValid(s, out _));
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class HIPATests
         foreach (var s in serializers)
         {
             reader.BaseStream.Position = 0;
-            Assert.True(s.Read<HIPA>(reader).IsValid(s, out _));
+            Assert.True(s.ReadBlock<HIPA>(reader).IsValid(s, out _));
         }
     }
 
@@ -50,7 +50,7 @@ public class HIPATests
         foreach (var s in serializers)
         {
             reader.BaseStream.Position = 0;
-            _ = s.Read<HIPA>(reader);
+            _ = s.ReadBlock<HIPA>(reader);
             Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
         }
     }
@@ -63,7 +63,7 @@ public class HIPATests
             byte[] writeBytes = new byte[validHIPA.Length];
             using BinaryWriter writer = new(new MemoryStream(writeBytes));
 
-            s.Write(writer, s.New<HIPA>());
+            s.WriteBlock(writer, s.NewBlock<HIPA>());
             Assert.Equal(validHIPA, writeBytes);
         }
     }
@@ -79,8 +79,8 @@ public class HIPATests
             using BinaryWriter writer = new(new MemoryStream(writeBytes));
             reader.BaseStream.Position = 0;
 
-            HIPA hipa = s.Read<HIPA>(reader);
-            s.Write(writer, hipa);
+            HIPA hipa = s.ReadBlock<HIPA>(reader);
+            s.WriteBlock(writer, hipa);
             Assert.Equal(validHIPA, writeBytes);
         }
     }

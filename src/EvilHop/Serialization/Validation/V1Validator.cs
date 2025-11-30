@@ -1,22 +1,21 @@
-﻿using EvilHop.Blocks;
+﻿using EvilHop.Assets;
+using EvilHop.Blocks;
 
 namespace EvilHop.Serialization.Validation;
 
 public abstract partial class V1Validator : IFormatValidator
 {
-    // todo: implement a generic method that generates the "Child block missing from this block" string
-
     protected internal V1Validator()
     {
     }
 
-    public IEnumerable<ValidationIssue> Validate(Block block)
+    public IEnumerable<ValidationIssue> ValidateBlock(Block block)
     {
         foreach (var issue in ValidateBlockData(block)) yield return issue;
 
         foreach (var child in block.Children)
         {
-            foreach (var issue in Validate(child)) yield return issue;
+            foreach (var issue in ValidateBlock(child)) yield return issue;
         }
     }
 
@@ -61,6 +60,11 @@ public abstract partial class V1Validator : IFormatValidator
             StreamData data => ValidateStreamData(data),
             _ => throw new NotImplementedException()
         };
+    }
+
+    public IEnumerable<ValidationIssue> ValidateAsset(Asset asset)
+    {
+        throw new NotImplementedException();
     }
 }
 

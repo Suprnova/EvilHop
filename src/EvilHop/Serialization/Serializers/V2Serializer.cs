@@ -7,7 +7,7 @@ public abstract partial class V2Serializer : V1Serializer
 {
     protected internal V2Serializer(IFormatValidator validator) : base(validator)
     {
-        Register("PLAT", InitPackagePlatform, (r, l) => ReadPackagePlatform(r), WritePackagePlatform);
+        RegisterBlock("PLAT", InitPackagePlatform, (r, l) => ReadPackagePlatform(r), WritePackagePlatform);
     }
 
     // todo: will be abstract, implemented per serializer

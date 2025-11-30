@@ -5,6 +5,17 @@ namespace EvilHop.Tests.Primitives;
 public class EvilStringTests
 {
     [Theory]
+    [InlineData("", 2)]
+    [InlineData("a", 2)]
+    [InlineData("ab", 4)]
+    [InlineData("abc", 4)]
+    [InlineData("abcd", 6)]
+    public void GetEvilStringLength_CorrectValue(string value, uint expected)
+    {
+        Assert.Equal(expected, value.GetEvilStringLength());
+    }
+
+    [Theory]
     [InlineData(new byte[] { 0x00, 0x00 }, "")]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x00 }, "abc")]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64, 0x00, 0x00 }, "abcd")]

@@ -8,51 +8,24 @@ public partial class V1Validator
     protected virtual IEnumerable<ValidationIssue> ValidateDictionary(Dictionary dictionary)
     {
         if (dictionary.GetChild<AssetTable>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(AssetTable).Name}' is missing from {typeof(Dictionary).Name}.",
-                Context = dictionary
-            };
-        }
+            yield return ValidationIssue.MissingChild<Dictionary, AssetTable>(dictionary);
+
         if (dictionary.GetChild<LayerTable>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(LayerTable).Name}' is missing from {typeof(Dictionary).Name}.",
-                Context = dictionary
-            };
-        }
+            yield return ValidationIssue.MissingChild<Dictionary, LayerTable>(dictionary);
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateAssetTable(AssetTable table)
     {
         if (table.GetChild<AssetInf>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(AssetInf).Name}' is missing from {typeof(AssetTable).Name}",
-                Context = table
-            };
-        }
+            yield return ValidationIssue.MissingChild<AssetTable, AssetInf>(table);
 
         // todo: validate no conflicting AssetIds (?)
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf)
     {
-        if (inf.Value != 0)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Warning,
-                Message = $"{typeof(AssetInf).Name} value '{inf.Value}' is unknown.",
-                Context = inf
-            };
-        }
+        if (inf.Value != 0x00000000)
+            yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header)
@@ -68,24 +41,10 @@ public partial class V1Validator
         }
 
         if ((uint)(header.Flags & ~AssetFlags.UnknownScooby) > 0xF)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Warning,
-                Message = $"{typeof(AssetFlags).Name} value '{(uint)header.Flags}' is unknown.",
-                Context = header
-            };
-        }
+            yield return ValidationIssue.UnknownValue(nameof(header.Flags), (uint)header.Flags, header);
 
         if (header.GetChild<AssetDebug>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(AssetDebug).Name}' is missing from {typeof(AssetHeader).Name}",
-                Context = header
-            };
-        }
+            yield return ValidationIssue.MissingChild<AssetHeader, AssetDebug>(header);
         else
         {
             string assetName = header.GetChild<AssetDebug>()!.Name;
@@ -133,40 +92,19 @@ public partial class V1Validator
     protected virtual IEnumerable<ValidationIssue> ValidateLayerTable(LayerTable table)
     {
         if (table.GetChild<LayerInf>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(LayerInf).Name}' is missing from {typeof(LayerTable).Name}",
-                Context = table
-            };
-        }
+            yield return ValidationIssue.MissingChild<LayerTable, LayerDebug>(table);
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateLayerInf(LayerInf inf)
     {
-        if (inf.Value != 0)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.None,
-                Message = $"{typeof(LayerInf).Name} value '{inf.Value}' is unknown, likely undocumented.",
-                Context = inf
-            };
-        }
+        if (inf.Value != 0x00000000)
+            yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateLayerHeader(LayerHeader header)
     {
         if (header.GetChild<LayerDebug>() == null)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Error,
-                Message = $"Block Type '{typeof(LayerDebug).Name}' is missing from {typeof(LayerHeader).Name}",
-                Context = header
-            };
-        }
+            yield return ValidationIssue.MissingChild<LayerHeader, LayerDebug>(header);
 
         if (header.Type == LayerType.TextureStream || header.Type == LayerType.JSPInfo)
         {
@@ -177,15 +115,8 @@ public partial class V1Validator
                 Context = header
             };
         }
-        else if (!Enum.IsDefined(header.Type) || header.Type == LayerType.Unknown)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.Warning,
-                Message = $"Layer Type '{(uint)header.Type}' is unknown.",
-                Context = header
-            };
-        }
+        else if (!Enum.IsDefined(header.Type))
+            yield return ValidationIssue.UnknownValue(nameof(header.Type), (uint)header.Type, header);
 
         uint expectedCount = (uint)header.AssetIds.Count();
         if (header.AssetCount != expectedCount)
@@ -201,15 +132,8 @@ public partial class V1Validator
 
     protected virtual IEnumerable<ValidationIssue> ValidateLayerDebug(LayerDebug debug)
     {
-        if (debug.Value != uint.MaxValue)
-        {
-            yield return new ValidationIssue
-            {
-                Severity = ValidationSeverity.None,
-                Message = $"{typeof(LayerDebug).Name} value '{debug.Value}' is unknown, likely undocumented",
-                Context = debug
-            };
-        }
+        if (debug.Value != 0xFFFFFFFF)
+            yield return ValidationIssue.UnknownValue(nameof(debug.Value), debug.Value, debug);
     }
 }
 

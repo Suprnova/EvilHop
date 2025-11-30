@@ -1,8 +1,17 @@
-﻿namespace EvilHop.Assets;
+﻿using EvilHop.Common;
+
+namespace EvilHop.Assets;
 
 public abstract class Asset
 {
     public string? Name { get; set; } // todo: make not nullable once constructors are set up
+    public abstract AssetType Type { get; }
+}
+
+public class UnknownAsset : Asset
+{
+    public override AssetType Type => AssetType.Unknown;
+    public byte[] Data { get; set; } = [];
 }
 
 [Flags]

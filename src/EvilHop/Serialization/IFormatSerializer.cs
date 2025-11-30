@@ -1,4 +1,5 @@
-﻿using EvilHop.Blocks;
+﻿using EvilHop.Assets;
+using EvilHop.Blocks;
 using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Serialization;
@@ -43,11 +44,18 @@ public interface IFormatSerializer
     uint GetHipSize(HipFile archive);
 
     /// <summary>
+    /// Ensures that the provided <paramref name="hip"/> matches expected specifications.
+    /// </summary>
+    /// <param name="hip">The <see cref="HipFile"/> to validate.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
+    IEnumerable<ValidationIssue> ValidateHip(HipFile hip);
+
+    /// <summary>
     /// Initializes a <see cref="Block"/> of type <typeparamref name="TBlock"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
     /// </summary>
-    /// <typeparam name="TBlock">The type of block to initialize.</typeparam>
+    /// <typeparam name="TBlock">The type of <see cref="Block"/> to initialize.</typeparam>
     /// <returns>A <typeparamref name="TBlock"/> with default values.</returns>
-    TBlock New<TBlock>() where TBlock : Block;
+    TBlock NewBlock<TBlock>() where TBlock : Block;
 
     // todo: use a better exception for invalid block read?
     /// <summary>
@@ -57,10 +65,10 @@ public interface IFormatSerializer
     /// <param name="options">The <see cref="SerializerOptions"/> to use when reading.</param>
     /// <returns>A <see cref="Block"/> read from this <see cref="BinaryReader"/>.</returns>
     /// <exception cref="InvalidDataException">
-    /// If the <see cref="HipFile"/> is invalid and <see cref="SerializerOptions.Mode"/> is set to <see cref="ValidationMode.Strict"/>, 
+    /// If the <see cref="Block"/> is invalid and <see cref="SerializerOptions.Mode"/> is set to <see cref="ValidationMode.Strict"/>, 
     /// or if a <see cref="Block"/> of an unknown <see langword="type"/> is found.
     /// </exception>
-    Block Read(BinaryReader reader, SerializerOptions? options = null);
+    Block ReadBlock(BinaryReader reader, SerializerOptions? options = null);
 
     /// <summary>
     /// Reads a <see cref="Block"/> of type <typeparamref name="TBlock"/> from the <paramref name="reader"/>.
@@ -75,7 +83,7 @@ public interface IFormatSerializer
     /// <exception cref="InvalidCastException">
     /// If the <see cref="Block"/> read is not of type <typeparamref name="TBlock"/>.
     /// </exception>
-    TBlock Read<TBlock>(BinaryReader reader, SerializerOptions? options = null) where TBlock : Block;
+    TBlock ReadBlock<TBlock>(BinaryReader reader, SerializerOptions? options = null) where TBlock : Block;
 
     /// <summary>
     /// Writes the <paramref name="block"/> to the <paramref name="writer"/>.
@@ -85,21 +93,7 @@ public interface IFormatSerializer
     /// </remarks>
     /// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
     /// <param name="block">The <see cref="Block"/> to write.</param>
-    void Write(BinaryWriter writer, Block block);
-
-    /// <summary>
-    /// Ensures that the provided <paramref name="block"/> matches expected specifications.
-    /// </summary>
-    /// <param name="block">The <see cref="Block"/> to validate.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
-    IEnumerable<ValidationIssue> Validate(Block block);
-
-    /// <summary>
-    /// Ensures that the provided <paramref name="hip"/> matches expected specifications.
-    /// </summary>
-    /// <param name="hip">The <see cref="HipFile"/> to validate.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
-    IEnumerable<ValidationIssue> ValidateHip(HipFile hip);
+    void WriteBlock(BinaryWriter writer, Block block);
 
     /// <summary>
     /// Returns the size of the provided <paramref name="block"/> were it to be written by this serializer.
@@ -107,4 +101,58 @@ public interface IFormatSerializer
     /// <param name="block">The <see cref="Block"/> to determine the size of.</param>
     /// <returns>The size of the provided <paramref name="block"/>.</returns>
     uint GetBlockSize(Block block);
+
+    /// <summary>
+    /// Ensures that the provided <paramref name="block"/> matches expected specifications.
+    /// </summary>
+    /// <param name="block">The <see cref="Block"/> to validate.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
+    IEnumerable<ValidationIssue> ValidateBlock(Block block);
+
+    /// <summary>
+    /// Initializes an <see cref="Asset"/> of type <typeparamref name="TAsset"/> with defaults appropriate for <see langword="this"/> <see cref="IFormatSerializer"/>.
+    /// </summary>
+    /// <typeparam name="TAsset">The type of <see cref="Asset"/> to initialize.</typeparam>
+    /// <returns>A <typeparamref name="TAsset"/> with default values.</returns>
+    TAsset NewAsset<TAsset>() where TAsset : Asset;
+
+    /// <summary>
+    /// Reads an <see cref="Asset"/> from the reader.
+    /// </summary>
+    /// <param name="reader">The <see cref="BinaryReader"/> to read from.</param>
+    /// <param name="options">The <see cref="SerializerOptions"/> to use when reading.</param>
+    /// <returns>An <see cref="Asset"/> read from this <see cref="BinaryReader"/>.</returns>
+    /// <exception cref="InvalidDataException">
+    /// If the <see cref="Asset"/> is invalid and <see cref="SerializerOptions.Mode"/> is set to <see cref="ValidationMode.Strict"/>.
+    /// </exception>
+    Asset ReadAsset(BinaryReader reader, SerializerOptions? options = null);
+
+    /// <summary>
+    /// Reads an <see cref="Asset"/> of type <typeparamref name="TAsset"/> from the <paramref name="reader"/>.
+    /// </summary>
+    /// <typeparam name="TAsset">The type of <see cref="Asset"/> to read.</typeparam>
+    /// <param name="reader">The <see cref="BinaryReader"/> to read from.</param>
+    /// <param name="options">The <see cref="SerializerOptions"/> to use when reading.</param>
+    /// <returns>An <see cref="Asset"/> of type <typeparamref name="TAsset"/> read from this <see cref="BinaryReader"/>.</returns>
+    /// <exception cref="InvalidDataException">
+    /// If the <see cref="Asset"/> is invalid and <see cref="SerializerOptions.Mode"/> is set to <see cref="ValidationMode.Strict"/>.
+    /// </exception>
+    /// <exception cref="InvalidCastException">
+    /// If the <see cref="Asset"/> read is not of type <typeparamref name="TAsset"/>.
+    /// </exception>
+    TAsset ReadAsset<TAsset>(BinaryReader reader, SerializerOptions? options = null) where TAsset : Asset;
+
+    /// <summary>
+    /// Writes the <paramref name="asset"/> to the <paramref name="writer"/>.
+    /// </summary>
+    /// <param name="writer">The <see cref="BinaryWriter"/> to write to.</param>
+    /// <param name="asset">The <see cref="Asset"/> to write.</param>
+    void WriteAsset(BinaryWriter writer, Asset asset);
+
+    /// <summary>
+    /// Ensures that the provided <paramref name="asset"/> matches expected specifications.
+    /// </summary>
+    /// <param name="asset">The <see cref="Asset"/> to validate.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of any <see cref="ValidationIssue"/> found.</returns>
+    IEnumerable<ValidationIssue> ValidateAsset(Asset asset);
 }

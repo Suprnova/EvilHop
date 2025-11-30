@@ -1,4 +1,6 @@
-﻿using EvilHop.Blocks;
+﻿using EvilHop.Assets;
+using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization.Validation;
 using System.Text;
@@ -22,47 +24,56 @@ public abstract partial class V1Serializer : IFormatSerializer
     /// Stores pointers to a Block's WriteBlockData() method, indexed via its 4-byte ID.
     /// </summary>
     protected readonly Dictionary<Type, Action<BinaryWriter, Block>> _writeFactory = [];
+    /// <summary>
+    /// Stores pointers to an asset's initialization, reading, and writing methods.
+    /// </summary>
+    protected readonly Dictionary<AssetType, (Func<Asset> Init, Func<BinaryReader, Asset> Read, Action<BinaryWriter, Asset> Write)> _assetFactory = [];
+    // todo: i kinda like how this feels, maybe swap the three dictionaries for blocks to one with this kind of style?
+    // or alternatively find a better way to do this, this might be overcomplicating things
 
     protected internal V1Serializer(IFormatValidator validator)
     {
-        Register("HIPA", () => new HIPA());
+        RegisterBlock("HIPA", () => new HIPA());
 
-        Register("PACK", InitPackage, (r, l) => new Package());
+        RegisterBlock("PACK", InitPackage, (r, l) => new Package());
         {
-            Register("PVER", InitPackageVersion, (r, l) => ReadPackageVersion(r), WritePackageVersion);
-            Register("PFLG", InitPackageFlags, (r, l) => ReadPackageFlags(r), WritePackageFlags);
-            Register("PCNT", () => new PackageCount(), (r, l) => ReadPackageCount(r), WritePackageCount);
-            Register("PCRT", () => new PackageCreated(), (r, l) => ReadPackageCreated(r), WritePackageCreated);
-            Register("PMOD", () => new PackageModified(), (r, l) => ReadPackageModified(r), WritePackageModified);
+            RegisterBlock("PVER", InitPackageVersion, (r, l) => ReadPackageVersion(r), WritePackageVersion);
+            RegisterBlock("PFLG", InitPackageFlags, (r, l) => ReadPackageFlags(r), WritePackageFlags);
+            RegisterBlock("PCNT", () => new PackageCount(), (r, l) => ReadPackageCount(r), WritePackageCount);
+            RegisterBlock("PCRT", () => new PackageCreated(), (r, l) => ReadPackageCreated(r), WritePackageCreated);
+            RegisterBlock("PMOD", () => new PackageModified(), (r, l) => ReadPackageModified(r), WritePackageModified);
         }
 
-        Register("DICT", () => new Dictionary());
+        RegisterBlock("DICT", () => new Dictionary());
         {
-            Register("ATOC", () => new AssetTable());
-            Register("AINF", () => new AssetInf(), (r, l) => ReadAssetInf(r), WriteAssetInf);
-            Register("AHDR", InitAssetHeader, (r, l) => ReadAssetHeader(r), WriteAssetHeader);
-            Register("ADBG", () => new AssetDebug(), (r, l) => ReadAssetDebug(r), WriteAssetDebug);
-            Register("LTOC", () => new LayerTable());
-            Register("LINF", () => new LayerInf(), (r, l) => ReadLayerInf(r), WriteLayerInf);
-            Register("LHDR", InitLayerHeader, (r, l) => ReadLayerHeader(r), WriteLayerHeader);
-            Register("LDBG", () => new LayerDebug(), (r, l) => ReadLayerDebug(r), WriteLayerDebug);
+            RegisterBlock("ATOC", () => new AssetTable());
+            RegisterBlock("AINF", () => new AssetInf(), (r, l) => ReadAssetInf(r), WriteAssetInf);
+            RegisterBlock("AHDR", InitAssetHeader, (r, l) => ReadAssetHeader(r), WriteAssetHeader);
+            RegisterBlock("ADBG", () => new AssetDebug(), (r, l) => ReadAssetDebug(r), WriteAssetDebug);
+            RegisterBlock("LTOC", () => new LayerTable());
+            RegisterBlock("LINF", () => new LayerInf(), (r, l) => ReadLayerInf(r), WriteLayerInf);
+            RegisterBlock("LHDR", InitLayerHeader, (r, l) => ReadLayerHeader(r), WriteLayerHeader);
+            RegisterBlock("LDBG", () => new LayerDebug(), (r, l) => ReadLayerDebug(r), WriteLayerDebug);
         }
 
-        Register("STRM", () => new AssetStream());
+        RegisterBlock("STRM", () => new AssetStream());
         {
-            Register("DHDR", () => new StreamHeader(), (r, l) => ReadStreamHeader(r), WriteStreamHeader);
+            RegisterBlock("DHDR", () => new StreamHeader(), (r, l) => ReadStreamHeader(r), WriteStreamHeader);
             // todo: could probably benefit with serializer specific values
-            Register("DPAK", () => new StreamData(), ReadStreamData, WriteStreamData);
+            RegisterBlock("DPAK", () => new StreamData(), ReadStreamData, WriteStreamData);
         }
+
+        RegisterAsset(AssetType.AnimationList, InitAnimationListAsset, ReadAnimationListAsset, WriteAnimationListAsset);
+
         _validator = validator;
     }
 
     public HipFile NewHip()
     {
-        HIPA hipa = New<HIPA>();
-        Package package = New<Package>();
-        Dictionary dictionary = New<Dictionary>();
-        AssetStream stream = New<AssetStream>();
+        HIPA hipa = NewBlock<HIPA>();
+        Package package = NewBlock<Package>();
+        Dictionary dictionary = NewBlock<Dictionary>();
+        AssetStream stream = NewBlock<AssetStream>();
 
         return new HipFile(hipa, package, dictionary, stream);
     }
@@ -70,10 +81,10 @@ public abstract partial class V1Serializer : IFormatSerializer
     public HipFile ReadHip(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
-        HIPA hipa = Read<HIPA>(reader, options);
-        Package package = Read<Package>(reader, options);
-        Dictionary dictionary = Read<Dictionary>(reader, options);
-        AssetStream stream = Read<AssetStream>(reader, options);
+        HIPA hipa = ReadBlock<HIPA>(reader, options);
+        Package package = ReadBlock<Package>(reader, options);
+        Dictionary dictionary = ReadBlock<Dictionary>(reader, options);
+        AssetStream stream = ReadBlock<AssetStream>(reader, options);
 
         HipFile hipFile = new(hipa, package, dictionary, stream);
         if (options.Mode == ValidationMode.None) return hipFile;
@@ -91,7 +102,7 @@ public abstract partial class V1Serializer : IFormatSerializer
 
             // todo: make Context nullable, we wouldn't need it for HipFile validation since it's cross-referential
             if (options.Mode == ValidationMode.Strict && issue.Severity >= ValidationSeverity.Warning)
-                throw new InvalidDataException($"Strict Validation Failed: {issue.Message} on {issue.Context.Id} block.");
+                throw new InvalidDataException($"Strict Validation Failed: {issue.Message}");
         }
 
         return hipFile;
@@ -99,21 +110,21 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     public void WriteHip(BinaryWriter writer, HipFile archive)
     {
-        Write(writer, archive.HIPA);
-        Write(writer, archive.Package);
-        Write(writer, archive.Dictionary);
-        Write(writer, archive.AssetStream);
+        WriteBlock(writer, archive.HIPA);
+        WriteBlock(writer, archive.Package);
+        WriteBlock(writer, archive.Dictionary);
+        WriteBlock(writer, archive.AssetStream);
     }
 
-    public TBlock New<TBlock>() where TBlock : Block
+    public TBlock NewBlock<TBlock>() where TBlock : Block
     {
         // todo: these should populate children, they don't right now
         return _initFactory.TryGetValue(typeof(TBlock), out var initHandler)
             ? (initHandler() as TBlock)!
-            : throw new InvalidDataException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
+            : throw new InvalidOperationException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
     }
 
-    public Block Read(BinaryReader reader, SerializerOptions? options = null)
+    public Block ReadBlock(BinaryReader reader, SerializerOptions? options = null)
     {
         options ??= _defaultOptions;
 
@@ -130,13 +141,13 @@ public abstract partial class V1Serializer : IFormatSerializer
         long offset = reader.BaseStream.Position - currentOffset;
         while (offset < blockLength)
         {
-            block.Children.Add(Read(reader));
+            block.Children.Add(ReadBlock(reader));
             offset = reader.BaseStream.Position - currentOffset;
         }
 
         if (options.Mode == ValidationMode.None) return block;
 
-        var issues = Validate(block);
+        var issues = ValidateBlock(block);
 
         foreach (var issue in issues)
         {
@@ -148,13 +159,13 @@ public abstract partial class V1Serializer : IFormatSerializer
             ;
 
             if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
-                throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}' on {issue.Context.Id} block.");
+                throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}'");
         }
 
         return block;
     }
 
-    public T Read<T>(BinaryReader reader, SerializerOptions? options = null) where T : Block
+    public T ReadBlock<T>(BinaryReader reader, SerializerOptions? options = null) where T : Block
     {
         long peekOffset = reader.BaseStream.Position;
         string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
@@ -168,10 +179,10 @@ public abstract partial class V1Serializer : IFormatSerializer
         if (!typeof(T).IsAssignableFrom(actualType))
             throw new InvalidCastException($"Read block is {actualType.Name}, expected {typeof(T).Name}.");
 
-        return (Read(reader, options) as T)!;
+        return (ReadBlock(reader, options) as T)!;
     }
 
-    public void Write(BinaryWriter writer, Block block)
+    public void WriteBlock(BinaryWriter writer, Block block)
     {
         // all IDs are 4 bytes, this trims the null characters
         writer.Write(block.Id.ToEvilBytes()[..^2]);
@@ -185,7 +196,7 @@ public abstract partial class V1Serializer : IFormatSerializer
 
         foreach (var child in block.Children)
         {
-            Write(writer, child);
+            WriteBlock(writer, child);
         }
 
         long endDataOffset = writer.BaseStream.Position;
@@ -197,9 +208,9 @@ public abstract partial class V1Serializer : IFormatSerializer
         writer.Seek((int)endDataOffset, SeekOrigin.Begin);
     }
 
-    public IEnumerable<ValidationIssue> Validate(Block block)
+    public IEnumerable<ValidationIssue> ValidateBlock(Block block)
     {
-        return _validator.Validate(block);
+        return _validator.ValidateBlock(block);
     }
 
     public uint GetBlockSize(Block block)
@@ -208,7 +219,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         // each block, or using reflection (ew!) to try to write every field which is bad anyways
         // cuz it gives individual blocks more power than they should have
         using BinaryWriter writer = new(new MemoryStream());
-        Write(writer, block);
+        WriteBlock(writer, block);
         return (uint)writer.BaseStream.Length;
     }
 
@@ -223,7 +234,7 @@ public abstract partial class V1Serializer : IFormatSerializer
             + GetBlockSize(archive.Dictionary) + GetBlockSize(archive.AssetStream);
     }
 
-    protected void Register<T>(
+    protected void RegisterBlock<T>(
         string id,
         Func<T> initHandler,
         Func<BinaryReader, uint, T>? readHandler = null,
@@ -239,6 +250,45 @@ public abstract partial class V1Serializer : IFormatSerializer
         {
             _writeFactory[typeof(T)] = (writer, block) => writeHandler(writer, (T)block);
         }
+    }
+
+    protected void RegisterAsset<T>(
+        AssetType type,
+        Func<T> initHandler,
+        Func<BinaryReader, T> readHandler,
+        Action<BinaryWriter, T> writeHandler
+        ) where T : Asset
+    {
+        _assetFactory[type] = (
+            () => initHandler(),
+            (reader) => readHandler(reader),
+            (writer, asset) => writeHandler(writer, (T)asset)
+            );
+    }
+
+    public TAsset NewAsset<TAsset>() where TAsset : Asset
+    {
+        throw new NotImplementedException();
+    }
+
+    public Asset ReadAsset(BinaryReader reader, SerializerOptions? options = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public TAsset ReadAsset<TAsset>(BinaryReader reader, SerializerOptions? options = null) where TAsset : Asset
+    {
+        throw new NotImplementedException();
+    }
+
+    public void WriteAsset(BinaryWriter writer, Asset asset)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<ValidationIssue> ValidateAsset(Asset asset)
+    {
+        throw new NotImplementedException();
     }
 }
 

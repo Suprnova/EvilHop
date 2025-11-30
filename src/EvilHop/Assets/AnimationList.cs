@@ -1,16 +1,19 @@
 ﻿using EvilHop.Assets;
+using EvilHop.Common;
 using EvilHop.Primitives;
 
 namespace EvilHop.Assets
 {
-    public class AnimationList(uint[] assetIds, uint[]? stateHashes = null, bool[]? hasPhysics = null) : Asset
+    public class AnimationList(uint[] assetIds, uint[]? stateHashes, bool[]? hasPhysics) : Asset
     {
+        public override AssetType Type => AssetType.AnimationList;
+
         // capacity of all fields: 10
         public uint[] AssetIds { get; set; } = assetIds;
         public uint[]? StateHashes { get; set; } = stateHashes;
         public bool[]? HasPhysics { get; set; } = hasPhysics;
 
-        internal AnimationList() : this(new uint[10], new uint[10], new bool[10])
+        internal AnimationList(uint[] assetIds) : this(assetIds, null, null)
         {
         }
     }
@@ -20,6 +23,11 @@ namespace EvilHop.Serialization.Serializers
 {
     public abstract partial class V1Serializer
     {
+        protected virtual AnimationList InitAnimationListAsset()
+        {
+            return new AnimationList(new uint[10]);
+        }
+
         protected virtual AnimationList ReadAnimationListAsset(BinaryReader reader)
         {
             uint[] assetIds = new uint[10];
@@ -39,6 +47,11 @@ namespace EvilHop.Serialization.Serializers
 
     public abstract partial class V4Serializer
     {
+        protected override AnimationList InitAnimationListAsset()
+        {
+            return new AnimationList(new uint[10], new uint[10], new bool[10]);
+        }
+
         protected override AnimationList ReadAnimationListAsset(BinaryReader reader)
         {
             var animationList = base.ReadAnimationListAsset(reader);
@@ -73,6 +86,7 @@ namespace EvilHop.Serialization.Validation
     {
         protected virtual IEnumerable<ValidationIssue> ValidateAnimationListAsset(AnimationList animList)
         {
+            // todo validate array sizes?
             // todo: maybe have all known assetIds stored in validator, to allow validating AssetIds field?
             if (animList.StateHashes != null)
             {
