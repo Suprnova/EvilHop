@@ -22,7 +22,7 @@ public class BlockTests
     }
 
     [Fact]
-    public void Block_AddChild_Succeeds()
+    public void AddChild_Succeeds()
     {
         TestBlock test = new();
         Assert.Empty(test.Children);
@@ -31,28 +31,28 @@ public class BlockTests
     }
 
     [Fact]
-    public void Block_GetChild_ChildExists_Succeeds()
+    public void GetChild_ChildExists_Succeeds()
     {
         TestBlock test = new(new TestBlock());
         Assert.NotNull(test.GetChild<TestBlock>());
     }
 
     [Fact]
-    public void Block_GetChild_ChildDoesNotExist_IsNull()
+    public void GetChild_ChildDoesNotExist_IsNull()
     {
         TestBlock test = new(new TestBlock());
         Assert.Null(test.GetChild<OtherBlock>());
     }
 
     [Fact]
-    public void Block_GetRequiredChild_ChildExists_Succeeds()
+    public void GetRequiredChild_ChildExists_Succeeds()
     {
         TestBlock test = new(new TestBlock());
         _ = test.GetRequiredChild<TestBlock>();
     }
 
     [Fact]
-    public void Block_GetRequiredChild_ChildDoesNotExist_Throws()
+    public void GetRequiredChild_ChildDoesNotExist_Throws()
     {
         TestBlock test = new(new TestBlock());
         Assert.Throws<InvalidDataException>(test.GetRequiredChild<OtherBlock>);
@@ -62,7 +62,7 @@ public class BlockTests
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
-    public void Block_GetVariableChild_HasExpectedCount(int count)
+    public void GetVariableChild_HasExpectedCount(int count)
     {
         TestBlock test = new();
         for (int i = 0; i < count; i++)
@@ -70,4 +70,80 @@ public class BlockTests
 
         Assert.Equal(count, test.GetVariableChildren<TestBlock>().Count());
     }
+
+    [Fact]
+    public void SetChild_Null_RemovesChild()
+    {
+        var parent = new TestBlock(new TestBlock(), new OtherBlock());
+
+        parent.SetChild<TestBlock>(null);
+
+        Assert.Null(parent.GetChild<TestBlock>());
+        Assert.DoesNotContain(parent.Children, c => c is TestBlock);
+    }
+
+    [Fact]
+    public void SetChild_TargetMissing_ThrowsInvalidDataException()
+    {
+        var parent = new TestBlock(new OtherBlock());
+
+        Assert.Throws<InvalidDataException>(() => parent.SetChild(new TestBlock()));
+    }
+
+    [Fact]
+    public void SetVariableChildren_ReplacesAllChildren()
+    {
+        var parent = new TestBlock(new TestBlock(), new OtherBlock());
+
+        parent.SetVariableChildren([new TestBlock(), new TestBlock()]);
+
+        Assert.Equal(2, parent.Children.Count);
+        Assert.All(parent.Children, c => Assert.IsType<TestBlock>(c));
+    }
+
+    [Fact]
+    public void SetVariableChildren_Empty_ClearsChildren()
+    {
+        var parent = new TestBlock(new TestBlock(), new OtherBlock());
+
+        parent.SetVariableChildren(Enumerable.Empty<TestBlock>());
+
+        Assert.Empty(parent.Children);
+    }
+
+    [Fact]
+    public void GetChild_ReturnsFirstOccurrence_WhenMultipleExist()
+    {
+        var first = new TestBlock();
+        var second = new TestBlock();
+        var parent = new TestBlock(first, second);
+
+        var found = parent.GetChild<TestBlock>();
+
+        Assert.Same(first, found);
+    }
+
+    [Fact]
+    public void GetVariableChildren_FiltersByType()
+    {
+        var parent = new TestBlock(new TestBlock(), new OtherBlock(), new TestBlock());
+
+        var list = parent.GetVariableChildren<TestBlock>().ToList();
+
+        Assert.Equal(2, list.Count);
+        Assert.All(list, item => Assert.IsType<TestBlock>(item));
+    }
+
+    [Fact]
+    public void AddChild_AllowsDuplicates()
+    {
+        var instance = new TestBlock();
+        var parent = new TestBlock();
+
+        parent.AddChild(instance);
+        parent.AddChild(instance);
+
+        Assert.Equal(2, parent.Children.Count(c => ReferenceEquals(c, instance)));
+    }
+
 }
