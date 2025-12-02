@@ -9,56 +9,67 @@ namespace EvilHop.Serialization.Serializers;
 
 public abstract partial class V1Serializer : IFormatSerializer
 {
+    protected readonly record struct BlockHandler(
+        Type Type,
+        Func<Block> Init,
+        Func<BinaryReader, uint, Block> Read,
+        Action<BinaryWriter, Block> Write
+    );
+
+    protected readonly record struct AssetHandler(
+        AssetType Type,
+        Func<Asset> Init,
+        Func<BinaryReader, Asset> Read,
+        Action<BinaryWriter, Asset> Write
+    );
+
     protected readonly SerializerOptions _defaultOptions = new();
     protected readonly IFormatValidator _validator;
 
     /// <summary>
-    /// Stores pointers to a Block's initialization logic. Indexed via its 4-byte ID.
+    /// Provides a mapping from unique block identifiers to their corresponding block types.
     /// </summary>
-    protected readonly Dictionary<Type, Func<Block>> _initFactory = [];
+    protected readonly Dictionary<string, Type> _idToBlockType = [];
     /// <summary>
-    /// Stores pointers to a Block's ReadBlockData() method as well as the block's type. Indexed via its 4-byte ID.
+    /// Stores pointers to a block's initialization, reading, and writing methods.
     /// </summary>
-    protected readonly Dictionary<string, (Func<BinaryReader, uint, Block> Read, Type Type)> _readFactory = [];
-    /// <summary>
-    /// Stores pointers to a Block's WriteBlockData() method, indexed via its 4-byte ID.
-    /// </summary>
-    protected readonly Dictionary<Type, Action<BinaryWriter, Block>> _writeFactory = [];
+    protected readonly Dictionary<Type, BlockHandler> _blockFactory = [];
     /// <summary>
     /// Stores pointers to an asset's initialization, reading, and writing methods.
     /// </summary>
-    protected readonly Dictionary<AssetType, (Func<Asset> Init, Func<BinaryReader, Asset> Read, Action<BinaryWriter, Asset> Write)> _assetFactory = [];
-    // todo: i kinda like how this feels, maybe swap the three dictionaries for blocks to one with this kind of style?
-    // or alternatively find a better way to do this, this might be overcomplicating things
+    protected readonly Dictionary<AssetType, AssetHandler> _assetFactory = [];
 
     protected internal V1Serializer(IFormatValidator validator)
     {
+        // todo: validate Init functions are used for anything that needs children
+        // AND make sure Read is set for those blocks, or else we initialize children while reading
         RegisterBlock("HIPA", () => new HIPA());
 
-        RegisterBlock("PACK", InitPackage, (r, l) => new Package());
+        // can't default to InitPackage for read since it populates children
+        RegisterBlock("PACK", InitPackage, (_, _) => new Package());
         {
-            RegisterBlock("PVER", InitPackageVersion, (r, l) => ReadPackageVersion(r), WritePackageVersion);
-            RegisterBlock("PFLG", InitPackageFlags, (r, l) => ReadPackageFlags(r), WritePackageFlags);
-            RegisterBlock("PCNT", () => new PackageCount(), (r, l) => ReadPackageCount(r), WritePackageCount);
-            RegisterBlock("PCRT", () => new PackageCreated(), (r, l) => ReadPackageCreated(r), WritePackageCreated);
-            RegisterBlock("PMOD", () => new PackageModified(), (r, l) => ReadPackageModified(r), WritePackageModified);
+            RegisterBlock("PVER", InitPackageVersion, (r, _) => ReadPackageVersion(r), WritePackageVersion);
+            RegisterBlock("PFLG", InitPackageFlags, (r, _) => ReadPackageFlags(r), WritePackageFlags);
+            RegisterBlock("PCNT", () => new PackageCount(), (r, _) => ReadPackageCount(r), WritePackageCount);
+            RegisterBlock("PCRT", () => new PackageCreated(), (r, _) => ReadPackageCreated(r), WritePackageCreated);
+            RegisterBlock("PMOD", () => new PackageModified(), (r, _) => ReadPackageModified(r), WritePackageModified);
         }
 
         RegisterBlock("DICT", () => new Dictionary());
         {
             RegisterBlock("ATOC", () => new AssetTable());
-            RegisterBlock("AINF", () => new AssetInf(), (r, l) => ReadAssetInf(r), WriteAssetInf);
-            RegisterBlock("AHDR", InitAssetHeader, (r, l) => ReadAssetHeader(r), WriteAssetHeader);
-            RegisterBlock("ADBG", () => new AssetDebug(), (r, l) => ReadAssetDebug(r), WriteAssetDebug);
+            RegisterBlock("AINF", () => new AssetInf(), (r, _) => ReadAssetInf(r), WriteAssetInf);
+            RegisterBlock("AHDR", InitAssetHeader, (r, _) => ReadAssetHeader(r), WriteAssetHeader);
+            RegisterBlock("ADBG", () => new AssetDebug(), (r, _) => ReadAssetDebug(r), WriteAssetDebug);
             RegisterBlock("LTOC", () => new LayerTable());
-            RegisterBlock("LINF", () => new LayerInf(), (r, l) => ReadLayerInf(r), WriteLayerInf);
-            RegisterBlock("LHDR", InitLayerHeader, (r, l) => ReadLayerHeader(r), WriteLayerHeader);
-            RegisterBlock("LDBG", () => new LayerDebug(), (r, l) => ReadLayerDebug(r), WriteLayerDebug);
+            RegisterBlock("LINF", () => new LayerInf(), (r, _) => ReadLayerInf(r), WriteLayerInf);
+            RegisterBlock("LHDR", InitLayerHeader, (r, _) => ReadLayerHeader(r), WriteLayerHeader);
+            RegisterBlock("LDBG", () => new LayerDebug(), (r, _) => ReadLayerDebug(r), WriteLayerDebug);
         }
 
         RegisterBlock("STRM", () => new AssetStream());
         {
-            RegisterBlock("DHDR", () => new StreamHeader(), (r, l) => ReadStreamHeader(r), WriteStreamHeader);
+            RegisterBlock("DHDR", () => new StreamHeader(), (r, _) => ReadStreamHeader(r), WriteStreamHeader);
             // todo: could probably benefit with serializer specific values
             RegisterBlock("DPAK", () => new StreamData(), ReadStreamData, WriteStreamData);
         }
@@ -119,8 +130,8 @@ public abstract partial class V1Serializer : IFormatSerializer
     public TBlock NewBlock<TBlock>() where TBlock : Block
     {
         // todo: these should populate children, they don't right now
-        return _initFactory.TryGetValue(typeof(TBlock), out var initHandler)
-            ? (initHandler() as TBlock)!
+        return _blockFactory.TryGetValue(typeof(TBlock), out var handler)
+            ? (handler.Init() as TBlock)!
             : throw new InvalidOperationException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
     }
 
@@ -128,15 +139,19 @@ public abstract partial class V1Serializer : IFormatSerializer
     {
         options ??= _defaultOptions;
 
-        // parse header
+        // determine block type
         string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
+        if (!_idToBlockType.TryGetValue(blockId, out var blockType))
+            throw new InvalidDataException($"Unknown block type '{blockId}' at address '{reader.BaseStream.Position - 4}'.");
+
         uint blockLength = reader.ReadEvilInt();
 
         long currentOffset = reader.BaseStream.Position;
         // parse block-specific data
-        Block block = _readFactory.TryGetValue(blockId, out var readHandler)
-            ? readHandler.Read(reader, blockLength)
-            : throw new InvalidDataException($"Unknown block type '{blockId}' at address '{reader.BaseStream.Position - 8}'.");
+        Block block = _blockFactory.TryGetValue(blockType, out var handler)
+            ? handler.Read(reader, blockLength)
+            // todo: is this the right exception type?
+            : throw new InvalidOperationException($"Block type '{blockType.Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
 
         long offset = reader.BaseStream.Position - currentOffset;
         while (offset < blockLength)
@@ -158,7 +173,7 @@ public abstract partial class V1Serializer : IFormatSerializer
             catch { }
             ;
 
-            if (options.Mode == ValidationMode.Strict && issue.Severity == ValidationSeverity.Warning)
+            if (options.Mode == ValidationMode.Strict && issue.Severity >= ValidationSeverity.Warning)
                 throw new InvalidDataException($"Strict Validation Failed: '{issue.Message}'");
         }
 
@@ -168,22 +183,24 @@ public abstract partial class V1Serializer : IFormatSerializer
     public T ReadBlock<T>(BinaryReader reader, SerializerOptions? options = null) where T : Block
     {
         long peekOffset = reader.BaseStream.Position;
-        string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
 
-        if (!_readFactory.TryGetValue(blockId, out var readHandler))
+        string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
+        if (!_idToBlockType.TryGetValue(blockId, out var blockType))
             throw new InvalidDataException($"Unknown block type '{blockId}' at address '{reader.BaseStream.Position - 4}'.");
 
-        Type actualType = readHandler.Type;
         reader.BaseStream.Position = peekOffset;
 
-        if (!typeof(T).IsAssignableFrom(actualType))
-            throw new InvalidCastException($"Read block is {actualType.Name}, expected {typeof(T).Name}.");
+        if (!typeof(T).IsAssignableFrom(blockType))
+            throw new InvalidCastException($"Read block is {blockType.Name}, expected {typeof(T).Name}.");
 
         return (ReadBlock(reader, options) as T)!;
     }
 
     public void WriteBlock(BinaryWriter writer, Block block)
     {
+        // if not valid for this serializer, just skip it
+        if (!_blockFactory.TryGetValue(block.GetType(), out var handler)) return;
+
         // all IDs are 4 bytes, this trims the null characters
         writer.Write(block.Id.ToEvilBytes()[..^2]);
 
@@ -191,8 +208,8 @@ public abstract partial class V1Serializer : IFormatSerializer
         long countOffset = writer.BaseStream.Position;
         long beginDataOffset = writer.Seek(4, SeekOrigin.Current);
 
-        if (_writeFactory.TryGetValue(block.GetType(), out var writeHandler))
-            writeHandler(writer, block);
+        // write block-specific data, if any
+        handler.Write(writer, block);
 
         foreach (var child in block.Children)
         {
@@ -202,6 +219,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         long endDataOffset = writer.BaseStream.Position;
         long blockSize = writer.BaseStream.Position - beginDataOffset;
 
+        // backtrack to write actual size
         writer.BaseStream.Seek(countOffset, SeekOrigin.Begin);
         writer.Write(Convert.ToUInt32(blockSize).ToEvilBytes());
 
@@ -241,15 +259,18 @@ public abstract partial class V1Serializer : IFormatSerializer
         Action<BinaryWriter, T>? writeHandler = null
         ) where T : Block
     {
-        _initFactory[typeof(T)] = () => initHandler();
+        readHandler ??= (_, _) => initHandler(); // no readHandler means no special logic, just init
+        writeHandler ??= (_, _) => { }; // no writeHandler means no special logic, just no-op
 
-        // if readHandler is null, there's no special data to read, so we just use the initHandler
-        _readFactory[id] = ((reader, length) => readHandler?.Invoke(reader, length) ?? initHandler(), typeof(T));
+        var handler = new BlockHandler(
+            typeof(T),
+            initHandler,
+            readHandler,
+            (w, b) => writeHandler(w, (T)b)
+            );
 
-        if (writeHandler != null)
-        {
-            _writeFactory[typeof(T)] = (writer, block) => writeHandler(writer, (T)block);
-        }
+        _blockFactory[typeof(T)] = handler;
+        _idToBlockType[id] = typeof(T);
     }
 
     protected void RegisterAsset<T>(
@@ -259,11 +280,14 @@ public abstract partial class V1Serializer : IFormatSerializer
         Action<BinaryWriter, T> writeHandler
         ) where T : Asset
     {
-        _assetFactory[type] = (
-            () => initHandler(),
-            (reader) => readHandler(reader),
-            (writer, asset) => writeHandler(writer, (T)asset)
+        var handler = new AssetHandler(
+            type,
+            initHandler,
+            readHandler,
+            (w, a) => writeHandler(w, (T)a)
             );
+
+        _assetFactory[type] = handler;
     }
 
     public TAsset NewAsset<TAsset>() where TAsset : Asset
