@@ -34,7 +34,7 @@ public abstract partial class V1Validator : IFormatValidator
         // todo: validate no assetheaders overlap
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateBlockData(Block block)
+    protected IEnumerable<ValidationIssue> ValidateBlockData(Block block)
     {
         return block switch
         {
@@ -60,6 +60,19 @@ public abstract partial class V1Validator : IFormatValidator
             StreamData data => ValidateStreamData(data),
             _ => throw new NotImplementedException()
         };
+    }
+
+    protected static IEnumerable<ValidationIssue> ValidateChildCount(Block block, int expectedCount)
+    {
+        if (block.Children.Count != expectedCount)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Error,
+                Message = $"Block type {block.GetType().Name} expects {expectedCount} children, found {block.Children.Count}.",
+                Context = block
+            };
+        }
     }
 
     public IEnumerable<ValidationIssue> ValidateAsset(Asset asset)
