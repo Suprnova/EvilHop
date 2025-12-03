@@ -5,8 +5,11 @@ namespace EvilHop.Serialization.Validation;
 
 public partial class V1Validator
 {
-    protected virtual IEnumerable<ValidationIssue> ValidateDictionary(Dictionary dictionary)
+    protected virtual IEnumerable<ValidationIssue> ValidateDictionary(Dictionary dictionary, int expectedChildrenCount = 2)
     {
+        foreach (var issue in ValidateChildCount(dictionary, expectedChildrenCount))
+            yield return issue;
+
         if (dictionary.GetChild<AssetTable>() == null)
             yield return ValidationIssue.MissingChild<Dictionary, AssetTable>(dictionary);
 
@@ -22,14 +25,20 @@ public partial class V1Validator
         // todo: validate no conflicting AssetIds (?)
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf, int expectedChildrenCount = 0)
     {
+        foreach (var issue in ValidateChildCount(inf, expectedChildrenCount))
+            yield return issue;
+
         if (inf.Value != 0x00000000)
             yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header, int expectedChildrenCount = 1)
     {
+        foreach (var issue in ValidateChildCount(header, expectedChildrenCount))
+            yield return issue;
+
         if (header.Flags.HasFlag(AssetFlags.SourceFile) && header.Flags.HasFlag(AssetFlags.SourceVirtual))
         {
             yield return new ValidationIssue
@@ -49,7 +58,7 @@ public partial class V1Validator
         {
             string assetName = header.GetChild<AssetDebug>()!.Name;
 
-            // special validation for these assets
+            // special calculation for these assets
             if (header.Type == AssetType.Animation) assetName = Path.ChangeExtension(assetName, ".anm");
             else if (header.Type == AssetType.MorphTarget) assetName = Path.ChangeExtension(assetName, ".mph");
 
@@ -84,9 +93,10 @@ public partial class V1Validator
         // todo: validate padding via AssetDebug.Alignment
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetDebug(AssetDebug debug)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetDebug(AssetDebug debug, int expectedChildrenCount = 0)
     {
-        yield break;
+        foreach (var issue in ValidateChildCount(debug, expectedChildrenCount))
+            yield return issue;
     }
 
     protected virtual IEnumerable<ValidationIssue> ValidateLayerTable(LayerTable table)
@@ -95,14 +105,20 @@ public partial class V1Validator
             yield return ValidationIssue.MissingChild<LayerTable, LayerDebug>(table);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerInf(LayerInf inf)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerInf(LayerInf inf, int expectedChildrenCount = 0)
     {
+        foreach (var issue in ValidateChildCount(inf, expectedChildrenCount))
+            yield return issue;
+
         if (inf.Value != 0x00000000)
             yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerHeader(LayerHeader header)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerHeader(LayerHeader header, int expectedChildrenCount = 1)
     {
+        foreach (var issue in ValidateChildCount(header, expectedChildrenCount))
+            yield return issue;
+
         if (header.GetChild<LayerDebug>() == null)
             yield return ValidationIssue.MissingChild<LayerHeader, LayerDebug>(header);
 
@@ -130,8 +146,11 @@ public partial class V1Validator
         }
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerDebug(LayerDebug debug)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerDebug(LayerDebug debug, int expectedChildrenCount = 0)
     {
+        foreach (var issue in ValidateChildCount(debug, expectedChildrenCount))
+            yield return issue;
+
         if (debug.Value != 0xFFFFFFFF)
             yield return ValidationIssue.UnknownValue(nameof(debug.Value), debug.Value, debug);
     }
