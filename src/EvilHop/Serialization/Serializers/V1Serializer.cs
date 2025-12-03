@@ -97,6 +97,8 @@ public abstract partial class V1Serializer : IFormatSerializer
         Dictionary dictionary = ReadBlock<Dictionary>(reader, options);
         AssetStream stream = ReadBlock<AssetStream>(reader, options);
 
+        // todo: let's read assets here with a second pass, not the final design, just to start testing asset logic
+
         HipFile hipFile = new(hipa, package, dictionary, stream);
         if (options.Mode == ValidationMode.None) return hipFile;
 
