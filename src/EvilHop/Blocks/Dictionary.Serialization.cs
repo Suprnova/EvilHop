@@ -6,6 +6,22 @@ namespace EvilHop.Serialization.Serializers;
 
 public abstract partial class V1Serializer
 {
+    protected virtual Dictionary InitDictionary()
+    {
+        return new Dictionary(
+            NewBlock<AssetTable>(),
+            NewBlock<LayerTable>()
+        );
+    }
+
+    protected virtual AssetTable InitAssetTable()
+    {
+        return new AssetTable(
+            NewBlock<AssetInf>(),
+            []
+        );
+    }
+
     protected virtual AssetInf ReadAssetInf(BinaryReader reader)
     {
         return new AssetInf(reader.ReadEvilInt());
@@ -18,7 +34,7 @@ public abstract partial class V1Serializer
 
     protected virtual AssetHeader InitAssetHeader()
     {
-        throw new NotImplementedException();
+        return new AssetHeader(NewBlock<AssetDebug>());
     }
 
     protected virtual AssetHeader ReadAssetHeader(BinaryReader reader)
@@ -63,6 +79,14 @@ public abstract partial class V1Serializer
         writer.WriteEvilInt(debug.Checksum);
     }
 
+    protected virtual LayerTable InitLayerTable()
+    {
+        return new LayerTable(
+            NewBlock<LayerInf>(),
+            []
+        );
+    }
+
     protected virtual LayerInf ReadLayerInf(BinaryReader reader)
     {
         return new LayerInf(reader.ReadEvilInt());
@@ -75,7 +99,7 @@ public abstract partial class V1Serializer
 
     protected virtual LayerHeader InitLayerHeader()
     {
-        throw new NotImplementedException();
+        return new LayerHeader(NewBlock<LayerDebug>());
     }
 
     protected virtual LayerHeader ReadLayerHeader(BinaryReader reader)

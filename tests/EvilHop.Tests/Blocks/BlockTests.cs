@@ -91,27 +91,6 @@ public class BlockTests
     }
 
     [Fact]
-    public void SetVariableChildren_ReplacesAllChildren()
-    {
-        var parent = new TestBlock(new TestBlock(), new OtherBlock());
-
-        parent.SetVariableChildren([new TestBlock(), new TestBlock()]);
-
-        Assert.Equal(2, parent.Children.Count);
-        Assert.All(parent.Children, c => Assert.IsType<TestBlock>(c));
-    }
-
-    [Fact]
-    public void SetVariableChildren_Empty_ClearsChildren()
-    {
-        var parent = new TestBlock(new TestBlock(), new OtherBlock());
-
-        parent.SetVariableChildren(Enumerable.Empty<TestBlock>());
-
-        Assert.Empty(parent.Children);
-    }
-
-    [Fact]
     public void GetChild_ReturnsFirstOccurrence_WhenMultipleExist()
     {
         var first = new TestBlock();

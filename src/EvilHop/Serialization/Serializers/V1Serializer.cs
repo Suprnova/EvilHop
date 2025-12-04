@@ -41,11 +41,10 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     protected internal V1Serializer(IFormatValidator validator)
     {
-        // todo: validate Init functions are used for anything that needs children
-        // AND make sure Read is set for those blocks, or else we initialize children while reading
+        // blocks without data but with children need a read defined, even if it's just a default constructor
+        // without it, it'll use the init handler which will populate the children a second time
         RegisterBlock("HIPA", () => new HIPA());
 
-        // can't default to InitPackage for read since it populates children
         RegisterBlock("PACK", InitPackage, (_, _) => new Package());
         {
             RegisterBlock("PVER", InitPackageVersion, (r, _) => ReadPackageVersion(r), WritePackageVersion);
@@ -55,19 +54,19 @@ public abstract partial class V1Serializer : IFormatSerializer
             RegisterBlock("PMOD", () => new PackageModified(), (r, _) => ReadPackageModified(r), WritePackageModified);
         }
 
-        RegisterBlock("DICT", () => new Dictionary());
+        RegisterBlock("DICT", InitDictionary, (_, _) => new Dictionary());
         {
-            RegisterBlock("ATOC", () => new AssetTable());
+            RegisterBlock("ATOC", InitAssetTable, (_, _) => new AssetTable());
             RegisterBlock("AINF", () => new AssetInf(), (r, _) => ReadAssetInf(r), WriteAssetInf);
             RegisterBlock("AHDR", InitAssetHeader, (r, _) => ReadAssetHeader(r), WriteAssetHeader);
             RegisterBlock("ADBG", () => new AssetDebug(), (r, _) => ReadAssetDebug(r), WriteAssetDebug);
-            RegisterBlock("LTOC", () => new LayerTable());
+            RegisterBlock("LTOC", InitLayerTable, (_, _) => new LayerTable());
             RegisterBlock("LINF", () => new LayerInf(), (r, _) => ReadLayerInf(r), WriteLayerInf);
             RegisterBlock("LHDR", InitLayerHeader, (r, _) => ReadLayerHeader(r), WriteLayerHeader);
             RegisterBlock("LDBG", () => new LayerDebug(), (r, _) => ReadLayerDebug(r), WriteLayerDebug);
         }
 
-        RegisterBlock("STRM", () => new AssetStream());
+        RegisterBlock("STRM", InitAssetStream, (_, _) => new AssetStream());
         {
             RegisterBlock("DHDR", () => new StreamHeader(), (r, _) => ReadStreamHeader(r), WriteStreamHeader);
             // todo: could probably benefit with serializer specific values
@@ -131,7 +130,6 @@ public abstract partial class V1Serializer : IFormatSerializer
 
     public TBlock NewBlock<TBlock>() where TBlock : Block
     {
-        // todo: these should populate children, they don't right now
         return _blockFactory.TryGetValue(typeof(TBlock), out var handler)
             ? (handler.Init() as TBlock)!
             : throw new InvalidOperationException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");

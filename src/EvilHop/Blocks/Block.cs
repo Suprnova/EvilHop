@@ -66,7 +66,10 @@ public abstract class Block
 
     public void SetVariableChildren<T>(IEnumerable<T> values) where T : Block
     {
-        Children.Clear();
+        foreach (var child in Children.OfType<T>().ToList())
+        {
+            Children.Remove(child);
+        }
         foreach (var value in values) AddChild(value);
     }
 }

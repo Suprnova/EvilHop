@@ -19,6 +19,14 @@ public class AssetStream : Block
     internal AssetStream()
     {
     }
+
+    public AssetStream(StreamHeader header, StreamData data)
+    {
+        Children.AddRange([
+            header,
+            data
+        ]);
+    }
 }
 
 public class StreamHeader(uint value) : Block

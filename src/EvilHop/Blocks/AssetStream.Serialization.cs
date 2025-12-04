@@ -5,6 +5,14 @@ namespace EvilHop.Serialization.Serializers;
 
 public abstract partial class V1Serializer
 {
+    protected virtual AssetStream InitAssetStream()
+    {
+        return new AssetStream(
+            NewBlock<StreamHeader>(),
+            NewBlock<StreamData>()
+        );
+    }
+
     protected virtual StreamHeader ReadStreamHeader(BinaryReader reader)
     {
         return new StreamHeader

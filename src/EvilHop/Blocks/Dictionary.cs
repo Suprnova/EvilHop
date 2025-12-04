@@ -49,6 +49,14 @@ public class Dictionary : Block
     internal Dictionary()
     {
     }
+
+    public Dictionary(AssetTable assetTable, LayerTable layerTable)
+    {
+        Children.AddRange([
+            assetTable,
+            layerTable
+        ]);
+    }
 }
 
 public class AssetTable : Block
@@ -69,6 +77,12 @@ public class AssetTable : Block
 
     internal AssetTable()
     {
+    }
+
+    public AssetTable(AssetInf assetInf, IEnumerable<AssetHeader> assetHeaders)
+    {
+        Children.Add(assetInf);
+        Children.AddRange(assetHeaders);
     }
 }
 
@@ -103,6 +117,11 @@ public class AssetHeader : Block
 
     internal AssetHeader()
     {
+    }
+
+    internal AssetHeader(AssetDebug debug)
+    {
+        Children.Add(debug);
     }
 }
 
@@ -140,6 +159,12 @@ public class LayerTable : Block
     internal LayerTable()
     {
     }
+
+    public LayerTable(LayerInf layerInf, IEnumerable<LayerHeader> layerHeaders)
+    {
+        Children.Add(layerInf);
+        Children.AddRange(layerHeaders);
+    }
 }
 
 public class LayerInf(uint value) : Block
@@ -170,6 +195,11 @@ public class LayerHeader : Block
 
     internal LayerHeader()
     {
+    }
+
+    internal LayerHeader(LayerDebug layerDebug)
+    {
+        Children.Add(layerDebug);
     }
 }
 
