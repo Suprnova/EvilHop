@@ -53,7 +53,13 @@ public partial class V1Validator
             yield return ValidationIssue.UnknownValue(nameof(header.Flags), (uint)header.Flags, header);
 
         if (header.GetChild<AssetDebug>() == null)
+        {
             yield return ValidationIssue.MissingChild<AssetHeader, AssetDebug>(header);
+            if (!Enum.IsDefined(header.Type))
+            {
+                yield return ValidationIssue.UnknownValue(nameof(header.Type), (uint)header.Type, header);
+            }
+        }
         else
         {
             string assetName = header.GetChild<AssetDebug>()!.Name;
@@ -69,6 +75,16 @@ public partial class V1Validator
                 {
                     Severity = ValidationSeverity.Warning,
                     Message = $"Unexpected ID for '{assetName}' of '{header.AssetId}', expected '{expectedHash}'.",
+                    Context = header
+                };
+            }
+
+            if (!Enum.IsDefined(header.Type))
+            {
+                yield return new ValidationIssue
+                {
+                    Severity = ValidationSeverity.Error,
+                    Message = $"Unknown '{typeof(AssetType).Name}' of '{(uint)header.Type}' in asset '{assetName}'.",
                     Context = header
                 };
             }
