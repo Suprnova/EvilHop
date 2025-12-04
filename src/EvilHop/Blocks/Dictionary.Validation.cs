@@ -5,9 +5,9 @@ namespace EvilHop.Serialization.Validation;
 
 public partial class V1Validator
 {
-    protected virtual IEnumerable<ValidationIssue> ValidateDictionary(Dictionary dictionary, int expectedChildrenCount = 2)
+    protected virtual IEnumerable<ValidationIssue> ValidateDictionary(Dictionary dictionary)
     {
-        foreach (var issue in ValidateChildCount(dictionary, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(dictionary, GetExpectedChildCount(dictionary)))
             yield return issue;
 
         if (dictionary.GetChild<AssetTable>() == null)
@@ -25,18 +25,18 @@ public partial class V1Validator
         // todo: validate no conflicting AssetIds (?)
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetInf(AssetInf inf)
     {
-        foreach (var issue in ValidateChildCount(inf, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(inf, GetExpectedChildCount(inf)))
             yield return issue;
 
         if (inf.Value != 0x00000000)
             yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header, int expectedChildrenCount = 1)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetHeader(AssetHeader header)
     {
-        foreach (var issue in ValidateChildCount(header, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(header, GetExpectedChildCount(header)))
             yield return issue;
 
         if (header.Flags.HasFlag(AssetFlags.SourceFile) && header.Flags.HasFlag(AssetFlags.SourceVirtual))
@@ -63,7 +63,7 @@ public partial class V1Validator
             else if (header.Type == AssetType.MorphTarget) assetName = Path.ChangeExtension(assetName, ".mph");
 
             uint expectedHash = BKDRHash.Calculate(assetName);
-            if (expectedHash != header.AssetId && header.Debug.Name.Length < 31)
+            if (expectedHash != header.AssetId && assetName.Length < 31)
             {
                 yield return new ValidationIssue
                 {
@@ -93,9 +93,9 @@ public partial class V1Validator
         // todo: validate padding via AssetDebug.Alignment
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateAssetDebug(AssetDebug debug, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidateAssetDebug(AssetDebug debug)
     {
-        foreach (var issue in ValidateChildCount(debug, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(debug, GetExpectedChildCount(debug)))
             yield return issue;
     }
 
@@ -105,18 +105,18 @@ public partial class V1Validator
             yield return ValidationIssue.MissingChild<LayerTable, LayerDebug>(table);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerInf(LayerInf inf, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerInf(LayerInf inf)
     {
-        foreach (var issue in ValidateChildCount(inf, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(inf, GetExpectedChildCount(inf)))
             yield return issue;
 
         if (inf.Value != 0x00000000)
             yield return ValidationIssue.UnknownValue(nameof(inf.Value), inf.Value, inf);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerHeader(LayerHeader header, int expectedChildrenCount = 1)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerHeader(LayerHeader header)
     {
-        foreach (var issue in ValidateChildCount(header, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(header, GetExpectedChildCount(header)))
             yield return issue;
 
         if (header.GetChild<LayerDebug>() == null)
@@ -146,14 +146,22 @@ public partial class V1Validator
         }
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidateLayerDebug(LayerDebug debug, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidateLayerDebug(LayerDebug debug)
     {
-        foreach (var issue in ValidateChildCount(debug, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(debug, GetExpectedChildCount(debug)))
             yield return issue;
 
         if (debug.Value != 0xFFFFFFFF)
             yield return ValidationIssue.UnknownValue(nameof(debug.Value), debug.Value, debug);
     }
+
+    protected virtual int GetExpectedChildCount(Dictionary dictionary) => 2;
+    protected virtual int GetExpectedChildCount(AssetInf inf) => 0;
+    protected virtual int GetExpectedChildCount(AssetHeader header) => 1;
+    protected virtual int GetExpectedChildCount(AssetDebug debug) => 0;
+    protected virtual int GetExpectedChildCount(LayerInf inf) => 0;
+    protected virtual int GetExpectedChildCount(LayerHeader header) => 1;
+    protected virtual int GetExpectedChildCount(LayerDebug debug) => 0;
 }
 
 public partial class V2Validator

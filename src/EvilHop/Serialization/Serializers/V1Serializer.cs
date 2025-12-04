@@ -151,7 +151,8 @@ public abstract partial class V1Serializer : IFormatSerializer
         long currentOffset = reader.BaseStream.Position;
         // parse block-specific data
         Block block = _blockFactory.TryGetValue(blockType, out var handler)
-            ? handler.Read(reader, blockLength)
+            // done for scenarios like empty DPAKs, might apply elsewhere
+            ? blockLength == 0 ? handler.Init() : handler.Read(reader, blockLength)
             // todo: is this the right exception type?
             : throw new InvalidOperationException($"Block type '{blockType.Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
 
@@ -326,4 +327,10 @@ public partial class ScoobyPrototypeSerializer() : V1Serializer(new ScoobyProtot
 public partial class ScoobySerializer() : V1Serializer(new ScoobyValidator())
 {
     protected override PackageVersion InitPackageVersion() => new(ClientVersion.N100FRelease);
+}
+
+// weird edge case for battle's font2.hip
+public partial class BattleV1Serializer() : V1Serializer(new BattleV1Validator())
+{
+    protected override PackageVersion InitPackageVersion() => new(ClientVersion.Default);
 }

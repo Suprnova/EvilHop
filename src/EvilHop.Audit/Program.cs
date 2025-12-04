@@ -5,7 +5,7 @@ using EvilHop.Serialization;
 string ARTIFACTS_FOLDER = Path.GetFullPath("../../../../../artifacts");
 string US_GC_RELEASE = Path.Combine("release", "GC", "NTSC-U", "US");
 
-string SCOOBY_GC_FOLDER = Path.Combine(ARTIFACTS_FOLDER, "n100f", US_GC_RELEASE);
+string BATTLE_GC_FOLDER = Path.Combine(ARTIFACTS_FOLDER, "bfbb", US_GC_RELEASE);
 
 SerializerOptions options = new()
 {
@@ -13,9 +13,9 @@ SerializerOptions options = new()
     OnValidationIssue = (i) => Console.WriteLine($"[{i.Severity}] - {i.Message}")
 };
 
-string[] scoobyFiles = Directory.GetFiles(SCOOBY_GC_FOLDER, "*.HIP", SearchOption.AllDirectories);
+string[] battleFiles = Directory.GetFiles(BATTLE_GC_FOLDER, "*.HIP", SearchOption.AllDirectories);
 
-foreach (string file in scoobyFiles)
+foreach (string file in battleFiles)
 {
     Console.WriteLine(Path.GetFileName(file));
     using BinaryReader reader = new(File.Open(file, FileMode.Open));
@@ -25,11 +25,11 @@ foreach (string file in scoobyFiles)
     HipFile hipFile = serializer.ReadHip(reader, options);
     Archive archive = new(hipFile, serializer);
 
-    foreach (var asset in archive.Assets)
-    {
-        Console.WriteLine($"{asset.Name} - {asset.FileName} - {asset.Type}");
-        _ = asset.GetBytes();
-    }
+    //foreach (var asset in archive.Assets)
+    //{
+    //    Console.WriteLine($"{asset.Name} - {asset.FileName} - {asset.Type}");
+    //    _ = asset.GetBytes();
+    //}
 
     using BinaryWriter writer = new(new MemoryStream());
     serializer.WriteHip(writer, hipFile);

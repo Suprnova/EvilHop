@@ -9,17 +9,12 @@ public abstract partial class V2Serializer : V1Serializer
     {
         RegisterBlock("PLAT", InitPackagePlatform, (r, l) => ReadPackagePlatform(r), WritePackagePlatform);
     }
-
-    // todo: will be abstract, implemented per serializer
-    protected virtual PackagePlatform InitPackagePlatform()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override PackageVersion InitPackageVersion() => new(ClientVersion.Default);
 }
 
-// todo: replace with BattleValidator
-public partial class BattleSerializer() : V2Serializer(new ScoobyValidator())
+public partial class BattleSerializer() : V2Serializer(new BattleValidator())
 {
+    protected override PackagePlatform InitPackagePlatform()
+    {
+        return new PackagePlatform("GC", "GameCube", "NTSC", "US Common", "Sponge Bob");
+    }
 }

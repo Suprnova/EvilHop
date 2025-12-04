@@ -30,13 +30,13 @@ public abstract partial class V1Serializer
 
     protected virtual PackageFlags InitPackageFlags()
     {
-        return new PackageFlags(PFLG_Flags.Default);
+        return new PackageFlags(PackFlags.Default);
     }
 
     protected virtual PackageFlags ReadPackageFlags(BinaryReader reader)
     {
         return new PackageFlags(
-            (PFLG_Flags)reader.ReadEvilInt()
+            (PackFlags)reader.ReadEvilInt()
         );
     }
 
@@ -97,6 +97,8 @@ public abstract partial class V1Serializer
 
 public partial class V2Serializer
 {
+    protected override PackageVersion InitPackageVersion() => new(ClientVersion.Default);
+
     protected override void WritePackageCreated(BinaryWriter writer, PackageCreated created)
     {
         // todo: implement timezone (UTC-7)
@@ -104,7 +106,52 @@ public partial class V2Serializer
         writer.WriteEvilString(created.CreatedDateString);
     }
 
-    protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader) => throw new NotImplementedException();
+    protected abstract PackagePlatform InitPackagePlatform();
 
-    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform) => throw new NotImplementedException();
+    protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader)
+    {
+        return new PackagePlatform(
+            reader.ReadEvilString(),
+            reader.ReadEvilString(),
+            reader.ReadEvilString(),
+            reader.ReadEvilString(),
+            reader.ReadEvilString()
+        );
+    }
+
+    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
+    {
+        writer.WriteEvilString(platform.PlatformID);
+        // will produce an invalid block in v2 if null, but that's by design. user explicitly chose to do this,
+        // validation will warn them but i won't stop them.
+        if (platform.PlatformName is not null) writer.WriteEvilString(platform.PlatformName);
+        writer.WriteEvilString(platform.Region);
+        writer.WriteEvilString(platform.Language);
+        writer.WriteEvilString(platform.GameName);
+    }
+}
+
+public partial class V3Serializer
+{
+    protected override PackagePlatform ReadPackagePlatform(BinaryReader reader)
+    {
+        return new PackagePlatform
+        {
+            PlatformID = reader.ReadEvilString(),
+            Language = reader.ReadEvilString(),
+            Region = reader.ReadEvilString(),
+            GameName = reader.ReadEvilString(),
+            PlatformName = null
+        };
+    }
+
+    protected override void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
+    {
+        writer.WriteEvilString(platform.PlatformID);
+        // will be invalid in v3 if not null by design
+        if (platform.PlatformName is not null) writer.WriteEvilString(platform.PlatformName);
+        writer.WriteEvilString(platform.Language);
+        writer.WriteEvilString(platform.Region);
+        writer.WriteEvilString(platform.GameName);
+    }
 }

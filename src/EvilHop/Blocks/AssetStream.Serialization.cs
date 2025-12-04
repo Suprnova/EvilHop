@@ -33,6 +33,7 @@ public abstract partial class V1Serializer
 
     protected virtual void WriteStreamData(BinaryWriter writer, StreamData data)
     {
+        // todo: no parity with an empty DPAK (yet)
         writer.WriteEvilInt(data.PaddingAmount);
         writer.Write(Enumerable.Repeat((byte)0x33, (int)data.PaddingAmount).ToArray());
         writer.Write(data.Data);

@@ -21,6 +21,16 @@ public class ValidationIssue
         };
     }
 
+    public static ValidationIssue MissingValue<TBlock>(String field, TBlock context) where TBlock : Block
+    {
+        return new ValidationIssue
+        {
+            Severity = ValidationSeverity.Error,
+            Message = $"{field} in block type {typeof(TBlock).Name} is missing.",
+            Context = context
+        };
+    }
+
     public static ValidationIssue UnknownValue<TBlock>(String field, Object value, TBlock context) where TBlock : Block
     {
         return new ValidationIssue

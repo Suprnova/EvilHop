@@ -88,3 +88,7 @@ public partial class ScoobyPrototypeValidator : V1Validator
 public partial class ScoobyValidator : V1Validator
 {
 }
+
+public partial class BattleV1Validator : V1Validator
+{
+}

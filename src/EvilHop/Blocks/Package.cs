@@ -9,7 +9,7 @@ public enum ClientVersion : uint
 
 // TODO: validate
 [Flags]
-public enum PFLG_Flags : uint
+public enum PackFlags : uint
 {
     Unknown2 = 1U << 1,
     Unknown3 = 1U << 2,
@@ -24,7 +24,6 @@ public enum PFLG_Flags : uint
     Unknown23 = 1U << 22,
     Unknown25 = 1U << 24,
     Unknown26 = 1U << 25,
-    // todo: these are additive, probably should create values for their sums
     Default = Unknown2 | Unknown3 | Unknown4 | Unknown6,
     DE_PS2_BFBB = Unknown21 | Unknown19,
     US_GC_BFBB = Unknown22 | Unknown20 | Unknown17,
@@ -109,11 +108,11 @@ public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint c
     }
 }
 
-public class PackageFlags(PFLG_Flags flags) : Block
+public class PackageFlags(PackFlags flags) : Block
 {
     protected internal override string Id => "PFLG";
 
-    public PFLG_Flags Flags { get; set; } = flags;
+    public PackFlags Flags { get; set; } = flags;
 }
 
 public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, uint maxLayerSize, uint maxXFormAssetSize) : Block
@@ -177,7 +176,7 @@ public class PackageModified(DateTime modifiedDate) : Block
     }
 }
 
-public class PackagePlatform(string platformId, string region, string language, string gameName, string? platformName = null) : Block
+public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
 {
     protected internal override string Id => "PLAT";
 
@@ -186,4 +185,8 @@ public class PackagePlatform(string platformId, string region, string language, 
     public string Region { get; set; } = region;
     public string Language { get; set; } = language;
     public string GameName { get; set; } = gameName;
+
+    internal PackagePlatform() : this("", null, "", "", "")
+    {
+    }
 }

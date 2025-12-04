@@ -4,9 +4,9 @@ namespace EvilHop.Serialization.Validation;
 
 public partial class V1Validator
 {
-    protected virtual IEnumerable<ValidationIssue> ValidatePackage(Package package, int expectedChildrenCount = 5)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackage(Package package)
     {
-        foreach (var issue in ValidateChildCount(package, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(package, GetExpectedChildCount(package)))
             yield return issue;
 
         if (package.GetChild<PackageVersion>() == null)
@@ -25,9 +25,9 @@ public partial class V1Validator
             yield return ValidationIssue.MissingChild<Package, PackageModified>(package);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackageVersion(PackageVersion version, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackageVersion(PackageVersion version)
     {
-        foreach (var issue in ValidateChildCount(version, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(version, GetExpectedChildCount(version)))
             yield return issue;
 
         if (version.SubVersion != 0x00000002)
@@ -45,38 +45,37 @@ public partial class V1Validator
 
     protected abstract IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version);
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackageFlags(PackageFlags flags, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackageFlags(PackageFlags flags)
     {
-        foreach (var issue in ValidateChildCount(flags, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(flags, GetExpectedChildCount(flags)))
             yield return issue;
 
-        // todo: this should check for undefined flags, combinations should be alright
-        // or we could check for both i dunno
-        if (!Enum.IsDefined(flags.Flags))
+        PackFlags allPackFlags = Enum.GetValues<PackFlags>().Aggregate((a, b) => a | b);
+        if ((flags.Flags & ~allPackFlags) != 0)
             yield return ValidationIssue.UnknownValue(nameof(flags.Flags), (uint)flags.Flags, flags);
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackageCount(PackageCount count, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackageCount(PackageCount count)
     {
-        foreach (var issue in ValidateChildCount(count, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(count, GetExpectedChildCount(count)))
             yield return issue;
 
         // most of this validation (ensuring counts line up) is done on the root (HipFile) level
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackageCreated(PackageCreated created, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackageCreated(PackageCreated created)
     {
-        foreach (var issue in ValidateChildCount(created, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(created, GetExpectedChildCount(created)))
             yield return issue;
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackageModified(PackageModified modified, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackageModified(PackageModified modified)
     {
-        foreach (var issue in ValidateChildCount(modified, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(modified, GetExpectedChildCount(modified)))
             yield return issue;
     }
 
-    protected virtual IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform, int expectedChildrenCount = 0)
+    protected virtual IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
     {
         yield return new ValidationIssue
         {
@@ -85,6 +84,15 @@ public partial class V1Validator
             Context = platform
         };
     }
+
+    // helper methods to get expected child counts, can be overridden by derived validators
+    protected virtual int GetExpectedChildCount(Package package) => 5;
+    protected virtual int GetExpectedChildCount(PackageVersion version) => 0;
+    protected virtual int GetExpectedChildCount(PackageFlags flags) => 0;
+    protected virtual int GetExpectedChildCount(PackageCount count) => 0;
+    protected virtual int GetExpectedChildCount(PackageCreated created) => 0;
+    protected virtual int GetExpectedChildCount(PackageModified modified) => 0;
+    protected virtual int GetExpectedChildCount(PackagePlatform platform) => 0;
 }
 
 public partial class ScoobyPrototypeValidator
@@ -119,16 +127,35 @@ public partial class ScoobyValidator
     }
 }
 
+public partial class BattleV1Validator
+{
+    protected override IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version)
+    {
+        if (version.ClientVersion != ClientVersion.Default)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Warning,
+                Message = $"ClientVersion '{version.ClientVersion}' is not valid for Battle V1, expected '{ClientVersion.Default}'.",
+                Context = version
+            };
+        }
+    }
+}
+
 public partial class V2Validator
 {
-    protected override IEnumerable<ValidationIssue> ValidatePackage(Package package, int expectedChildCount = 6)
+    protected override IEnumerable<ValidationIssue> ValidatePackage(Package package)
     {
-        foreach (var issue in base.ValidatePackage(package, expectedChildCount))
+        foreach (var issue in base.ValidatePackage(package))
             yield return issue;
 
         if (package.GetChild<PackagePlatform>() == null)
             yield return ValidationIssue.MissingChild<Package, PackagePlatform>(package);
     }
+
+    // add Platform block to expected child count
+    protected override int GetExpectedChildCount(Package package) => base.GetExpectedChildCount(package) + 1;
 
     protected override IEnumerable<ValidationIssue> ValidateClientVersion(PackageVersion version)
     {
@@ -143,9 +170,33 @@ public partial class V2Validator
         }
     }
 
-    protected override IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform, int expectedChildrenCount = 0)
+    protected override IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
     {
-        foreach (var issue in ValidateChildCount(platform, expectedChildrenCount))
+        foreach (var issue in ValidateChildCount(platform, GetExpectedChildCount(platform)))
             yield return issue;
+
+        if (platform.PlatformName is null)
+            yield return ValidationIssue.MissingValue(nameof(platform.PlatformName), platform);
+
+        // todo: add validation for game fields to game validators
+    }
+}
+
+public partial class V3Validator
+{
+    protected override IEnumerable<ValidationIssue> ValidatePackagePlatform(PackagePlatform platform)
+    {
+        foreach (var issue in ValidateChildCount(platform, GetExpectedChildCount(platform)))
+            yield return issue;
+
+        if (platform.PlatformName is not null)
+        {
+            yield return new ValidationIssue
+            {
+                Severity = ValidationSeverity.Error,
+                Message = $"Unexpected non-null value '{platform.PlatformName}' in field '{nameof(platform.PlatformName)}'.",
+                Context = platform
+            };
+        }
     }
 }
