@@ -5,6 +5,7 @@ namespace EvilHop.Serialization.Validation;
 
 public abstract partial class V1Validator : IFormatValidator
 {
+    protected internal abstract FileFormatVersion Version { get; }
     protected internal V1Validator()
     {
     }
@@ -83,12 +84,15 @@ public abstract partial class V1Validator : IFormatValidator
 
 public partial class ScoobyPrototypeValidator : V1Validator
 {
+    protected internal override FileFormatVersion Version => FileFormatVersion.ScoobyPrototype;
 }
 
 public partial class ScoobyValidator : V1Validator
 {
+    protected internal override FileFormatVersion Version => FileFormatVersion.Scooby;
 }
 
 public partial class BattleV1Validator : V1Validator
 {
+    protected internal override FileFormatVersion Version => FileFormatVersion.BattleV1;
 }

@@ -9,4 +9,5 @@ public abstract partial class V2Validator : V1Validator
 
 public partial class BattleValidator : V2Validator
 {
+    protected internal override FileFormatVersion Version => FileFormatVersion.Battle;
 }

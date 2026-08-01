@@ -84,7 +84,7 @@ public partial class V1Validator
                 yield return new ValidationIssue
                 {
                     Severity = ValidationSeverity.Error,
-                    Message = $"Unknown '{typeof(AssetType).Name}' of '{(uint)header.Type}' in asset '{assetName}'.",
+                    Message = $"Unknown '{typeof(AssetType).Name}' of '{(uint)header.Type}' for asset '{assetName}'.",
                     Context = header
                 };
             }

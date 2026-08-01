@@ -15,8 +15,7 @@ public enum LayerType : uint
     SoundTable,
     Cutscene,
     CutsceneTable,
-    JSPInfo,
-    Unknown = uint.MaxValue
+    JSPInfo
 }
 
 [Flags]

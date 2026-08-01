@@ -104,7 +104,6 @@ public abstract partial class V1Serializer
 
     protected virtual LayerHeader ReadLayerHeader(BinaryReader reader)
     {
-        // todo: uhhhhh drop LayerType.Unknown stuff, we shouldn't alter the stuff we read in
         uint layerValue = reader.ReadEvilInt();
         LayerType layerType = layerValue switch
         {
