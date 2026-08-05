@@ -1,6 +1,7 @@
 ﻿using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Serialization.Serializers;
 
@@ -121,6 +122,8 @@ public abstract partial class V1Serializer
         };
 
         uint assetCount = reader.ReadEvilInt();
+        ReaderGuard.EnsureAvailable(reader, (ulong)assetCount * sizeof(uint), "LHDR asset id table");
+
         uint[] assetIds = new uint[assetCount];
         for (int i = 0; i < assetCount; i++)
             assetIds[i] = reader.ReadEvilInt();

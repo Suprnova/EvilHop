@@ -23,6 +23,12 @@ public abstract partial class V1Serializer : IFormatSerializer
         Action<BinaryWriter, Asset> Write
     );
 
+    /// <summary>
+    /// The maximum depth of nested blocks accepted while reading, guarding against stack exhaustion
+    /// from deeply nested (or malformed) files.
+    /// </summary>
+    protected const int MaxBlockDepth = 32;
+
     protected readonly SerializerOptions _defaultOptions = new();
     protected readonly IFormatValidator _validator;
 
@@ -135,9 +141,14 @@ public abstract partial class V1Serializer : IFormatSerializer
             : throw new InvalidOperationException($"Block type '{typeof(TBlock).Name}' is not valid for this {typeof(IFormatSerializer).Name}.");
     }
 
-    public Block ReadBlock(BinaryReader reader, SerializerOptions? options = null)
+    public Block ReadBlock(BinaryReader reader, SerializerOptions? options = null) => ReadBlock(reader, options, 0);
+
+    private Block ReadBlock(BinaryReader reader, SerializerOptions? options, int depth)
     {
         options ??= _defaultOptions;
+
+        if (depth > MaxBlockDepth)
+            throw new InvalidDataException($"Block nesting exceeds the maximum depth of {MaxBlockDepth} at address '{reader.BaseStream.Position}'.");
 
         // determine block type
         string blockId = Encoding.ASCII.GetString(reader.ReadBytes(4));
@@ -157,7 +168,7 @@ public abstract partial class V1Serializer : IFormatSerializer
         long offset = reader.BaseStream.Position - currentOffset;
         while (offset < blockLength)
         {
-            block.Children.Add(ReadBlock(reader));
+            block.Children.Add(ReadBlock(reader, null, depth + 1));
             offset = reader.BaseStream.Position - currentOffset;
         }
 
