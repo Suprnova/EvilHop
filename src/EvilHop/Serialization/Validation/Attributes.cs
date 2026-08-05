@@ -128,20 +128,12 @@ internal static class ValidationAttributesCache
             .Where(prop => prop.CanRead)
             .ToList();
 
-        var requiredChildren = new List<RequiredChildAttribute>();
-        foreach (var prop in properties)
-        {
-            var requiredChild = prop.GetCustomAttribute<RequiredChildAttribute>(inherit: false);
-            if (requiredChild is null) continue;
-
-            requiredChild.ChildType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-            requiredChildren.Add(requiredChild);
-        }
-
         return new TypeValidationAttributes
         {
             ChildCounts = [.. type.GetCustomAttributes<ExpectedChildCountAttribute>(inherit: false)],
-            RequiredChildren = requiredChildren,
+            RequiredChildren = [.. properties
+                .Select(prop => BindChildType(prop.GetCustomAttribute<RequiredChildAttribute>(inherit: false), prop))
+                .OfType<RequiredChildAttribute>()],
             Fields = properties
                 .Select(prop => (prop, rules: new FieldValidationAttributes
                 {
@@ -154,6 +146,17 @@ internal static class ValidationAttributesCache
                             || kvp.rules.VersionRanges.Count > 0)
                 .ToDictionary(kvp => kvp.prop, kvp => kvp.rules)
         };
+    }
+
+    /// <summary>
+    /// Derives the required child type from the decorated property, unwrapping nullable value types.
+    /// </summary>
+    private static RequiredChildAttribute? BindChildType(RequiredChildAttribute? attribute, PropertyInfo property)
+    {
+        if (attribute is null) return null;
+
+        attribute.ChildType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        return attribute;
     }
 }
 
