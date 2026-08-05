@@ -4,18 +4,18 @@ using EvilHop.Serialization.Validation;
 namespace EvilHop.Blocks;
 
 [ExpectedChildCount(2)]
-[RequiredChild(typeof(StreamHeader))]
-[RequiredChild(typeof(StreamData))]
 public class AssetStream : Block
 {
     protected internal override string Id => "STRM";
 
+    [RequiredChild]
     public StreamHeader Header
     {
         get => GetRequiredChild<StreamHeader>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public StreamData Data
     {
         get => GetRequiredChild<StreamData>();
