@@ -14,20 +14,32 @@ public class HIPATests
 
     private static readonly byte[] validHIPA = [0x48, 0x49, 0x50, 0x41, 0x00, 0x00, 0x00, 0x00];
 
+    private static string FormatValidationIssues(IEnumerable<ValidationIssue> issues)
+    {
+        return string.Join("; ", issues.Select(i => $"[{i.Severity}] {i.Message}"));
+    }
+
     [Fact]
     public void EmptyConstructor_IsValid()
     {
         HIPA hipa = new();
 
         foreach (var s in serializers)
-            Assert.True(hipa.IsValid(s, out _));
+        {
+            Assert.True(hipa.IsValid(s, out var issues), 
+                $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
+        }
     }
 
     [Fact]
     public void IFormatSerializer_New_IsValid()
     {
         foreach (var s in serializers)
-            Assert.True(s.NewBlock<HIPA>().IsValid(s, out _));
+        {
+            var hipa = s.NewBlock<HIPA>();
+            Assert.True(hipa.IsValid(s, out var issues), 
+                $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
+        }
     }
 
     [Fact]
@@ -38,7 +50,9 @@ public class HIPATests
         foreach (var s in serializers)
         {
             reader.BaseStream.Position = 0;
-            Assert.True(s.ReadBlock<HIPA>(reader).IsValid(s, out _));
+            var hipa = s.ReadBlock<HIPA>(reader);
+            Assert.True(hipa.IsValid(s, out var issues), 
+                $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
 

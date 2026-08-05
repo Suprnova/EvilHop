@@ -7,6 +7,11 @@ public class HipFileTests
 {
     private readonly IFormatSerializer _v1 = FileFormatFactory.GetSerializer(FileFormatVersion.Scooby);
 
+    private static string FormatValidationIssues(IEnumerable<ValidationIssue> issues)
+    {
+        return string.Join("; ", issues.Select(i => $"[{i.Severity}] {i.Message}"));
+    }
+
     [Theory(Skip = "pending better testing solution, to include stream")]
     [InlineData(
         new byte[]
@@ -53,7 +58,8 @@ public class HipFileTests
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
         HipFile hip = _v1.ReadHip(reader);
-        Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues));
+        Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues), 
+            $"HipFile validation failed. Issues: {FormatValidationIssues(issues)}");
         Assert.Empty(issues); // pending BKDR algorithm
         byte[] write = new byte[bytes.Length];
         using BinaryWriter writer = new(new MemoryStream(write));
