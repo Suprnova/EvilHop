@@ -39,46 +39,46 @@ public enum PackFlags : uint
 
 [ExpectedChildCount(5, MinVersion = FileFormatVersion.ScoobyPrototype, MaxVersion = FileFormatVersion.BattleV1)]
 [ExpectedChildCount(6, MinVersion = FileFormatVersion.Battle)]
-[RequiredChild(typeof(PackageVersion))]
-[RequiredChild(typeof(PackageFlags))]
-[RequiredChild(typeof(PackageCount))]
-[RequiredChild(typeof(PackageCreated))]
-[RequiredChild(typeof(PackageModified))]
-[RequiredChild(typeof(PackagePlatform), MinVersion = FileFormatVersion.Battle)]
 public class Package : Block
 {
     protected internal override string Id => "PACK";
 
+    [RequiredChild]
     public PackageVersion Versions
     {
         get => GetRequiredChild<PackageVersion>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public PackageFlags Flags
     {
         get => GetRequiredChild<PackageFlags>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public PackageCount Counts
     {
         get => GetRequiredChild<PackageCount>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public PackageCreated Created
     {
         get => GetRequiredChild<PackageCreated>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public PackageModified Modified
     {
         get => GetRequiredChild<PackageModified>();
         set => SetChild(value);
     }
 
+    [RequiredChild(MinVersion = FileFormatVersion.Battle)]
     public PackagePlatform? Platform
     {
         get => GetChild<PackagePlatform>();

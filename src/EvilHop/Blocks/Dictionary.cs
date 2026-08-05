@@ -32,18 +32,18 @@ public enum AssetFlags : uint
 }
 
 [ExpectedChildCount(2)]
-[RequiredChild(typeof(AssetTable))]
-[RequiredChild(typeof(LayerTable))]
 public class Dictionary : Block
 {
     protected internal override string Id => "DICT";
 
+    [RequiredChild]
     public AssetTable AssetTable
     {
         get => GetRequiredChild<AssetTable>();
         set => SetChild(value);
     }
 
+    [RequiredChild]
     public LayerTable LayerTable
     {
         get => GetRequiredChild<LayerTable>();
@@ -63,11 +63,11 @@ public class Dictionary : Block
     }
 }
 
-[RequiredChild(typeof(AssetInf))]
 public class AssetTable : Block
 {
     protected internal override string Id => "ATOC";
 
+    [RequiredChild]
     public AssetInf AssetInf
     {
         get => GetRequiredChild<AssetInf>();
@@ -105,11 +105,11 @@ public class AssetInf(uint value) : Block
 }
 
 [ExpectedChildCount(1)]
-[RequiredChild(typeof(AssetDebug))]
 public class AssetHeader : Block
 {
     protected internal override string Id => "AHDR";
 
+    [RequiredChild]
     public AssetDebug Debug
     {
         get => GetRequiredChild<AssetDebug>();
@@ -150,11 +150,11 @@ public class AssetDebug(uint alignment, string name, string fileName, uint check
     }
 }
 
-[RequiredChild(typeof(LayerInf))]
 public class LayerTable : Block
 {
     protected internal override string Id => "LTOC";
 
+    [RequiredChild]
     public LayerInf LayerInf
     {
         get => GetRequiredChild<LayerInf>();
@@ -192,11 +192,11 @@ public class LayerInf(uint value) : Block
 }
 
 [ExpectedChildCount(1)]
-[RequiredChild(typeof(LayerDebug))]
 public class LayerHeader : Block
 {
     protected internal override string Id => "LHDR";
 
+    [RequiredChild]
     public LayerDebug LayerDebug
     {
         get => GetRequiredChild<LayerDebug>();
