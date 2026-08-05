@@ -102,13 +102,16 @@ public sealed class ExpectedChildCountAttribute(int count) : VersionedValidation
 }
 
 /// <summary>
-/// Specifies that a block must have a child of a specific type.
+/// Specifies that the block declaring the decorated member must have a child of the member's type.
 /// </summary>
-/// <param name="childType">The type of child block that is required.</param>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class RequiredChildAttribute(Type childType) : VersionedValidationAttribute()
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+public sealed class RequiredChildAttribute : VersionedValidationAttribute
 {
-    public Type ChildType { get; } = childType;
+    /// <summary>
+    /// The type of child block that is required, derived from the decorated member's type.
+    /// </summary>
+    public Type ChildType { get; internal set; } = typeof(object);
+
     public override ValidationSeverity Severity { get; init; } = ValidationSeverity.Error;
 }
 
@@ -121,12 +124,25 @@ internal static class ValidationAttributesCache
 
     private static TypeValidationAttributes LoadAttributes(Type type)
     {
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(prop => prop.CanRead)
+            .ToList();
+
+        var requiredChildren = new List<RequiredChildAttribute>();
+        foreach (var prop in properties)
+        {
+            var requiredChild = prop.GetCustomAttribute<RequiredChildAttribute>(inherit: false);
+            if (requiredChild is null) continue;
+
+            requiredChild.ChildType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            requiredChildren.Add(requiredChild);
+        }
+
         return new TypeValidationAttributes
         {
             ChildCounts = [.. type.GetCustomAttributes<ExpectedChildCountAttribute>(inherit: false)],
-            RequiredChildren = [.. type.GetCustomAttributes<RequiredChildAttribute>(inherit: false)],
-            Fields = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(prop => prop.CanRead)
+            RequiredChildren = requiredChildren,
+            Fields = properties
                 .Select(prop => (prop, rules: new FieldValidationAttributes
                 {
                     ExpectedValues = [.. prop.GetCustomAttributes<ExpectedValueAttribute>(inherit: false)],
