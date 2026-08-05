@@ -54,7 +54,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var package = s.NewBlock<Package>();
-            Assert.True(package.IsValid(s, out var issues), 
+            Assert.True(package.IsValid(s, out var issues),
                 $"Package validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -68,7 +68,7 @@ public class PackageTests
             {
                 Package package = s.NewBlock<Package>();
                 package.Children.RemoveAt(i);
-                Assert.False(package.IsValid(s, out var issues), 
+                Assert.False(package.IsValid(s, out var issues),
                     $"Package validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
             }
         }
@@ -83,7 +83,7 @@ public class PackageTests
             {
                 Package package = s.NewBlock<Package>();
                 package.Children.RemoveAt(i);
-                Assert.False(package.IsValid(s, out var issues), 
+                Assert.False(package.IsValid(s, out var issues),
                     $"Package validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
             }
         }
@@ -94,7 +94,7 @@ public class PackageTests
     {
         using BinaryReader reader = new(new MemoryStream(validScoobyPackage));
         var package = _scooby.ReadBlock<Package>(reader);
-        Assert.True(package.IsValid(_scooby, out var issues), 
+        Assert.True(package.IsValid(_scooby, out var issues),
             $"Package validation failed. Issues: {FormatValidationIssues(issues)}");
     }
 
@@ -124,7 +124,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var packageVersion = s.NewBlock<PackageVersion>();
-            Assert.True(packageVersion.IsValid(s, out var issues), 
+            Assert.True(packageVersion.IsValid(s, out var issues),
                 $"PackageVersion validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -139,7 +139,7 @@ public class PackageTests
         {
             PackageVersion version = s.NewBlock<PackageVersion>();
             version.SubVersion = subVersion;
-            Assert.False(version.IsValid(s, out var issues), 
+            Assert.False(version.IsValid(s, out var issues),
                 $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -153,7 +153,7 @@ public class PackageTests
         {
             PackageVersion version = s.NewBlock<PackageVersion>();
             version.ClientVersion = (ClientVersion)clientVersion;
-            Assert.False(version.IsValid(s, out var issues), 
+            Assert.False(version.IsValid(s, out var issues),
                 $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -167,7 +167,7 @@ public class PackageTests
         {
             PackageVersion version = s.NewBlock<PackageVersion>();
             version.CompatVersion = compatVersion;
-            Assert.False(version.IsValid(s, out var issues), 
+            Assert.False(version.IsValid(s, out var issues),
                 $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -177,7 +177,7 @@ public class PackageTests
     {
         using BinaryReader reader = new(new MemoryStream(validScoobyPrototypePackageVersion));
         var packageVersion = _scoobyPrototype.ReadBlock<PackageVersion>(reader);
-        Assert.True(packageVersion.IsValid(_scoobyPrototype, out var issues), 
+        Assert.True(packageVersion.IsValid(_scoobyPrototype, out var issues),
             $"PackageVersion validation failed. Issues: {FormatValidationIssues(issues)}");
     }
 
@@ -196,7 +196,7 @@ public class PackageTests
     {
         PackageVersion version = _scoobyPrototype.NewBlock<PackageVersion>();
         version.ClientVersion = clientVersion;
-        Assert.False(version.IsValid(_scoobyPrototype, out var issues), 
+        Assert.False(version.IsValid(_scoobyPrototype, out var issues),
             $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
     }
 
@@ -205,7 +205,7 @@ public class PackageTests
     {
         using BinaryReader reader = new(new MemoryStream(validScoobyPackageVersion));
         var packageVersion = _scooby.ReadBlock<PackageVersion>(reader);
-        Assert.True(packageVersion.IsValid(_scooby, out var issues), 
+        Assert.True(packageVersion.IsValid(_scooby, out var issues),
             $"PackageVersion validation failed. Issues: {FormatValidationIssues(issues)}");
     }
 
@@ -224,7 +224,7 @@ public class PackageTests
     {
         PackageVersion version = _scooby.NewBlock<PackageVersion>();
         version.ClientVersion = clientVersion;
-        Assert.False(version.IsValid(_scooby, out var issues), 
+        Assert.False(version.IsValid(_scooby, out var issues),
             $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
     }
 
@@ -237,7 +237,7 @@ public class PackageTests
         {
             reader.BaseStream.Position = 0;
             var packageVersion = s.ReadBlock<PackageVersion>(reader);
-            Assert.True(packageVersion.IsValid(s, out var issues), 
+            Assert.True(packageVersion.IsValid(s, out var issues),
                 $"PackageVersion validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -264,7 +264,7 @@ public class PackageTests
         {
             PackageVersion version = s.NewBlock<PackageVersion>();
             version.ClientVersion = clientVersion;
-            Assert.False(version.IsValid(s, out var issues), 
+            Assert.False(version.IsValid(s, out var issues),
                 $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -275,7 +275,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var packageFlags = s.NewBlock<PackageFlags>();
-            Assert.True(packageFlags.IsValid(s, out var issues), 
+            Assert.True(packageFlags.IsValid(s, out var issues),
                 $"PackageFlags validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -286,7 +286,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var packageCount = s.NewBlock<PackageCount>();
-            Assert.True(packageCount.IsValid(s, out var issues), 
+            Assert.True(packageCount.IsValid(s, out var issues),
                 $"PackageCount validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -297,7 +297,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var packageCreated = s.NewBlock<PackageCreated>();
-            Assert.True(packageCreated.IsValid(s, out var issues), 
+            Assert.True(packageCreated.IsValid(s, out var issues),
                 $"PackageCreated validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -308,7 +308,7 @@ public class PackageTests
         foreach (var s in serializers)
         {
             var packageModified = s.NewBlock<PackageModified>();
-            Assert.True(packageModified.IsValid(s, out var issues), 
+            Assert.True(packageModified.IsValid(s, out var issues),
                 $"PackageModified validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }

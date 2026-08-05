@@ -26,7 +26,7 @@ public class HIPATests
 
         foreach (var s in serializers)
         {
-            Assert.True(hipa.IsValid(s, out var issues), 
+            Assert.True(hipa.IsValid(s, out var issues),
                 $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -37,7 +37,7 @@ public class HIPATests
         foreach (var s in serializers)
         {
             var hipa = s.NewBlock<HIPA>();
-            Assert.True(hipa.IsValid(s, out var issues), 
+            Assert.True(hipa.IsValid(s, out var issues),
                 $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }
@@ -51,7 +51,7 @@ public class HIPATests
         {
             reader.BaseStream.Position = 0;
             var hipa = s.ReadBlock<HIPA>(reader);
-            Assert.True(hipa.IsValid(s, out var issues), 
+            Assert.True(hipa.IsValid(s, out var issues),
                 $"HIPA validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
         }
     }

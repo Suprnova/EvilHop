@@ -40,10 +40,10 @@ public abstract class VersionedValidationAttribute : Attribute
     internal bool AppliesTo(FileFormatVersion version)
     {
         if (Versions != null) return Versions.Contains(version);
-        
+
         // Check if MinVersion was explicitly set (not default)
         if ((int)MinVersion >= 0 && version < MinVersion) return false;
-        
+
         // Check if MaxVersion was explicitly set (not default)
         if ((int)MaxVersion >= 0 && version > MaxVersion) return false;
 

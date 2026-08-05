@@ -58,7 +58,7 @@ public class HipFileTests
     {
         using BinaryReader reader = new(new MemoryStream(bytes));
         HipFile hip = _v1.ReadHip(reader);
-        Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues), 
+        Assert.True(hip.IsValid(_v1, out IEnumerable<ValidationIssue> issues),
             $"HipFile validation failed. Issues: {FormatValidationIssues(issues)}");
         Assert.Empty(issues); // pending BKDR algorithm
         byte[] write = new byte[bytes.Length];
