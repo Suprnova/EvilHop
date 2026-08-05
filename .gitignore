@@ -362,5 +362,23 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# AI Agent Tooling and Byproducts
+# AI Agent Tooling
 .devin/
+.cursor/
+.claude/
+.codeium/
+.copilot/
+.aider/
+.continue/
+.swipely/
+.windsurf/
+.cline/
+.roo/
+.openai/
+.anthropic/
+.replit/
+.tabby/
+.tabnine/
+.prow/
+.sourcegraph/
+.codium/
