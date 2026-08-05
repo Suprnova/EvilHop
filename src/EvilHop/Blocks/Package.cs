@@ -1,4 +1,7 @@
-﻿namespace EvilHop.Blocks;
+﻿using EvilHop.Serialization;
+using EvilHop.Serialization.Validation;
+
+namespace EvilHop.Blocks;
 
 public enum ClientVersion : uint
 {
@@ -34,6 +37,14 @@ public enum PackFlags : uint
     DE_PS2_BFBB_2 = Unknown26 | Unknown25
 }
 
+[ExpectedChildCount(5, MinVersion = FileFormatVersion.ScoobyPrototype, MaxVersion = FileFormatVersion.BattleV1)]
+[ExpectedChildCount(6, MinVersion = FileFormatVersion.Battle)]
+[RequiredChild(typeof(PackageVersion))]
+[RequiredChild(typeof(PackageFlags))]
+[RequiredChild(typeof(PackageCount))]
+[RequiredChild(typeof(PackageCreated))]
+[RequiredChild(typeof(PackageModified))]
+[RequiredChild(typeof(PackagePlatform), MinVersion = FileFormatVersion.Battle)]
 public class Package : Block
 {
     protected internal override string Id => "PACK";
@@ -93,14 +104,20 @@ public class Package : Block
     }
 }
 
+[ExpectedChildCount(0)]
 public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint compatVersion) : Block
 {
     protected internal override string Id => "PVER";
 
+    [ExpectedValue(0x00000002)]
     public uint SubVersion { get; set; } = subVersion;
 
+    [ExpectedValue(ClientVersion.N100FPrototype, MinVersion = FileFormatVersion.ScoobyPrototype, MaxVersion = FileFormatVersion.ScoobyPrototype)]
+    [ExpectedValue(ClientVersion.N100FRelease, MinVersion = FileFormatVersion.Scooby, MaxVersion = FileFormatVersion.Scooby)]
+    [ExpectedValue(ClientVersion.Default, MinVersion = FileFormatVersion.BattleV1)]
     public ClientVersion ClientVersion { get; set; } = clientVersion;
 
+    [ExpectedValue(0x00000001)]
     public uint CompatVersion { get; set; } = compatVersion;
 
     public PackageVersion(ClientVersion clientVersion) : this(2, clientVersion, 1)
@@ -108,6 +125,7 @@ public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint c
     }
 }
 
+[ExpectedChildCount(0)]
 public class PackageFlags(PackFlags flags) : Block
 {
     protected internal override string Id => "PFLG";
@@ -115,6 +133,7 @@ public class PackageFlags(PackFlags flags) : Block
     public PackFlags Flags { get; set; } = flags;
 }
 
+[ExpectedChildCount(0)]
 public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, uint maxLayerSize, uint maxXFormAssetSize) : Block
 {
     protected internal override string Id => "PCNT";
@@ -145,6 +164,7 @@ public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, u
     }
 }
 
+[ExpectedChildCount(0)]
 public class PackageCreated(DateTime createdDate, string createdDateString) : Block
 {
     private static readonly String _dateTimeFormat = "ddd MMM dd HH:mm:ss yyyy";
@@ -164,6 +184,7 @@ public class PackageCreated(DateTime createdDate, string createdDateString) : Bl
     }
 }
 
+[ExpectedChildCount(0)]
 public class PackageModified(DateTime modifiedDate) : Block
 {
     protected internal override string Id => "PMOD";
@@ -176,12 +197,17 @@ public class PackageModified(DateTime modifiedDate) : Block
     }
 }
 
+[ExpectedChildCount(0)]
+[VersionRange(FileFormatVersion.Battle)]
 public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
 {
     protected internal override string Id => "PLAT";
 
     public string PlatformID { get; set; } = platformId;
+
+    [VersionRange(FileFormatVersion.Battle, FileFormatVersion.Incredibles)]
     public string? PlatformName { get; set; } = platformName;
+
     public string Region { get; set; } = region;
     public string Language { get; set; } = language;
     public string GameName { get; set; } = gameName;

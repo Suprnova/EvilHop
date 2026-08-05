@@ -1,4 +1,6 @@
 ﻿using EvilHop.Common;
+using EvilHop.Serialization;
+using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Blocks;
 
@@ -29,6 +31,9 @@ public enum AssetFlags : uint
     UnknownScooby = 1U << 31
 }
 
+[ExpectedChildCount(2)]
+[RequiredChild(typeof(AssetTable))]
+[RequiredChild(typeof(LayerTable))]
 public class Dictionary : Block
 {
     protected internal override string Id => "DICT";
@@ -58,6 +63,7 @@ public class Dictionary : Block
     }
 }
 
+[RequiredChild(typeof(AssetInf))]
 public class AssetTable : Block
 {
     protected internal override string Id => "ATOC";
@@ -85,10 +91,12 @@ public class AssetTable : Block
     }
 }
 
+[ExpectedChildCount(0)]
 public class AssetInf(uint value) : Block
 {
     protected internal override string Id => "AINF";
 
+    [ExpectedValue(0x00000000)]
     public uint Value { get; set; } = value;
 
     internal AssetInf() : this(0)
@@ -96,6 +104,8 @@ public class AssetInf(uint value) : Block
     }
 }
 
+[ExpectedChildCount(1)]
+[RequiredChild(typeof(AssetDebug))]
 public class AssetHeader : Block
 {
     protected internal override string Id => "AHDR";
@@ -124,6 +134,7 @@ public class AssetHeader : Block
     }
 }
 
+[ExpectedChildCount(0)]
 public class AssetDebug(uint alignment, string name, string fileName, uint checksum) : Block
 {
     protected internal override string Id => "ADBG";
@@ -139,6 +150,7 @@ public class AssetDebug(uint alignment, string name, string fileName, uint check
     }
 }
 
+[RequiredChild(typeof(LayerInf))]
 public class LayerTable : Block
 {
     protected internal override string Id => "LTOC";
@@ -166,10 +178,12 @@ public class LayerTable : Block
     }
 }
 
+[ExpectedChildCount(0)]
 public class LayerInf(uint value) : Block
 {
     protected internal override string Id => "LINF";
 
+    [ExpectedValue(0x00000000)]
     public uint Value { get; set; } = value;
 
     internal LayerInf() : this(0)
@@ -177,6 +191,8 @@ public class LayerInf(uint value) : Block
     }
 }
 
+[ExpectedChildCount(1)]
+[RequiredChild(typeof(LayerDebug))]
 public class LayerHeader : Block
 {
     protected internal override string Id => "LHDR";
@@ -202,10 +218,12 @@ public class LayerHeader : Block
     }
 }
 
+[ExpectedChildCount(0)]
 public class LayerDebug(uint value) : Block
 {
     protected internal override string Id => "LDBG";
 
+    [ExpectedValue(0xFFFFFFFF)]
     public uint Value { get; set; } = value;
 
     internal LayerDebug() : this(0)
