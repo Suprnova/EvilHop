@@ -15,7 +15,7 @@ public class BlockTests
         };
     }
 
-    class TestBlock : Block
+    internal class TestBlock : Block
     {
         protected internal override string Tag => "TEST";
 
