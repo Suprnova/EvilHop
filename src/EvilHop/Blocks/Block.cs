@@ -19,6 +19,16 @@ public abstract class Block
     public Block? Parent { get; internal set; }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public BlockChildren Children { get; }
+
+    internal Block()
+    {
+        Children = new BlockChildren(this);
+    }
+
+    /// <summary>
     /// Searches this <see cref="Block"/>'s immediate children for a child of the specified type
     /// <typeparamref name="T"/>. If found, returns the first instance of the child. If not found,
     /// throws an <see cref="InvalidOperationException"/>.
