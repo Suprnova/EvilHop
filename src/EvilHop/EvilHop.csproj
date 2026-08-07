@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>EvilHop</RootNamespace>
+    <AssemblyName>EvilHop</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../../README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Folder Include="Assets\" />
+	<Folder Include="Blocks\" />
+	<Folder Include="Common\" />
+	<Folder Include="Primitives\" />
+    <Folder Include="Serialization\" />
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
+</Project>
