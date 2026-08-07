@@ -7,6 +7,9 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.{slnx, csproj, props}]
+indent_size = 2
+
 # C# files
 [*.cs]
 
@@ -14,12 +17,7 @@ trim_trailing_whitespace = true
 
 # Indentation and spacing
 indent_size = 4
-indent_style = space
 tab_width = 4
-
-# New line preferences
-end_of_line = lf
-insert_final_newline = true
 
 #### .NET Code Actions ####
 
@@ -32,6 +30,9 @@ dotnet_property_generation_behavior = prefer_throwing_properties
 dotnet_search_reference_assemblies = true
 
 #### .NET Coding Conventions ####
+
+# Namespace formatting preferences
+csharp_style_namespace_declarations = block_scoped:warning
 
 # Organize usings
 dotnet_separate_import_directive_groups = false

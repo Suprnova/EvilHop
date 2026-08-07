@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="Blocks\" />
     <Folder Include="Common\" />
     <Folder Include="Primitives\" />
     <Folder Include="Validation\" />
