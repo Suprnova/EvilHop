@@ -1,3 +1,1 @@
-* text=auto
-
-*.cs text eol=lf
+* text=auto eol=lf

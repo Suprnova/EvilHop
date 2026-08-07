@@ -11,10 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Folder Include="Assets\" />
-	<Folder Include="Blocks\" />
-	<Folder Include="Common\" />
-	<Folder Include="Primitives\" />
+    <InternalsVisibleTo Include="EvilHop.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\" />
+    <Folder Include="Common\" />
+    <Folder Include="Primitives\" />
     <Folder Include="Serialization\" />
     <Folder Include="Validation\" />
   </ItemGroup>
