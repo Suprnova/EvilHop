@@ -1,0 +1,5 @@
+* text=auto
+
+# The repository .editorconfig requires LF for C# sources, so keep them LF in
+# the working tree on every platform.
+*.cs text eol=lf
