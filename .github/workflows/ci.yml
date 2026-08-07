@@ -8,7 +8,6 @@ on:
 
 env:
   DOTNET_NOLOGO: true
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 jobs:
   build:
@@ -42,33 +41,6 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./TestResults
           --logger "trx;LogFileName=test-results.trx"
-
-      - name: Coverage summary (informational only)
-        # Coverage is reported, never enforced: this step must not fail the job.
-        if: always()
-        continue-on-error: true
-        run: |
-          shopt -s globstar nullglob
-          reports=(./TestResults/**/coverage.cobertura.xml)
-          if [ ${#reports[@]} -eq 0 ]; then
-            echo "No coverage report found." >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          {
-            echo "### Code coverage"
-            echo
-            echo "| Report | Line rate | Branch rate |"
-            echo "| --- | --- | --- |"
-            for report in "${reports[@]}"; do
-              line=$(sed -n 's/.*line-rate="\([^"]*\)".*/\1/p' "$report" | head -n 1)
-              branch=$(sed -n 's/.*branch-rate="\([^"]*\)".*/\1/p' "$report" | head -n 1)
-              printf '| %s | %s%% | %s%% |\n' \
-                "$report" \
-                "$(awk -v v="$line" 'BEGIN { printf "%.1f", v * 100 }')" \
-                "$(awk -v v="$branch" 'BEGIN { printf "%.1f", v * 100 }')"
-            done
-          } >> "$GITHUB_STEP_SUMMARY"
-          cat "$GITHUB_STEP_SUMMARY"
 
       - name: Upload test and coverage results
         if: always()

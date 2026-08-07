@@ -10,7 +10,6 @@ on:
 
 env:
   DOTNET_NOLOGO: true
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
 
 jobs:
@@ -19,6 +18,12 @@ jobs:
     # run publishes the stable release.
     name: Publish to NuGet.org
     runs-on: ubuntu-latest
+
+    permissions:
+      # Required to request the OIDC token NuGet.org exchanges for a
+      # short-lived API key (Trusted Publishing).
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout
@@ -41,10 +46,17 @@ jobs:
       - name: Pack
         run: dotnet pack EvilHop.slnx --configuration Release --no-build --output ./artifacts
 
+      # Requested last: the issued API key is only valid for about an hour.
+      - name: NuGet login
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: Suprnova
+
       - name: Push to NuGet.org
         run: >-
           dotnet nuget push "./artifacts/*.nupkg"
-          --api-key ${{ secrets.NUGET_API_KEY }}
+          --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           --source ${{ env.NUGET_SOURCE }}
           --skip-duplicate
 
