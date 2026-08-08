@@ -10,6 +10,7 @@ namespace EvilHop.Blocks;
 /// </remarks>
 /// Validation TODO: 5 children pre-Battle, otherwise 6
 /// Required children: PVER, PFLG, PCNT, PCRT, and PMOD pre-Battle, plus PLAT post-Battle
+/// Group ExpectedChildCount and RequiredChild into one attribute, since Required always means exactly 1 instance
 public class Package : Block
 {
     /// <inheritdoc/>
@@ -195,6 +196,7 @@ public class PackageCreated : Block
     /// </code>
     /// </remarks>
     /// Validation TODO: Matches expected formatting.
+    /// Appended by '\n' in N100F.
     public string CreatedDateString { get; set; }
 
     internal PackageCreated() : this(DateTimeOffset.Now) { }
