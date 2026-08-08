@@ -19,7 +19,7 @@ public abstract class Block
     public Block? Parent { get; internal set; }
 
     /// <summary>
-    /// 
+    /// The collection of <see cref="Block"/> children to this parent.
     /// </summary>
     public BlockChildren Children { get; }
 
@@ -45,10 +45,7 @@ public abstract class Block
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Block"/> to be found.</typeparam>
     /// <returns>The first occurrence of a <see cref="Block"/> of type <typeparamref name="T"/>.</returns>
-    public T GetChild<T>() where T : Block
-    {
-        throw new NotImplementedException();
-    }
+    public T? GetChild<T>() where T : Block => Children.OfType<T>().FirstOrDefault();
 
     /// <summary>
     /// Searches this <see cref="Block"/>'s immediate children for all children of the specified type
@@ -56,9 +53,23 @@ public abstract class Block
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Block"/> to be found.</typeparam>
     /// <returns>An enumerable collection of all found children <see cref="Block"/>s.</returns>
-    public IEnumerable<T> GetChildren<T>() where T : Block
+    public IEnumerable<T> GetChildren<T>() where T : Block => Children.OfType<T>();
+
+    /// <summary>
+    /// Adds or replaces, if present, the first instance of a <see cref="Block"/> of the specified
+    /// type <typeparamref name="T"/> with the provided <paramref name="value"/>. If
+    /// <see langword="null"/>, removes the child <see cref="Block"/> instead.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Block"/> to replace.</typeparam>
+    /// <param name="value">The new <see cref="Block"/>.</param>
+    /// <returns>The replaced <see cref="Block"/> if present, otherwise <see langword="null"/>.</returns>
+    public T? SetChild<T>(T? value) where T : Block
     {
-        throw new NotImplementedException();
+        var candidate = GetChild<T>();
+        if (candidate != null) Children.Remove(candidate);
+
+        if (value != null) Children.Add(value);
+        return candidate;
     }
 
     /// <summary>
