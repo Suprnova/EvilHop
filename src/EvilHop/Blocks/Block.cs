@@ -65,6 +65,7 @@ public abstract class Block
     /// <returns>The replaced <see cref="Block"/> if present, otherwise <see langword="null"/>.</returns>
     public T? SetChild<T>(T? value) where T : Block
     {
+        // TODO: see if this should throw when AreBlockFieldsLocked is true
         var candidate = GetChild<T>();
         if (candidate != null) Children.Remove(candidate);
 
