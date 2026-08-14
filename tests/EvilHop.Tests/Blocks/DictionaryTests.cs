@@ -48,10 +48,30 @@ public class DictionaryTests
     }
 
     [Fact]
+    public void Dictionary_AssetTable_Setter_ReturnsSetValue()
+    {
+        var dictionary = new Dictionary();
+        var assetTable = new AssetTable();
+
+        dictionary.AssetTable = assetTable;
+        Assert.Same(assetTable, dictionary.AssetTable);
+    }
+
+    [Fact]
     public void Dictionary_LayerTable_IsRequired()
     {
         var dictionary = new Dictionary();
         Assert.Throws<InvalidOperationException>(() => dictionary.LayerTable);
+    }
+
+    [Fact]
+    public void Dictionary_LayerTable_Setter_ReturnsSetValue()
+    {
+        var dictionary = new Dictionary();
+        var layerTable = new LayerTable();
+
+        dictionary.LayerTable = layerTable;
+        Assert.Same(layerTable, dictionary.LayerTable);
     }
 
     [Fact]
@@ -66,6 +86,16 @@ public class DictionaryTests
     {
         var atoc = new AssetTable();
         Assert.Throws<InvalidOperationException>(() => atoc.Inf);
+    }
+
+    [Fact]
+    public void AssetTable_AssetInf_Setter_ReturnsSetValue()
+    {
+        var atoc = new AssetTable();
+        var inf = new AssetInf();
+
+        atoc.Inf = inf;
+        Assert.Same(inf, atoc.Inf);
     }
 
     [Fact]
@@ -87,6 +117,16 @@ public class DictionaryTests
     {
         var header = new AssetHeader();
         Assert.Throws<InvalidOperationException>(() => header.Debug);
+    }
+
+    [Fact]
+    public void AssetHeader_AssetDebug_Setter_ReturnsSetValue()
+    {
+        var header = new AssetHeader();
+        var debug = new AssetDebug();
+
+        header.Debug = debug;
+        Assert.Same(debug, header.Debug);
     }
 
     [Theory]
@@ -157,6 +197,16 @@ public class DictionaryTests
     }
 
     [Fact]
+    public void LayerTable_LayerInf_Setter_ReturnsSetValue()
+    {
+        var ltoc = new LayerTable();
+        var inf = new LayerInf();
+
+        ltoc.Inf = inf;
+        Assert.Same(inf, ltoc.Inf);
+    }
+
+    [Fact]
     public void LayerInf_Tag_IsCorrect()
     {
         var inf = new LayerInf();
@@ -175,6 +225,16 @@ public class DictionaryTests
     {
         var header = new LayerHeader();
         Assert.Throws<InvalidOperationException>(() => header.Debug);
+    }
+
+    [Fact]
+    public void LayerHeader_LayerDebug_Setter_ReturnsSetValue()
+    {
+        var header = new LayerHeader();
+        var debug = new LayerDebug();
+
+        header.Debug = debug;
+        Assert.Same(debug, header.Debug);
     }
 
     [Theory]
