@@ -61,6 +61,18 @@ public class BlockChildrenTests
         Assert.Throws<InvalidOperationException>(() => blockChildren.Add(grandparent));
     }
 
+    [Fact]
+    public void Add_MultiGenerationAncestralBlock_ThrowsInvalidOperationException()
+    {
+        var grandparent = new TestBlock();
+        var middleParent = new TestBlock();
+
+        middleParent.Children.Add(parent);
+        grandparent.Children.Add(middleParent);
+
+        Assert.Throws<InvalidOperationException>(() => blockChildren.Add(grandparent));
+    }
+
     [Theory]
     [InlineData(0, 0)]
     [InlineData(17, 0)]
@@ -266,6 +278,27 @@ public class BlockChildrenTests
         Assert.Equal(initialCount - 1, blockChildren.Count);
     }
 
+    [Fact]
+    public void Contains_ChildBlock_ReturnsTrue()
+    {
+        var child = new TestBlock();
+        blockChildren.Add(child);
+
+        bool result = blockChildren.Contains(child);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void Contains_NonChildBlock_ReturnsFalse()
+    {
+        var nonChild = new TestBlock();
+
+        bool result = blockChildren.Contains(nonChild);
+
+        Assert.False(result);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -293,6 +326,33 @@ public class BlockChildrenTests
         blockChildren.Clear();
 
         Assert.All(orphans, orphan => Assert.Null(orphan.Parent));
+    }
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(17, 0)]
+    [InlineData(17, 14)]
+    [InlineData(38, 0)]
+    [InlineData(38, 17)]
+    public void IndexOf_ChildBlock_ReturnsIndex(int initialCount, int index)
+    {
+        AddChildren(initialCount);
+        var child = new TestBlock();
+        blockChildren.Insert(index, child);
+
+        int result = blockChildren.IndexOf(child);
+
+        Assert.Equal(index, result);
+    }
+
+    [Fact]
+    public void IndexOf_NonChildBlock_ReturnsNegativeOne()
+    {
+        var nonChild = new TestBlock();
+
+        int result = blockChildren.IndexOf(nonChild);
+
+        Assert.Equal(-1, result);
     }
 
     private void AddChildren(int count)

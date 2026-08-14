@@ -25,10 +25,30 @@ public class AssetStreamTests
     }
 
     [Fact]
+    public void AssetStream_StreamHeader_Setter_ReturnsSetValue()
+    {
+        var assetStream = new AssetStream();
+        var header = new StreamHeader();
+
+        assetStream.Header = header;
+        Assert.Same(header, assetStream.Header);
+    }
+
+    [Fact]
     public void AssetStream_StreamData_IsCorrect()
     {
         var assetStream = new AssetStream();
         Assert.Throws<InvalidOperationException>(() => assetStream.Data);
+    }
+
+    [Fact]
+    public void AssetStream_StreamData_Setter_ReturnsSetValue()
+    {
+        var assetStream = new AssetStream();
+        var data = new StreamData();
+
+        assetStream.Data = data;
+        Assert.Same(data, assetStream.Data);
     }
 
     [Fact]
