@@ -97,6 +97,23 @@ public class PackageTests
     }
 
     [Fact]
+    public void Package_Platform_NotSet_ReturnsNull()
+    {
+        var pack = new Package();
+        Assert.Null(pack.Platform);
+    }
+
+    [Fact]
+    public void Package_Platform_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var platform = new PackagePlatform();
+
+        pack.Platform = platform;
+        Assert.Same(platform, pack.Platform);
+    }
+
+    [Fact]
     public void PackageVersion_Tag_IsCorrect()
     {
         var version = new PackageVersion();
@@ -129,5 +146,12 @@ public class PackageTests
     {
         var modified = new PackageModified();
         Assert.Equal("PMOD", modified.Tag);
+    }
+
+    [Fact]
+    public void PackagePlatform_Tag_IsCorrect()
+    {
+        var platform = new PackagePlatform();
+        Assert.Equal("PLAT", platform.Tag);
     }
 }
