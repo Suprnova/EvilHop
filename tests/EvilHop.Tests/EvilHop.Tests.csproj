@@ -29,9 +29,11 @@
 
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="Common\" />
     <Folder Include="Validation\" />
-    <Folder Include="Serialization\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TestData\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
