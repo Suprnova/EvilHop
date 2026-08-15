@@ -11,4 +11,6 @@ public class HIPA : Block
 {
     /// <inheritdoc/>
     protected internal override string Tag => "HIPA";
+
+    internal HIPA() { }
 }

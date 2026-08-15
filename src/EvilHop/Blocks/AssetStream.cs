@@ -30,6 +30,8 @@ public class AssetStream : Block
         get => GetRequiredChild<StreamData>();
         set => SetChild(value);
     }
+
+    internal AssetStream() { }
 }
 
 /// <summary>
@@ -49,6 +51,8 @@ public class StreamHeader : Block
     /// </summary>
     /// Validation TODO: Always 0xFFFFFFFF.
     public uint Value { get; set; }
+
+    internal StreamHeader() { }
 }
 
 /// <summary>
@@ -92,4 +96,6 @@ public class StreamData : Block
         get => GetManagedBlockField(ref field);
         set => SetManagedBlockField(ref field, value);
     } = [];
+
+    internal StreamData() { }
 }
