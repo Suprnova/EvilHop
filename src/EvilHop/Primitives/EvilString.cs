@@ -18,11 +18,12 @@ public static class EvilString
         {
             List<byte> bytes = [];
 
-            while (reader.PeekChar() != '\0') bytes.Add(reader.ReadByte());
+            byte current;
+            while ((current = reader.ReadByte()) != 0x00) bytes.Add(current);
 
             int expectedNullCount = bytes.Count % 2 == 0 ? 2 : 1;
-            var nullBytes = reader.ReadBytes(expectedNullCount);
-            if (nullBytes.Any(b => !b.Equals(0x00)))
+            var remainingNullBytes = reader.ReadBytes(expectedNullCount - 1);
+            if (remainingNullBytes.Any(b => !b.Equals(0x00)))
                 throw new InvalidDataException(
                     $"Expected {expectedNullCount} null bytes after string of length {bytes.Count}.");
 
