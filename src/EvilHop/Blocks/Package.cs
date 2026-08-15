@@ -72,6 +72,8 @@ public class Package : Block
         get => GetChild<PackagePlatform>();
         set => SetChild(value);
     }
+
+    internal Package() { }
 }
 
 /// <summary>
@@ -105,6 +107,8 @@ public class PackageVersion : Block
     /// </summary>
     /// Validation TODO: Always 1.
     public uint CompatVersion { get; set; }
+
+    internal PackageVersion() { }
 }
 
 /// <summary>
@@ -125,6 +129,8 @@ public class PackageFlags : Block
     /// </summary>
     /// Validation TODO: Ensure a valid combination of flags.
     public PackFlags Flags { get; set; }
+
+    internal PackageFlags() { }
 }
 
 /// <summary>
@@ -169,6 +175,8 @@ public class PackageCount : Block
     /// </summary>
     /// Validation TODO: Equal to max .size of AHDRs with READ_TRANSFORM as a flag.
     public uint MaxXFormAssetSize { get; set; }
+
+    internal PackageCount() { }
 }
 
 /// <summary>
@@ -242,6 +250,8 @@ public class PackageModified : Block
     /// </remarks>
     /// Validation TODO: Can convert to a valid Unix time.
     public DateTimeOffset ModifiedDate { get; set; }
+
+    internal PackageModified() { }
 }
 
 /// <summary>
@@ -288,6 +298,8 @@ public class PackagePlatform : Block
     /// The archive's target game.
     /// </summary>
     public string GameName { get; set; } = "";
+
+    internal PackagePlatform() { }
 }
 
 #pragma warning disable CS1591 // Missing XML comment

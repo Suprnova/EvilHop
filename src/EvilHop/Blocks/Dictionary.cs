@@ -32,6 +32,8 @@ public class Dictionary : Block
         get => GetRequiredChild<LayerTable>();
         set => SetChild(value);
     }
+
+    internal Dictionary() { }
 }
 
 /// <summary>
@@ -66,6 +68,8 @@ public class AssetTable : Block
         get => GetChildren<AssetHeader>();
         set => throw new NotImplementedException();
     }
+
+    internal AssetTable() { }
 }
 
 /// <summary>
@@ -85,6 +89,8 @@ public class AssetInf : Block
     /// </summary>
     /// Validation TODO: Always 0.
     public uint Value { get; set; }
+
+    internal AssetInf() { }
 }
 
 /// <summary>
@@ -177,6 +183,8 @@ public class AssetHeader : Block
         get => GetManagedBlockField(ref field);
         set => SetManagedBlockField(ref field, value);
     }
+
+    internal AssetHeader() { }
 }
 
 /// <summary>
@@ -235,6 +243,8 @@ public class AssetDebug : Block
     /// </summary>
     /// Validation TODO: Calculate using asset's data and validate.
     public uint Checksum { get; set; }
+
+    internal AssetDebug() { }
 }
 
 /// <summary>
@@ -267,6 +277,8 @@ public class LayerTable : Block
         get => GetChildren<LayerHeader>();
         set => throw new NotImplementedException();
     }
+
+    internal LayerTable() { }
 }
 
 /// <summary>
@@ -286,6 +298,8 @@ public class LayerInf : Block
     /// </summary>
     /// Validation TODO: Always 0.
     public uint Value { get; set; }
+
+    internal LayerInf() { }
 }
 
 /// <summary>
@@ -340,6 +354,8 @@ public class LayerHeader : Block
         get => GetManagedBlockField(ref field);
         set => SetManagedBlockField(ref field, value);
     } = [];
+
+    internal LayerHeader() { }
 }
 
 /// <summary>
@@ -359,6 +375,8 @@ public class LayerDebug : Block
     /// </summary>
     /// Validation TODO: Always 0xFFFFFFFF in non-N100F Proto.
     public uint Value { get; set; }
+
+    internal LayerDebug() { }
 }
 
 #pragma warning disable CS1591 // Missing XML comment
