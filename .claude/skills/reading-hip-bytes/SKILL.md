@@ -20,6 +20,61 @@ check what the bytes *are*; use the library (or the
 **Don't use this to:** reimplement block parsing (that belongs in the library, see
 [§ Extending](#extending)), or write/patch bytes (this tool is read-only).
 
+## Finding a file to read
+
+If the user gave you an explicit path, use it and skip this section.
+
+Otherwise, look for an `artifacts/` folder at the repository root. It holds real game builds used for
+manual testing — several GB, gitignored, and **not guaranteed to exist**: anyone who clones the repo
+without also fetching their own copy simply won't have it. Its layout, in full at `tests/README.md`, is:
+
+```
+artifacts/{game}/{build}/{platform}/{region}/{language}/
+```
+
+| Segment | Meaning |
+| --- | --- |
+| `{game}` | `n100f`, `bfbb`, `tssm`, `incredibles`, `rotu`, `rat` |
+| `{build}` | `release` (optionally suffixed `_r{n}` for a revision) or `prototype_YYYY-MM-DD` |
+| `{platform}` | `GC`, `PC`, `P2`, `XB` |
+| `{region}` | `NTSC-U`, `PAL`, `NTSC-J` |
+| `{language}` | language code(s) — `DE`, `FR`, `JP`, `NL`, `UK`, `US` — hyphen-joined and alphabetized for multi-language builds |
+
+If `artifacts/` doesn't exist, **stop and tell the user** instead of guessing a path or substituting some
+other file — this tool only ever reads the file it's pointed at, and a wrong guess here silently
+answers a different question than the one asked.
+
+### Quick reference: known files per release
+
+Every `release/{platform}/{region}/{language}/` directory has the same shape: a handful of global
+`.HIP` files sitting directly in it, plus one subdirectory per level (2-character code, casing varies)
+holding that level's own `.HIP`/`.HOP` files. You don't need to `find`/`ls` any of this — guess the path
+below and read it; a wrong guess just fails fast (see [Errors](#errors-and-exit-codes)), which is far
+cheaper than listing a multi-GB tree first. Only fall back to listing once a specific guess 404s, and
+even then scope it to the one subdirectory you were guessing in, not the whole archive.
+
+`boot.HIP` is the one file guaranteed to exist for every game — it's the executable's entry point.
+`font.HIP` and `plat.HIP` sit next to it (all three, except `plat.HIP` on `n100f`). Paths below are
+relative to `artifacts/`, using the most complete locale on disk for each game (usually `NTSC-U/US`):
+
+| Game | Path to boot | Notes |
+| --- | --- | --- |
+| `bfbb` | `bfbb/release/GC/NTSC-U/US/boot.HIP` | also `PAL/UK` |
+| `incredibles` | `incredibles/release/GC/NTSC-U/US/BOOT.HIP` | also `NTSC-J/JP`, `PAL/NL`, `PAL/UK` |
+| `n100f` | `n100f/release/GC/NTSC-U/US/boot.HIP` | also `NTSC-U/US-r1` (a revision), `PAL/UK`; no `plat.HIP` |
+| `rat` | `rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP` | never had a `release` build — Heavy Iron's prototype is the only build |
+| `rotu` | `rotu/release/GC/NTSC-U/US/BOOT.HIP` | also `NTSC-J/JP`, `PAL/DE-FR`, `PAL/FR-UK` |
+| `tssm` | `tssm/release/GC/NTSC-U/US/boot.HIP` | also `PAL/FR-NL`, `PAL/FR-UK` |
+
+Level files live one directory down, named `{code}{NN}.HIP` (`{code}{NNN}.HIP` for `n100f`, which pads
+to 3 digits) inside a directory named after the code — e.g. `bb/bb01.HIP` (bfbb), `BM/bm01.HIP`
+(incredibles), `B0/b001.HIP` (n100f). The main menu is always the `mn`/`MN` directory. If you need a
+specific level and don't already know its code, that's the one case worth a directory listing — just
+scope it to that game's locale directory, not the whole tree.
+
+Some `prototype_YYYY-MM-DD` directories exist as empty placeholders (reserved for artifacts not yet
+supplied) — an empty dir isn't a bug, just don't expect files under it.
+
 ## Invocation
 
 ```
