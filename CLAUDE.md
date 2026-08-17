@@ -1,1 +1,1 @@
-C:/Users/s1rba/Documents/Development/EvilHop-rewrite/EvilHop/AGENTS.md
+./AGENTS.md
