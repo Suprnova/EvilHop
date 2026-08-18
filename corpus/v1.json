@@ -1,0 +1,1314 @@
+{
+  "builds": [
+    {
+      "key": "n100f/release/GC/NTSC-U/US",
+      "archives": 91
+    },
+    {
+      "key": "n100f/release/GC/NTSC-U/US-r1",
+      "archives": 91
+    },
+    {
+      "key": "n100f/release/GC/PAL/UK",
+      "archives": 90
+    }
+  ],
+  "fields": {
+    "AssetDebug.Alignment": {
+      "kind": "set",
+      "values": {
+        "-1": {
+          "count": 789,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0": {
+          "count": 122346,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "32": {
+          "count": 15878,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "AssetDebug.Checksum": {
+      "kind": "summary",
+      "distinct": 31040,
+      "min": 591933,
+      "max": 4294967295
+    },
+    "AssetDebug.FileName": {
+      "kind": "summary",
+      "distinct": 3430,
+      "minLength": 0,
+      "maxLength": 84
+    },
+    "AssetDebug.Name": {
+      "kind": "summary",
+      "distinct": 21356,
+      "minLength": 1,
+      "maxLength": 31
+    },
+    "AssetHeader.Flags": {
+      "kind": "set",
+      "values": {
+        "0x00000002": {
+          "count": 80636,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000005": {
+          "count": 9564,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000006": {
+          "count": 20809,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000009": {
+          "count": 11337,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x80000001": {
+          "count": 15878,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x80000005": {
+          "count": 789,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "AssetHeader.Id": {
+      "kind": "summary",
+      "distinct": 21323,
+      "min": 68,
+      "max": 4294802053
+    },
+    "AssetHeader.Offset": {
+      "kind": "summary",
+      "distinct": 45547,
+      "min": 640,
+      "max": 77573760
+    },
+    "AssetHeader.Plus": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 41555,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "4": {
+          "count": 19854,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "8": {
+          "count": 56777,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "12": {
+          "count": 20827,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "AssetHeader.Size": {
+      "kind": "summary",
+      "distinct": 2487,
+      "min": 0,
+      "max": 6800512
+    },
+    "AssetHeader.Type": {
+      "kind": "set",
+      "values": {
+        "ALST": {
+          "count": 396,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "ANIM": {
+          "count": 11301,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "ATBL": {
+          "count": 1020,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "BSP ": {
+          "count": 789,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "BUTN": {
+          "count": 297,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "CAM ": {
+          "count": 3169,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "CNTR": {
+          "count": 447,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "COND": {
+          "count": 1563,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b003.HIP"
+        },
+        "CSNM": {
+          "count": 41,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g009.HIP"
+        },
+        "CTOC": {
+          "count": 20,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g009.HIP"
+        },
+        "DPAT": {
+          "count": 801,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "DSTR": {
+          "count": 771,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "EGEN": {
+          "count": 141,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g009.HIP"
+        },
+        "ENV ": {
+          "count": 263,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "FOG ": {
+          "count": 254,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "GRUP": {
+          "count": 1716,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "GUST": {
+          "count": 180,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c002.HIP"
+        },
+        "HANG": {
+          "count": 288,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "LITE": {
+          "count": 1215,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c001.HIP"
+        },
+        "LOBM": {
+          "count": 999,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "MAPR": {
+          "count": 789,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "MINF": {
+          "count": 1284,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "MODL": {
+          "count": 9564,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "MPHT": {
+          "count": 36,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/boot.HIP"
+        },
+        "MRKR": {
+          "count": 4194,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "MVPT": {
+          "count": 8557,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "NPC ": {
+          "count": 2241,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "PARE": {
+          "count": 1734,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b002.HIP"
+        },
+        "PARS": {
+          "count": 954,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b002.HIP"
+        },
+        "PEND": {
+          "count": 66,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/E0/e007.HIP"
+        },
+        "PICK": {
+          "count": 3,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/boot.HIP"
+        },
+        "PKUP": {
+          "count": 17739,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "PLAT": {
+          "count": 4389,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "PLYR": {
+          "count": 266,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "PORT": {
+          "count": 881,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "PRJT": {
+          "count": 1263,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "RWTX": {
+          "count": 19517,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "SFX ": {
+          "count": 4647,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "SIMP": {
+          "count": 4542,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "SND ": {
+          "count": 14994,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "SNDI": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "SNDS": {
+          "count": 884,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/boot.HIP"
+        },
+        "SURF": {
+          "count": 1236,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "TEXT": {
+          "count": 1509,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b002.HIP"
+        },
+        "TIMR": {
+          "count": 1817,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "TRIG": {
+          "count": 6270,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "UI  ": {
+          "count": 1497,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/H0/h003.HIP"
+        },
+        "UIFT": {
+          "count": 1705,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "VOLU": {
+          "count": 492,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c001.HIP"
+        }
+      }
+    },
+    "AssetInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "LayerDebug.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 2176,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "LayerHeader.AssetCount": {
+      "kind": "summary",
+      "distinct": 177,
+      "min": 0,
+      "max": 1003
+    },
+    "LayerHeader.AssetIds": {
+      "kind": "summary",
+      "distinct": 457,
+      "minLength": 0,
+      "maxLength": 1003
+    },
+    "LayerHeader.Type": {
+      "kind": "set",
+      "values": {
+        "0x00000000": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000001": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000002": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000003": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000004": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000006": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000007": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "0x00000008": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "LayerInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "PackageCount.AssetCount": {
+      "kind": "summary",
+      "distinct": 85,
+      "min": 3,
+      "max": 1074
+    },
+    "PackageCount.LayerCount": {
+      "kind": "set",
+      "values": {
+        "8": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "PackageCount.MaxAssetSize": {
+      "kind": "summary",
+      "distinct": 91,
+      "min": 200984,
+      "max": 6800512
+    },
+    "PackageCount.MaxLayerSize": {
+      "kind": "summary",
+      "distinct": 92,
+      "min": 270712,
+      "max": 73066752
+    },
+    "PackageCount.MaxXFormAssetSize": {
+      "kind": "summary",
+      "distinct": 92,
+      "min": 65720,
+      "max": 2423812
+    },
+    "PackageCreated.CreatedDate": {
+      "kind": "summary",
+      "distinct": 105,
+      "min": "2002-08-06T12:21:14.0000000-07:00",
+      "max": "2002-09-16T15:28:25.0000000-07:00"
+    },
+    "PackageCreated.CreatedDateString": {
+      "kind": "summary",
+      "distinct": 105,
+      "minLength": 25,
+      "maxLength": 25
+    },
+    "PackageFlags.Flags": {
+      "kind": "set",
+      "values": {
+        "0x0000002E": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "PackageModified.ModifiedDate": {
+      "kind": "summary",
+      "distinct": 105,
+      "min": "2002-08-06T12:21:14.0000000-07:00",
+      "max": "2002-09-16T15:28:25.0000000-07:00"
+    },
+    "PackageVersion.ClientVersion": {
+      "kind": "set",
+      "values": {
+        "0x00040006": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "PackageVersion.CompatVersion": {
+      "kind": "set",
+      "values": {
+        "1": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "PackageVersion.SubVersion": {
+      "kind": "set",
+      "values": {
+        "2": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "StreamData.Data": {
+      "kind": "summary",
+      "minLength": 270752,
+      "maxLength": 77529088
+    },
+    "StreamData.Padding": {
+      "kind": "summary",
+      "minLength": 0,
+      "maxLength": 30
+    },
+    "StreamData.PaddingAmount": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 12,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/O0/o008.HIP"
+        },
+        "2": {
+          "count": 11,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g003.HIP"
+        },
+        "4": {
+          "count": 20,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b003.HIP"
+        },
+        "6": {
+          "count": 12,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/E0/e006.HIP"
+        },
+        "8": {
+          "count": 13,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c001.HIP"
+        },
+        "10": {
+          "count": 10,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g005.HIP"
+        },
+        "12": {
+          "count": 21,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/E0/e003.HIP"
+        },
+        "14": {
+          "count": 3,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/W0/w020.HIP"
+        },
+        "16": {
+          "count": 24,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        },
+        "18": {
+          "count": 23,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/F0/f006.HIP"
+        },
+        "20": {
+          "count": 33,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b002.HIP"
+        },
+        "22": {
+          "count": 18,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/boot.HIP"
+        },
+        "24": {
+          "count": 18,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/F0/f004.HIP"
+        },
+        "26": {
+          "count": 22,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c005.HIP"
+        },
+        "28": {
+          "count": 17,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/C0/c002.HIP"
+        },
+        "30": {
+          "count": 15,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/G0/g002.HIP"
+        }
+      }
+    },
+    "StreamHeader.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    }
+  },
+  "invariants": {
+    "assetChecksumMatchesData": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "assetIdMatchesNameHash": {
+      "checked": 139013,
+      "outcomes": {
+        "anim-suffix": 813,
+        "direct": 138140,
+        "mpht-replace": 36,
+        "truncated": 24
+      },
+      "unexplained": []
+    },
+    "assetIdsUnique": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "assetOffsetsInBounds": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "createdDateStringMatchesTimestamp": {
+      "checked": 272,
+      "outcomes": {
+        "violated": 0,
+        "passing": 272
+      }
+    },
+    "createdDateStringTrailingWhitespace": {
+      "kind": "set",
+      "values": {
+        "\n": {
+          "count": 272,
+          "builds": [
+            "n100f/release/GC/NTSC-U/US",
+            "n100f/release/GC/NTSC-U/US-r1",
+            "n100f/release/GC/PAL/UK"
+          ],
+          "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+        }
+      }
+    },
+    "fileNameSetWhenSourceFile": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "lastAssetInLayerHasZeroPlus": {
+      "checked": 1612,
+      "outcomes": {
+        "violated": 0,
+        "passing": 1612
+      }
+    },
+    "layerAssetCountsSumWithinTotal": {
+      "checked": 272,
+      "outcomes": {
+        "violated": 0,
+        "passing": 272
+      }
+    },
+    "layerAssetIdsResolve": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "packageCountsMatchTree": {
+      "checked": 544,
+      "outcomes": {
+        "violated": 0,
+        "passing": 544
+      }
+    },
+    "packageMaxSizesMatchTree": {
+      "checked": 816,
+      "outcomes": {
+        "violated": 0,
+        "passing": 816
+      }
+    },
+    "paddingIsHomogeneous": {
+      "checked": 260,
+      "outcomes": {
+        "violated": 0,
+        "passing": 260
+      },
+      "fillBytes": {
+        "kind": "set",
+        "values": {
+          "0x33": {
+            "count": 260,
+            "builds": [
+              "n100f/release/GC/NTSC-U/US",
+              "n100f/release/GC/NTSC-U/US-r1",
+              "n100f/release/GC/PAL/UK"
+            ],
+            "exemplar": "n100f/release/GC/NTSC-U/US-r1/B0/b001.HIP"
+          }
+        }
+      }
+    },
+    "plusMatchesAlignment": {
+      "checked": 15878,
+      "outcomes": {
+        "violated": 0,
+        "passing": 15878
+      }
+    },
+    "sourceFlagsExclusive": {
+      "checked": 139013,
+      "outcomes": {
+        "violated": 0,
+        "passing": 139013
+      }
+    },
+    "structural": {
+      "AssetDebug": {
+        "checked": 139013,
+        "outcomes": {
+          "violated": 0,
+          "passing": 139013
+        }
+      },
+      "AssetHeader": {
+        "checked": 139013,
+        "outcomes": {
+          "violated": 0,
+          "passing": 139013
+        }
+      },
+      "AssetInf": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "AssetStream": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "AssetTable": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "Dictionary": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "HIPA": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "LayerDebug": {
+        "checked": 2176,
+        "outcomes": {
+          "violated": 0,
+          "passing": 2176
+        }
+      },
+      "LayerHeader": {
+        "checked": 2176,
+        "outcomes": {
+          "violated": 0,
+          "passing": 2176
+        }
+      },
+      "LayerInf": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "LayerTable": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "Package": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "PackageCount": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "PackageCreated": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "PackageFlags": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "PackageModified": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "PackageVersion": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "StreamData": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      },
+      "StreamHeader": {
+        "checked": 272,
+        "outcomes": {
+          "violated": 0,
+          "passing": 272
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+---
+name: generating-corpus-inventory
+description: Use this skill to run the EvilHop.Corpus tool — regenerating a committed corpus inventory (corpus/*.json) from real archives in artifacts/, verifying that a set of archives still parses, or producing a full-fidelity JSONL dump. Covers both the inventory and verify verbs and what to check before committing.
+---
+
+# Generating a corpus inventory
+
+`tools/EvilHop.Corpus` reads real HIP archives from a local corpus and writes a small committed
+JSON inventory recording what those archives actually contain. The corpus is multi-GB and cannot be
+shared; the inventory can, which is how CI checks our assumptions against reality without the files.
+
+To *read* an existing inventory, use `reading-corpus-inventory` instead — you almost never need to
+regenerate one just to answer a question.
+
+**Use this when you need to:**
+- Refresh `corpus/v1.json` after adding builds to the corpus or changing extraction/invariant policy.
+- Check whether every archive under a path still parses, after touching serializer code.
+- Produce a `--dump` to trace an aggregated value back to every file it appears in.
+
+**Don't use this to:** answer a question the committed inventory already answers, or as part of a
+build or test run — nothing in CI reads `artifacts/`, and the full test suite must pass without it.
+
+## Prerequisites
+
+`artifacts/` at the repository root holds the corpus. It is **gitignored, user-supplied from their
+own legal dumps, and not guaranteed to exist** — anyone who clones without supplying their own copy
+simply won't have it. Expected layout:
+
+```
+artifacts/{game}/{build}/{platform}/{region}/{language}/**/*.HIP
+```
+
+| Segment | Values |
+| --- | --- |
+| `{game}` | `n100f`, `bfbb`, `tssm`, `incredibles`, `rotu`, `rat` |
+| `{build}` | `release` (optionally `_r{n}`) or `prototype_YYYY-MM-DD` |
+| `{platform}` | `GC`, `PC`, `P2`, `XB` |
+| `{region}` | `NTSC-U`, `PAL`, `NTSC-J` |
+| `{language}` | `DE`, `FR`, `JP`, `NL`, `UK`, `US`, hyphen-joined and alphabetized when multiple |
+
+**If `artifacts/` is absent, stop and tell the user** rather than generating from a partial or
+substituted corpus — a quietly incomplete inventory is worse than none, because it looks authoritative.
+
+Discovery is recursive and case-insensitive for `.HIP`/`.HOP` (Incredibles and ROTU ship `BOOT.HIP`
+uppercase). Directories deeper than the five build segments — per-level folders like `B0/` — fold into
+their nearest build key rather than becoming builds of their own.
+
+## Invocation
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify [--serializer <id>] <root>...
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out <path> [--serializer <id>] [--dump <path>] <root>...
+```
+
+Use `-c Release`. The tool is I/O- and parse-bound over gigabytes, and a Debug build is meaningfully
+slower for no benefit.
+
+| Element | Behavior |
+| --- | --- |
+| `<root>...` | One or more corpus roots. Pass only what you want: `artifacts/n100f artifacts/bfbb` covers those two and ignores the rest. |
+| `--out <path>` | Inventory output path. **Required** for `inventory`. |
+| `--serializer <id>` | Which serializer reads the archives. Default and currently only value: `v1`. |
+| `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
+
+A missing root, and a root containing no archives, are both hard errors rather than silent skips —
+the tool is always run deliberately by a human, so a bad argument should fail loudly.
+
+## Verify first
+
+`verify` parses everything and reports failures without writing anything. Run it before any
+`inventory` run:
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify artifacts/n100f
+  → 272/272 archives parsed successfully.
+```
+
+It matters because **`inventory` aborts on the first unparseable archive**, and discovering that
+forty minutes into a multi-GB run wastes real time. `verify` also has no `--out`, so it is the only
+safe way to point the tool at archives no current serializer can read.
+
+Exit codes: `0` when everything parsed, `1` when anything failed, with one `FAIL <path>: <reason>`
+line per failure.
+
+### Only V1 archives parse today
+
+`SerializerV1` is the only serializer that exists, and V2 added the `PLAT` block. Anything from BFBB
+onward fails:
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify artifacts/bfbb
+  → FAIL bfbb/release/GC/PAL/UK/sp/spsc.HIP: Unknown block tag 'PLAT'.
+  → 2/264 archives parsed successfully.
+```
+
+That is expected, not a bug. **In practice this means `artifacts/n100f` is the only root worth
+inventorying right now.** When `SerializerV2` lands, widen the roots and regenerate.
+
+## Generating
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/v1.json artifacts/n100f
+  → Processed 272 archives.
+  → Wrote inventory to corpus/v1.json
+```
+
+Progress prints every 100 archives. For scale: 272 archives / ~1.7GB takes roughly ten seconds, so a
+full six-game run is minutes, not hours. Archives are parsed one at a time and discarded — only the
+accumulators persist, because a parsed corpus cannot be held in memory.
+
+Output is deterministic: sorted keys, sorted values, numeric ordering by magnitude. **The same corpus
+always produces a byte-identical file**, which is what makes the committed diff meaningful.
+
+### `--dump`
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/v1.json --dump dump/n100f.jsonl artifacts/n100f
+```
+
+One JSONL record per archive with every field occurrence, uncapped and unaggregated. `dump/` is
+gitignored. Use it when the aggregated inventory says a value exists in three builds and you need
+every file containing it; regenerate on demand rather than keeping it around.
+
+## Before committing
+
+1. **Re-run and diff.** Run the same command twice and confirm the output is byte-identical. A diff
+   between two identical runs means non-determinism, which is a bug in the tool.
+2. **Run the test suite.** `dotnet test EvilHop.slnx -c Release`. `EvilHop.Tests/Corpus/InventoryTests.cs`
+   asserts the committed inventory against current code, and it is where a newly-recorded enum value
+   with no matching member surfaces.
+3. **Read the diff.** `corpus/*.json` is reviewed like source. A new asset type, a widened range, or a
+   newly-nonzero violation count is a finding worth understanding before it lands.
+4. **Don't commit `dump/`.** It's gitignored; keep it that way.
+
+Regenerate when the corpus gains builds, or when extraction/invariant policy changes in the tool.
+Routine library changes do **not** need a refresh — extraction is reflection-based and already reads
+whatever properties exist. What can break is the *assertions* in `EvilHop.Tests`, and that breaking in
+CI is the design working.
+
+## The governing rule
+
+**The tool records observations. `EvilHop.Tests` asserts those observations against current code.**
+
+The inventory must contain no value whose correctness depends on EvilHop's source. It records the raw
+value `RWTX`, never `"isDefined": true`; the `(name, id)` pair, never `"hashMatches": true`.
+
+The reason is *when failures surface*. The tool could trivially call `Enum.IsDefined` — but that
+failure would only appear when someone runs it with the full corpus on hand. Enum definitions are
+mutable code and observed values are frozen data, so the assertion belongs where code changes are
+actually caught: CI. **Do not add `Enum.IsDefined` or similar code-dependent checks to the tool.**
+
+This is the design decision a newcomer is most likely to unknowingly violate, and the tool's structure
+does not make it self-evident.
+
+## Extending
+
+`tools/EvilHop.Corpus/README.md` covers the same ground for humans. The layout:
+
+| Path | Holds |
+| --- | --- |
+| `Program.cs`, `CorpusOptions.cs` | CLI entry and argument parsing. |
+| `ArchiveWalker.cs` | Discovery and build-key derivation. |
+| `Extraction/` | Reflection over public block properties, and the cardinality policy. |
+| `Invariants/` | One file per invariant family, plus the registry that lists them all. |
+| `Output/` | Deterministic inventory JSON and the JSONL dump. |
+
+Adding an invariant means implementing `IInvariant` and registering it in `InvariantRegistry`. Adding
+a *field* takes no work at all — extraction reflects over public properties, so a new block property
+is picked up on the next run.
+
+`EvilHop.Corpus` deliberately has **no** `InternalsVisibleTo` on `EvilHop`. Its public-only view is
+the point: if something is awkward to write against public EvilHop, that is a real API finding the
+test project structurally cannot surface. Don't "fix" an awkward call site by widening internals.
+
+Cover changes with tests in `tests/EvilHop.Corpus.Tests`, which uses synthetic archives built through
+the public API and never depends on the corpus.

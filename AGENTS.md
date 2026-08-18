@@ -44,6 +44,12 @@ Every aspect of the library puts the developer first. We prioritize rich documen
 
 All architectural and design decisions should be approached from the perspective of developers using both layers of the library.
 
+## Corpus and Real Archives
+
+`artifacts/` is a local, gitignored corpus of real game archives - never a build or test dependency, and the full test suite must pass without it. `tools/EvilHop.Corpus` reads it to generate small committed inventories under `corpus/`, which hermetic tests assert against.
+
+Governing rule: **the Corpus tool records observations; tests assert them against current code.** An inventory must never contain a value whose correctness depends on EvilHop's source.
+
 ## Glossary
 - Archive: A single HIP file made up of a tree of blocks.
 - Block: A single unit of data, containing a block's Tag, Size, Data, and Children.
