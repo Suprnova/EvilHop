@@ -53,7 +53,7 @@ internal sealed class CreatedDateStringTrailingWhitespaceInvariant : IInvariant
     /// <inheritdoc/>
     public string Name => "createdDateStringTrailingWhitespace";
 
-    private readonly FieldAccumulator _trailing = new(ValueKind.Text);
+    private readonly FieldAccumulator _trailing = new(FieldKind.Text);
 
     /// <inheritdoc/>
     public void Check(ArchiveContext archive)
