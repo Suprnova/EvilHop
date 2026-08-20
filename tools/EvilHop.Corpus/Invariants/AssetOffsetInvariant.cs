@@ -131,7 +131,9 @@ internal sealed class LastAssetInLayerHasZeroPlusInvariant : IInvariant
 /// <summary>
 /// <c>AHDR.Plus</c> pads this asset's end up to its own <see cref="AssetDebug.Alignment"/> boundary.
 /// Skipped when alignment is non-positive (<c>-1</c> means "use the type's default", which this
-/// invariant does not have a table for).
+/// invariant does not have a table for), and for the last asset in each layer - per the wiki, only
+/// non-last assets carry their alignment padding in <c>Plus</c>; a layer's own trailing padding
+/// (see <see cref="LastAssetInLayerHasZeroPlusInvariant"/>) is never attributed to an asset.
 /// </summary>
 internal sealed class PlusMatchesAlignmentInvariant : IInvariant
 {
@@ -143,8 +145,16 @@ internal sealed class PlusMatchesAlignmentInvariant : IInvariant
     /// <inheritdoc/>
     public void Check(ArchiveContext archive)
     {
+        var lastInLayer = archive.AllBlocks.OfType<LayerHeader>()
+            .Select(layer => layer.AssetIds as IReadOnlyList<uint> ?? [.. layer.AssetIds])
+            .Where(assetIds => assetIds.Count > 0)
+            .Select(assetIds => assetIds[^1])
+            .ToHashSet();
+
         foreach (var header in archive.AllBlocks.OfType<AssetHeader>())
         {
+            if (lastInLayer.Contains(header.Id)) continue;
+
             var debug = header.GetChild<AssetDebug>();
             if (debug is null || debug.Alignment <= 0) continue;
 
