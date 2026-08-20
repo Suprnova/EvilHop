@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -10,7 +11,14 @@ namespace EvilHop.Corpus.Output;
 /// </summary>
 internal static class InventoryWriter
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
+    // The default encoder escapes characters like '+' (e.g. a UTC offset becomes "+00:00") on
+    // the assumption the JSON might be embedded in HTML. This file is only ever read as JSON, so
+    // that protection just adds noise to a file meant to be readable in a diff.
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        WriteIndented = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 
     /// <summary>
     /// Writes <paramref name="builder"/>'s accumulated state to <paramref name="path"/> as indented JSON.

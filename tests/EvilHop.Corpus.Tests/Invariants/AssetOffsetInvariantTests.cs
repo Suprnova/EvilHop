@@ -121,6 +121,21 @@ public class PlusMatchesAlignmentInvariantTests
 
         Assert.Equal(0, invariant.ToJson()["checked"]!.GetValue<long>());
     }
+
+    [Fact]
+    public void Check_LastAssetInLayerWithZeroPlus_IsSkippedRegardlessOfAlignment()
+    {
+        // A layer's own trailing padding is real, but never attributed to an asset's Plus - only
+        // non-last assets carry their alignment padding that way.
+        var header = Header(offset: 0, size: 10, plus: 0, alignment: 32);
+        var layer = BlockFactory.Create<LayerHeader>();
+        layer.AssetIds = [header.Id];
+        var invariant = new PlusMatchesAlignmentInvariant();
+
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, layer));
+
+        Assert.Equal(0, invariant.ToJson()["checked"]!.GetValue<long>());
+    }
 }
 
 public class LastAssetInLayerHasZeroPlusInvariantTests
