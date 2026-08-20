@@ -45,7 +45,7 @@ internal sealed class InventoryBuilder(IReadOnlyList<IInvariant> invariants)
 
             string fieldKey = $"{blockType.Name}.{property.Name}";
             if (!_fields.TryGetValue(fieldKey, out var accumulator))
-                _fields[fieldKey] = accumulator = new FieldAccumulator(ValueKindClassifier.Classify(property.PropertyType));
+                _fields[fieldKey] = accumulator = new FieldAccumulator(FieldKindClassifier.Classify(property.PropertyType));
 
             accumulator.Record(value, archive.BuildKey, archive.RelativePath);
         }

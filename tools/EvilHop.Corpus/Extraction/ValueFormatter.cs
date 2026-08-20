@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Globalization;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -6,40 +5,31 @@ using System.Text.Json.Nodes;
 namespace EvilHop.Corpus.Extraction;
 
 /// <summary>
-/// Formats extracted field values into the string keys used for cardinality tracking and the JSON
-/// nodes used for <c>min</c>/<c>max</c> output. Enum-typed values render as their ASCII form when
-/// every byte is printable (many, like <see cref="EvilHop.Common.AssetType"/>, are FourCCs - e.g.
-/// <c>ANIM</c> for <c>Animation</c>), falling back to hex otherwise; everything else renders as
-/// plain numbers or literal strings.
+/// CLR-type-driven rendering shared across every <see cref="FieldKind"/> - dispatch here depends only
+/// on a value's runtime type, never on which kind is observing it. Enum-typed values render as their
+/// ASCII form when every byte is printable (many, like <see cref="EvilHop.Common.AssetType"/>, are
+/// FourCCs - e.g. <c>ANIM</c> for <c>Animation</c>), falling back to hex otherwise.
 /// </summary>
 internal static class ValueFormatter
 {
-    /// <summary>
-    /// Formats <paramref name="value"/> into the string key used to identify it for cardinality
-    /// purposes - also the literal JSON object key when the field stays under the cap.
-    /// </summary>
-    public static string FormatKey(object? value, ValueKind kind) => value switch
+    /// <summary>Formats a date/time value in a round-trippable, culture-invariant form.</summary>
+    public static string FormatDate(DateTimeOffset value) => value.ToString("O", CultureInfo.InvariantCulture);
+
+    /// <inheritdoc cref="FormatDate(DateTimeOffset)"/>
+    public static string FormatDate(DateTime value) => value.ToString("O", CultureInfo.InvariantCulture);
+
+    /// <summary>Formats a non-null, non-collection value as its plain string form.</summary>
+    public static string FormatScalar(object? value) => value switch
     {
         null => "null",
-        Enum e => FormatEnum(e),
-        _ when kind == ValueKind.Hex => FormatHex(value!),
-        DateTimeOffset dto => dto.ToString("O", CultureInfo.InvariantCulture),
-        DateTime dt => dt.ToString("O", CultureInfo.InvariantCulture),
-        string s => s,
-        IEnumerable e when kind == ValueKind.Collection => FormatCollection(e),
-        _ => FormatScalar(value)
+        bool b => b ? "true" : "false",
+        IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+        _ => value.ToString() ?? "null"
     };
 
-    /// <summary>
-    /// Renders <paramref name="value"/> as a JSON node for <c>min</c>/<c>max</c> output.
-    /// </summary>
-    public static JsonNode? ToJsonNode(object? value, ValueKind kind) => value switch
+    /// <summary>Renders a non-null numeric value as a JSON node, matching its underlying CLR numeric type.</summary>
+    public static JsonNode? ToJsonNode(object value) => value switch
     {
-        null => null,
-        Enum e => JsonValue.Create(FormatEnum(e)),
-        _ when kind == ValueKind.Hex => JsonValue.Create(FormatHex(value!)),
-        DateTimeOffset dto => JsonValue.Create(dto.ToString("O", CultureInfo.InvariantCulture)),
-        DateTime dt => JsonValue.Create(dt.ToString("O", CultureInfo.InvariantCulture)),
         uint ui => JsonValue.Create(ui),
         int i => JsonValue.Create(i),
         long l => JsonValue.Create(l),
@@ -55,18 +45,7 @@ internal static class ValueFormatter
         _ => JsonValue.Create(value.ToString())
     };
 
-    private static string FormatCollection(IEnumerable enumerable) =>
-        $"[{string.Join(",", enumerable.Cast<object?>().Select(FormatScalar))}]";
-
-    private static string FormatScalar(object? value) => value switch
-    {
-        null => "null",
-        bool b => b ? "true" : "false",
-        IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-        _ => value.ToString() ?? "null"
-    };
-
-    private static string FormatEnum(Enum value)
+    public static string FormatEnum(Enum value)
     {
         var underlyingType = Enum.GetUnderlyingType(value.GetType());
         ulong numeric = Convert.ToUInt64(value, CultureInfo.InvariantCulture);
@@ -88,7 +67,7 @@ internal static class ValueFormatter
 
         if (bytes.Any(b => b is < 0x20 or > 0x7E))
         {
-            ascii = "";
+            ascii = String.Empty;
             return false;
         }
 
@@ -96,7 +75,7 @@ internal static class ValueFormatter
         return true;
     }
 
-    private static string FormatHex(object value) => value switch
+    public static string FormatHex(object value) => value switch
     {
         byte or sbyte => FormatHex(Convert.ToUInt64(value, CultureInfo.InvariantCulture), 2),
         short or ushort => FormatHex(Convert.ToUInt64(value, CultureInfo.InvariantCulture), 4),

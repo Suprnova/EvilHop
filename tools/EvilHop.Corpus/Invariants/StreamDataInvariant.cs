@@ -14,7 +14,7 @@ internal sealed class PaddingIsHomogeneousInvariant : IInvariant
     public string Name => "paddingIsHomogeneous";
 
     private readonly InvariantResult _result = new();
-    private readonly FieldAccumulator _fillBytes = new(ValueKind.Hex);
+    private readonly FieldAccumulator _fillBytes = new(FieldKind.Hex);
 
     /// <inheritdoc/>
     public void Check(ArchiveContext archive)

@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace EvilHop.Corpus.Extraction;
 
 /// <summary>
@@ -7,7 +5,7 @@ namespace EvilHop.Corpus.Extraction;
 /// <see cref="ValueSummary"/>. One instance per field key (e.g. <c>"AssetHeader.Type"</c>),
 /// persisting across archives.
 /// </summary>
-internal sealed class FieldAccumulator(ValueKind kind)
+internal sealed class FieldAccumulator(FieldKind kind)
 {
     private const int CardinalityCap = 64;
 
@@ -21,12 +19,8 @@ internal sealed class FieldAccumulator(ValueKind kind)
 
     private readonly Dictionary<string, Occurrence> _topValues = [];
     private readonly HashSet<string> _allKeys = [];
+    private readonly IValueStatistic _statistic = kind.CreateStatistic();
     private bool _degraded;
-
-    private object? _min;
-    private object? _max;
-    private int? _minLength;
-    private int? _maxLength;
 
     /// <summary>
     /// Records one observed <paramref name="value"/>, attributed to <paramref name="build"/> and
@@ -34,16 +28,10 @@ internal sealed class FieldAccumulator(ValueKind kind)
     /// </summary>
     public void Record(object? value, string build, string exemplarPath)
     {
-        if (kind == ValueKind.Bytes)
-        {
-            UpdateLength(value is byte[] bytes ? bytes.Length : (int?)null);
-            return;
-        }
+        _statistic.Observe(value);
+        if (!kind.RecordsValues) return;
 
-        if (kind is ValueKind.Numeric or ValueKind.Hex) UpdateMinMax(value);
-        if (kind is ValueKind.Text or ValueKind.Collection) UpdateLength(LengthOf(value));
-
-        string key = ValueFormatter.FormatKey(value, kind);
+        string key = kind.FormatKey(value);
         bool isNewKey = _allKeys.Add(key);
 
         if (_degraded) return;
@@ -62,10 +50,7 @@ internal sealed class FieldAccumulator(ValueKind kind)
             return;
         }
 
-        // Text keys already sort correctly (and deterministically, culture-invariantly) via their own
-        // Ordinal string comparison; only numeric-ish kinds need the underlying value to sort by magnitude.
-        IComparable? sortKey = kind is ValueKind.Numeric or ValueKind.Hex ? value as IComparable : null;
-        var newOccurrence = new Occurrence { Count = 1, Exemplar = exemplarPath, SortKey = sortKey };
+        var newOccurrence = new Occurrence { Count = 1, Exemplar = exemplarPath, SortKey = kind.SortKey(value) };
         newOccurrence.Builds.Add(build);
         _topValues[key] = newOccurrence;
     }
@@ -75,47 +60,14 @@ internal sealed class FieldAccumulator(ValueKind kind)
     /// </summary>
     public ValueSummary ToSummary()
     {
-        if (kind == ValueKind.Bytes)
-            return new ValueSummary { Kind = "summary", MinLength = _minLength, MaxLength = _maxLength };
-
-        if (!_degraded)
+        if (kind.RecordsValues && !_degraded)
         {
             var values = _topValues.ToDictionary(
                 kv => kv.Key,
                 kv => new ValueOccurrence(kv.Value.Count, kv.Value.Builds, kv.Value.Exemplar!, kv.Value.SortKey));
-            return new ValueSummary { Kind = "set", Values = values };
+            return new ValueSet(values);
         }
 
-        return new ValueSummary
-        {
-            Kind = "summary",
-            Distinct = _allKeys.Count,
-            Min = ValueFormatter.ToJsonNode(_min, kind),
-            Max = ValueFormatter.ToJsonNode(_max, kind),
-            MinLength = _minLength,
-            MaxLength = _maxLength
-        };
+        return new ValueDigest(kind.RecordsValues ? _allKeys.Count : null, _statistic);
     }
-
-    private void UpdateMinMax(object? value)
-    {
-        if (value is not IComparable comparable) return;
-        if (_min is null || comparable.CompareTo(_min) < 0) _min = value;
-        if (_max is null || comparable.CompareTo(_max) > 0) _max = value;
-    }
-
-    private void UpdateLength(int? length)
-    {
-        if (length is null) return;
-        _minLength = _minLength is null ? length : Math.Min(_minLength.Value, length.Value);
-        _maxLength = _maxLength is null ? length : Math.Max(_maxLength.Value, length.Value);
-    }
-
-    private static int? LengthOf(object? value) => value switch
-    {
-        null => null,
-        string s => s.Length,
-        IEnumerable e => e.Cast<object?>().Count(),
-        _ => null
-    };
 }

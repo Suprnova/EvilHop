@@ -32,13 +32,13 @@ internal sealed class DumpWriter : IDisposable
             {
                 if (!FieldExtractor.TryGetValue(property, block, out var value)) continue;
 
-                var kind = ValueKindClassifier.Classify(property.PropertyType);
+                var kind = FieldKindClassifier.Classify(property.PropertyType);
                 string fieldKey = $"{blockType.Name}.{property.Name}";
 
                 if (fields[fieldKey] is not JsonArray values)
                     fields[fieldKey] = values = [];
 
-                values.Add(RenderValue(value, kind));
+                values.Add(kind.RenderForDump(value));
             }
         }
 
@@ -51,10 +51,6 @@ internal sealed class DumpWriter : IDisposable
 
         _writer.WriteLine(record.ToJsonString());
     }
-
-    private static JsonValue? RenderValue(object? value, ValueKind kind) => kind == ValueKind.Bytes
-        ? JsonValue.Create(value is byte[] bytes ? bytes.Length : 0)
-        : JsonValue.Create(ValueFormatter.FormatKey(value, kind));
 
     public void Dispose() => _writer.Dispose();
 }

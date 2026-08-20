@@ -22,62 +22,57 @@ internal sealed record ValueOccurrence(long Count, IReadOnlyCollection<string> B
 
 /// <summary>
 /// The final observation recorded for one field: either the full distinct set, under the cap, or a
-/// degraded summary once it is exceeded.
+/// degraded summary once it is exceeded. Closed to <see cref="ValueSet"/> and <see cref="ValueDigest"/>
+/// so a summary can never carry a mix of fields that only make sense for the other shape.
 /// </summary>
-internal sealed class ValueSummary
+internal abstract record ValueSummary
 {
-    /// <summary><c>"set"</c> or <c>"summary"</c>.</summary>
-    public required string Kind { get; init; }
+    public abstract JsonObject ToJson();
+}
 
-    /// <summary>The full distinct value set. Only present when <see cref="Kind"/> is <c>"set"</c>.</summary>
-    public IReadOnlyDictionary<string, ValueOccurrence>? Values { get; init; }
-
-    /// <summary>The exact distinct count. Only present when <see cref="Kind"/> is <c>"summary"</c>.</summary>
-    public long? Distinct { get; init; }
-
-    /// <summary>The smallest observed value, for <see cref="ValueKind.Numeric"/>/<see cref="ValueKind.Hex"/> fields.</summary>
-    public JsonNode? Min { get; init; }
-
-    /// <summary>The largest observed value, for <see cref="ValueKind.Numeric"/>/<see cref="ValueKind.Hex"/> fields.</summary>
-    public JsonNode? Max { get; init; }
-
-    /// <summary>The shortest observed length, for <see cref="ValueKind.Text"/>/<see cref="ValueKind.Collection"/>/<see cref="ValueKind.Bytes"/> fields.</summary>
-    public int? MinLength { get; init; }
-
-    /// <summary>The longest observed length, for <see cref="ValueKind.Text"/>/<see cref="ValueKind.Collection"/>/<see cref="ValueKind.Bytes"/> fields.</summary>
-    public int? MaxLength { get; init; }
-
-    public JsonObject ToJson()
+/// <summary>The full distinct value set, recorded while a field stays under the cardinality cap.</summary>
+internal sealed record ValueSet(IReadOnlyDictionary<string, ValueOccurrence> Values) : ValueSummary
+{
+    public override JsonObject ToJson()
     {
-        if (Kind == "set")
-        {
-            var values = new JsonObject();
-            foreach (var (key, occurrence) in Values!.OrderBy(kv => kv, ValueOrder.Instance))
-                values[key] = occurrence.ToJson();
+        var values = new JsonObject();
+        foreach (var (key, occurrence) in Values.OrderBy(kv => kv, ValueOrder.Instance))
+            values[key] = occurrence.ToJson();
 
-            return new JsonObject { ["kind"] = "set", ["values"] = values };
-        }
-
-        var summary = new JsonObject { ["kind"] = "summary" };
-        if (Distinct is not null) summary["distinct"] = Distinct;
-        if (Min is not null) summary["min"] = Min;
-        if (Max is not null) summary["max"] = Max;
-        if (MinLength is not null) summary["minLength"] = MinLength;
-        if (MaxLength is not null) summary["maxLength"] = MaxLength;
-        return summary;
+        return new JsonObject { ["kind"] = "set", ["values"] = values };
     }
 
     /// <summary>
-    /// Orders values by their numeric <see cref="ValueOccurrence.SortKey"/> when every entry has
-    /// one; otherwise falls back to an ordinal sort of the JSON key itself.
+    /// Orders values by their numeric <see cref="ValueOccurrence.SortKey"/> when the kind provides
+    /// one (every entry in a given set does, uniformly - it comes from the field's single
+    /// <see cref="FieldKind"/>); otherwise falls back to an ordinal sort of the JSON key itself.
     /// </summary>
     private sealed class ValueOrder : IComparer<KeyValuePair<string, ValueOccurrence>>
     {
         public static readonly ValueOrder Instance = new();
 
         public int Compare(KeyValuePair<string, ValueOccurrence> x, KeyValuePair<string, ValueOccurrence> y) =>
-            x.Value.SortKey is not null && y.Value.SortKey is not null
-                ? x.Value.SortKey.CompareTo(y.Value.SortKey)
+            x.Value.SortKey is { } xKey && y.Value.SortKey is { } yKey
+                ? xKey.CompareTo(yKey)
                 : string.CompareOrdinal(x.Key, y.Key);
+    }
+}
+
+/// <summary>
+/// A degraded summary, once a field's distinct value count exceeds the cardinality cap.
+/// </summary>
+/// <param name="Distinct">
+/// The exact distinct count. Null for <see cref="BytesKind"/>, whose contents are never tracked for
+/// cardinality in the first place.
+/// </param>
+/// <param name="Statistic">The field's kind-specific range - value min/max, or a length range.</param>
+internal sealed record ValueDigest(long? Distinct, IValueStatistic Statistic) : ValueSummary
+{
+    public override JsonObject ToJson()
+    {
+        var summary = new JsonObject { ["kind"] = "summary" };
+        if (Distinct is not null) summary["distinct"] = Distinct;
+        Statistic.WriteTo(summary);
+        return summary;
     }
 }
