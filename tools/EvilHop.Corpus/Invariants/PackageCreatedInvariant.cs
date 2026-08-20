@@ -7,13 +7,18 @@ namespace EvilHop.Corpus.Invariants;
 
 /// <summary>
 /// <see cref="PackageCreated.CreatedDateString"/> parses to the same wall-clock time as
-/// <see cref="PackageCreated.CreatedDate"/>. Compared whitespace-insensitively: N100F stores a
+/// <see cref="PackageCreated.CreatedDate"/>, once converted from UTC to Pacific Time observing
+/// whichever DST rule applied on that date - <see cref="PackageCreated.CreatedDate"/> is stored as
+/// a raw UTC timestamp, while <see cref="PackageCreated.CreatedDateString"/> was written in the
+/// build machine's local (Pacific) clock. Compared whitespace-insensitively: N100F stores a
 /// trailing <c>\n</c> that BFBB does not.
 /// </summary>
 internal sealed class CreatedDateStringMatchesTimestampInvariant : IInvariant
 {
     // Matches the private format PackageCreated uses to build CreatedDateString on write.
     private const string Format = "ddd MMM dd HH:mm:ss yyyy";
+
+    private static readonly TimeZoneInfo PacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
 
     /// <inheritdoc/>
     public string Name => "createdDateStringMatchesTimestamp";
@@ -26,8 +31,9 @@ internal sealed class CreatedDateStringMatchesTimestampInvariant : IInvariant
         foreach (var created in archive.AllBlocks.OfType<PackageCreated>())
         {
             string trimmed = created.CreatedDateString.Trim();
+            var pacificCreatedDate = TimeZoneInfo.ConvertTime(created.CreatedDate, PacificTimeZone);
             bool matches = DateTime.TryParseExact(trimmed, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
-                && parsed == created.CreatedDate.DateTime;
+                && parsed == pacificCreatedDate.DateTime;
 
             _result.Record(matches, () => new JsonObject
             {

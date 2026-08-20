@@ -199,8 +199,7 @@ public class PackageCreated : Block
     /// The timestamp at which the archive was created.
     /// </summary>
     /// <remarks>
-    /// Within the archive file, this field is stored in Unix time with an offset of
-    /// UTC-7:00 (Pacific Time).
+    /// Within the archive file, this field is stored as a UTC Unix timestamp.
     /// </remarks>
     /// Validation TODO: Can convert to a valid Unix time.
     public DateTimeOffset CreatedDate { get; set; }
@@ -214,9 +213,13 @@ public class PackageCreated : Block
     /// <code>
     /// ddd MMM dd HH:mm:ss yyyy
     /// </code>
+    /// Within the archive file, this field is calculated in whatever local time zone
+    /// the build machine's clock was set to.
     /// </remarks>
     /// Validation TODO: Matches expected formatting.
     /// Appended by '\n' in N100F.
+    /// Not necessary to validate it matches against CreatedDate, since we don't know the local
+    /// timezone for the build machine of unofficial archives.
     public string CreatedDateString { get; set; }
 
     internal PackageCreated() : this(DateTimeOffset.Now) { }
@@ -245,8 +248,7 @@ public class PackageModified : Block
     /// The timestamp at which the archive was last modified.
     /// </summary>
     /// <remarks>
-    /// Within the archive file, this field is stored in Unix time with an offset of
-    /// UTC-7:00 (Pacific Time).
+    /// Within the archive file, this field is stored as a UTC Unix timestamp.
     /// </remarks>
     /// Validation TODO: Can convert to a valid Unix time.
     public DateTimeOffset ModifiedDate { get; set; }

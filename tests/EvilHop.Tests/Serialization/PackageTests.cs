@@ -68,7 +68,7 @@ public class PackageTests
     }
 
     [Fact]
-    public void ReadBlock_Pcrt_ConvertsRawUnixTimeAndReadsDateString()
+    public void ReadBlock_Pcrt_ReadsRawUnixTimeAsUtcAndReadsDateString()
     {
         var content = BlockBytes.Content(w =>
         {
@@ -79,18 +79,18 @@ public class PackageTests
 
         var block = (PackageCreated)new TestSerializer().ReadBlockPublic(reader);
 
-        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1028661674).ToOffset(TimeSpan.FromHours(-7)), block.CreatedDate);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1028661674), block.CreatedDate);
         Assert.Equal("Tue Aug 06 12:21:14 2002\n", block.CreatedDateString);
     }
 
     [Fact]
-    public void ReadBlock_Pmod_ConvertsRawUnixTime()
+    public void ReadBlock_Pmod_ReadsRawUnixTimeAsUtc()
     {
         var content = BlockBytes.Content(w => w.WriteEvilInt(1029000000));
         var reader = BlockBytes.Reader("PMOD", content);
 
         var block = (PackageModified)new TestSerializer().ReadBlockPublic(reader);
 
-        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1029000000).ToOffset(TimeSpan.FromHours(-7)), block.ModifiedDate);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1029000000), block.ModifiedDate);
     }
 }
