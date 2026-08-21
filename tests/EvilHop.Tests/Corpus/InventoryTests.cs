@@ -6,9 +6,9 @@ using System.Text.Json;
 namespace EvilHop.Tests.Corpus;
 
 /// <summary>
-/// Reads the committed <c>corpus/n100f.json</c> and asserts its observations against EvilHop's
-/// current code. Hermetic - never touches the local corpus, only the frozen file checked into git,
-/// so it runs on every CI build with no artifacts present.
+/// Reads every committed <c>corpus/*.json</c> inventory and asserts its observations against
+/// EvilHop's current code. Hermetic - never touches the local corpus, only the frozen files checked
+/// into git, so it runs on every CI build with no artifacts present.
 /// </summary>
 /// <remarks>
 /// The governing rule: the inventory records observations, and only assertions coupling that frozen
@@ -17,13 +17,14 @@ namespace EvilHop.Tests.Corpus;
 /// </remarks>
 public class InventoryTests
 {
-    private static readonly JsonElement Root = LoadInventory();
+    private static readonly IReadOnlyDictionary<string, JsonElement> Inventories = LoadInventories();
 
-    private static JsonElement LoadInventory()
+    private static IReadOnlyDictionary<string, JsonElement> LoadInventories()
     {
-        string path = Path.Combine(FindRepositoryRoot(), "corpus", "n100f.json");
-        using var stream = File.OpenRead(path);
-        return JsonDocument.Parse(stream).RootElement.Clone();
+        string corpusDirectory = Path.Combine(FindRepositoryRoot(), "corpus");
+        return Directory.GetFiles(corpusDirectory, "*.json").ToDictionary(
+            path => Path.GetFileNameWithoutExtension(path)!,
+            path => JsonDocument.Parse(File.ReadAllText(path)).RootElement.Clone());
     }
 
     private static string FindRepositoryRoot()
@@ -65,7 +66,11 @@ public class InventoryTests
     }
 
     public static IEnumerable<object[]> FieldKeys() =>
-        Root.GetProperty("fields").EnumerateObject().Select(p => new object[] { p.Name });
+        Inventories.Values
+            .SelectMany(root => root.GetProperty("fields").EnumerateObject())
+            .Select(p => p.Name)
+            .Distinct()
+            .Select(name => new object[] { name });
 
     [Theory]
     [MemberData(nameof(FieldKeys))]
@@ -86,29 +91,38 @@ public class InventoryTests
         var (_, property) = ResolveField(fieldKey);
         if (property is null || !property.PropertyType.IsEnum) return;
 
-        var field = Root.GetProperty("fields").GetProperty(fieldKey);
-        if (field.GetProperty("kind").GetString() != "set") return;
-
         bool isFlags = property.PropertyType.GetCustomAttribute<FlagsAttribute>() is not null;
         ulong knownBits = isFlags
             ? Enum.GetValues(property.PropertyType).Cast<object>().Aggregate(0UL, (bits, member) => bits | Convert.ToUInt64(member))
             : 0;
 
-        foreach (var value in field.GetProperty("values").EnumerateObject())
+        // Collect every offending value before asserting, rather than stopping at the first - a
+        // single failed Assert.True per test run hides how many other values are also undefined.
+        List<string> undefined = [];
+
+        foreach (var root in Inventories.Values)
         {
-            ulong raw = ParseEnumValue(value.Name);
-            if (isFlags)
+            if (!root.GetProperty("fields").TryGetProperty(fieldKey, out var field)) continue;
+            if (field.GetProperty("kind").GetString() != "set") continue;
+
+            foreach (var value in field.GetProperty("values").EnumerateObject())
             {
-                // A [Flags] enum's valid values are combinations of known bits, not necessarily
-                // named members themselves - Enum.IsDefined only matches exact named members.
-                Assert.True((raw & ~knownBits) == 0, $"{fieldKey} recorded value {value.Name} with unknown flag bits.");
-            }
-            else
-            {
-                var enumValue = Enum.ToObject(property.PropertyType, raw);
-                Assert.True(Enum.IsDefined(property.PropertyType, enumValue), $"{fieldKey} recorded undefined value {value.Name}.");
+                ulong raw = ParseEnumValue(value.Name);
+                if (isFlags)
+                {
+                    // A [Flags] enum's valid values are combinations of known bits, not necessarily
+                    // named members themselves - Enum.IsDefined only matches exact named members.
+                    if ((raw & ~knownBits) != 0) undefined.Add(value.Name);
+                }
+                else
+                {
+                    var enumValue = Enum.ToObject(property.PropertyType, raw);
+                    if (!Enum.IsDefined(property.PropertyType, enumValue)) undefined.Add(value.Name);
+                }
             }
         }
+
+        Assert.True(undefined.Count == 0, $"{fieldKey} recorded undefined values: {string.Join(", ", undefined.Distinct())}.");
     }
 
     /// <summary>
@@ -119,22 +133,23 @@ public class InventoryTests
     [Fact]
     public void AssetId_EveryUnexplainedSample_StillFailsToDeriveUnderEveryKnownRule()
     {
-        foreach (var sample in Root.GetProperty("invariants").GetProperty("assetIdMatchesNameHash").GetProperty("unexplained").EnumerateArray())
-        {
-            string name = sample.GetProperty("name").GetString()!;
-            uint id = ParseHex(sample.GetProperty("expected").GetString()!);
-            var type = Enum.Parse<AssetType>(sample.GetProperty("type").GetString()!);
-
-            Assert.NotEqual(id, BKDRHash.Calculate(name));
-
-            if (type == AssetType.Animation)
-                Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".anm")));
-
-            if (type == AssetType.MorphTarget)
+        foreach (var root in Inventories.Values)
+            foreach (var sample in root.GetProperty("invariants").GetProperty("assetIdMatchesNameHash").GetProperty("unexplained").EnumerateArray())
             {
-                Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".mph")));
-                Assert.NotEqual(id, BKDRHash.Calculate(name + ".mph"));
+                string name = sample.GetProperty("name").GetString()!;
+                uint id = ParseHex(sample.GetProperty("expected").GetString()!);
+                var type = Enum.Parse<AssetType>(sample.GetProperty("type").GetString()!);
+
+                Assert.NotEqual(id, BKDRHash.Calculate(name));
+
+                if (type == AssetType.Animation)
+                    Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".anm")));
+
+                if (type == AssetType.MorphTarget)
+                {
+                    Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".mph")));
+                    Assert.NotEqual(id, BKDRHash.Calculate(name + ".mph"));
+                }
             }
-        }
     }
 }

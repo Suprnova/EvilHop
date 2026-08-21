@@ -34,7 +34,7 @@ internal sealed class CorpusOptions
     /// <summary>The inventory output path. Required for <see cref="CorpusVerb.Inventory"/>.</summary>
     public string? OutputPath { get; init; }
 
-    /// <summary>Which game to read archives with. Defaults to <see cref="GameVersion.N100F"/>, the only game with a serializer today.</summary>
+    /// <summary>Which game to read archives with. Defaults to <see cref="GameVersion.N100F"/>.</summary>
     public GameVersion Game { get; init; } = GameVersion.N100F;
 
     /// <summary>The optional JSONL full-fidelity dump path.</summary>
