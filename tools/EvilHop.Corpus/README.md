@@ -34,9 +34,8 @@ dotnet run --project tools/EvilHop.Corpus -- verify artifacts/n100f artifacts/bf
   artifacts/bfbb` inventories those two and leaves the rest alone.
 - `--out` - the inventory output path. Required for `inventory`.
 - `--serializer` - which game to read with, a case-insensitive `GameVersion` key (`n100f`, `bfbb`,
-  `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. `n100f` and `bfbb` have
-  serializers today; any other key resolves but fails with "No serializer exists for `<game>` yet"
-  until that game's serializer lands.
+  `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. Every `GameVersion` has a
+  serializer today.
 - `--dump <path>` - also writes a full-fidelity, gitignored JSONL dump alongside the inventory (see
   below).
 - `--round-trip` - `verify`-only. Additionally writes each parsed archive back out and diffs it
