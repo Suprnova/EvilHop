@@ -44,10 +44,12 @@ internal sealed class PackageCountsMatchTreeInvariant : IInvariant
 /// <summary>
 /// <see cref="PackageCount.MaxAssetSize"/>, <see cref="PackageCount.MaxLayerSize"/>, and
 /// <see cref="PackageCount.MaxXFormAssetSize"/> match their computed maxima over the tree. A layer's
-/// size is the byte extent its assets span in <see cref="StreamData.Data"/> - from the first entry
-/// in <see cref="LayerHeader.AssetIds"/> to the last, excluding trailing padding. This definition is
-/// our current best understanding, not confirmed against the format, and worth revisiting if the
-/// corpus ever reports implausible violation counts here.
+/// size is the sum of <c>Size + Plus</c> over every entry in its <see cref="LayerHeader.AssetIds"/> -
+/// once per listing, not once per distinct asset ID. Confirmed against
+/// <c>n100f/prototype_2001-06-11</c>, the only build where a listed asset ID repeats within a single
+/// layer and its last asset carries a non-zero <c>Plus</c> - the only build where this sum-of-listings
+/// definition and a simpler first-to-last byte extent disagree (see
+/// <c>docs/Divergences from Community Documentation.md</c>).
 /// </summary>
 internal sealed class PackageMaxSizesMatchTreeInvariant : IInvariant
 {
@@ -99,17 +101,14 @@ internal sealed class PackageMaxSizesMatchTreeInvariant : IInvariant
         if (layers.Count == 0) return;
 
         var headersById = headers.ToDictionary(h => h.Id);
-        var extents = layers
-            .Select(layer => layer.AssetIds as IReadOnlyList<uint> ?? [.. layer.AssetIds])
-            .Where(ids => ids.Count > 0)
-            .Select(ids => (First: headersById.GetValueOrDefault(ids[0]), Last: headersById.GetValueOrDefault(ids[^1])))
-            .Where(pair => pair.First is not null && pair.Last is not null)
-            .Select(pair => (long)(pair.Last!.Offset + pair.Last.Size) - pair.First!.Offset)
-            .ToList();
+        uint expected = (uint)layers.Max(layer =>
+        {
+            long selector(uint id) => (long)headersById[id].Size + headersById[id].Plus;
+            return layer.AssetIds
+                        .Where(headersById.ContainsKey)
+                        .Sum(selector);
+        });
 
-        if (extents.Count == 0) return;
-
-        uint expected = (uint)extents.Max();
         _result.Record(counts.MaxLayerSize == expected, () => new JsonObject
         {
             ["path"] = archive.RelativePath,
