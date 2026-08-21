@@ -1,3 +1,4 @@
+using EvilHop.Blocks;
 using EvilHop.Primitives;
 
 namespace EvilHop.Tests.Serialization;
@@ -28,6 +29,19 @@ internal static class BlockBytes
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true);
         build(writer);
+        return stream.ToArray();
+    }
+
+    /// <summary>
+    /// Writes <paramref name="block"/> through <paramref name="serializer"/>'s
+    /// <see cref="TestSerializer.WriteBlockPublic"/>, returning the full raw byte envelope
+    /// (tag + size + content), for comparison against <see cref="Build"/>'s expected bytes.
+    /// </summary>
+    public static byte[] WriteBlock(TestSerializer serializer, Block block)
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true))
+            serializer.WriteBlockPublic(writer, block);
         return stream.ToArray();
     }
 }

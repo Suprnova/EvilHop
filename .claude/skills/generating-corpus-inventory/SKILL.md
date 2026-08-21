@@ -1,6 +1,6 @@
 ---
 name: generating-corpus-inventory
-description: Use this skill to run the EvilHop.Corpus tool — regenerating a committed corpus inventory (corpus/*.json) from real archives in artifacts/, verifying that a set of archives still parses, or producing a full-fidelity JSONL dump. Covers both the inventory and verify verbs and what to check before committing.
+description: Use this skill to run the EvilHop.Corpus tool — regenerating a committed corpus inventory (corpus/*.json) from real archives in artifacts/, verifying that a set of archives still parses (optionally round-trips byte-for-byte), or producing a full-fidelity JSONL dump. Covers both the inventory and verify verbs and what to check before committing.
 ---
 
 # Generating a corpus inventory
@@ -15,6 +15,9 @@ regenerate one just to answer a question.
 **Use this when you need to:**
 - Refresh `corpus/n100f.json` after adding builds to the corpus or changing extraction/invariant policy.
 - Check whether every archive under a path still parses, after touching serializer code.
+- Check whether every archive under a path still **round-trips byte-for-byte** (`--round-trip`), after
+  touching serializer read *or write* code — the strongest available check of the library's round-trip
+  fidelity claim, run against real archives instead of hand-built fixtures.
 - Produce a `--dump` to trace an aggregated value back to every file it appears in.
 
 **Don't use this to:** answer a question the committed inventory already answers, or as part of a
@@ -48,7 +51,7 @@ their nearest build key rather than becoming builds of their own.
 ## Invocation
 
 ```
-dotnet run --project tools/EvilHop.Corpus -c Release -- verify [--serializer <game>] <root>...
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify [--serializer <game>] [--round-trip] <root>...
 dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out <path> [--serializer <game>] [--dump <path>] <root>...
 ```
 
@@ -61,6 +64,7 @@ slower for no benefit.
 | `--out <path>` | Inventory output path. **Required** for `inventory`. |
 | `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. `n100f` and `bfbb` are implemented today. |
 | `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
+| `--round-trip` | `verify`-only. Also writes each parsed archive back out (to an in-memory buffer, nothing touches disk) and diffs it against the original file's bytes. Off by default — it roughly doubles per-archive memory and time. |
 
 A missing root, and a root containing no archives, are both hard errors rather than silent skips —
 the tool is always run deliberately by a human, so a bad argument should fail loudly.
@@ -82,6 +86,34 @@ the whole run.
 
 Exit codes: `0` when everything parsed, `1` when anything failed, with one `FAIL <path>: <reason>`
 line per failure.
+
+### Round-trip checking
+
+`--round-trip` reads each archive, writes it back out to an in-memory buffer, and diffs that buffer
+against the original file's bytes — nothing is written to disk. It's the real-corpus counterpart to
+`SerializerContractTests.Read_ThenWrite_MinimalFixture_ProducesIdenticalBytes`
+(`docs/Serializer Writing Design.md` §1, §7): that test proves the claim against one hand-built
+fixture per serializer, this proves it against every real archive under a root.
+
+```
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify --round-trip artifacts/n100f
+  → 1038/1038 archives parsed successfully.
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify --serializer bfbb --round-trip artifacts/bfbb
+  → 264/264 archives parsed successfully.
+```
+
+A round-trip mismatch reports as a normal `FAIL <path>: round-trip byte mismatch.` line alongside any
+parse failures — the summary count and exit code don't distinguish "didn't parse" from "parsed but
+didn't round-trip," so check the failure lines themselves to tell which happened. Per
+[Serializer Writing Design §1](../../../docs/Serializer%20Writing%20Design.md#1-what-best-effort-round-trip-fidelity-actually-means),
+a round-trip failure is never "we forgot to preserve original bytes" — there's no byte capture to have
+forgotten — it's always either a bug (a field the model doesn't have a home for, or a writer that
+encodes something differently than its reader decoded it) or a genuine modeling gap worth recording.
+
+Off by default because it roughly doubles per-archive memory and time; plain `verify` still answers
+"does everything under this root parse" on its own, and `--round-trip` only makes sense once you're
+specifically checking a serializer's write path (or a read-path change you want to be sure didn't
+introduce an asymmetry with its writer).
 
 ### Only N100F and BFBB have serializers today
 

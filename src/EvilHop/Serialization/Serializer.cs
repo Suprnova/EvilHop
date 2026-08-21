@@ -35,26 +35,26 @@ public abstract partial class Serializer
         RegisterBlock<HIPA>();
 
         RegisterBlock<Package>();
-        RegisterBlock<PackageVersion>(ReadPackageVersion);
-        RegisterBlock<PackageFlags>(ReadPackageFlags);
-        RegisterBlock<PackageCount>(ReadPackageCount);
-        RegisterBlock<PackageCreated>(ReadPackageCreated);
-        RegisterBlock<PackageModified>(ReadPackageModified);
-        RegisterBlock<PackagePlatform>(ReadPackagePlatform);
+        RegisterBlock<PackageVersion>(ReadPackageVersion, WritePackageVersion);
+        RegisterBlock<PackageFlags>(ReadPackageFlags, WritePackageFlags);
+        RegisterBlock<PackageCount>(ReadPackageCount, WritePackageCount);
+        RegisterBlock<PackageCreated>(ReadPackageCreated, WritePackageCreated);
+        RegisterBlock<PackageModified>(ReadPackageModified, WritePackageModified);
+        RegisterBlock<PackagePlatform>(ReadPackagePlatform, WritePackagePlatform);
 
         RegisterBlock<Dictionary>();
         RegisterBlock<AssetTable>();
-        RegisterBlock<AssetInf>(ReadAssetInf);
-        RegisterBlock<AssetHeader>(ReadAssetHeader);
-        RegisterBlock<AssetDebug>(ReadAssetDebug);
+        RegisterBlock<AssetInf>(ReadAssetInf, WriteAssetInf);
+        RegisterBlock<AssetHeader>(ReadAssetHeader, WriteAssetHeader);
+        RegisterBlock<AssetDebug>(ReadAssetDebug, WriteAssetDebug);
         RegisterBlock<LayerTable>();
-        RegisterBlock<LayerInf>(ReadLayerInf);
-        RegisterBlock<LayerHeader>(ReadLayerHeader);
-        RegisterBlock<LayerDebug>(ReadLayerDebug);
+        RegisterBlock<LayerInf>(ReadLayerInf, WriteLayerInf);
+        RegisterBlock<LayerHeader>(ReadLayerHeader, WriteLayerHeader);
+        RegisterBlock<LayerDebug>(ReadLayerDebug, WriteLayerDebug);
 
         RegisterBlock<AssetStream>();
-        RegisterBlock<StreamHeader>(ReadStreamHeader);
-        RegisterBlock<StreamData>(ReadStreamData);
+        RegisterBlock<StreamHeader>(ReadStreamHeader, WriteStreamHeader);
+        RegisterBlock<StreamData>(ReadStreamData, WriteStreamData);
     }
 
     /// <summary>
@@ -149,10 +149,60 @@ public abstract partial class Serializer
     protected static string ReadTag(BinaryReader reader) => Encoding.ASCII.GetString(reader.ReadBytes(4));
 
     /// <summary>
-    /// Maps each registered block tag to its <c>ReadFields</c> delegate's <see cref="MethodInfo"/>
-    /// (<see langword="null"/> if the tag has no field reader). Used by the contract test suite to
-    /// detect when a serializer has replaced a base registration without declaring it.
+    /// Writes an ordered list of root blocks to <paramref name="stream"/> as a HIP archive. Closes
+    /// <paramref name="stream"/> before returning.
     /// </summary>
-    internal IReadOnlyDictionary<string, MethodInfo?> HandlerFingerprint() =>
-        _handlers.ToDictionary(kv => kv.Key, kv => kv.Value.ReadFields?.Method);
+    /// <param name="stream">
+    /// The stream to write the archive to. Must support seeking, so each block's <c>Size</c> field
+    /// can be backpatched once its content length is known.
+    /// </param>
+    /// <param name="roots">The ordered list of root <see cref="Block"/>s to write.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="stream"/> does not support seeking.</exception>
+    /// <exception cref="FormatException">Thrown when a block has no registered handler.</exception>
+    public void Write(Stream stream, IEnumerable<Block> roots)
+    {
+        if (!stream.CanSeek)
+            throw new ArgumentException(
+                "The destination stream must support seeking, to backpatch each block's Size field.", nameof(stream));
+
+        using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: false);
+        foreach (var root in roots)
+            WriteBlock(writer, root);
+    }
+
+    /// <summary>
+    /// Writes one block, including its children, to the current position of <paramref name="writer"/>.
+    /// </summary>
+    /// <param name="writer">The writer to write the block to.</param>
+    /// <param name="block">The <see cref="Block"/> to write, including its children.</param>
+    /// <exception cref="FormatException">Thrown when the block's tag has no registered handler.</exception>
+    protected void WriteBlock(BinaryWriter writer, Block block)
+    {
+        if (!_handlers.TryGetValue(block.Tag, out var handler))
+            throw new FormatException($"Unknown block tag '{block.Tag}'.");
+
+        writer.Write(Encoding.ASCII.GetBytes(block.Tag));
+
+        long sizePosition = writer.BaseStream.Position;
+        writer.WriteEvilInt(0); // placeholder, backpatched below
+        long contentStart = writer.BaseStream.Position;
+
+        handler.WriteFields?.Invoke(writer, block);
+        foreach (var child in block.Children)
+            WriteBlock(writer, child);
+
+        long contentEnd = writer.BaseStream.Position;
+        writer.BaseStream.Position = sizePosition;
+        writer.WriteEvilInt((uint)(contentEnd - contentStart));
+        writer.BaseStream.Position = contentEnd;
+    }
+
+    /// <summary>
+    /// Maps each registered block tag to its <c>ReadFields</c> and <c>WriteFields</c> delegates'
+    /// <see cref="MethodInfo"/>s (<see langword="null"/> where a tag has no field reader or writer).
+    /// Used by the contract test suite to detect when a serializer has replaced a base registration
+    /// without declaring it.
+    /// </summary>
+    internal IReadOnlyDictionary<string, (MethodInfo? Read, MethodInfo? Write)> HandlerFingerprint() =>
+        _handlers.ToDictionary(kv => kv.Key, kv => (kv.Value.ReadFields?.Method, kv.Value.WriteFields?.Method));
 }

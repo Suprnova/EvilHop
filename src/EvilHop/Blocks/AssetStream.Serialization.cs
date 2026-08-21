@@ -14,6 +14,12 @@ public partial class Serializer
     }
 
     /// <summary>
+    /// Writes the fields of a <see cref="StreamHeader"/> (DHDR) block.
+    /// </summary>
+    protected static void WriteStreamHeader(BinaryWriter writer, StreamHeader block) =>
+        writer.WriteEvilInt(block.Value);
+
+    /// <summary>
     /// Reads the fields of a <see cref="StreamData"/> (DPAK) block. <paramref name="size"/> is
     /// used to compute <see cref="StreamData.Data"/>'s length, and to detect the no-assets case
     /// (<c>size == 0</c>, leaving <see cref="StreamData.PaddingAmount"/> <see langword="null"/>).
@@ -38,5 +44,23 @@ public partial class Serializer
         block.PaddingAmount = paddingAmount;
         block.Padding = reader.ReadBytes((int)paddingAmount);
         block.Data = reader.ReadBytes((int)(size - paddingAmount - 4));
+    }
+
+    /// <summary>
+    /// Writes the fields of a <see cref="StreamData"/> (DPAK) block. Unlike its reader, this needs
+    /// no <see cref="FormatProfile"/> - whether a padding field is written is driven entirely by
+    /// whether <see cref="StreamData.PaddingAmount"/> is <see langword="null"/>, which is already
+    /// unambiguous model data by the time it's read. <see cref="StreamData.PaddingAmount"/> and
+    /// <see cref="StreamData.Padding"/> are written independently, exactly as stored - a mismatch
+    /// between the two is a permitted invalid state, left to <c>Validate()</c> to flag.
+    /// </summary>
+    protected static void WriteStreamData(BinaryWriter writer, StreamData block)
+    {
+        if (block.PaddingAmount is uint paddingAmount)
+        {
+            writer.WriteEvilInt(paddingAmount);
+            writer.Write(block.Padding);
+        }
+        writer.Write(block.Data);
     }
 }

@@ -177,6 +177,22 @@ public abstract class SerializerContractTests
     }
 
     [Fact]
+    public void Read_ThenWrite_MinimalFixture_ProducesIdenticalBytes()
+    {
+        using var fixture = OpenMinimalFixture();
+        using var fixtureCopy = new MemoryStream();
+        fixture.CopyTo(fixtureCopy);
+        byte[] originalBytes = fixtureCopy.ToArray();
+
+        var roots = CreateSerializer().Read(new MemoryStream(originalBytes));
+
+        using var rewritten = new MemoryStream();
+        CreateSerializer().Write(rewritten, roots);
+
+        Assert.Equal(originalBytes, rewritten.ToArray());
+    }
+
+    [Fact]
     public void Read_TruncatedStream_ThrowsEndOfStreamException()
     {
         // PCRT's CreatedDateString is cut off mid-string, with no null terminator before EOF.

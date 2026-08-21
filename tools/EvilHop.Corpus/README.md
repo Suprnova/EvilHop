@@ -39,12 +39,19 @@ dotnet run --project tools/EvilHop.Corpus -- verify artifacts/n100f artifacts/bf
   until that game's serializer lands.
 - `--dump <path>` - also writes a full-fidelity, gitignored JSONL dump alongside the inventory (see
   below).
+- `--round-trip` - `verify`-only. Additionally writes each parsed archive back out and diffs it
+  against the original file's bytes, failing any archive that doesn't match exactly. The strongest
+  available check of the library's round-trip fidelity claim, run against real archives instead of
+  hand-built fixtures - see `docs/Serializer Writing Design.md` §1. Off by default: it roughly doubles
+  per-archive memory and time, and plain `verify` still answers "does everything under this root
+  parse" on its own.
 
 `verify` parses every archive and reports failures with a non-zero exit code, without writing
-anything. It's the fast way to check "does everything under this root still parse" before spending
-the time on a full `inventory` run - and the only way to point the tool at a root whose game has no
-serializer yet, or whose bytes don't match the serializer's assumptions, without it aborting the
-whole run partway through.
+anything (unless `--round-trip` is passed, which writes only to an in-memory buffer for comparison).
+It's the fast way to check "does everything under this root still parse" before spending the time on
+a full `inventory` run - and the only way to point the tool at a root whose game has no serializer
+yet, or whose bytes don't match the serializer's assumptions, without it aborting the whole run
+partway through.
 
 Both a missing root and a root with no `.HIP`/`.HOP` files are hard errors, not silent skips - the
 tool never runs unattended under a test suite, so there's no reason to make a bad argument quietly
