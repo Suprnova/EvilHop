@@ -37,8 +37,19 @@ static int RunVerify(CorpusOptions options)
 
         try
         {
-            using var stream = File.OpenRead(discovered.FullPath);
-            serializer.Read(stream);
+            byte[] originalBytes = File.ReadAllBytes(discovered.FullPath);
+            var roots = serializer.Read(new MemoryStream(originalBytes));
+
+            if (options.RoundTrip)
+            {
+                using var rewritten = new MemoryStream();
+                serializer.Write(rewritten, roots);
+                if (!rewritten.ToArray().AsSpan().SequenceEqual(originalBytes))
+                {
+                    failed++;
+                    Console.Error.WriteLine($"FAIL {discovered.RelativePath}: round-trip byte mismatch.");
+                }
+            }
         }
         catch (Exception ex)
         {

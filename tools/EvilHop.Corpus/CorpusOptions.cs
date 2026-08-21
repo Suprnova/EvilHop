@@ -20,7 +20,7 @@ internal enum CorpusVerb
 /// <remarks>
 /// <code>
 /// EvilHop.Corpus inventory --out corpus/n100f.json [--serializer &lt;game&gt;] [--dump &lt;path&gt;] &lt;root&gt;...
-/// EvilHop.Corpus verify [--serializer &lt;game&gt;] &lt;root&gt;...
+/// EvilHop.Corpus verify [--serializer &lt;game&gt;] [--round-trip] &lt;root&gt;...
 /// </code>
 /// </remarks>
 internal sealed class CorpusOptions
@@ -41,6 +41,12 @@ internal sealed class CorpusOptions
     public string? DumpPath { get; init; }
 
     /// <summary>
+    /// Whether <see cref="CorpusVerb.Verify"/> should also write each parsed archive back out and
+    /// diff it against the original file's bytes, in addition to checking that it parses.
+    /// </summary>
+    public bool RoundTrip { get; init; }
+
+    /// <summary>
     /// Parses <paramref name="args"/> into a <see cref="CorpusOptions"/>.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the arguments are malformed or incomplete.</exception>
@@ -59,6 +65,7 @@ internal sealed class CorpusOptions
         string? output = null;
         var game = GameVersion.N100F;
         string? dump = null;
+        bool roundTrip = false;
         List<string> roots = [];
 
         for (int i = 1; i < args.Length; i++)
@@ -76,6 +83,9 @@ internal sealed class CorpusOptions
                     break;
                 case "--dump":
                     dump = RequireValue(args, ref i, "--dump");
+                    break;
+                case "--round-trip":
+                    roundTrip = true;
                     break;
                 default:
                     roots.Add(args[i]);
@@ -95,7 +105,8 @@ internal sealed class CorpusOptions
             Roots = roots,
             OutputPath = output,
             Game = game,
-            DumpPath = dump
+            DumpPath = dump,
+            RoundTrip = roundTrip
         };
     }
 

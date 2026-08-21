@@ -45,6 +45,22 @@ public class CorpusOptionsTests
     }
 
     [Fact]
+    public void Parse_WithoutRoundTripFlag_DefaultsToFalse()
+    {
+        var options = CorpusOptions.Parse(["verify", "artifacts/n100f"]);
+
+        Assert.False(options.RoundTrip);
+    }
+
+    [Fact]
+    public void Parse_RoundTripFlag_SetsRoundTripTrue()
+    {
+        var options = CorpusOptions.Parse(["verify", "--round-trip", "artifacts/n100f"]);
+
+        Assert.True(options.RoundTrip);
+    }
+
+    [Fact]
     public void Parse_InventoryWithDump_SetsDumpPath()
     {
         var options = CorpusOptions.Parse(["inventory", "--out", "corpus/n100f.json", "--dump", "dump/n100f.jsonl", "artifacts/n100f"]);
