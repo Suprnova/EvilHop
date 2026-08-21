@@ -1,10 +1,12 @@
 ﻿namespace EvilHop.Common;
 
+#pragma warning disable CS1591 // Missing XML comment
+
 /// <summary>
 /// Specifies the asset type of supported assets.
 /// </summary>
 /// <remarks>
-/// Backed by a uint field that maps to the second field, <c>type</c>, in <see cref="Blocks.AssetHeader"/> blocks.
+/// Backed by a uint field that maps to <see cref="Blocks.AssetHeader.Type"/>.
 /// </remarks>
 public enum AssetType : uint
 {
@@ -44,8 +46,7 @@ public enum AssetType : uint
     ModelInfo = 0x4D494E46,
     MorphTarget = 0x4D504854,
     MovePoint = 0x4D565054,
-    NPC = 0x56494C20,
-    NPCProperties = 0x56494C50,
+    NPC = 0x4E504320,
     ParticleEmitter = 0x50415245,
     ParticleEmitterProperty = 0x50415250,
     ParticleSystem = 0x50415253,
@@ -57,11 +58,9 @@ public enum AssetType : uint
     Player = 0x504C5952,
     Portal = 0x504F5254,
     Projectile = 0x50524A54,
-    Raw = 0x52415720,
-    ScoobyNPC = 0x4E504320,
-    Script = 0x53435250,
-    Shrapnel = 0x53485250,
+    RawImage = 0x52415720,
     SoundFX = 0x53465820,
+    Shrapnel = 0x53485250,
     SimpleObject = 0x53494D50,
     SimpleShadowTable = 0x53484457,
     Sound = 0x534E4420,
@@ -75,6 +74,12 @@ public enum AssetType : uint
     Trigger = 0x54524947,
     UI = 0x55492020,
     UIFont = 0x55494654,
+    // BFBB's on-disk FourCC for what the community calls "NPC" - distinct from N100F's NPC (0x4E504320),
+    // which uses a different FourCC entirely. Both represent the same concept; not renamed to NPC here
+    // to keep the two format-specific values distinguishable. Applies to non-hostile characters too,
+    // not just villains.
+    Villain = 0x56494C20,
+    VillainProperties = 0x56494C50,
     Volume = 0x564F4C55,
     Unknown = 0x00000000
 }

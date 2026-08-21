@@ -1,232 +1,419 @@
 ﻿using EvilHop.Common;
-using EvilHop.Serialization;
-using EvilHop.Serialization.Validation;
 
 namespace EvilHop.Blocks;
 
-public enum LayerType : uint
-{
-    Default = 0,
-    Texture,
-    TextureStream,
-    BSP,
-    Model,
-    Animation,
-    VRAM,
-    SRAM,
-    SoundTable,
-    Cutscene,
-    CutsceneTable,
-    JSPInfo
-}
-
-[Flags]
-public enum AssetFlags : uint
-{
-    None = 0U,
-    SourceFile = 1U << 0,
-    SourceVirtual = 1U << 1,
-    ReadTransform = 1U << 2,
-    WriteTransform = 1U << 3,
-    UnknownScooby = 1U << 31
-}
-
-[ExpectedChildCount(2)]
+/// <summary>
+/// A no-data <see cref="Block"/> that serves as the root parent for the
+/// <c>Asset</c> and <c>Layer</c> tables.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DICT">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: Required ATOC and LTOC children.
 public class Dictionary : Block
 {
-    protected internal override string Id => "DICT";
+    /// <inheritdoc/>
+    protected internal override string Tag => "DICT";
 
-    [RequiredChild]
+    /// <summary>
+    /// The child <see cref="AssetTable"/> of the <see cref="Dictionary"/>.
+    /// </summary>
     public AssetTable AssetTable
     {
         get => GetRequiredChild<AssetTable>();
         set => SetChild(value);
     }
 
-    [RequiredChild]
+    /// <summary>
+    /// The child <see cref="LayerTable"/> of the <see cref="Dictionary"/>.
+    /// </summary>
     public LayerTable LayerTable
     {
         get => GetRequiredChild<LayerTable>();
         set => SetChild(value);
     }
 
-    internal Dictionary()
-    {
-    }
-
-    public Dictionary(AssetTable assetTable, LayerTable layerTable)
-    {
-        Children.AddRange([
-            assetTable,
-            layerTable
-        ]);
-    }
+    internal Dictionary() { }
 }
 
+/// <summary>
+/// A no-data child <see cref="Block"/> of <see cref="Dictionary"/> that stores information
+/// about the archive's <c>Assets</c>.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#ATOC">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: Required AINF child.
 public class AssetTable : Block
 {
-    protected internal override string Id => "ATOC";
+    /// <inheritdoc/>
+    protected internal override string Tag => "ATOC";
 
-    [RequiredChild]
-    public AssetInf AssetInf
+    /// <summary>
+    /// The child <see cref="AssetInf"/> of the <see cref="AssetTable"/>.
+    /// </summary>
+    public AssetInf Inf
     {
         get => GetRequiredChild<AssetInf>();
         set => SetChild(value);
     }
 
-    public IEnumerable<AssetHeader> AssetHeaders
+    /// <summary>
+    /// The <see cref="AssetHeader"/> children of the <see cref="AssetTable"/>.
+    /// </summary>
+    /// TODO: bad UX? you'd expect this to be mutable, and you'd expect to be able to
+    /// modify Headers in-place
+    public IEnumerable<AssetHeader> Headers
     {
-        get => GetVariableChildren<AssetHeader>();
-        set => SetVariableChildren(value);
+        get => GetChildren<AssetHeader>();
+        set => throw new NotImplementedException();
     }
 
-    internal AssetTable()
-    {
-    }
-
-    public AssetTable(AssetInf assetInf, IEnumerable<AssetHeader> assetHeaders)
-    {
-        Children.Add(assetInf);
-        Children.AddRange(assetHeaders);
-    }
+    internal AssetTable() { }
 }
 
-[ExpectedChildCount(0)]
-public class AssetInf(uint value) : Block
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="AssetTable"/> with unknown use.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#AINF">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class AssetInf : Block
 {
-    protected internal override string Id => "AINF";
+    /// <inheritdoc/>
+    protected internal override string Tag => "AINF";
 
-    [ExpectedValue(0x00000000)]
-    public uint Value { get; set; } = value;
+    /// <summary>
+    /// Unknown. Always 0.
+    /// </summary>
+    /// Validation TODO: Always 0.
+    public uint Value { get; set; }
 
-    internal AssetInf() : this(0)
-    {
-    }
+    internal AssetInf() { }
 }
 
-[ExpectedChildCount(1)]
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="AssetTable"/> which defines an entry
+/// for an <c>Asset</c>.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#AHDR">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: Required ADBG child.
 public class AssetHeader : Block
 {
-    protected internal override string Id => "AHDR";
+    /// <inheritdoc/>
+    protected internal override string Tag => "AHDR";
 
-    [RequiredChild]
+    /// <summary>
+    /// The child <see cref="AssetDebug"/> of the <see cref="AssetHeader"/>.
+    /// </summary>
     public AssetDebug Debug
     {
         get => GetRequiredChild<AssetDebug>();
         set => SetChild(value);
     }
 
-    // todo: Asset abstraction should handle this binding to Debug.Name
-    public uint AssetId { get; set; }
-    public AssetType Type { get; set; }
-    public uint Offset { get; set; }
-    public uint Size { get; set; }
-    public uint Padding { get; set; }
-    public AssetFlags Flags { get; set; }
-
-    internal AssetHeader()
+    /// <summary>
+    /// The <c>Asset</c>'s ID, calculated from <see cref="AssetDebug.Name"/> with a modified
+    /// BKDR hash algorithm.
+    /// </summary>
+    /// Validation TODO: Equal to ID calculated using ADBG.name.
+    /// No uniqueness violations.
+    public uint Id
     {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
     }
 
-    internal AssetHeader(AssetDebug debug)
+    /// <summary>
+    /// The <c>Asset</c>'s type.
+    /// </summary>
+    /// Validation TODO: Maps to closed enum value.
+    public AssetType Type
     {
-        Children.Add(debug);
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
     }
+
+    /// <summary>
+    /// The absolute offset of the <c>Asset</c>'s data within the archive.
+    /// </summary>
+    /// Validation TODO: Does not exceed total archive size.
+    public uint Offset
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    }
+
+    /// <summary>
+    /// The length of the <c>Asset</c>'s data in bytes.
+    /// </summary>
+    /// Validation TODO: When added to Offset, does not exceed total archive size.
+    public uint Size
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    }
+
+    /// <summary>
+    /// The length of the padding between the end of this <c>Asset</c>'s data and the start
+    /// of the next's.
+    /// </summary>
+    /// <remarks>
+    /// This value is calculated using <see cref="AssetDebug.Alignment"/>. For the last
+    /// <c>Asset</c> in a <c>Layer</c>, this value is 0.
+    /// </remarks>
+    /// Validation TODO: When last asset in layer, equals 0.
+    /// When added to Offset and Size, does not exceed total archive size.
+    /// Valid calculation using ADBG.alignment.
+    public uint Plus
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    }
+
+    /// <summary>
+    /// Information about the <c>Asset</c>'s data and how it should be handled in game.
+    /// </summary>
+    /// Validation TODO: SourceFile and SourceVirtual are not set simultaneously.
+    public AssetFlags Flags
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    }
+
+    internal AssetHeader() { }
 }
 
-[ExpectedChildCount(0)]
-public class AssetDebug(uint alignment, string name, string fileName, uint checksum) : Block
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="AssetHeader"/> which defines an entry
+/// for an <c>Asset</c>.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#ADBG">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class AssetDebug : Block
 {
-    protected internal override string Id => "ADBG";
+    /// <inheritdoc/>
+    protected internal override string Tag => "ADBG";
 
-    public uint Alignment { get; set; } = alignment;
-    public string Name { get; set; } = name;
-    public string FileName { get; set; } = fileName;
-    // todo: asset abstraction should handle binding this to the checksum of the asset's data
-    public uint Checksum { get; set; } = checksum;
-
-    internal AssetDebug() : this(0, "", "", 0)
+    // TODO: validate this is actually an int and not uint
+    /// <summary>
+    /// The multiple of bytes to align the <c>Asset</c>'s data to.
+    /// </summary>
+    /// <remarks>
+    /// A value of -1 uses the default alignment value for the particular <see cref="AssetType"/>.
+    /// </remarks>
+    /// Validation TODO: Ensure -1 alignments actually exist.
+    /// Valid calculation of AHDR.plus using this.
+    public int Alignment
     {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
     }
+
+    /// <summary>
+    /// The name of the <c>Asset</c>.
+    /// </summary>
+    /// <remarks>
+    /// In official archive files, this field is trimmed to 31 characters. This may create
+    /// disconnects between the <c>Asset</c>'s name and its <see cref="AssetHeader.Id"/>.
+    /// </remarks>
+    public string Name
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    } = "";
+
+    /// <summary>
+    /// The filename of the file that the <c>Asset</c> was sourced from.
+    /// </summary>
+    /// <remarks>
+    /// Only populated when the <see cref="AssetFlags.SourceFile"/> flag is set
+    /// in <see cref="AssetHeader.Flags"/>.
+    /// </remarks>
+    /// Validation TODO: Set when SourceFile, unset otherwise.
+    public string FileName { get; set; } = "";
+
+    /// <summary>
+    /// The CRC-32/MPEG-2 checksum of the <c>Asset</c>'s data.
+    /// </summary>
+    /// Validation TODO: Calculate using asset's data and validate.
+    public uint Checksum { get; set; }
+
+    internal AssetDebug() { }
 }
 
+/// <summary>
+/// A no-data child <see cref="Block"/> of <see cref="Dictionary"/> that stores information
+/// about the archive's <c>Layer</c>'s.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LTOC">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: Required LINF child.
 public class LayerTable : Block
 {
-    protected internal override string Id => "LTOC";
+    /// <inheritdoc/>
+    protected internal override string Tag => "LTOC";
 
-    [RequiredChild]
-    public LayerInf LayerInf
+    /// <summary>
+    /// The child <see cref="LayerInf"/> of the <see cref="LayerTable"/>.
+    /// </summary>
+    public LayerInf Inf
     {
         get => GetRequiredChild<LayerInf>();
         set => SetChild(value);
     }
 
-    public IEnumerable<LayerHeader> LayerHeaders
+    /// <summary>
+    /// The <see cref="LayerHeader"/> children of the <see cref="AssetTable"/>.
+    /// </summary>
+    public IEnumerable<LayerHeader> Headers
     {
-        get => GetVariableChildren<LayerHeader>();
-        set => SetVariableChildren(value);
+        get => GetChildren<LayerHeader>();
+        set => throw new NotImplementedException();
     }
 
-    internal LayerTable()
-    {
-    }
-
-    public LayerTable(LayerInf layerInf, IEnumerable<LayerHeader> layerHeaders)
-    {
-        Children.Add(layerInf);
-        Children.AddRange(layerHeaders);
-    }
+    internal LayerTable() { }
 }
 
-[ExpectedChildCount(0)]
-public class LayerInf(uint value) : Block
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="LayerTable"/> with unknown use.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LINF">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class LayerInf : Block
 {
-    protected internal override string Id => "LINF";
+    /// <inheritdoc/>
+    protected internal override string Tag => "LINF";
 
-    [ExpectedValue(0x00000000)]
-    public uint Value { get; set; } = value;
+    /// <summary>
+    /// Unknown. Always 0.
+    /// </summary>
+    /// Validation TODO: Always 0.
+    public uint Value { get; set; }
 
-    internal LayerInf() : this(0)
-    {
-    }
+    internal LayerInf() { }
 }
 
-[ExpectedChildCount(1)]
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="LayerTable"/> which defines an entry
+/// for a <c>Layer</c>.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LHDR">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: Required LDBG.
 public class LayerHeader : Block
 {
-    protected internal override string Id => "LHDR";
+    /// <inheritdoc/>
+    protected internal override string Tag => "LHDR";
 
-    [RequiredChild]
-    public LayerDebug LayerDebug
+    /// <summary>
+    /// The child <see cref="LayerDebug"/> of the <see cref="LayerHeader"/>.
+    /// </summary>
+    public LayerDebug Debug
     {
         get => GetRequiredChild<LayerDebug>();
         set => SetChild(value);
     }
 
-    public LayerType Type { get; set; }
-    // todo: asset abstraction should handle this binding to AssetIds.Count()
-    public uint AssetCount { get; set; }
-    public IEnumerable<uint> AssetIds { get; set; } = [];
-
-    internal LayerHeader()
+    /// <summary>
+    /// The <c>Layer</c>'s type.
+    /// </summary>
+    /// Validation TODO: Maps to closed enum value.
+    public LayerType Type
     {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
     }
 
-    internal LayerHeader(LayerDebug layerDebug)
+    /// <summary>
+    /// The number of <c>assets</c> present in this <c>Layer</c>.
+    /// </summary>
+    /// Validation TODO: When summed across all LHDRs, does not exceed count of AHDRs.
+    /// Equal to size of AssetIds.
+    public uint AssetCount
     {
-        Children.Add(layerDebug);
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
     }
+
+    /// <summary>
+    /// A list of the IDs for the <c>assets</c> present in this <c>Layer</c>.
+    /// </summary>
+    /// Validation TODO: For each ID, an AHDR of that ID exists.
+    public IEnumerable<uint> AssetIds
+    {
+        get => GetManagedBlockField(ref field);
+        set => SetManagedBlockField(ref field, value);
+    } = [];
+
+    internal LayerHeader() { }
 }
 
-[ExpectedChildCount(0)]
-public class LayerDebug(uint value) : Block
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="LayerHeader"/> with unknown use.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LDBG">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class LayerDebug : Block
 {
-    protected internal override string Id => "LDBG";
+    /// <inheritdoc/>
+    protected internal override string Tag => "LDBG";
 
-    [ExpectedValue(0xFFFFFFFF)]
-    public uint Value { get; set; } = value;
+    /// <summary>
+    /// Unknown. Always 0xFFFFFFFF besides in N100F Prototype.
+    /// </summary>
+    /// Validation TODO: Always 0xFFFFFFFF in non-N100F Proto.
+    public uint Value { get; set; }
 
-    internal LayerDebug() : this(0)
-    {
-    }
+    internal LayerDebug() { }
+}
+
+#pragma warning disable CS1591 // Missing XML comment
+
+/// <summary>
+/// Represents all known values for <see cref="AssetHeader.Flags"/>.
+/// Communicates information about an <c>Asset</c>'s data and how it should be handled by the game.
+/// </summary>
+[Flags]
+public enum AssetFlags : uint
+{
+    None = 0U,
+    /// <summary>
+    /// The <c>Asset</c>'s data was sourced from an external file.
+    /// </summary>
+    /// <remarks>
+    /// When set, <see cref="AssetDebug.FileName"/> should be populated with the file's source.
+    /// This should not be set simultaneously with <see cref="SourceVirtual"/>.
+    /// </remarks>
+    SourceFile = 1U << 0,
+    /// <summary>
+    /// The <c>Asset</c>'s data was created by Heavy Iron's internal level editor.
+    /// </summary>
+    /// <remarks>
+    /// When set, <see cref="AssetDebug.FileName"/> should be empty.
+    /// This should not be set simultaneously with <see cref="SourceFile"/>.
+    /// </remarks>
+    SourceVirtual = 1U << 1,
+    /// <summary>
+    /// The <c>Asset</c>'s data is stored in a special format and must be converted into another
+    /// at runtime.
+    /// </summary>
+    ReadTransform = 1U << 2,
+    /// <summary>
+    /// The <c>Asset</c>'s data must be transformed from a runtime-specific format into a special
+    /// binary format.
+    /// </summary>
+    WriteTransform = 1U << 3,
+    UnknownScooby = 1U << 31
 }

@@ -1,157 +1,177 @@
-﻿using EvilHop.Blocks;
+using EvilHop.Blocks;
 using EvilHop.Primitives;
+using System.Diagnostics;
 
-namespace EvilHop.Serialization.Serializers;
+namespace EvilHop.Serialization;
 
-public abstract partial class V1Serializer
+public partial class Serializer
 {
-    protected virtual Package InitPackage()
+    /// <summary>
+    /// Reads the fields of a <see cref="PackageVersion"/> (PVER) block.
+    /// </summary>
+    protected static void ReadPackageVersion(BinaryReader reader, PackageVersion block, uint size)
     {
-        return new Package(NewBlock<PackageVersion>(), NewBlock<PackageFlags>(), NewBlock<PackageCount>(), NewBlock<PackageCreated>(), NewBlock<PackageModified>());
+        block.SubVersion = reader.ReadEvilInt();
+        block.ClientVersion = (ClientVersion)reader.ReadEvilInt();
+        block.CompatVersion = reader.ReadEvilInt();
     }
 
-    protected abstract PackageVersion InitPackageVersion();
-
-    protected virtual PackageVersion ReadPackageVersion(BinaryReader reader)
+    /// <summary>
+    /// Writes the fields of a <see cref="PackageVersion"/> (PVER) block.
+    /// </summary>
+    protected static void WritePackageVersion(BinaryWriter writer, PackageVersion block)
     {
-        return new PackageVersion(
-            reader.ReadEvilInt(),
-            (ClientVersion)reader.ReadEvilInt(),
-            reader.ReadEvilInt()
-            );
+        writer.WriteEvilInt(block.SubVersion);
+        writer.WriteEvilInt((uint)block.ClientVersion);
+        writer.WriteEvilInt(block.CompatVersion);
     }
 
-    protected virtual void WritePackageVersion(BinaryWriter writer, PackageVersion version)
+    /// <summary>
+    /// Reads the fields of a <see cref="PackageFlags"/> (PFLG) block.
+    /// </summary>
+    protected static void ReadPackageFlags(BinaryReader reader, PackageFlags block, uint size)
     {
-        writer.WriteEvilInt(version.SubVersion);
-        writer.WriteEvilInt((uint)version.ClientVersion);
-        writer.WriteEvilInt(version.CompatVersion);
+        block.Flags = (PackFlags)reader.ReadEvilInt();
     }
 
-    protected virtual PackageFlags InitPackageFlags()
+    /// <summary>
+    /// Writes the fields of a <see cref="PackageFlags"/> (PFLG) block.
+    /// </summary>
+    protected static void WritePackageFlags(BinaryWriter writer, PackageFlags block) =>
+        writer.WriteEvilInt((uint)block.Flags);
+
+    /// <summary>
+    /// Reads the fields of a <see cref="PackageCount"/> (PCNT) block.
+    /// </summary>
+    protected static void ReadPackageCount(BinaryReader reader, PackageCount block, uint size)
     {
-        return new PackageFlags(PackFlags.Default);
+        block.AssetCount = reader.ReadEvilInt();
+        block.LayerCount = reader.ReadEvilInt();
+        block.MaxAssetSize = reader.ReadEvilInt();
+        block.MaxLayerSize = reader.ReadEvilInt();
+        block.MaxXFormAssetSize = reader.ReadEvilInt();
     }
 
-    protected virtual PackageFlags ReadPackageFlags(BinaryReader reader)
+    /// <summary>
+    /// Writes the fields of a <see cref="PackageCount"/> (PCNT) block.
+    /// </summary>
+    protected static void WritePackageCount(BinaryWriter writer, PackageCount block)
     {
-        return new PackageFlags(
-            (PackFlags)reader.ReadEvilInt()
-        );
+        writer.WriteEvilInt(block.AssetCount);
+        writer.WriteEvilInt(block.LayerCount);
+        writer.WriteEvilInt(block.MaxAssetSize);
+        writer.WriteEvilInt(block.MaxLayerSize);
+        writer.WriteEvilInt(block.MaxXFormAssetSize);
     }
 
-    protected virtual void WritePackageFlags(BinaryWriter writer, PackageFlags flags)
+    /// <summary>
+    /// Reads the fields of a <see cref="PackageCreated"/> (PCRT) block.
+    /// </summary>
+    protected static void ReadPackageCreated(BinaryReader reader, PackageCreated block, uint size)
     {
-        writer.WriteEvilInt((uint)flags.Flags);
+        uint rawCreatedDate = reader.ReadEvilInt();
+        block.CreatedDate = DateTimeOffset.FromUnixTimeSeconds(rawCreatedDate);
+        block.CreatedDateString = reader.ReadEvilString();
     }
 
-    protected virtual PackageCount ReadPackageCount(BinaryReader reader)
+    /// <summary>
+    /// Writes the fields of a <see cref="PackageCreated"/> (PCRT) block.
+    /// </summary>
+    protected static void WritePackageCreated(BinaryWriter writer, PackageCreated block)
     {
-        return new PackageCount(
-            reader.ReadEvilInt(),
-            reader.ReadEvilInt(),
-            reader.ReadEvilInt(),
-            reader.ReadEvilInt(),
-            reader.ReadEvilInt()
-        );
+        writer.WriteEvilInt((uint)block.CreatedDate.ToUnixTimeSeconds());
+        writer.WriteEvilString(block.CreatedDateString);
     }
 
-    protected virtual void WritePackageCount(BinaryWriter writer, PackageCount count)
+    /// <summary>
+    /// Reads the fields of a <see cref="PackageModified"/> (PMOD) block.
+    /// </summary>
+    protected static void ReadPackageModified(BinaryReader reader, PackageModified block, uint size)
     {
-        writer.WriteEvilInt(count.AssetCount);
-        writer.WriteEvilInt(count.LayerCount);
-        writer.WriteEvilInt(count.MaxAssetSize);
-        writer.WriteEvilInt(count.MaxLayerSize);
-        writer.WriteEvilInt(count.MaxXFormAssetSize);
+        uint rawModifiedDate = reader.ReadEvilInt();
+        block.ModifiedDate = DateTimeOffset.FromUnixTimeSeconds(rawModifiedDate);
     }
 
-    protected virtual PackageCreated ReadPackageCreated(BinaryReader reader)
+    /// <summary>
+    /// Writes the fields of a <see cref="PackageModified"/> (PMOD) block.
+    /// </summary>
+    protected static void WritePackageModified(BinaryWriter writer, PackageModified block) =>
+        writer.WriteEvilInt((uint)block.ModifiedDate.ToUnixTimeSeconds());
+
+    private static readonly Action<PackagePlatform, string>[] PlatformNameRegionLanguageSlots =
+    [
+        (b, v) => b.PlatformId = v,
+        (b, v) => b.PlatformName = v,
+        (b, v) => b.Region = v,
+        (b, v) => b.Language = v,
+        (b, v) => b.GameName = v
+    ];
+
+    private static readonly Action<PackagePlatform, string>[] LanguageRegionSlots =
+    [
+        (b, v) => b.PlatformId = v,
+        (b, v) => b.Language = v,
+        (b, v) => b.Region = v,
+        (b, v) => b.GameName = v
+    ];
+
+    private static readonly Func<PackagePlatform, string?>[] PlatformNameRegionLanguageWriteSlots =
+    [
+        b => b.PlatformId,
+        b => b.PlatformName,
+        b => b.Region,
+        b => b.Language,
+        b => b.GameName
+    ];
+
+    private static readonly Func<PackagePlatform, string?>[] LanguageRegionWriteSlots =
+    [
+        b => b.PlatformId,
+        b => b.Language,
+        b => b.Region,
+        b => b.GameName
+    ];
+
+    /// <summary>
+    /// Reads the fields of a <see cref="PackagePlatform"/> (PLAT) block: a run of <c>EvilString</c>s
+    /// whose field mapping is governed by <see cref="FormatProfile.PlatformFieldOrder"/>. A run
+    /// shorter than the mapped layout leaves the trailing fields at their initializer values,
+    /// bounded by <paramref name="size"/>.
+    /// </summary>
+    protected void ReadPackagePlatform(BinaryReader reader, PackagePlatform block, uint size)
     {
-        return new PackageCreated(
-            DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt()),
-            reader.ReadEvilString()
-        );
-    }
-
-    protected virtual void WritePackageCreated(BinaryWriter writer, PackageCreated created)
-    {
-        // todo: implement timezone (UTC-7)
-        // todo: implement fallback for Y2106 lol
-        writer.WriteEvilInt(Convert.ToUInt32((created.CreatedDate - DateTime.UnixEpoch).TotalSeconds));
-        writer.WriteEvilString(created.CreatedDateString.Last() == '\n' ? created.CreatedDateString : created.CreatedDateString + '\n');
-    }
-
-    protected virtual PackageModified ReadPackageModified(BinaryReader reader)
-    {
-        return new PackageModified(
-            DateTime.UnixEpoch.AddSeconds(reader.ReadEvilInt())
-        );
-    }
-
-    protected virtual void WritePackageModified(BinaryWriter writer, PackageModified modified)
-    {
-        // todo: implement timezone (UTC-7)
-        writer.WriteEvilInt(Convert.ToUInt32((modified.ModifiedDate - DateTime.UnixEpoch).TotalSeconds));
-    }
-}
-
-public partial class V2Serializer
-{
-    protected override PackageVersion InitPackageVersion() => new(ClientVersion.Default);
-
-    protected override void WritePackageCreated(BinaryWriter writer, PackageCreated created)
-    {
-        // todo: implement timezone (UTC-7)
-        writer.WriteEvilInt(Convert.ToUInt32((created.CreatedDate - DateTime.UnixEpoch).TotalSeconds));
-        writer.WriteEvilString(created.CreatedDateString);
-    }
-
-    protected abstract PackagePlatform InitPackagePlatform();
-
-    protected virtual PackagePlatform ReadPackagePlatform(BinaryReader reader)
-    {
-        return new PackagePlatform(
-            reader.ReadEvilString(),
-            reader.ReadEvilString(),
-            reader.ReadEvilString(),
-            reader.ReadEvilString(),
-            reader.ReadEvilString()
-        );
-    }
-
-    protected virtual void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
-    {
-        writer.WriteEvilString(platform.PlatformID);
-        // will produce an invalid block in v2 if null, but that's by design. user explicitly chose to do this,
-        // validation will warn them but i won't stop them.
-        if (platform.PlatformName is not null) writer.WriteEvilString(platform.PlatformName);
-        writer.WriteEvilString(platform.Region);
-        writer.WriteEvilString(platform.Language);
-        writer.WriteEvilString(platform.GameName);
-    }
-}
-
-public partial class V3Serializer
-{
-    protected override PackagePlatform ReadPackagePlatform(BinaryReader reader)
-    {
-        return new PackagePlatform
+        long end = reader.BaseStream.Position + size;
+        var slots = Profile.PlatformFieldOrder switch
         {
-            PlatformID = reader.ReadEvilString(),
-            Language = reader.ReadEvilString(),
-            Region = reader.ReadEvilString(),
-            GameName = reader.ReadEvilString(),
-            PlatformName = null
+            PlatformFieldOrder.PlatformNameRegionLanguage => PlatformNameRegionLanguageSlots,
+            PlatformFieldOrder.LanguageRegion => LanguageRegionSlots,
+            _ => throw new UnreachableException()
         };
+
+        foreach (var assign in slots)
+        {
+            if (reader.BaseStream.Position >= end) return;
+            assign(block, reader.ReadEvilString());
+        }
     }
 
-    protected override void WritePackagePlatform(BinaryWriter writer, PackagePlatform platform)
+    /// <summary>
+    /// Writes the fields of a <see cref="PackagePlatform"/> (PLAT) block: a run of <c>EvilString</c>s
+    /// whose field mapping is governed by <see cref="FormatProfile.PlatformFieldOrder"/>. Always
+    /// writes the active layout's full field count, substituting <c>""</c> for any unset field -
+    /// including a <see langword="null"/> <see cref="PackagePlatform.PlatformName"/> - since nothing
+    /// in the model records how many fields a truncated <c>PLAT</c> originally had.
+    /// </summary>
+    protected void WritePackagePlatform(BinaryWriter writer, PackagePlatform block)
     {
-        writer.WriteEvilString(platform.PlatformID);
-        // will be invalid in v3 if not null by design
-        if (platform.PlatformName is not null) writer.WriteEvilString(platform.PlatformName);
-        writer.WriteEvilString(platform.Language);
-        writer.WriteEvilString(platform.Region);
-        writer.WriteEvilString(platform.GameName);
+        var slots = Profile.PlatformFieldOrder switch
+        {
+            PlatformFieldOrder.PlatformNameRegionLanguage => PlatformNameRegionLanguageWriteSlots,
+            PlatformFieldOrder.LanguageRegion => LanguageRegionWriteSlots,
+            _ => throw new UnreachableException()
+        };
+
+        foreach (var extract in slots)
+            writer.WriteEvilString(extract(block) ?? "");
     }
 }

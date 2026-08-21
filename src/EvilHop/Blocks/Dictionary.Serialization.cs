@@ -1,176 +1,133 @@
-﻿using EvilHop.Blocks;
+using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using System.Buffers.Binary;
 
-namespace EvilHop.Serialization.Serializers;
+namespace EvilHop.Serialization;
 
-public abstract partial class V1Serializer
+public partial class Serializer
 {
-    protected virtual Dictionary InitDictionary()
+    /// <summary>
+    /// Reads the fields of an <see cref="AssetInf"/> (AINF) block.
+    /// </summary>
+    protected static void ReadAssetInf(BinaryReader reader, AssetInf block, uint size)
     {
-        return new Dictionary(
-            NewBlock<AssetTable>(),
-            NewBlock<LayerTable>()
-        );
+        block.Value = reader.ReadEvilInt();
     }
 
-    protected virtual AssetTable InitAssetTable()
+    /// <summary>
+    /// Writes the fields of an <see cref="AssetInf"/> (AINF) block.
+    /// </summary>
+    protected static void WriteAssetInf(BinaryWriter writer, AssetInf block) =>
+        writer.WriteEvilInt(block.Value);
+
+    /// <summary>
+    /// Reads the fields of an <see cref="AssetHeader"/> (AHDR) block.
+    /// </summary>
+    protected static void ReadAssetHeader(BinaryReader reader, AssetHeader block, uint size)
     {
-        return new AssetTable(
-            NewBlock<AssetInf>(),
-            []
-        );
+        block.Id = reader.ReadEvilInt();
+        block.Type = (AssetType)reader.ReadEvilInt();
+        block.Offset = reader.ReadEvilInt();
+        block.Size = reader.ReadEvilInt();
+        block.Plus = reader.ReadEvilInt();
+        block.Flags = (AssetFlags)reader.ReadEvilInt();
     }
 
-    protected virtual AssetInf ReadAssetInf(BinaryReader reader)
+    /// <summary>
+    /// Writes the fields of an <see cref="AssetHeader"/> (AHDR) block.
+    /// </summary>
+    protected static void WriteAssetHeader(BinaryWriter writer, AssetHeader block)
     {
-        return new AssetInf(reader.ReadEvilInt());
+        writer.WriteEvilInt(block.Id);
+        writer.WriteEvilInt((uint)block.Type);
+        writer.WriteEvilInt(block.Offset);
+        writer.WriteEvilInt(block.Size);
+        writer.WriteEvilInt(block.Plus);
+        writer.WriteEvilInt((uint)block.Flags);
     }
 
-    protected virtual void WriteAssetInf(BinaryWriter writer, AssetInf inf)
+    /// <summary>
+    /// Reads the fields of an <see cref="AssetDebug"/> (ADBG) block. <see cref="AssetDebug.Alignment"/>
+    /// is signed, unlike every other integer field in the block layer.
+    /// </summary>
+    protected static void ReadAssetDebug(BinaryReader reader, AssetDebug block, uint size)
     {
-        writer.WriteEvilInt(inf.Value);
+        block.Alignment = BinaryPrimitives.ReadInt32BigEndian(reader.ReadBytes(4));
+        block.Name = reader.ReadEvilString();
+        block.FileName = reader.ReadEvilString();
+        block.Checksum = reader.ReadEvilInt();
     }
 
-    protected virtual AssetHeader InitAssetHeader()
+    /// <summary>
+    /// Writes the fields of an <see cref="AssetDebug"/> (ADBG) block.
+    /// </summary>
+    protected static void WriteAssetDebug(BinaryWriter writer, AssetDebug block)
     {
-        return new AssetHeader(NewBlock<AssetDebug>());
+        Span<byte> alignment = stackalloc byte[4];
+        BinaryPrimitives.WriteInt32BigEndian(alignment, block.Alignment);
+        writer.Write(alignment);
+
+        writer.WriteEvilString(block.Name);
+        writer.WriteEvilString(block.FileName);
+        writer.WriteEvilInt(block.Checksum);
     }
 
-    protected virtual AssetHeader ReadAssetHeader(BinaryReader reader)
+    /// <summary>
+    /// Reads the fields of a <see cref="LayerInf"/> (LINF) block.
+    /// </summary>
+    protected static void ReadLayerInf(BinaryReader reader, LayerInf block, uint size)
     {
-        return new AssetHeader
-        {
-            AssetId = reader.ReadEvilInt(),
-            Type = (AssetType)reader.ReadEvilInt(),
-            Offset = reader.ReadEvilInt(),
-            Size = reader.ReadEvilInt(),
-            Padding = reader.ReadEvilInt(),
-            Flags = (AssetFlags)reader.ReadEvilInt()
-        };
+        block.Value = reader.ReadEvilInt();
     }
 
-    protected virtual void WriteAssetHeader(BinaryWriter writer, AssetHeader header)
-    {
-        writer.WriteEvilInt(header.AssetId);
-        writer.WriteEvilInt((uint)header.Type);
-        writer.WriteEvilInt(header.Offset);
-        writer.WriteEvilInt(header.Size);
-        writer.WriteEvilInt(header.Padding);
-        writer.WriteEvilInt((uint)header.Flags);
-    }
+    /// <summary>
+    /// Writes the fields of a <see cref="LayerInf"/> (LINF) block.
+    /// </summary>
+    protected static void WriteLayerInf(BinaryWriter writer, LayerInf block) =>
+        writer.WriteEvilInt(block.Value);
 
-    protected virtual AssetDebug ReadAssetDebug(BinaryReader reader)
+    /// <summary>
+    /// Reads the fields of a <see cref="LayerHeader"/> (LHDR) block, including the
+    /// <see cref="LayerHeader.AssetCount"/>-driven <see cref="LayerHeader.AssetIds"/> array.
+    /// </summary>
+    protected static void ReadLayerHeader(BinaryReader reader, LayerHeader block, uint size)
     {
-        return new AssetDebug
-        {
-            Alignment = reader.ReadEvilInt(),
-            Name = reader.ReadEvilString(),
-            FileName = reader.ReadEvilString(),
-            Checksum = reader.ReadEvilInt()
-        };
-    }
-
-    protected virtual void WriteAssetDebug(BinaryWriter writer, AssetDebug debug)
-    {
-        writer.WriteEvilInt(debug.Alignment);
-        writer.WriteEvilString(debug.Name);
-        writer.WriteEvilString(debug.FileName);
-        writer.WriteEvilInt(debug.Checksum);
-    }
-
-    protected virtual LayerTable InitLayerTable()
-    {
-        return new LayerTable(
-            NewBlock<LayerInf>(),
-            []
-        );
-    }
-
-    protected virtual LayerInf ReadLayerInf(BinaryReader reader)
-    {
-        return new LayerInf(reader.ReadEvilInt());
-    }
-
-    protected virtual void WriteLayerInf(BinaryWriter writer, LayerInf inf)
-    {
-        writer.WriteEvilInt(inf.Value);
-    }
-
-    protected virtual LayerHeader InitLayerHeader()
-    {
-        return new LayerHeader(NewBlock<LayerDebug>());
-    }
-
-    protected virtual LayerHeader ReadLayerHeader(BinaryReader reader)
-    {
-        uint layerValue = reader.ReadEvilInt();
-        LayerType layerType = layerValue switch
-        {
-            0 => LayerType.Default,
-            1 => LayerType.Texture,
-            2 => LayerType.BSP,
-            3 => LayerType.Model,
-            4 => LayerType.Animation,
-            5 => LayerType.VRAM,
-            6 => LayerType.SRAM,
-            7 => LayerType.SoundTable,
-            8 => LayerType.Cutscene,
-            9 => LayerType.CutsceneTable,
-            _ => (LayerType)layerValue,
-        };
+        block.Type = (LayerType)reader.ReadEvilInt();
 
         uint assetCount = reader.ReadEvilInt();
-        uint[] assetIds = new uint[assetCount];
+        block.AssetCount = assetCount;
+
+        var assetIds = new uint[assetCount];
         for (int i = 0; i < assetCount; i++)
             assetIds[i] = reader.ReadEvilInt();
-
-        return new LayerHeader
-        {
-            Type = layerType,
-            AssetCount = assetCount,
-            AssetIds = assetIds
-        };
+        block.AssetIds = assetIds;
     }
 
-    protected virtual void WriteLayerHeader(BinaryWriter writer, LayerHeader header)
+    /// <summary>
+    /// Writes the fields of a <see cref="LayerHeader"/> (LHDR) block. <see cref="LayerHeader.AssetCount"/>
+    /// and <see cref="LayerHeader.AssetIds"/> are written independently, exactly as stored - a
+    /// mismatch between the two is a permitted invalid state, left to <c>Validate()</c> to flag.
+    /// </summary>
+    protected static void WriteLayerHeader(BinaryWriter writer, LayerHeader block)
     {
-        uint layerType = header.Type switch
-        {
-            LayerType.Default => 0,
-            LayerType.Texture => 1,
-            LayerType.BSP => 2,
-            LayerType.Model => 3,
-            LayerType.Animation => 4,
-            LayerType.VRAM => 5,
-            LayerType.SRAM => 6,
-            LayerType.SoundTable => 7,
-            LayerType.Cutscene => 8,
-            LayerType.CutsceneTable => 9,
-            _ => uint.MaxValue,
-        };
-        writer.WriteEvilInt(layerType);
-
-        writer.WriteEvilInt(header.AssetCount);
-
-        foreach (var assetId in header.AssetIds)
-            writer.WriteEvilInt(assetId);
+        writer.WriteEvilInt((uint)block.Type);
+        writer.WriteEvilInt(block.AssetCount);
+        foreach (uint id in block.AssetIds)
+            writer.WriteEvilInt(id);
     }
 
-    protected virtual LayerDebug ReadLayerDebug(BinaryReader reader)
+    /// <summary>
+    /// Reads the fields of a <see cref="LayerDebug"/> (LDBG) block.
+    /// </summary>
+    protected static void ReadLayerDebug(BinaryReader reader, LayerDebug block, uint size)
     {
-        return new LayerDebug
-        {
-            Value = reader.ReadEvilInt()
-        };
+        block.Value = reader.ReadEvilInt();
     }
 
-    protected virtual void WriteLayerDebug(BinaryWriter writer, LayerDebug debug)
-    {
-        writer.WriteEvilInt(debug.Value);
-    }
-}
-
-public partial class V2Serializer
-{
+    /// <summary>
+    /// Writes the fields of a <see cref="LayerDebug"/> (LDBG) block.
+    /// </summary>
+    protected static void WriteLayerDebug(BinaryWriter writer, LayerDebug block) =>
+        writer.WriteEvilInt(block.Value);
 }
