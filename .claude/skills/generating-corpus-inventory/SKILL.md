@@ -62,7 +62,7 @@ slower for no benefit.
 | --- | --- |
 | `<root>...` | One or more corpus roots. Pass only what you want: `artifacts/n100f artifacts/bfbb` covers those two and ignores the rest. |
 | `--out <path>` | Inventory output path. **Required** for `inventory`. |
-| `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. `n100f` and `bfbb` are implemented today. |
+| `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. Every `GameVersion` is implemented today. |
 | `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
 | `--round-trip` | `verify`-only. Also writes each parsed archive back out (to an in-memory buffer, nothing touches disk) and diffs it against the original file's bytes. Off by default — it roughly doubles per-archive memory and time. |
 
@@ -104,32 +104,25 @@ dotnet run --project tools/EvilHop.Corpus -c Release -- verify --serializer bfbb
 
 A round-trip mismatch reports as a normal `FAIL <path>: round-trip byte mismatch.` line alongside any
 parse failures — the summary count and exit code don't distinguish "didn't parse" from "parsed but
-didn't round-trip," so check the failure lines themselves to tell which happened. Per
-[Serializer Writing Design §1](../../../docs/Serializer%20Writing%20Design.md#1-what-best-effort-round-trip-fidelity-actually-means),
-a round-trip failure is never "we forgot to preserve original bytes" — there's no byte capture to have
-forgotten — it's always either a bug (a field the model doesn't have a home for, or a writer that
-encodes something differently than its reader decoded it) or a genuine modeling gap worth recording.
+didn't round-trip," so check the failure lines themselves to tell which happened. A round-trip failure
+is never "we forgot to preserve original bytes" — there's no byte capture to have forgotten — it's
+always either a bug (a field the model doesn't have a home for, or a writer that encodes something
+differently than its reader decoded it) or a genuine modeling gap worth recording.
 
 Off by default because it roughly doubles per-archive memory and time; plain `verify` still answers
 "does everything under this root parse" on its own, and `--round-trip` only makes sense once you're
 specifically checking a serializer's write path (or a read-path change you want to be sure didn't
 introduce an asymmetry with its writer).
 
-### Only N100F and BFBB have serializers today
+### Every GameVersion has a serializer today
 
-`N100FSerializer` and `BFBBSerializer` are the only implemented `Serializer`s; `inventory --serializer
-<game>` for anything else fails immediately with "No serializer exists for `<game>` yet". **In
-practice this means `artifacts/n100f` and `artifacts/bfbb` are the only roots worth inventorying right
-now.**
-
-`verify` doesn't require `--serializer` to name the root's own game — it just reads every archive
-under `<root>...` with whichever profile the flag resolves to (default `n100f`). Point `--serializer`
-at the root's own game (`bfbb` for `artifacts/bfbb`) for a byte-for-byte correct reading; running a
-later, still-unimplemented game's root under `n100f` or `bfbb`'s profile silently misreads that game's
-own quirks (a different `PLAT` field order, `DPAK`'s padding switch) rather than catching them, since
-nothing checks the bytes against a "right" answer. Treat a clean `verify` run against such a root as a
-lead worth recording, not proof that game is supported. Widen the roots you actually inventory only
-once that game gets its own serializer.
+`inventory --serializer <game>` and `verify --serializer <game>` both work for every `GameVersion`
+key. `--serializer` still matters, though: `verify` doesn't require it to name the root's own game —
+it just reads every archive under `<root>...` with whichever profile the flag resolves to (default
+`n100f`). Point `--serializer` at the root's own game (`bfbb` for `artifacts/bfbb`) for a byte-for-byte
+correct reading; reading one game's archives under another game's profile silently misreads whatever
+that game's own quirks are (a different `PLAT` field order, `DPAK`'s padding switch) rather than
+catching them, since nothing checks the bytes against a "right" answer.
 
 ## Generating
 

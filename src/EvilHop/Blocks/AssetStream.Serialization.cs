@@ -42,8 +42,15 @@ public partial class Serializer
 
         uint paddingAmount = reader.ReadEvilInt();
         block.PaddingAmount = paddingAmount;
-        block.Padding = reader.ReadBytes((int)paddingAmount);
-        block.Data = reader.ReadBytes((int)(size - paddingAmount - 4));
+
+        // A build's tooling can fill an entirely-empty DPAK's content - this length prefix included -
+        // with the padding byte itself instead of writing a real length. PaddingAmount then reads
+        // back larger than the block has room for; clamp both reads to what's actually left instead
+        // of overrunning into Data.
+        uint remaining = size - 4;
+        uint paddingToRead = Math.Min(paddingAmount, remaining);
+        block.Padding = reader.ReadBytes((int)paddingToRead);
+        block.Data = reader.ReadBytes((int)(remaining - paddingToRead));
     }
 
     /// <summary>
