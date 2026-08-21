@@ -15,8 +15,9 @@ internal static class SerializerFactory
     public static Serializer Create(FormatProfile profile) => profile.Game switch
     {
         GameVersion.N100F => new N100FSerializer(profile),
+        GameVersion.BFBB => new BFBBSerializer(profile),
         _ => throw new NotSupportedException(
-            $"No serializer exists for {profile.Game} yet. Available: {GameVersion.N100F}.")
+            $"No serializer exists for {profile.Game} yet. Available: {GameVersion.N100F}, {GameVersion.BFBB}.")
     };
 
     /// <summary>
@@ -26,7 +27,8 @@ internal static class SerializerFactory
     public static FormatProfile DefaultProfileFor(GameVersion game) => game switch
     {
         GameVersion.N100F => N100FSerializer.DefaultProfile,
+        GameVersion.BFBB => BFBBSerializer.DefaultProfile,
         _ => throw new NotSupportedException(
-            $"No serializer exists for {game} yet. Available: {GameVersion.N100F}.")
+            $"No serializer exists for {game} yet. Available: {GameVersion.N100F}, {GameVersion.BFBB}.")
     };
 }

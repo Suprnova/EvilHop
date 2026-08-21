@@ -17,13 +17,25 @@ public class SerializerFactoryTests
     }
 
     [Fact]
+    public void Create_BFBB_ReturnsBFBBSerializerCarryingTheProfile()
+    {
+        var profile = BFBBSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+
+        var serializer = SerializerFactory.Create(profile);
+
+        Assert.IsType<BFBBSerializer>(serializer);
+        Assert.Equal(profile, serializer.Profile);
+    }
+
+    [Fact]
     public void Create_UnimplementedGame_ThrowsWithAvailableGames()
     {
-        var profile = new FormatProfile(GameVersion.BFBB, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+        var profile = new FormatProfile(GameVersion.TSSM, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         var ex = Assert.Throws<NotSupportedException>(() => SerializerFactory.Create(profile));
 
-        Assert.Contains("BFBB", ex.Message);
+        Assert.Contains("TSSM", ex.Message);
         Assert.Contains("N100F", ex.Message);
+        Assert.Contains("BFBB", ex.Message);
     }
 }

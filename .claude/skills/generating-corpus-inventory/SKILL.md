@@ -59,7 +59,7 @@ slower for no benefit.
 | --- | --- |
 | `<root>...` | One or more corpus roots. Pass only what you want: `artifacts/n100f artifacts/bfbb` covers those two and ignores the rest. |
 | `--out <path>` | Inventory output path. **Required** for `inventory`. |
-| `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Default and currently only implemented value: `n100f`. |
+| `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. `n100f` and `bfbb` are implemented today. |
 | `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
 
 A missing root, and a root containing no archives, are both hard errors rather than silent skips —
@@ -83,21 +83,21 @@ the whole run.
 Exit codes: `0` when everything parsed, `1` when anything failed, with one `FAIL <path>: <reason>`
 line per failure.
 
-### Only N100F has a serializer today
+### Only N100F and BFBB have serializers today
 
-`N100FSerializer` is the only implemented `Serializer`; `inventory --serializer <game>` for anything
-else fails immediately with "No serializer exists for `<game>` yet". **In practice this means
-`artifacts/n100f` is the only root worth inventorying right now.**
+`N100FSerializer` and `BFBBSerializer` are the only implemented `Serializer`s; `inventory --serializer
+<game>` for anything else fails immediately with "No serializer exists for `<game>` yet". **In
+practice this means `artifacts/n100f` and `artifacts/bfbb` are the only roots worth inventorying right
+now.**
 
 `verify` doesn't require `--serializer` to name the root's own game — it just reads every archive
-under `<root>...` with whichever profile the flag resolves to (default `n100f`). `PackagePlatform`
-(`PLAT`) parses under every profile now, so `verify artifacts/bfbb` with no `--serializer` no longer
-fails outright the way it once did - but that is not the same as a byte-for-byte correct reading: a
-later game's own quirks (a different `PLAT` field order, `DPAK`'s padding switch) are silently
-misread rather than caught, since nothing checks the bytes against a "right" answer. Treat a clean
-`verify` run against a later game's root as a lead worth recording, not proof that game is supported -
-see the Serializer Implementation Plan's note on `PLAT` parsing becoming available. Widen the roots
-you actually inventory only once that game gets its own serializer.
+under `<root>...` with whichever profile the flag resolves to (default `n100f`). Point `--serializer`
+at the root's own game (`bfbb` for `artifacts/bfbb`) for a byte-for-byte correct reading; running a
+later, still-unimplemented game's root under `n100f` or `bfbb`'s profile silently misreads that game's
+own quirks (a different `PLAT` field order, `DPAK`'s padding switch) rather than catching them, since
+nothing checks the bytes against a "right" answer. Treat a clean `verify` run against such a root as a
+lead worth recording, not proof that game is supported. Widen the roots you actually inventory only
+once that game gets its own serializer.
 
 ## Generating
 
