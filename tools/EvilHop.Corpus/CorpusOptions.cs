@@ -1,3 +1,5 @@
+using EvilHop.Common;
+
 namespace EvilHop.Corpus;
 
 /// <summary>
@@ -17,8 +19,8 @@ internal enum CorpusVerb
 /// </summary>
 /// <remarks>
 /// <code>
-/// EvilHop.Corpus inventory --out corpus/v1.json [--serializer &lt;id&gt;] [--dump &lt;path&gt;] &lt;root&gt;...
-/// EvilHop.Corpus verify [--serializer &lt;id&gt;] &lt;root&gt;...
+/// EvilHop.Corpus inventory --out corpus/n100f.json [--serializer &lt;game&gt;] [--dump &lt;path&gt;] &lt;root&gt;...
+/// EvilHop.Corpus verify [--serializer &lt;game&gt;] &lt;root&gt;...
 /// </code>
 /// </remarks>
 internal sealed class CorpusOptions
@@ -32,8 +34,8 @@ internal sealed class CorpusOptions
     /// <summary>The inventory output path. Required for <see cref="CorpusVerb.Inventory"/>.</summary>
     public string? OutputPath { get; init; }
 
-    /// <summary>Which serializer to read archives with. Defaults to <c>v1</c>.</summary>
-    public string SerializerId { get; init; } = "v1";
+    /// <summary>Which game to read archives with. Defaults to <see cref="GameVersion.N100F"/>, the only game with a serializer today.</summary>
+    public GameVersion Game { get; init; } = GameVersion.N100F;
 
     /// <summary>The optional JSONL full-fidelity dump path.</summary>
     public string? DumpPath { get; init; }
@@ -55,7 +57,7 @@ internal sealed class CorpusOptions
         };
 
         string? output = null;
-        string serializer = "v1";
+        var game = GameVersion.N100F;
         string? dump = null;
         List<string> roots = [];
 
@@ -67,7 +69,10 @@ internal sealed class CorpusOptions
                     output = RequireValue(args, ref i, "--out");
                     break;
                 case "--serializer":
-                    serializer = RequireValue(args, ref i, "--serializer");
+                    string key = RequireValue(args, ref i, "--serializer");
+                    if (!Enum.TryParse(key, ignoreCase: true, out game))
+                        throw new ArgumentException(
+                            $"Unknown game '{key}'. Expected one of: {string.Join(", ", Enum.GetNames<GameVersion>())}.");
                     break;
                 case "--dump":
                     dump = RequireValue(args, ref i, "--dump");
@@ -89,7 +94,7 @@ internal sealed class CorpusOptions
             Verb = verb,
             Roots = roots,
             OutputPath = output,
-            SerializerId = serializer,
+            Game = game,
             DumpPath = dump
         };
     }

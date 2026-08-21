@@ -92,7 +92,9 @@ public abstract class Block
     /// <typeparam name="T">The type of the field.</typeparam>
     /// <param name="field">The field to get the value of.</param>
     /// <returns>The value of the field.</returns>
+#pragma warning disable CA1822 // Mark members as static
     protected T GetManagedBlockField<T>(ref T field) => field;
+#pragma warning restore CA1822 // Mark members as static
 
     /// <summary>
     /// Sets the value of the specified field. If <see cref="AreBlockFieldsLocked"/> is

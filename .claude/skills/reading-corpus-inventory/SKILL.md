@@ -42,8 +42,8 @@ of lines instead of the whole file.
 dotnet run --file .claude/skills/reading-corpus-inventory/scripts/corpusq.cs -- [options] <command> [args]
 ```
 
-Paths are relative to the repository root, and the inventory defaults to `corpus/v1.json`. The first
-run takes a few seconds to compile; later runs are fast.
+Paths are relative to the repository root, and the inventory defaults to `corpus/n100f.json`. The
+first run takes a few seconds to compile; later runs are fast.
 
 ## Commands
 
@@ -62,7 +62,7 @@ run takes a few seconds to compile; later runs are fast.
 
 | Option | Default | Effect |
 | --- | --- | --- |
-| `-i`, `--inventory <path>` | `corpus/v1.json` | Which inventory to read. |
+| `-i`, `--inventory <path>` | `corpus/n100f.json` | Which inventory to read. |
 | `-n`, `--limit <n>` | `60` | Cap printed lines. `0` means unlimited. |
 
 ## Cookbook
@@ -209,7 +209,7 @@ error: inventory not found: 'corpus/nope.json'. Generate one with the generating
 
 ## Multiple inventories
 
-One file per corpus, identified by filename. `corpus/v1.json` is the official-archive inventory today;
-a `corpus/community.json` may exist later for community-made archives. Strictness differs by which
-test asserts against which file — an official-corpus failure breaks the build, a community-corpus one
-is informational. Point `--inventory` at whichever you mean.
+One file per corpus, identified by filename. `corpus/n100f.json` is the official-archive inventory
+today; a `corpus/community.json` may exist later for community-made archives. Strictness differs by
+which test asserts against which file — an official-corpus failure breaks the build, a
+community-corpus one is informational. Point `--inventory` at whichever you mean.

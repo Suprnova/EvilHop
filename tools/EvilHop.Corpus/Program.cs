@@ -1,6 +1,7 @@
 using EvilHop.Corpus;
 using EvilHop.Corpus.Invariants;
 using EvilHop.Corpus.Output;
+using EvilHop.Serialization;
 using System.Diagnostics;
 
 try
@@ -21,12 +22,19 @@ catch (Exception ex)
 
 static int RunVerify(CorpusOptions options)
 {
-    var serializer = SerializerFactory.Create(options.SerializerId);
+    var defaultProfile = SerializerFactory.DefaultProfileFor(options.Game);
+    var buildProfiles = BuildProfiles.LoadDefault();
+    var serializers = new Dictionary<FormatProfile, Serializer>();
 
     int total = 0, failed = 0;
     foreach (var discovered in ArchiveWalker.Discover(options.Roots))
     {
         total++;
+
+        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
+        if (!serializers.TryGetValue(profile, out var serializer))
+            serializers[profile] = serializer = SerializerFactory.Create(profile);
+
         try
         {
             using var stream = File.OpenRead(discovered.FullPath);
@@ -45,13 +53,19 @@ static int RunVerify(CorpusOptions options)
 
 static int RunInventory(CorpusOptions options)
 {
-    var serializer = SerializerFactory.Create(options.SerializerId);
+    var defaultProfile = SerializerFactory.DefaultProfileFor(options.Game);
+    var buildProfiles = BuildProfiles.LoadDefault();
+    var serializers = new Dictionary<FormatProfile, Serializer>();
     var builder = new InventoryBuilder(InvariantRegistry.CreateAll());
     using var dump = options.DumpPath is not null ? new DumpWriter(options.DumpPath) : null;
 
     int processed = 0;
     foreach (var discovered in ArchiveWalker.Discover(options.Roots))
     {
+        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
+        if (!serializers.TryGetValue(profile, out var serializer))
+            serializers[profile] = serializer = SerializerFactory.Create(profile);
+
         var context = Read(serializer, discovered);
         builder.Observe(context);
         dump?.Write(context);
@@ -67,7 +81,7 @@ static int RunInventory(CorpusOptions options)
     return 0;
 }
 
-static ArchiveContext Read(EvilHop.Serialization.SerializerV1 serializer, DiscoveredArchive discovered)
+static ArchiveContext Read(Serializer serializer, DiscoveredArchive discovered)
 {
     var fileInfo = new FileInfo(discovered.FullPath);
     using var stream = File.OpenRead(discovered.FullPath);

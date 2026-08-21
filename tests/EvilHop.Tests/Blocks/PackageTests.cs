@@ -1,4 +1,7 @@
 ﻿using EvilHop.Blocks;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+using EvilHop.Tests.Serialization;
 
 namespace EvilHop.Tests.Blocks;
 
@@ -153,5 +156,89 @@ public class PackageTests
     {
         var platform = new PackagePlatform();
         Assert.Equal("PLAT", platform.Tag);
+    }
+
+    [Fact]
+    public void ReadBlock_Plat_PlatformNameRegionLanguage_ReadsBfbbLayout()
+    {
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var content = BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Equal("GameCube", platform.PlatformName);
+        Assert.Equal("NTSC", platform.Region);
+        Assert.Equal("US Common", platform.Language);
+        Assert.Equal("Sponge Bob", platform.GameName);
+    }
+
+    [Fact]
+    public void ReadBlock_Plat_LanguageRegion_ReadsTssmLayout()
+    {
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.LanguageRegion };
+        var content = BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("US");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("Incredibles");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Null(platform.PlatformName);
+        Assert.Equal("US", platform.Language);
+        Assert.Equal("NTSC", platform.Region);
+        Assert.Equal("Incredibles", platform.GameName);
+    }
+
+    [Fact]
+    public void ReadBlock_Plat_ShortContent_LeavesTrailingFieldsUnset()
+    {
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var content = BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Equal("GameCube", platform.PlatformName);
+        Assert.Equal("", platform.Region);
+        Assert.Equal("", platform.Language);
+        Assert.Equal("", platform.GameName);
+    }
+
+    [Fact]
+    public void Read_PackWithPlat_AttachesPlatformChild()
+    {
+        var platContent = BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
+        });
+        var platBytes = BlockBytes.Build("PLAT", platContent);
+        using var reader = BlockBytes.Reader("PACK", platBytes);
+
+        var pack = (Package)new TestSerializer().ReadBlockPublic(reader);
+
+        Assert.NotNull(pack.Platform);
     }
 }

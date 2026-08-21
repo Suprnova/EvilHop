@@ -1,3 +1,5 @@
+using EvilHop.Common;
+
 namespace EvilHop.Corpus.Tests;
 
 public class CorpusOptionsTests
@@ -5,28 +7,49 @@ public class CorpusOptionsTests
     [Fact]
     public void Parse_InventoryWithMultipleRoots_PreservesAllRoots()
     {
-        var options = CorpusOptions.Parse(["inventory", "--out", "corpus/v1.json", "artifacts/n100f", "artifacts/bfbb"]);
+        var options = CorpusOptions.Parse(["inventory", "--out", "corpus/n100f.json", "artifacts/n100f", "artifacts/bfbb"]);
 
         Assert.Equal(CorpusVerb.Inventory, options.Verb);
         Assert.Equal(["artifacts/n100f", "artifacts/bfbb"], options.Roots);
-        Assert.Equal("corpus/v1.json", options.OutputPath);
+        Assert.Equal("corpus/n100f.json", options.OutputPath);
     }
 
     [Fact]
-    public void Parse_VerifyWithSerializerAndRoot_SetsSerializerId()
+    public void Parse_WithoutSerializerFlag_DefaultsToN100F()
     {
-        var options = CorpusOptions.Parse(["verify", "--serializer", "v2", "artifacts/bfbb"]);
+        var options = CorpusOptions.Parse(["verify", "artifacts/n100f"]);
+
+        Assert.Equal(GameVersion.N100F, options.Game);
+    }
+
+    [Theory]
+    [InlineData("n100f", GameVersion.N100F)]
+    [InlineData("N100F", GameVersion.N100F)]
+    [InlineData("bfbb", GameVersion.BFBB)]
+    [InlineData("BFBB", GameVersion.BFBB)]
+    public void Parse_SerializerFlag_ParsesGameKeyCaseInsensitively(string key, GameVersion expected)
+    {
+        var options = CorpusOptions.Parse(["verify", "--serializer", key, "artifacts/bfbb"]);
 
         Assert.Equal(CorpusVerb.Verify, options.Verb);
-        Assert.Equal("v2", options.SerializerId);
+        Assert.Equal(expected, options.Game);
+    }
+
+    [Fact]
+    public void Parse_SerializerFlag_UnknownGameKey_ThrowsArgumentException()
+    {
+        var ex = Assert.Throws<ArgumentException>(
+            () => CorpusOptions.Parse(["verify", "--serializer", "gamecube", "artifacts/n100f"]));
+
+        Assert.Contains("gamecube", ex.Message);
     }
 
     [Fact]
     public void Parse_InventoryWithDump_SetsDumpPath()
     {
-        var options = CorpusOptions.Parse(["inventory", "--out", "corpus/v1.json", "--dump", "dump/v1.jsonl", "artifacts/n100f"]);
+        var options = CorpusOptions.Parse(["inventory", "--out", "corpus/n100f.json", "--dump", "dump/n100f.jsonl", "artifacts/n100f"]);
 
-        Assert.Equal("dump/v1.jsonl", options.DumpPath);
+        Assert.Equal("dump/n100f.jsonl", options.DumpPath);
     }
 
     [Fact]

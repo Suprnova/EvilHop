@@ -4,7 +4,7 @@ namespace EvilHop.Tests.Serialization;
 
 /// <summary>
 /// Builds the raw byte envelope (tag + size + content) for a single block, for feeding directly
-/// into <see cref="TestSerializer.ReadBlockPublic"/> or <see cref="EvilHop.Serialization.SerializerV1.Read"/>.
+/// into <see cref="TestSerializer.ReadBlockPublic"/> or <see cref="EvilHop.Serialization.Serializer.Read"/>.
 /// </summary>
 internal static class BlockBytes
 {

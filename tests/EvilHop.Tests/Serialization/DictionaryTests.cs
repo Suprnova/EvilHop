@@ -22,7 +22,7 @@ public class DictionaryTests
     {
         var adbg = BlockBytes.Content(w =>
         {
-            w.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF });
+            w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("");
             w.WriteEvilInt(0x12345678);
@@ -83,7 +83,7 @@ public class DictionaryTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF });
+            w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("source.txt");
             w.WriteEvilInt(0x12345678);
