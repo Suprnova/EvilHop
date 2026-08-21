@@ -1,20 +1,16 @@
-﻿using EvilHop.Blocks;
+﻿namespace EvilHop.Blocks;
 
-namespace EvilHop.Blocks
+/// <summary>
+/// A no-data, no-children <see cref="Block"/> at the start of every HIP archive.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#HIPA">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class HIPA : Block
 {
-    public class HIPA() : Block
-    {
-        protected internal override string Id => "HIPA";
-    }
-}
+    /// <inheritdoc/>
+    protected internal override string Tag => "HIPA";
 
-namespace EvilHop.Serialization.Validation
-{
-    public partial class V1Validator
-    {
-        protected virtual IEnumerable<ValidationIssue> ValidateHIPA(HIPA hipa)
-        {
-            yield break;
-        }
-    }
+    internal HIPA() { }
 }

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>EvilHop.Corpus</RootNamespace>
+    <AssemblyName>EvilHop.Corpus</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="EvilHop.Corpus.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/EvilHop/EvilHop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="BuildProfiles.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

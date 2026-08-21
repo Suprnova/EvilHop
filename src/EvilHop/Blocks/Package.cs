@@ -1,8 +1,315 @@
-﻿using EvilHop.Serialization;
-using EvilHop.Serialization.Validation;
+﻿using System.Globalization;
 
 namespace EvilHop.Blocks;
 
+/// <summary>
+/// A no-data <see cref="Block"/> that serves as the root parent for all archive metadata blocks.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PACK">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: 5 children pre-Battle, otherwise 6
+/// Required children: PVER, PFLG, PCNT, PCRT, and PMOD pre-Battle, plus PLAT post-Battle
+/// Group ExpectedChildCount and RequiredChild into one attribute, since Required always means exactly 1 instance
+public class Package : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PACK";
+
+    /// <summary>
+    /// The child <see cref="PackageVersion"/> of the <see cref="Package"/>.
+    /// </summary>
+    public PackageVersion Version
+    {
+        get => GetRequiredChild<PackageVersion>();
+        set => SetChild(value);
+    }
+
+    /// <summary>
+    /// The child <see cref="PackageFlags"/> of the <see cref="Package"/>.
+    /// </summary>
+    public PackageFlags Flags
+    {
+        get => GetRequiredChild<PackageFlags>();
+        set => SetChild(value);
+    }
+
+    /// <summary>
+    /// The child <see cref="PackageCount"/> of the <see cref="Package"/>.
+    /// </summary>
+    public PackageCount Counts
+    {
+        get => GetRequiredChild<PackageCount>();
+        set => SetChild(value);
+    }
+
+    /// <summary>
+    /// The child <see cref="PackageCreated"/> of the <see cref="Package"/>.
+    /// </summary>
+    public PackageCreated Created
+    {
+        get => GetRequiredChild<PackageCreated>();
+        set => SetChild(value);
+    }
+
+    /// <summary>
+    /// The child <see cref="PackageModified"/> of the <see cref="Package"/>.
+    /// </summary>
+    public PackageModified Modified
+    {
+        get => GetRequiredChild<PackageModified>();
+        set => SetChild(value);
+    }
+
+    /// <summary>
+    /// The child <see cref="PackagePlatform"/> of the <see cref="Package"/>.
+    /// </summary>
+    /// <remarks>
+    /// Only present from BFBB onwards.
+    /// </remarks>
+    public PackagePlatform? Platform
+    {
+        get => GetChild<PackagePlatform>();
+        set => SetChild(value);
+    }
+
+    internal Package() { }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the version of the archive.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PVER">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class PackageVersion : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PVER";
+
+    /// <summary>
+    /// Unknown. Always 2.
+    /// </summary>
+    /// Validation TODO: Always 2.
+    public uint SubVersion { get; set; }
+
+    /// <summary>
+    /// Indicate the version of the client consuming the archive.
+    /// </summary>
+    /// Validation TODO: Always 0x00000001 in N100F proto, 0x00040006 in N100F,
+    /// and 0X000A000F in all others.
+    public ClientVersion ClientVersion { get; set; }
+
+    /// <summary>
+    /// Unknown. Always 1.
+    /// </summary>
+    /// Validation TODO: Always 1.
+    public uint CompatVersion { get; set; }
+
+    internal PackageVersion() { }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the archive's flags.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PFLG">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class PackageFlags : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PFLG";
+
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    /// Validation TODO: Ensure a valid combination of flags.
+    public PackFlags Flags { get; set; }
+
+    internal PackageFlags() { }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the counts of particular things within the archive.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PCNT">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class PackageCount : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PCNT";
+
+    /// <summary>
+    /// The number of <c>assets</c> present in the archive.
+    /// </summary>
+    /// Validation TODO: Equal to number of AHDR blocks.
+    public uint AssetCount { get; set; }
+
+    /// <summary>
+    /// The number of <c>layers</c> present in the archive.
+    /// </summary>
+    /// Validation TODO: Equal to number of LHDR blocks.
+    public uint LayerCount { get; set; }
+
+    /// <summary>
+    /// The size of the largest <c>Asset</c> in the archive.
+    /// </summary>
+    /// Validation TODO: Equal to max .size of AHDRs.
+    public uint MaxAssetSize { get; set; }
+
+    /// <summary>
+    /// The size of the largest <c>Layer</c> in the archive.
+    /// </summary>
+    /// Validation TODO: Equal to the largest sum of Size+Plus across a LayerHeader's AssetIds,
+    /// counting each listing rather than each distinct asset.
+    public uint MaxLayerSize { get; set; }
+
+    /// <summary>
+    /// The size of the largest <c>Asset</c> with <c>READ_TRANSFORM</c> in the archive.
+    /// </summary>
+    /// Validation TODO: Equal to max .size of AHDRs with READ_TRANSFORM as a flag.
+    public uint MaxXFormAssetSize { get; set; }
+
+    internal PackageCount() { }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the creation date of the archive.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PCRT">Heavy Iron Modding documentation </seealso>
+/// </remarks>
+/// Validation TODO: No children.
+/// CreatedDate and CreatedDateString represent the same time.
+public class PackageCreated : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PCRT";
+
+    private readonly string _dateTimeFormat = "ddd MMM dd HH:mm:ss yyyy";
+
+    /// <summary>
+    /// The timestamp at which the archive was created.
+    /// </summary>
+    /// <remarks>
+    /// Within the archive file, this field is stored as a UTC Unix timestamp.
+    /// </remarks>
+    /// Validation TODO: Can convert to a valid Unix time.
+    public DateTimeOffset CreatedDate { get; set; }
+
+    /// <summary>
+    /// The string representation of the timestamp at which the archive was created.
+    /// </summary>
+    /// <remarks>
+    /// Expects strings in the following <see cref="DateTimeOffset.ToString()"/>
+    /// (<c>en-US</c>) formatting:
+    /// <code>
+    /// ddd MMM dd HH:mm:ss yyyy
+    /// </code>
+    /// Within the archive file, this field is calculated in whatever local time zone
+    /// the build machine's clock was set to.
+    /// </remarks>
+    /// Validation TODO: Matches expected formatting.
+    /// Appended by '\n' in N100F.
+    /// Not necessary to validate it matches against CreatedDate, since we don't know the local
+    /// timezone for the build machine of unofficial archives.
+    public string CreatedDateString { get; set; }
+
+    internal PackageCreated() : this(DateTimeOffset.Now) { }
+
+    internal PackageCreated(DateTimeOffset createdDate)
+    {
+        CreatedDate = createdDate;
+        CreatedDateString = CreatedDate.ToString(_dateTimeFormat, new CultureInfo("en-US"));
+    }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the last modified date of the archive.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PMOD">Heavy Iron Modding documentation </seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class PackageModified : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PMOD";
+
+    /// <summary>
+    /// The timestamp at which the archive was last modified.
+    /// </summary>
+    /// <remarks>
+    /// Within the archive file, this field is stored as a UTC Unix timestamp.
+    /// </remarks>
+    /// Validation TODO: Can convert to a valid Unix time.
+    public DateTimeOffset ModifiedDate { get; set; }
+
+    internal PackageModified() { }
+}
+
+/// <summary>
+/// A child <see cref="Block"/> of <see cref="Package"/> that contains information
+/// about the platform, region, and language the archive was built for.
+/// </summary>
+/// <remarks>
+/// Introduced in Battle. Not present in N100F.
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PLAT">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+/// Validation TODO: No children.
+public class PackagePlatform : Block
+{
+    /// <inheritdoc/>
+    protected internal override string Tag => "PLAT";
+
+    /// <summary>
+    /// The platform the archive was built for.
+    /// </summary>
+    /// Validation TODO: Maps to one of the expected values.
+    public string PlatformId { get; set; } = "";
+
+    /// <summary>
+    /// The human-readable name of <see cref="PlatformId"/>.
+    /// </summary>
+    /// <remarks>
+    /// Only present in Battle. Dropped from all subsequent games.
+    /// </remarks>
+    public string? PlatformName { get; set; }
+
+    /// <summary>
+    /// The archive's target region.
+    /// </summary>
+    /// Validation TODO: "NTSC" or "PAL".
+    public string Region { get; set; } = "";
+
+    /// <summary>
+    /// The archive's target language.
+    /// </summary>
+    /// Validation TODO: Maps to a language observed in the documentation.
+    public string Language { get; set; } = "";
+
+    /// <summary>
+    /// The archive's target game.
+    /// </summary>
+    public string GameName { get; set; } = "";
+
+    internal PackagePlatform() { }
+}
+
+#pragma warning disable CS1591 // Missing XML comment
+
+/// <summary>
+/// Represents all known values for <see cref="PackageVersion.ClientVersion"/>.
+/// </summary>
 public enum ClientVersion : uint
 {
     N100FPrototype = 0x00000001,
@@ -10,7 +317,9 @@ public enum ClientVersion : uint
     Default = 0x000A000F
 }
 
-// TODO: validate
+/// <summary>
+/// Represents all known values for <see cref="PackageFlags.Flags"/>.
+/// </summary>
 [Flags]
 public enum PackFlags : uint
 {
@@ -35,184 +344,4 @@ public enum PackFlags : uint
     GC_MNPAL_BFBB = Unknown23 | Unknown21 | Unknown17,
     US_BFBB = Unknown26,
     DE_PS2_BFBB_2 = Unknown26 | Unknown25
-}
-
-[ExpectedChildCount(5, MinVersion = FileFormatVersion.ScoobyPrototype, MaxVersion = FileFormatVersion.BattleV1)]
-[ExpectedChildCount(6, MinVersion = FileFormatVersion.Battle)]
-public class Package : Block
-{
-    protected internal override string Id => "PACK";
-
-    [RequiredChild]
-    public PackageVersion Versions
-    {
-        get => GetRequiredChild<PackageVersion>();
-        set => SetChild(value);
-    }
-
-    [RequiredChild]
-    public PackageFlags Flags
-    {
-        get => GetRequiredChild<PackageFlags>();
-        set => SetChild(value);
-    }
-
-    [RequiredChild]
-    public PackageCount Counts
-    {
-        get => GetRequiredChild<PackageCount>();
-        set => SetChild(value);
-    }
-
-    [RequiredChild]
-    public PackageCreated Created
-    {
-        get => GetRequiredChild<PackageCreated>();
-        set => SetChild(value);
-    }
-
-    [RequiredChild]
-    public PackageModified Modified
-    {
-        get => GetRequiredChild<PackageModified>();
-        set => SetChild(value);
-    }
-
-    [RequiredChild(MinVersion = FileFormatVersion.Battle)]
-    public PackagePlatform? Platform
-    {
-        get => GetChild<PackagePlatform>();
-        set => SetChild(value);
-    }
-
-    internal Package()
-    {
-    }
-
-    public Package(PackageVersion packageVersion, PackageFlags packageFlags, PackageCount packageCount, PackageCreated packageCreated, PackageModified packageModified,
-        PackagePlatform? packagePlatform = null
-        )
-    {
-        Children.AddRange([
-            packageVersion,
-            packageFlags,
-            packageCount,
-            packageCreated,
-            packageModified
-        ]);
-        if (packagePlatform != null) Children.Add(packagePlatform);
-    }
-}
-
-[ExpectedChildCount(0)]
-public class PackageVersion(uint subVersion, ClientVersion clientVersion, uint compatVersion) : Block
-{
-    protected internal override string Id => "PVER";
-
-    [ExpectedValue(0x00000002)]
-    public uint SubVersion { get; set; } = subVersion;
-
-    [ExpectedValue(ClientVersion.N100FPrototype, MinVersion = FileFormatVersion.ScoobyPrototype, MaxVersion = FileFormatVersion.ScoobyPrototype)]
-    [ExpectedValue(ClientVersion.N100FRelease, MinVersion = FileFormatVersion.Scooby, MaxVersion = FileFormatVersion.Scooby)]
-    [ExpectedValue(ClientVersion.Default, MinVersion = FileFormatVersion.BattleV1)]
-    public ClientVersion ClientVersion { get; set; } = clientVersion;
-
-    [ExpectedValue(0x00000001)]
-    public uint CompatVersion { get; set; } = compatVersion;
-
-    public PackageVersion(ClientVersion clientVersion) : this(2, clientVersion, 1)
-    {
-    }
-}
-
-[ExpectedChildCount(0)]
-public class PackageFlags(PackFlags flags) : Block
-{
-    protected internal override string Id => "PFLG";
-
-    public PackFlags Flags { get; set; } = flags;
-}
-
-[ExpectedChildCount(0)]
-public class PackageCount(uint assetCount, uint layerCount, uint maxAssetSize, uint maxLayerSize, uint maxXFormAssetSize) : Block
-{
-    protected internal override string Id => "PCNT";
-
-    /// <summary>
-    /// The number of assets present in the archive, and by conjunction the number of <see cref="AHDR"/> blocks present.
-    /// </summary>
-    public uint AssetCount { get; set; } = assetCount;
-    /// <summary>
-    /// The number of layers present in the archive, and by conjunction the number of <see cref="LHDR"/> blocks present.
-    /// </summary>
-    public uint LayerCount { get; set; } = layerCount;
-    /// <summary>
-    /// The largest asset size among all of the assets in the archive, in bytes.
-    /// </summary>
-    public uint MaxAssetSize { get; set; } = maxAssetSize;
-    /// <summary>
-    /// The largest layer size, excluding padding, among all of the layers in the archive, in bytes.
-    /// </summary>
-    public uint MaxLayerSize { get; set; } = maxLayerSize;
-    /// <summary>
-    /// The largest asset size among all of the assets in the archive with the <see cref="ADHR.ADHR_Flags.READ_TRANSFORM"/> flag set, in bytes.
-    /// </summary>
-    public uint MaxXFormAssetSize { get; set; } = maxXFormAssetSize;
-
-    internal PackageCount() : this(0, 0, 0, 0, 0)
-    {
-    }
-}
-
-[ExpectedChildCount(0)]
-public class PackageCreated(DateTime createdDate, string createdDateString) : Block
-{
-    private static readonly String _dateTimeFormat = "ddd MMM dd HH:mm:ss yyyy";
-
-    protected internal override string Id => "PCRT";
-
-    // TODO: should be in UTC-7
-    public DateTime CreatedDate { get; set; } = createdDate;
-    public string CreatedDateString { get; set; } = createdDateString;
-
-    internal PackageCreated() : this(DateTime.Now, DateTime.Now.ToString(_dateTimeFormat))
-    {
-    }
-
-    public PackageCreated(DateTime createdDate) : this(createdDate, createdDate.ToString(_dateTimeFormat))
-    {
-    }
-}
-
-[ExpectedChildCount(0)]
-public class PackageModified(DateTime modifiedDate) : Block
-{
-    protected internal override string Id => "PMOD";
-
-    // TODO: should be in UTC-7
-    public DateTime ModifiedDate { get; set; } = modifiedDate;
-
-    internal PackageModified() : this(DateTime.Now)
-    {
-    }
-}
-
-[ExpectedChildCount(0)]
-[VersionRange(FileFormatVersion.Battle)]
-public class PackagePlatform(string platformId, string? platformName, string region, string language, string gameName) : Block
-{
-    protected internal override string Id => "PLAT";
-
-    public string PlatformID { get; set; } = platformId;
-
-    [VersionRange(FileFormatVersion.Battle, FileFormatVersion.Incredibles)]
-    public string? PlatformName { get; set; } = platformName;
-
-    public string Region { get; set; } = region;
-    public string Language { get; set; } = language;
-    public string GameName { get; set; } = gameName;
-
-    internal PackagePlatform() : this("", null, "", "", "")
-    {
-    }
 }

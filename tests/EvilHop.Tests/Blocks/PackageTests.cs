@@ -1,324 +1,244 @@
 ﻿using EvilHop.Blocks;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
-using EvilHop.Serialization.Validation;
+using EvilHop.Tests.Serialization;
 
 namespace EvilHop.Tests.Blocks;
 
 public class PackageTests
 {
-    private static readonly IFormatSerializer _scoobyPrototype = FileFormatFactory.GetSerializer(FileFormatVersion.ScoobyPrototype);
-    private static readonly IFormatSerializer _scooby = FileFormatFactory.GetSerializer(FileFormatVersion.Scooby);
-
-    private static readonly IFormatSerializer[] serializers = [_scoobyPrototype, _scooby];
-    private static readonly IFormatSerializer[] v1Serializers = [_scoobyPrototype, _scooby];
-    private static readonly IFormatSerializer[] v2Serializers = [];
-    private static readonly IFormatSerializer[] v3Serializers = [];
-    private static readonly IFormatSerializer[] v4Serializers = [];
-
-    private static string FormatValidationIssues(IEnumerable<ValidationIssue> issues)
+    [Fact]
+    public void Package_Tag_IsCorrect()
     {
-        return string.Join("; ", issues.Select(i => $"[{i.Severity}] {i.Message}"));
+        var pack = new Package();
+        Assert.Equal("PACK", pack.Tag);
     }
 
-    private static readonly byte[] validScoobyPackage =
-        [
-            0x50, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x6E, 0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C,
-            0x00, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00, 0x06, 0x00, 0x00, 0x00, 0x01, 0x50, 0x46, 0x4C, 0x47,
-            0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x2E, 0x50, 0x43, 0x4E, 0x54, 0x00, 0x00, 0x00, 0x14,
-            0x00, 0x00, 0x00, 0x34, 0x00, 0x00, 0x00, 0x0D, 0x0D, 0x88, 0xCF, 0x1C, 0x0D, 0x88, 0xCF, 0x1C,
-            0x00, 0x00, 0x80, 0xB8, 0x50, 0x43, 0x52, 0x54, 0x00, 0x00, 0x00, 0x1E, 0x43, 0xC4, 0xD2, 0xA0,
-            0x57, 0x65, 0x64, 0x20, 0x4A, 0x61, 0x6E, 0x20, 0x31, 0x31, 0x20, 0x30, 0x31, 0x3A, 0x34, 0x30,
-            0x3A, 0x34, 0x38, 0x20, 0x32, 0x30, 0x30, 0x36, 0x0A, 0x00, 0x50, 0x4D, 0x4F, 0x44, 0x00, 0x00,
-            0x00, 0x04, 0x43, 0xC4, 0xD2, 0xA0,
-        ];
-
-    private static readonly byte[] validScoobyPrototypePackageVersion =
-        [
-            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01,
-            0x00, 0x00, 0x00, 0x01,
-        ];
-    private static readonly byte[] validScoobyPackageVersion =
-        [
-            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00, 0x06,
-            0x00, 0x00, 0x00, 0x01,
-        ];
-    private static readonly byte[] validOtherPackageVersion =
-        [
-            0x50, 0x56, 0x45, 0x52, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0A, 0x00, 0x0F,
-            0x00, 0x00, 0x00, 0x01,
-        ];
+    [Fact]
+    public void Package_Version_IsRequired()
+    {
+        var pack = new Package();
+        Assert.Throws<InvalidOperationException>(() => pack.Version);
+    }
 
     [Fact]
-    public void Package_IFormatSerializer_New_IsValid()
+    public void Package_Version_Setter_ReturnsSetValue()
     {
-        foreach (var s in serializers)
+        var pack = new Package();
+        var version = new PackageVersion();
+
+        pack.Version = version;
+        Assert.Same(version, pack.Version);
+    }
+
+    [Fact]
+    public void Package_Flags_IsRequired()
+    {
+        var pack = new Package();
+        Assert.Throws<InvalidOperationException>(() => pack.Flags);
+    }
+
+    [Fact]
+    public void Package_Flags_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var flags = new PackageFlags();
+
+        pack.Flags = flags;
+        Assert.Same(flags, pack.Flags);
+    }
+
+    [Fact]
+    public void Package_Counts_IsRequired()
+    {
+        var pack = new Package();
+        Assert.Throws<InvalidOperationException>(() => pack.Counts);
+    }
+
+    [Fact]
+    public void Package_Counts_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var counts = new PackageCount();
+
+        pack.Counts = counts;
+        Assert.Same(counts, pack.Counts);
+    }
+
+    [Fact]
+    public void Package_Created_IsRequired()
+    {
+        var pack = new Package();
+        Assert.Throws<InvalidOperationException>(() => pack.Created);
+    }
+
+    [Fact]
+    public void Package_Created_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var created = new PackageCreated();
+
+        pack.Created = created;
+        Assert.Same(created, pack.Created);
+    }
+
+    [Fact]
+    public void Package_Modified_IsRequired()
+    {
+        var pack = new Package();
+        Assert.Throws<InvalidOperationException>(() => pack.Modified);
+    }
+
+    [Fact]
+    public void Package_Modified_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var modified = new PackageModified();
+
+        pack.Modified = modified;
+        Assert.Same(modified, pack.Modified);
+    }
+
+    [Fact]
+    public void Package_Platform_NotSet_ReturnsNull()
+    {
+        var pack = new Package();
+        Assert.Null(pack.Platform);
+    }
+
+    [Fact]
+    public void Package_Platform_Setter_ReturnsSetValue()
+    {
+        var pack = new Package();
+        var platform = new PackagePlatform();
+
+        pack.Platform = platform;
+        Assert.Same(platform, pack.Platform);
+    }
+
+    [Fact]
+    public void PackageVersion_Tag_IsCorrect()
+    {
+        var version = new PackageVersion();
+        Assert.Equal("PVER", version.Tag);
+    }
+
+    [Fact]
+    public void PackageFlags_Tag_IsCorrect()
+    {
+        var flags = new PackageFlags();
+        Assert.Equal("PFLG", flags.Tag);
+    }
+
+    [Fact]
+    public void PackageCount_Tag_IsCorrect()
+    {
+        var count = new PackageCount();
+        Assert.Equal("PCNT", count.Tag);
+    }
+
+    [Fact]
+    public void PackageCreated_Tag_IsCorrect()
+    {
+        var created = new PackageCreated();
+        Assert.Equal("PCRT", created.Tag);
+    }
+
+    [Fact]
+    public void PackageModified_Tag_IsCorrect()
+    {
+        var modified = new PackageModified();
+        Assert.Equal("PMOD", modified.Tag);
+    }
+
+    [Fact]
+    public void PackagePlatform_Tag_IsCorrect()
+    {
+        var platform = new PackagePlatform();
+        Assert.Equal("PLAT", platform.Tag);
+    }
+
+    [Fact]
+    public void ReadBlock_Plat_PlatformNameRegionLanguage_ReadsBfbbLayout()
+    {
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var content = BlockBytes.Content(w =>
         {
-            var package = s.NewBlock<Package>();
-            Assert.True(package.IsValid(s, out var issues),
-                $"Package validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Equal("GameCube", platform.PlatformName);
+        Assert.Equal("NTSC", platform.Region);
+        Assert.Equal("US Common", platform.Language);
+        Assert.Equal("Sponge Bob", platform.GameName);
     }
 
     [Fact]
-    public void Package_V1Serializer_RemoveChild_IsNotValid()
+    public void ReadBlock_Plat_LanguageRegion_ReadsTssmLayout()
     {
-        foreach (var s in v1Serializers)
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.LanguageRegion };
+        var content = BlockBytes.Content(w =>
         {
-            for (int i = 0; i < 5; i++)
-            {
-                Package package = s.NewBlock<Package>();
-                package.Children.RemoveAt(i);
-                Assert.False(package.IsValid(s, out var issues),
-                    $"Package validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-            }
-        }
+            w.WriteEvilString("GC");
+            w.WriteEvilString("US");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("Incredibles");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Null(platform.PlatformName);
+        Assert.Equal("US", platform.Language);
+        Assert.Equal("NTSC", platform.Region);
+        Assert.Equal("Incredibles", platform.GameName);
     }
 
     [Fact]
-    public void Package_OtherSerializer_RemoveChild_IsNotValid()
+    public void ReadBlock_Plat_ShortContent_LeavesTrailingFieldsUnset()
     {
-        foreach (var s in serializers.Where(s => !v1Serializers.Contains(s)))
+        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var content = BlockBytes.Content(w =>
         {
-            for (int i = 0; i < 6; i++)
-            {
-                Package package = s.NewBlock<Package>();
-                package.Children.RemoveAt(i);
-                Assert.False(package.IsValid(s, out var issues),
-                    $"Package validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-            }
-        }
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+        });
+        using var reader = BlockBytes.Reader("PLAT", content);
+
+        var platform = (PackagePlatform)new TestSerializer(profile).ReadBlockPublic(reader);
+
+        Assert.Equal("GC", platform.PlatformId);
+        Assert.Equal("GameCube", platform.PlatformName);
+        Assert.Equal("", platform.Region);
+        Assert.Equal("", platform.Language);
+        Assert.Equal("", platform.GameName);
     }
 
     [Fact]
-    public void Package_Scooby_Read_ValidBytes_IsValid()
+    public void Read_PackWithPlat_AttachesPlatformChild()
     {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPackage));
-        var package = _scooby.ReadBlock<Package>(reader);
-        Assert.True(package.IsValid(_scooby, out var issues),
-            $"Package validation failed. Issues: {FormatValidationIssues(issues)}");
-    }
-
-    [Fact]
-    public void Package_Scooby_Read_ValidBytes_CorrectOffset()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPackage));
-        _ = _scooby.ReadBlock<Package>(reader);
-        Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
-    }
-
-    [Fact]
-    public void Package_Scooby_WriteFromRead_Matches()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPackage));
-        byte[] writeBytes = new byte[validScoobyPackage.Length];
-        using BinaryWriter writer = new(new MemoryStream(writeBytes));
-
-        Package package = _scooby.ReadBlock<Package>(reader);
-        _scooby.WriteBlock(writer, package);
-        Assert.Equal(validScoobyPackage, writeBytes);
-    }
-
-    [Fact]
-    public void PackageVersion_IFormatSerializer_New_IsValid()
-    {
-        foreach (var s in serializers)
+        var platContent = BlockBytes.Content(w =>
         {
-            var packageVersion = s.NewBlock<PackageVersion>();
-            Assert.True(packageVersion.IsValid(s, out var issues),
-                $"PackageVersion validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
+            w.WriteEvilString("GC");
+            w.WriteEvilString("GameCube");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
+        });
+        var platBytes = BlockBytes.Build("PLAT", platContent);
+        using var reader = BlockBytes.Reader("PACK", platBytes);
+
+        var pack = (Package)new TestSerializer().ReadBlockPublic(reader);
+
+        Assert.NotNull(pack.Platform);
     }
-
-    [Theory]
-    [InlineData(0x00000000)]
-    [InlineData(0x00000001)]
-    [InlineData(0xFFFFFFFF)]
-    public void PackageVersion_IFormatSerializer_InvalidSubVersion_IsNotValid(uint subVersion)
-    {
-        foreach (var s in serializers)
-        {
-            PackageVersion version = s.NewBlock<PackageVersion>();
-            version.SubVersion = subVersion;
-            Assert.False(version.IsValid(s, out var issues),
-                $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Theory]
-    [InlineData(0x00000000)]
-    [InlineData(0xFFFFFFFF)]
-    public void PackageVersion_IFormatSerializer_InvalidClientVersion_IsNotValid(uint clientVersion)
-    {
-        foreach (var s in serializers)
-        {
-            PackageVersion version = s.NewBlock<PackageVersion>();
-            version.ClientVersion = (ClientVersion)clientVersion;
-            Assert.False(version.IsValid(s, out var issues),
-                $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Theory]
-    [InlineData(0x00000000)]
-    [InlineData(0xFFFFFFFF)]
-    public void PackageVersion_IFormatSerializer_InvalidCompatVersion_IsNotValid(uint compatVersion)
-    {
-        foreach (var s in serializers)
-        {
-            PackageVersion version = s.NewBlock<PackageVersion>();
-            version.CompatVersion = compatVersion;
-            Assert.False(version.IsValid(s, out var issues),
-                $"PackageVersion validation unexpectedly passed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageVersion_ScoobyPrototype_Read_IsValid()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPrototypePackageVersion));
-        var packageVersion = _scoobyPrototype.ReadBlock<PackageVersion>(reader);
-        Assert.True(packageVersion.IsValid(_scoobyPrototype, out var issues),
-            $"PackageVersion validation failed. Issues: {FormatValidationIssues(issues)}");
-    }
-
-    [Fact]
-    public void PackageVersion_ScoobyPrototype_Read_CorrectOffset()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPrototypePackageVersion));
-        _ = _scoobyPrototype.ReadBlock<PackageVersion>(reader);
-        Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
-    }
-
-    [Theory]
-    [InlineData(ClientVersion.N100FRelease)]
-    [InlineData(ClientVersion.Default)]
-    public void PackageVersion_ScoobyPrototype_IncorrectClientVersion_IsNotValid(ClientVersion clientVersion)
-    {
-        PackageVersion version = _scoobyPrototype.NewBlock<PackageVersion>();
-        version.ClientVersion = clientVersion;
-        Assert.False(version.IsValid(_scoobyPrototype, out var issues),
-            $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
-    }
-
-    [Fact]
-    public void PackageVersion_Scooby_Read_IsValid()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPackageVersion));
-        var packageVersion = _scooby.ReadBlock<PackageVersion>(reader);
-        Assert.True(packageVersion.IsValid(_scooby, out var issues),
-            $"PackageVersion validation failed. Issues: {FormatValidationIssues(issues)}");
-    }
-
-    [Fact]
-    public void PackageVersion_Scooby_Read_CorrectOffset()
-    {
-        using BinaryReader reader = new(new MemoryStream(validScoobyPackageVersion));
-        _ = _scooby.ReadBlock<PackageVersion>(reader);
-        Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
-    }
-
-    [Theory]
-    [InlineData(ClientVersion.N100FPrototype)]
-    [InlineData(ClientVersion.Default)]
-    public void PackageVersion_Scooby_IncorrectClientVersion_IsNotValid(ClientVersion clientVersion)
-    {
-        PackageVersion version = _scooby.NewBlock<PackageVersion>();
-        version.ClientVersion = clientVersion;
-        Assert.False(version.IsValid(_scooby, out var issues),
-            $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
-    }
-
-    [Fact]
-    public void PackageVersion_OtherSerializer_Read_IsValid()
-    {
-        using BinaryReader reader = new(new MemoryStream(validOtherPackageVersion));
-
-        foreach (var s in serializers.Where((s) => !v1Serializers.Contains(s)))
-        {
-            reader.BaseStream.Position = 0;
-            var packageVersion = s.ReadBlock<PackageVersion>(reader);
-            Assert.True(packageVersion.IsValid(s, out var issues),
-                $"PackageVersion validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageVersion_OtherSerializer_Read_CorrectOffset()
-    {
-        using BinaryReader reader = new(new MemoryStream(validOtherPackageVersion));
-
-        foreach (var s in serializers.Where((s) => !v1Serializers.Contains(s)))
-        {
-            reader.BaseStream.Position = 0;
-            _ = s.ReadBlock<PackageVersion>(reader);
-            Assert.Equal(reader.BaseStream.Length, reader.BaseStream.Position);
-        }
-    }
-
-    [Theory]
-    [InlineData(ClientVersion.N100FPrototype)]
-    [InlineData(ClientVersion.Default)]
-    public void PackageVersion_OtherSerializer_IncorrectClientVersion_IsNotValid(ClientVersion clientVersion)
-    {
-        foreach (var s in serializers.Where((s) => !v1Serializers.Contains(s)))
-        {
-            PackageVersion version = s.NewBlock<PackageVersion>();
-            version.ClientVersion = clientVersion;
-            Assert.False(version.IsValid(s, out var issues),
-                $"PackageVersion validation unexpectedly passed. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageFlags_IFormatSerializer_New_IsValid()
-    {
-        foreach (var s in serializers)
-        {
-            var packageFlags = s.NewBlock<PackageFlags>();
-            Assert.True(packageFlags.IsValid(s, out var issues),
-                $"PackageFlags validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageCount_IFormatSerializer_New_IsValid()
-    {
-        foreach (var s in serializers)
-        {
-            var packageCount = s.NewBlock<PackageCount>();
-            Assert.True(packageCount.IsValid(s, out var issues),
-                $"PackageCount validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageCreated_IFormatSerializer_New_IsValid()
-    {
-        foreach (var s in serializers)
-        {
-            var packageCreated = s.NewBlock<PackageCreated>();
-            Assert.True(packageCreated.IsValid(s, out var issues),
-                $"PackageCreated validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackageModified_IFormatSerializer_New_IsValid()
-    {
-        foreach (var s in serializers)
-        {
-            var packageModified = s.NewBlock<PackageModified>();
-            Assert.True(packageModified.IsValid(s, out var issues),
-                $"PackageModified validation failed for {s.GetType().Name}. Issues: {FormatValidationIssues(issues)}");
-        }
-    }
-
-    [Fact]
-    public void PackagePlatform_V1Serializer_New_Throws()
-    {
-        foreach (var s in v1Serializers)
-            Assert.Throws<InvalidOperationException>(s.NewBlock<PackagePlatform>);
-    }
-
-    // todo: add PackagePlatform_V1Serializer_Read_Throws()
 }
