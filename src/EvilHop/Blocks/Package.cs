@@ -167,7 +167,8 @@ public class PackageCount : Block
     /// <summary>
     /// The size of the largest <c>Layer</c> in the archive.
     /// </summary>
-    /// Validation TODO: Equal to size of largest layer in DPAK, excluding padding bytes.
+    /// Validation TODO: Equal to the largest sum of Size+Plus across a LayerHeader's AssetIds,
+    /// counting each listing rather than each distinct asset.
     public uint MaxLayerSize { get; set; }
 
     /// <summary>

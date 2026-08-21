@@ -13,7 +13,7 @@ To *read* an existing inventory, use `reading-corpus-inventory` instead — you 
 regenerate one just to answer a question.
 
 **Use this when you need to:**
-- Refresh `corpus/v1.json` after adding builds to the corpus or changing extraction/invariant policy.
+- Refresh `corpus/n100f.json` after adding builds to the corpus or changing extraction/invariant policy.
 - Check whether every archive under a path still parses, after touching serializer code.
 - Produce a `--dump` to trace an aggregated value back to every file it appears in.
 
@@ -48,8 +48,8 @@ their nearest build key rather than becoming builds of their own.
 ## Invocation
 
 ```
-dotnet run --project tools/EvilHop.Corpus -c Release -- verify [--serializer <id>] <root>...
-dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out <path> [--serializer <id>] [--dump <path>] <root>...
+dotnet run --project tools/EvilHop.Corpus -c Release -- verify [--serializer <game>] <root>...
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out <path> [--serializer <game>] [--dump <path>] <root>...
 ```
 
 Use `-c Release`. The tool is I/O- and parse-bound over gigabytes, and a Debug build is meaningfully
@@ -59,7 +59,7 @@ slower for no benefit.
 | --- | --- |
 | `<root>...` | One or more corpus roots. Pass only what you want: `artifacts/n100f artifacts/bfbb` covers those two and ignores the rest. |
 | `--out <path>` | Inventory output path. **Required** for `inventory`. |
-| `--serializer <id>` | Which serializer reads the archives. Default and currently only value: `v1`. |
+| `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Default and currently only implemented value: `n100f`. |
 | `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
 
 A missing root, and a root containing no archives, are both hard errors rather than silent skips —
@@ -72,49 +72,56 @@ the tool is always run deliberately by a human, so a bad argument should fail lo
 
 ```
 dotnet run --project tools/EvilHop.Corpus -c Release -- verify artifacts/n100f
-  → 272/272 archives parsed successfully.
+  → 1038/1038 archives parsed successfully.
 ```
 
 It matters because **`inventory` aborts on the first unparseable archive**, and discovering that
 forty minutes into a multi-GB run wastes real time. `verify` also has no `--out`, so it is the only
-safe way to point the tool at archives no current serializer can read.
+safe way to point the tool at a root whose bytes don't match the profile in use, without it aborting
+the whole run.
 
 Exit codes: `0` when everything parsed, `1` when anything failed, with one `FAIL <path>: <reason>`
 line per failure.
 
-### Only V1 archives parse today
+### Only N100F has a serializer today
 
-`SerializerV1` is the only serializer that exists, and V2 added the `PLAT` block. Anything from BFBB
-onward fails:
+`N100FSerializer` is the only implemented `Serializer`; `inventory --serializer <game>` for anything
+else fails immediately with "No serializer exists for `<game>` yet". **In practice this means
+`artifacts/n100f` is the only root worth inventorying right now.**
 
-```
-dotnet run --project tools/EvilHop.Corpus -c Release -- verify artifacts/bfbb
-  → FAIL bfbb/release/GC/PAL/UK/sp/spsc.HIP: Unknown block tag 'PLAT'.
-  → 2/264 archives parsed successfully.
-```
-
-That is expected, not a bug. **In practice this means `artifacts/n100f` is the only root worth
-inventorying right now.** When `SerializerV2` lands, widen the roots and regenerate.
+`verify` doesn't require `--serializer` to name the root's own game — it just reads every archive
+under `<root>...` with whichever profile the flag resolves to (default `n100f`). `PackagePlatform`
+(`PLAT`) parses under every profile now, so `verify artifacts/bfbb` with no `--serializer` no longer
+fails outright the way it once did - but that is not the same as a byte-for-byte correct reading: a
+later game's own quirks (a different `PLAT` field order, `DPAK`'s padding switch) are silently
+misread rather than caught, since nothing checks the bytes against a "right" answer. Treat a clean
+`verify` run against a later game's root as a lead worth recording, not proof that game is supported -
+see the Serializer Implementation Plan's note on `PLAT` parsing becoming available. Widen the roots
+you actually inventory only once that game gets its own serializer.
 
 ## Generating
 
 ```
-dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/v1.json artifacts/n100f
-  → Processed 272 archives.
-  → Wrote inventory to corpus/v1.json
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/n100f.json artifacts/n100f
+  → Processed 1038 archives.
+  → Wrote inventory to corpus/n100f.json
 ```
 
-Progress prints every 100 archives. For scale: 272 archives / ~1.7GB takes roughly ten seconds, so a
-full six-game run is minutes, not hours. Archives are parsed one at a time and discarded — only the
+Progress prints every 100 archives. Archives are parsed one at a time and discarded — only the
 accumulators persist, because a parsed corpus cannot be held in memory.
 
 Output is deterministic: sorted keys, sorted values, numeric ordering by magnitude. **The same corpus
 always produces a byte-identical file**, which is what makes the committed diff meaningful.
 
+Per-archive quirks (e.g. N100F's `prototype_2001-06-11` build, which omits `StreamData`'s
+padding-amount field) are applied automatically from the committed
+`tools/EvilHop.Corpus/BuildProfiles.json` manifest, matched by path prefix — nothing to pass on the
+command line for a build already listed there.
+
 ### `--dump`
 
 ```
-dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/v1.json --dump dump/n100f.jsonl artifacts/n100f
+dotnet run --project tools/EvilHop.Corpus -c Release -- inventory --out corpus/n100f.json --dump dump/n100f.jsonl artifacts/n100f
 ```
 
 One JSONL record per archive with every field occurrence, uncapped and unaggregated. `dump/` is

@@ -26,26 +26,43 @@ manually.
 ## Usage
 
 ```
-dotnet run --project tools/EvilHop.Corpus -- inventory --out corpus/v1.json artifacts/n100f
+dotnet run --project tools/EvilHop.Corpus -- inventory --out corpus/n100f.json artifacts/n100f
 dotnet run --project tools/EvilHop.Corpus -- verify artifacts/n100f artifacts/bfbb
 ```
 
 - `<root>...` - one or more corpus roots. Pass only the games you want: `artifacts/n100f
   artifacts/bfbb` inventories those two and leaves the rest alone.
 - `--out` - the inventory output path. Required for `inventory`.
-- `--serializer` - which serializer to read with. Defaults to `v1`, currently the only one that
-  exists; becomes an override once a `FileFormatFactory` can auto-detect a version per archive.
+- `--serializer` - which game to read with, a case-insensitive `GameVersion` key (`n100f`, `bfbb`,
+  `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`, currently the only game with a
+  serializer; any other key resolves but fails with "No serializer exists for `<game>` yet" until that
+  game's serializer lands.
 - `--dump <path>` - also writes a full-fidelity, gitignored JSONL dump alongside the inventory (see
   below).
 
 `verify` parses every archive and reports failures with a non-zero exit code, without writing
 anything. It's the fast way to check "does everything under this root still parse" before spending
-the time on a full `inventory` run - and the only way to point the tool at archives no current
-serializer can read (e.g. `artifacts/bfbb` under `--serializer v1`) without it aborting the whole run.
+the time on a full `inventory` run - and the only way to point the tool at a root whose game has no
+serializer yet, or whose bytes don't match the serializer's assumptions, without it aborting the
+whole run partway through.
 
 Both a missing root and a root with no `.HIP`/`.HOP` files are hard errors, not silent skips - the
 tool never runs unattended under a test suite, so there's no reason to make a bad argument quietly
 succeed.
+
+## Build profile overrides
+
+`BuildProfiles.json`, committed alongside this tool, lists path-prefix-matched overrides to a game's
+default `FormatProfile` - e.g. N100F's `prototype_2001-06-11` build, which omits `StreamData`'s
+padding-amount field that every other N100F build has. Both `verify` and `inventory` apply it
+automatically, matching each discovered archive's relative path against the manifest's entries
+(first match wins) before resolving a serializer for it.
+
+It's committed here, not derived from `artifacts/`, because `artifacts/` is gitignored and rebuilt
+per contributor - a quirk discovered against one contributor's corpus would otherwise be lost the
+next time someone else regenerates it. `src/EvilHop` itself has no equivalent lookup table; a library
+consumer with one odd file constructs `new N100FSerializer(profile with { StreamDataHasPaddingField =
+false })` directly instead.
 
 ## What is committed
 

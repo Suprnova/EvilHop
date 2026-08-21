@@ -1,15 +1,16 @@
 using EvilHop.Blocks;
 using EvilHop.Primitives;
+using System.Reflection;
 using System.Text;
 
 namespace EvilHop.Serialization;
 
 /// <summary>
-/// Reads and writes HIP archives in the V1 format - the baseline format used by N100F, and the
-/// root of the Serializer inheritance chain. Later versions (V2-V6) inherit from
-/// <see cref="SerializerV1"/>, overriding only their deltas.
+/// Reads and writes HIP archives. Every game agrees on the same block envelope - tag, size, fields,
+/// then children until the declared size is consumed - and a <see cref="FormatProfile"/> carries the
+/// handful of quirks that envelope alone doesn't resolve.
 /// </summary>
-public partial class SerializerV1
+public abstract partial class Serializer
 {
     private readonly record struct BlockHandler(
         Func<Block> Create,
@@ -19,11 +20,18 @@ public partial class SerializerV1
 
     private readonly Dictionary<string, BlockHandler> _handlers = [];
 
+    /// <summary>The format quirks and game identity this serializer reads with.</summary>
+    public FormatProfile Profile { get; }
+
     /// <summary>
-    /// Initializes a new instance of <see cref="SerializerV1"/>, registering all 19 V1 block types.
+    /// Initializes a new instance of <see cref="Serializer"/>, registering all twenty base block
+    /// types.
     /// </summary>
-    public SerializerV1()
+    /// <param name="profile">The format quirks and game identity this serializer reads with.</param>
+    protected Serializer(FormatProfile profile)
     {
+        Profile = profile;
+
         RegisterBlock<HIPA>();
 
         RegisterBlock<Package>();
@@ -32,6 +40,7 @@ public partial class SerializerV1
         RegisterBlock<PackageCount>(ReadPackageCount);
         RegisterBlock<PackageCreated>(ReadPackageCreated);
         RegisterBlock<PackageModified>(ReadPackageModified);
+        RegisterBlock<PackagePlatform>(ReadPackagePlatform);
 
         RegisterBlock<Dictionary>();
         RegisterBlock<AssetTable>();
@@ -75,7 +84,9 @@ public partial class SerializerV1
     /// </summary>
     /// <typeparam name="T">The <see cref="Block"/> type to create.</typeparam>
     /// <returns>A new instance of <typeparamref name="T"/>.</returns>
+#pragma warning disable CA1822 // Mark members as static
     public T CreateBlock<T>() where T : Block => (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
+#pragma warning restore CA1822 // Mark members as static
 
     /// <summary>
     /// Reads a HIP archive from <paramref name="stream"/>, producing an ordered list of root
@@ -101,7 +112,6 @@ public partial class SerializerV1
 
     /// <summary>
     /// Reads one block, including its children, from the current position of <paramref name="reader"/>.
-    /// The block envelope (tag, size, fields, children) is invariant across all Serializer versions.
     /// </summary>
     /// <param name="reader">The reader to read the block from.</param>
     /// <returns>The <see cref="Block"/> read from the stream, including its children.</returns>
@@ -137,4 +147,12 @@ public partial class SerializerV1
     /// <param name="reader">The reader to read the tag from.</param>
     /// <returns>The 4-character tag.</returns>
     protected static string ReadTag(BinaryReader reader) => Encoding.ASCII.GetString(reader.ReadBytes(4));
+
+    /// <summary>
+    /// Maps each registered block tag to its <c>ReadFields</c> delegate's <see cref="MethodInfo"/>
+    /// (<see langword="null"/> if the tag has no field reader). Used by the contract test suite to
+    /// detect when a serializer has replaced a base registration without declaring it.
+    /// </summary>
+    internal IReadOnlyDictionary<string, MethodInfo?> HandlerFingerprint() =>
+        _handlers.ToDictionary(kv => kv.Key, kv => kv.Value.ReadFields?.Method);
 }

@@ -15,4 +15,8 @@
     <ProjectReference Include="../../src/EvilHop/EvilHop.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="BuildProfiles.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

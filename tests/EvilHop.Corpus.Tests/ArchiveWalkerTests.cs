@@ -4,7 +4,11 @@ public class ArchiveWalkerTests : IDisposable
 {
     private readonly string root = Directory.CreateTempSubdirectory("EvilHop.Corpus.Tests.").FullName;
 
-    public void Dispose() => Directory.Delete(root, recursive: true);
+    public void Dispose()
+    {
+        Directory.Delete(root, recursive: true);
+        GC.SuppressFinalize(this);
+    }
 
     private string Game(string name)
     {

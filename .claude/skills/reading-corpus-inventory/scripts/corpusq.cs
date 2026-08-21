@@ -28,7 +28,7 @@ Commands:
   grep <pattern>          Search field names, recorded values, and invariant names.
 
 Options:
-  -i, --inventory <path>  Inventory to read. Default: corpus/v1.json
+  -i, --inventory <path>  Inventory to read. Default: corpus/n100f.json
   -n, --limit <n>         Cap printed lines; 0 for unlimited. Default: 60
 """;
 
@@ -46,7 +46,7 @@ var arity = new Dictionary<string, (int Min, int Max)>
     ["grep"] = (1, 1),
 };
 
-string inventoryPath = "corpus/v1.json";
+string inventoryPath = "corpus/n100f.json";
 int limit = 60;
 List<string> positional = [];
 

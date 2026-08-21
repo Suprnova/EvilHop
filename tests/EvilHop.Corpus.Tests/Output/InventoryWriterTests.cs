@@ -11,6 +11,7 @@ public class InventoryWriterTests : IDisposable
     public void Dispose()
     {
         if (File.Exists(path)) File.Delete(path);
+        GC.SuppressFinalize(this);
     }
 
     private static ArchiveContext Archive(string buildKey, string relativePath, uint clientVersion)

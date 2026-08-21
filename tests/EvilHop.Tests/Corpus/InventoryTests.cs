@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace EvilHop.Tests.Corpus;
 
 /// <summary>
-/// Reads the committed <c>corpus/v1.json</c> and asserts its observations against EvilHop's
+/// Reads the committed <c>corpus/n100f.json</c> and asserts its observations against EvilHop's
 /// current code. Hermetic - never touches the local corpus, only the frozen file checked into git,
 /// so it runs on every CI build with no artifacts present.
 /// </summary>
@@ -21,7 +21,7 @@ public class InventoryTests
 
     private static JsonElement LoadInventory()
     {
-        string path = Path.Combine(FindRepositoryRoot(), "corpus", "v1.json");
+        string path = Path.Combine(FindRepositoryRoot(), "corpus", "n100f.json");
         using var stream = File.OpenRead(path);
         return JsonDocument.Parse(stream).RootElement.Clone();
     }

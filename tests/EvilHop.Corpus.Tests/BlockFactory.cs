@@ -5,12 +5,12 @@ namespace EvilHop.Corpus.Tests;
 
 /// <summary>
 /// Builds synthetic <see cref="Block"/> trees for tests, entirely through EvilHop's public API -
-/// <see cref="SerializerV1.CreateBlock{T}"/>, exactly what a real consumer without
+/// <see cref="Serializer.CreateBlock{T}"/>, exactly what a real consumer without
 /// <c>InternalsVisibleTo</c> would use.
 /// </summary>
 internal static class BlockFactory
 {
-    private static readonly SerializerV1 Serializer = new();
+    private static readonly Serializer Serializer = new N100FSerializer();
 
     public static T Create<T>() where T : Block => Serializer.CreateBlock<T>();
 

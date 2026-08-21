@@ -5,15 +5,29 @@ using System.Globalization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class SerializerV1Tests
+/// <summary>
+/// The contract every <see cref="Serializer"/> owes, independent of game: the shared block envelope,
+/// exercised through <see cref="OpenMinimalFixture"/>, which contains no <c>PLAT</c> block and uses
+/// standard <c>DPAK</c> padding. A concrete game's own quirks are covered separately, at the block
+/// level, parameterized over its profile.
+/// </summary>
+public abstract class SerializerContractTests
 {
-    private static FileStream OpenMinimalFixture() =>
-        File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "v1", "minimal.hip"));
+    protected abstract Serializer CreateSerializer();
+
+    protected virtual Stream OpenMinimalFixture() =>
+        File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "n100f", "minimal.hip"));
+
+    /// <summary>
+    /// Tags whose base registration this serializer is declared to replace with its own handler.
+    /// Empty for every serializer today.
+    /// </summary>
+    protected virtual IReadOnlySet<string> DeclaredHandlerReplacements => new HashSet<string>();
 
     [Fact]
     public void CreateBlock_ReturnsStandaloneInstanceOfRequestedType()
     {
-        var hipa = new SerializerV1().CreateBlock<HIPA>();
+        var hipa = CreateSerializer().CreateBlock<HIPA>();
 
         Assert.Equal("HIPA", hipa.Tag);
         Assert.Null(hipa.Parent);
@@ -23,7 +37,7 @@ public class SerializerV1Tests
     [Fact]
     public void CreateBlock_InvokesTypesOwnConstructor()
     {
-        var created = new SerializerV1().CreateBlock<PackageCreated>();
+        var created = CreateSerializer().CreateBlock<PackageCreated>();
 
         Assert.NotEqual(default, created.CreatedDate);
         Assert.Equal(
@@ -34,7 +48,7 @@ public class SerializerV1Tests
     [Fact]
     public void CreateBlock_ReturnsDistinctInstancesEachCall()
     {
-        var serializer = new SerializerV1();
+        var serializer = CreateSerializer();
 
         Assert.NotSame(serializer.CreateBlock<HIPA>(), serializer.CreateBlock<HIPA>());
     }
@@ -42,7 +56,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_ReturnsFourRootsInOrder()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
 
         Assert.Equal(4, roots.Count);
         Assert.Equal(["HIPA", "PACK", "DICT", "STRM"], roots.Select(r => r.Tag));
@@ -51,7 +65,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_PackHasExpectedChildrenAndNoPlat()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var pack = (Package)roots[1];
 
         Assert.Equal(["PVER", "PFLG", "PCNT", "PCRT", "PMOD"], pack.Children.Select(c => c.Tag));
@@ -61,7 +75,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_PackFieldsMatchFixture()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var pack = (Package)roots[1];
 
         Assert.Equal(2u, pack.Version.SubVersion);
@@ -79,7 +93,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_PcrtDateRoundTripsWithDateString()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var pack = (Package)roots[1];
 
         Assert.Equal(1028661674, pack.Created.CreatedDate.ToUnixTimeSeconds());
@@ -89,7 +103,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_DictHasExpectedStructure()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var dict = (Dictionary)roots[2];
 
         Assert.Equal(["ATOC", "LTOC"], dict.Children.Select(c => c.Tag));
@@ -100,7 +114,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_AhdrHasExactlyOneAdbgChild()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var dict = (Dictionary)roots[2];
         var ahdr = dict.AssetTable.Headers.Single();
 
@@ -111,7 +125,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_LhdrHasExactlyOneLdbgChild()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var dict = (Dictionary)roots[2];
         var lhdr = dict.LayerTable.Headers.Single();
 
@@ -122,7 +136,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_StrmHasExpectedChildren()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var strm = (AssetStream)roots[3];
 
         Assert.Equal(["DHDR", "DPAK"], strm.Children.Select(c => c.Tag));
@@ -131,7 +145,9 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_DpakDataLengthMatchesSizeMinusPaddingAndHeader()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        // Every game serializer's default profile has the padding field. If a future game's default
+        // ever sets it false, this test failing is the correct alarm.
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
         var strm = (AssetStream)roots[3];
 
         Assert.Equal(2u, strm.Data.PaddingAmount);
@@ -142,7 +158,7 @@ public class SerializerV1Tests
     [Fact]
     public void Read_MinimalFixture_BlockTreeParentChildRelationshipsAreConsistent()
     {
-        var roots = new SerializerV1().Read(OpenMinimalFixture());
+        var roots = CreateSerializer().Read(OpenMinimalFixture());
 
         static void AssertParentage(Block block)
         {
@@ -167,7 +183,7 @@ public class SerializerV1Tests
         byte[] truncated = [.. "PCRT"u8.ToArray(), 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00, .. "Tue"u8.ToArray()];
         using var stream = new MemoryStream(truncated);
 
-        Assert.Throws<EndOfStreamException>(() => new SerializerV1().Read(stream));
+        Assert.Throws<EndOfStreamException>(() => CreateSerializer().Read(stream));
     }
 
     [Fact]
@@ -176,7 +192,7 @@ public class SerializerV1Tests
         byte[] bytes = BlockBytes.Build("XXXX", []);
         using var stream = new MemoryStream(bytes);
 
-        var ex = Assert.Throws<FormatException>(() => new SerializerV1().Read(stream));
+        var ex = Assert.Throws<FormatException>(() => CreateSerializer().Read(stream));
         Assert.Contains("XXXX", ex.Message);
     }
 
@@ -193,7 +209,7 @@ public class SerializerV1Tests
         ];
         using var stream = new MemoryStream(bytes);
 
-        Assert.Throws<FormatException>(() => new SerializerV1().Read(stream));
+        Assert.Throws<FormatException>(() => CreateSerializer().Read(stream));
     }
 
     [Fact]
@@ -209,6 +225,20 @@ public class SerializerV1Tests
         byte[] bytes = BlockBytes.Build("PCRT", content);
         using var stream = new MemoryStream(bytes);
 
-        Assert.Throws<InvalidDataException>(() => new SerializerV1().Read(stream));
+        Assert.Throws<InvalidDataException>(() => CreateSerializer().Read(stream));
+    }
+
+    [Fact]
+    public void HandlerRegistrations_MatchTheBaseClass_ExceptWhereDeclared()
+    {
+        var serializer = CreateSerializer();
+        var baseline = new TestSerializer(serializer.Profile).HandlerFingerprint();
+
+        var replaced = serializer.HandlerFingerprint()
+            .Where(kv => baseline[kv.Key] != kv.Value)
+            .Select(kv => kv.Key)
+            .ToHashSet();
+
+        Assert.Equal(DeclaredHandlerReplacements, replaced);
     }
 }
