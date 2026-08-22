@@ -60,8 +60,11 @@ public class StreamHeader : Block
 /// all <c>Assets</c>.
 /// </summary>
 /// <remarks>
-/// In archives without any assets (<see cref="PackageCount.AssetCount"/> = 0), this block
-/// does not have any data.
+/// <see cref="Padding"/> exists to start <see cref="Data"/> on a 32-byte boundary, which holds for
+/// every archive observed. In archives without any assets (<see cref="PackageCount.AssetCount"/> = 0)
+/// there is no <see cref="Data"/> to align and no <see cref="PaddingAmount"/> field is written at
+/// all - the block holds only the fill needed to bring the archive itself to a 32-byte boundary,
+/// which is an empty block when it already ends aligned.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DPAK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 /// Validation TODO: No children.
@@ -74,7 +77,8 @@ public class StreamData : Block
     /// The amount of padding in bytes.
     /// </summary>
     /// <remarks>
-    /// This field is nullable as this block may have no data when no assets are present.
+    /// Nullable because the field is absent entirely from a no-assets block, whose whole content is
+    /// <see cref="Padding"/>.
     /// </remarks>
     /// Validation TODO: Equal to Padding's size.
     public uint? PaddingAmount { get; set; }
