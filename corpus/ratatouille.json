@@ -1,0 +1,2677 @@
+{
+  "builds": [
+    {
+      "key": "rat/prototype_2006-01-18/GC/NTSC-U/US",
+      "archives": 26
+    }
+  ],
+  "fields": {
+    "AssetDebug.Alignment": {
+      "kind": "set",
+      "values": {
+        "-1": {
+          "count": 1120,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "0": {
+          "count": 4954,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "1": {
+          "count": 215,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "4": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "16": {
+          "count": 32,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "32": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        }
+      }
+    },
+    "AssetDebug.Checksum": {
+      "kind": "summary",
+      "distinct": 5738,
+      "min": 135291,
+      "max": 4294967295
+    },
+    "AssetDebug.FileName": {
+      "kind": "summary",
+      "distinct": 866,
+      "minLength": 0,
+      "maxLength": 95
+    },
+    "AssetDebug.Name": {
+      "kind": "summary",
+      "distinct": 6067,
+      "minLength": 2,
+      "maxLength": 31
+    },
+    "AssetHeader.Flags": {
+      "kind": "set",
+      "values": {
+        "0x00000001": {
+          "count": 20,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "0x00000002": {
+          "count": 4860,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "0x00000005": {
+          "count": 376,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "0x00000006": {
+          "count": 594,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000009": {
+          "count": 468,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "0x0000000D": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        }
+      }
+    },
+    "AssetHeader.Id": {
+      "kind": "summary",
+      "distinct": 6141,
+      "min": 8983,
+      "max": 4293836688
+    },
+    "AssetHeader.Offset": {
+      "kind": "summary",
+      "distinct": 5823,
+      "min": 800,
+      "max": 30081696
+    },
+    "AssetHeader.Plus": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 1757,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "1": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "2": {
+          "count": 54,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "3": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "4": {
+          "count": 1979,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "5": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "6": {
+          "count": 78,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "8": {
+          "count": 1473,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "9": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "10": {
+          "count": 80,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "11": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "12": {
+          "count": 809,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "13": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "14": {
+          "count": 82,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "15": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "476": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "1820": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        }
+      }
+    },
+    "AssetHeader.Size": {
+      "kind": "summary",
+      "distinct": 620,
+      "min": 0,
+      "max": 227069724
+    },
+    "AssetHeader.Type": {
+      "kind": "set",
+      "values": {
+        "ALST": {
+          "count": 5,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "ANIM": {
+          "count": 252,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "ATBL": {
+          "count": 45,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "BINK": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "CAM ": {
+          "count": 17,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "CCRV": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "CNTR": {
+          "count": 92,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "COLL": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "COND": {
+          "count": 115,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "CRDT": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "DEST": {
+          "count": 11,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "DPAT": {
+          "count": 31,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "DYNA": {
+          "count": 1118,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "ENV ": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "FLY ": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "FOG ": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "GRUP": {
+          "count": 153,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "JSP ": {
+          "count": 8,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "LKIT": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "MAPR": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "MINF": {
+          "count": 56,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "MODL": {
+          "count": 376,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "MVPT": {
+          "count": 335,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "NGMS": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "PARE": {
+          "count": 7,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "PARP": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "PARS": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "PICK": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "PIPT": {
+          "count": 5,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "PLAT": {
+          "count": 260,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "PLYR": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "PORT": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "RAW ": {
+          "count": 17,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "RWTX": {
+          "count": 539,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "SCRP": {
+          "count": 187,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "SDFX": {
+          "count": 110,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "SGRP": {
+          "count": 127,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "SHRP": {
+          "count": 22,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "SIMP": {
+          "count": 1035,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "SND ": {
+          "count": 170,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "SNDI": {
+          "count": 8,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "SNDS": {
+          "count": 45,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "SPLN": {
+          "count": 14,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "SURF": {
+          "count": 20,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "TEXS": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "TEXT": {
+          "count": 872,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "TIMR": {
+          "count": 17,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "TPIK": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "TRIG": {
+          "count": 75,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "UIM ": {
+          "count": 131,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        }
+      }
+    },
+    "AssetInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "LayerDebug.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 386,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "LayerHeader.AssetCount": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 271,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "1": {
+          "count": 40,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "2": {
+          "count": 11,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "3": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "4": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "5": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "6": {
+          "count": 7,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "7": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "9": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "12": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "14": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "19": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "22": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "24": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "25": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "26": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "27": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "28": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "34": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "37": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "43": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        },
+        "48": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "55": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "57": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "58": {
+          "count": 5,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "61": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "62": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "67": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "68": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "69": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "71": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "112": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "121": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "557": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "813": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "1005": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "2010": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        }
+      }
+    },
+    "LayerHeader.AssetIds": {
+      "kind": "summary",
+      "distinct": 109,
+      "minLength": 0,
+      "maxLength": 2010
+    },
+    "LayerHeader.Type": {
+      "kind": "set",
+      "values": {
+        "0x00000000": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000001": {
+          "count": 78,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000002": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000003": {
+          "count": 36,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "0x00000004": {
+          "count": 78,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000005": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000007": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000008": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x00000009": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x0000000A": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "0x0000000B": {
+          "count": 12,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        }
+      }
+    },
+    "LayerInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackageCount.AssetCount": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "2": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "7": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyb.HIP"
+        },
+        "12": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply3.HIP"
+        },
+        "13": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "14": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "18": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "23": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "24": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "26": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "28": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "38": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply4.HIP"
+        },
+        "43": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        },
+        "52": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "67": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "112": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "196": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "483": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "488": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "557": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "840": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "1096": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "2017": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        }
+      }
+    },
+    "PackageCount.LayerCount": {
+      "kind": "set",
+      "values": {
+        "13": {
+          "count": 17,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "17": {
+          "count": 6,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "21": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        }
+      }
+    },
+    "PackageCount.MaxAssetSize": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "88": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "160": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        },
+        "604": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "624": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "1766": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "5508": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "17136": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "32952": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "38400": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "43008": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "66232": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "147714": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "166364": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "439908": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "1367604": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "5049884": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "11986800": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "16551608": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "227069724": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        }
+      }
+    },
+    "PackageCount.MaxLayerSize": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "1388": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "1766": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "2004": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        },
+        "10108": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "18448": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "32952": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "45344": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "66488": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "74872": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "131168": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "147714": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply3.HIP"
+        },
+        "148626": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply4.HIP"
+        },
+        "166364": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "266592": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "299130": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "731664": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "899384": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "1367604": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "5049884": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "11986800": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "29961336": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "227069724": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        }
+      }
+    },
+    "PackageCount.MaxXFormAssetSize": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 7,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "500": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "596": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "1720": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "1766": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "32952": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "66232": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "147714": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "148340": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "154468": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "524472": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "1367604": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "2166508": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        }
+      }
+    },
+    "PackageCreated.CreatedDate": {
+      "kind": "set",
+      "values": {
+        "2006-01-11T09:40:48.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "2006-01-11T09:41:39.0000000+00:00": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "2006-01-11T09:41:41.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "2006-01-11T09:41:48.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "2006-01-11T09:41:53.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "2006-01-11T09:42:06.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "2006-01-11T09:42:12.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "2006-01-11T09:42:13.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "2006-01-11T09:42:17.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "2006-01-11T09:42:18.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyb.HIP"
+        },
+        "2006-01-11T09:42:21.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "2006-01-11T09:42:29.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "2006-01-11T09:42:32.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "2006-01-11T09:42:34.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "2006-01-11T09:42:36.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply3.HIP"
+        },
+        "2006-01-11T09:42:38.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply4.HIP"
+        },
+        "2006-01-11T09:42:40.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "2006-01-11T09:42:47.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "2006-01-11T09:43:10.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "2006-01-11T09:43:11.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "2006-01-11T09:43:22.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "2006-01-11T09:43:45.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "2006-01-11T09:43:46.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        }
+      }
+    },
+    "PackageCreated.CreatedDateString": {
+      "kind": "set",
+      "values": {
+        "Wed Jan 11 01:40:48 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "Wed Jan 11 01:41:39 2006": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "Wed Jan 11 01:41:41 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "Wed Jan 11 01:41:48 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "Wed Jan 11 01:41:53 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "Wed Jan 11 01:42:06 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "Wed Jan 11 01:42:12 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "Wed Jan 11 01:42:13 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "Wed Jan 11 01:42:17 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "Wed Jan 11 01:42:18 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyb.HIP"
+        },
+        "Wed Jan 11 01:42:21 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "Wed Jan 11 01:42:29 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "Wed Jan 11 01:42:32 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "Wed Jan 11 01:42:34 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "Wed Jan 11 01:42:36 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply3.HIP"
+        },
+        "Wed Jan 11 01:42:38 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply4.HIP"
+        },
+        "Wed Jan 11 01:42:40 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "Wed Jan 11 01:42:47 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "Wed Jan 11 01:43:10 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "Wed Jan 11 01:43:11 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "Wed Jan 11 01:43:22 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "Wed Jan 11 01:43:45 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "Wed Jan 11 01:43:46 2006": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        }
+      }
+    },
+    "PackageFlags.Flags": {
+      "kind": "set",
+      "values": {
+        "0x0000002E": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackageModified.ModifiedDate": {
+      "kind": "set",
+      "values": {
+        "2006-01-11T09:40:48.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "2006-01-11T09:41:39.0000000+00:00": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "2006-01-11T09:41:41.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+        },
+        "2006-01-11T09:41:48.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "2006-01-11T09:41:53.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "2006-01-11T09:42:06.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+        },
+        "2006-01-11T09:42:12.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HIP"
+        },
+        "2006-01-11T09:42:13.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "2006-01-11T09:42:17.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "2006-01-11T09:42:18.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyb.HIP"
+        },
+        "2006-01-11T09:42:21.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyr.HIP"
+        },
+        "2006-01-11T09:42:29.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/plyh.HIP"
+        },
+        "2006-01-11T09:42:32.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "2006-01-11T09:42:34.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "2006-01-11T09:42:36.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply3.HIP"
+        },
+        "2006-01-11T09:42:38.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply4.HIP"
+        },
+        "2006-01-11T09:42:40.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        },
+        "2006-01-11T09:42:47.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "2006-01-11T09:43:10.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "2006-01-11T09:43:11.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip"
+        },
+        "2006-01-11T09:43:22.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+        },
+        "2006-01-11T09:43:45.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "2006-01-11T09:43:46.0000000+00:00": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        }
+      }
+    },
+    "PackagePlatform.GameName": {
+      "kind": "set",
+      "values": {
+        "Incredibles": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackagePlatform.Language": {
+      "kind": "set",
+      "values": {
+        "US": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackagePlatform.PlatformId": {
+      "kind": "set",
+      "values": {
+        "GC": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackagePlatform.PlatformName": {
+      "kind": "set",
+      "values": {
+        "null": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackagePlatform.Region": {
+      "kind": "set",
+      "values": {
+        "NTSC": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackageVersion.ClientVersion": {
+      "kind": "set",
+      "values": {
+        "0x000A000F": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackageVersion.CompatVersion": {
+      "kind": "set",
+      "values": {
+        "1": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "PackageVersion.SubVersion": {
+      "kind": "set",
+      "values": {
+        "2": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "StreamData.Data": {
+      "kind": "summary",
+      "minLength": 0,
+      "maxLength": 227139552
+    },
+    "StreamData.Padding": {
+      "kind": "summary",
+      "minLength": 0,
+      "maxLength": 28
+    },
+    "StreamData.PaddingAmount": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 4,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        },
+        "2": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+        },
+        "4": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply2.HIP"
+        },
+        "6": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnls.HIP"
+        },
+        "8": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply1.HIP"
+        },
+        "12": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+        },
+        "14": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+        },
+        "16": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+        },
+        "18": {
+          "count": 2,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus_US.hip"
+        },
+        "24": {
+          "count": 3,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+        },
+        "26": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+        },
+        "28": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+        },
+        "858993459": {
+          "count": 1,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/PL/ply5.HIP"
+        }
+      }
+    },
+    "StreamHeader.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    }
+  },
+  "invariants": {
+    "assetChecksumMatchesData": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "assetIdMatchesNameHash": {
+      "checked": 6324,
+      "outcomes": {
+        "anim-suffix": 56,
+        "direct": 6073,
+        "truncated": 184,
+        "unexplained": 11
+      },
+      "unexplained": [
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+          "name": "cylinder_1x1x1",
+          "expected": "0x02748579",
+          "actual": "0x38AAB006",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+          "name": "cube_1x1x1",
+          "expected": "0x380C8DA2",
+          "actual": "0xFE577419",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "crate_radish_kd",
+          "expected": "0x12174728",
+          "actual": "0xC0D96FBB",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "jar_olive_kd",
+          "expected": "0x343F715A",
+          "actual": "0x4F36FA81",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "cube_1x1x1",
+          "expected": "0x380C8DA2",
+          "actual": "0xFE577419",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "tomato_sliced_kd",
+          "expected": "0x3EA5B432",
+          "actual": "0xDC5C0149",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "crate_kd_dest",
+          "expected": "0x6DBFC40B",
+          "actual": "0xC25B08EC",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "crate_broccoli_kd",
+          "expected": "0x88824110",
+          "actual": "0xE2E82133",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "cabbage_kd",
+          "expected": "0x99F20734",
+          "actual": "0xF11345FF",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "crate_carrot_kd",
+          "expected": "0xBA5708B6",
+          "actual": "0xBDA65235",
+          "type": "1145394004"
+        },
+        {
+          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
+          "name": "barrel_wood_kd_dest",
+          "expected": "0xFC626A98",
+          "actual": "0xA0AA308B",
+          "type": "1145394004"
+        }
+      ]
+    },
+    "assetIdsUnique": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "assetOffsetsInBounds": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "createdDateStringMatchesTimestamp": {
+      "checked": 26,
+      "outcomes": {
+        "violated": 0,
+        "passing": 26
+      }
+    },
+    "createdDateStringTrailingWhitespace": {
+      "kind": "set",
+      "values": {
+        "": {
+          "count": 26,
+          "builds": [
+            "rat/prototype_2006-01-18/GC/NTSC-U/US"
+          ],
+          "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font.HIP"
+        }
+      }
+    },
+    "fileNameSetWhenSourceFile": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "lastAssetInLayerHasZeroPlus": {
+      "checked": 115,
+      "outcomes": {
+        "violated": 0,
+        "passing": 115
+      }
+    },
+    "layerAssetCountsSumWithinTotal": {
+      "checked": 26,
+      "outcomes": {
+        "violated": 0,
+        "passing": 26
+      }
+    },
+    "layerAssetIdsResolve": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "packageCountsMatchTree": {
+      "checked": 52,
+      "outcomes": {
+        "violated": 0,
+        "passing": 52
+      }
+    },
+    "packageMaxSizesMatchTree": {
+      "checked": 78,
+      "outcomes": {
+        "violated": 0,
+        "passing": 78
+      }
+    },
+    "paddingIsHomogeneous": {
+      "checked": 22,
+      "outcomes": {
+        "violated": 0,
+        "passing": 22
+      },
+      "fillBytes": {
+        "kind": "set",
+        "values": {
+          "0x33": {
+            "count": 22,
+            "builds": [
+              "rat/prototype_2006-01-18/GC/NTSC-U/US"
+            ],
+            "exemplar": "rat/prototype_2006-01-18/GC/NTSC-U/US/backup/font_US.hip"
+          }
+        }
+      }
+    },
+    "plusMatchesAlignment": {
+      "checked": 231,
+      "outcomes": {
+        "violated": 0,
+        "passing": 231
+      }
+    },
+    "sourceFlagsExclusive": {
+      "checked": 6324,
+      "outcomes": {
+        "violated": 0,
+        "passing": 6324
+      }
+    },
+    "structural": {
+      "AssetDebug": {
+        "checked": 6324,
+        "outcomes": {
+          "violated": 0,
+          "passing": 6324
+        }
+      },
+      "AssetHeader": {
+        "checked": 6324,
+        "outcomes": {
+          "violated": 0,
+          "passing": 6324
+        }
+      },
+      "AssetInf": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "AssetStream": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "AssetTable": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "Dictionary": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "HIPA": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "LayerDebug": {
+        "checked": 386,
+        "outcomes": {
+          "violated": 0,
+          "passing": 386
+        }
+      },
+      "LayerHeader": {
+        "checked": 386,
+        "outcomes": {
+          "violated": 0,
+          "passing": 386
+        }
+      },
+      "LayerInf": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "LayerTable": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "Package": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackageCount": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackageCreated": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackageFlags": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackageModified": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackagePlatform": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "PackageVersion": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "StreamData": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      },
+      "StreamHeader": {
+        "checked": 26,
+        "outcomes": {
+          "violated": 0,
+          "passing": 26
+        }
+      }
+    }
+  }
+}

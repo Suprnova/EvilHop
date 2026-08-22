@@ -1,0 +1,3273 @@
+{
+  "builds": [
+    {
+      "key": "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+      "archives": 72
+    },
+    {
+      "key": "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+      "archives": 96
+    },
+    {
+      "key": "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+      "archives": 72
+    },
+    {
+      "key": "rotu/release/GC/NTSC-J/JP",
+      "archives": 72
+    },
+    {
+      "key": "rotu/release/GC/NTSC-U/US",
+      "archives": 72
+    },
+    {
+      "key": "rotu/release/GC/PAL/DE-FR",
+      "archives": 96
+    },
+    {
+      "key": "rotu/release/GC/PAL/FR-UK",
+      "archives": 96
+    }
+  ],
+  "fields": {
+    "AssetDebug.Alignment": {
+      "kind": "set",
+      "values": {
+        "-1": {
+          "count": 31423,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0": {
+          "count": 235550,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "1": {
+          "count": 31306,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "4": {
+          "count": 20,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui_JP.hip"
+        },
+        "16": {
+          "count": 1760,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "32": {
+          "count": 273,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        }
+      }
+    },
+    "AssetDebug.Checksum": {
+      "kind": "summary",
+      "distinct": 33721,
+      "min": 16832,
+      "max": 4294967295
+    },
+    "AssetDebug.FileName": {
+      "kind": "summary",
+      "distinct": 6291,
+      "minLength": 0,
+      "maxLength": 93
+    },
+    "AssetDebug.Name": {
+      "kind": "summary",
+      "distinct": 27839,
+      "minLength": 2,
+      "maxLength": 31
+    },
+    "AssetHeader.Flags": {
+      "kind": "set",
+      "values": {
+        "0x00000001": {
+          "count": 290,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/font_JP.hip"
+        },
+        "0x00000002": {
+          "count": 205342,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000005": {
+          "count": 21343,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "0x00000006": {
+          "count": 18063,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000009": {
+          "count": 55014,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "0x0000000D": {
+          "count": 280,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "AssetHeader.Id": {
+      "kind": "summary",
+      "distinct": 28027,
+      "min": 8564,
+      "max": 4294790123
+    },
+    "AssetHeader.Offset": {
+      "kind": "summary",
+      "distinct": 35197,
+      "min": 736,
+      "max": 53022784
+    },
+    "AssetHeader.Plus": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 106625,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "1": {
+          "count": 14,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP"
+        },
+        "2": {
+          "count": 3648,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "3": {
+          "count": 28,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HOP"
+        },
+        "4": {
+          "count": 84142,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "5": {
+          "count": 63,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HOP"
+        },
+        "6": {
+          "count": 2926,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "7": {
+          "count": 28,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP"
+        },
+        "8": {
+          "count": 71164,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "9": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HOP"
+        },
+        "10": {
+          "count": 3112,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "11": {
+          "count": 42,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "12": {
+          "count": 25431,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "13": {
+          "count": 14,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B1/b101.HOP"
+        },
+        "14": {
+          "count": 2816,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "15": {
+          "count": 21,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B1/b101.HOP"
+        },
+        "16": {
+          "count": 21,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "20": {
+          "count": 49,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "24": {
+          "count": 34,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "28": {
+          "count": 28,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "40": {
+          "count": 1,
+          "builds": [
+            "rotu/release/GC/NTSC-U/US"
+          ],
+          "exemplar": "rotu/release/GC/NTSC-U/US/UW/uw01.HIP"
+        },
+        "184": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HIP"
+        },
+        "344": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/RF/rf01.HIP"
+        },
+        "360": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP"
+        },
+        "776": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B1/b101.HIP"
+        },
+        "888": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HIP"
+        },
+        "968": {
+          "count": 20,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "1128": {
+          "count": 6,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B3/b301.HIP"
+        },
+        "1144": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MM/mm01.HIP"
+        },
+        "1208": {
+          "count": 2,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/UW/uw01.HIP"
+        },
+        "1256": {
+          "count": 5,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/UW/uw01.HIP"
+        },
+        "1272": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MT/mt01.HIP"
+        },
+        "1400": {
+          "count": 1,
+          "builds": [
+            "rotu/release/GC/NTSC-U/US"
+          ],
+          "exemplar": "rotu/release/GC/NTSC-U/US/BB/bb01.HIP"
+        },
+        "1464": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HIP"
+        },
+        "1476": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP"
+        },
+        "1496": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HIP"
+        },
+        "1528": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/DD/dd01.HIP"
+        },
+        "1896": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+        }
+      }
+    },
+    "AssetHeader.Size": {
+      "kind": "summary",
+      "distinct": 2461,
+      "min": 0,
+      "max": 49021160
+    },
+    "AssetHeader.Type": {
+      "kind": "set",
+      "values": {
+        "ALST": {
+          "count": 266,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+        },
+        "ANIM": {
+          "count": 23688,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "ATBL": {
+          "count": 602,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "BINK": {
+          "count": 273,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "BOUL": {
+          "count": 616,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "CAM ": {
+          "count": 1036,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "CCRV": {
+          "count": 1834,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "CNTR": {
+          "count": 3458,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "COLL": {
+          "count": 63,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "COND": {
+          "count": 2587,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "CRDT": {
+          "count": 20,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui_JP.hip"
+        },
+        "DEST": {
+          "count": 1253,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "DPAT": {
+          "count": 651,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "DYNA": {
+          "count": 31304,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "ENV ": {
+          "count": 147,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "FOG ": {
+          "count": 490,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "GRUP": {
+          "count": 6468,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "HANG": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MT/mt01.HIP"
+        },
+        "JAW ": {
+          "count": 154,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "JSP ": {
+          "count": 1463,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "LKIT": {
+          "count": 280,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "LODT": {
+          "count": 105,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "MAPR": {
+          "count": 147,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "MINF": {
+          "count": 1855,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "MODL": {
+          "count": 21343,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "MRKR": {
+          "count": 560,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "MVPT": {
+          "count": 6041,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "NGMS": {
+          "count": 182,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "NPCS": {
+          "count": 154,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HIP"
+        },
+        "PARE": {
+          "count": 91,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP"
+        },
+        "PARP": {
+          "count": 91,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP"
+        },
+        "PARS": {
+          "count": 91,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP"
+        },
+        "PGRS": {
+          "count": 70,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HIP"
+        },
+        "PICK": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP"
+        },
+        "PIPT": {
+          "count": 161,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "PLAT": {
+          "count": 13426,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "PLYR": {
+          "count": 294,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "PORT": {
+          "count": 546,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "RAW ": {
+          "count": 17,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/font_JP.hip"
+        },
+        "RWTX": {
+          "count": 14753,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "SCRP": {
+          "count": 13396,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "SDFX": {
+          "count": 10150,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "SGRP": {
+          "count": 20382,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "SHRP": {
+          "count": 5488,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "SIMP": {
+          "count": 50799,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "SND ": {
+          "count": 14146,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "SNDI": {
+          "count": 388,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "SNDS": {
+          "count": 17160,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "SPLN": {
+          "count": 4795,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "SUBT": {
+          "count": 27,
+          "builds": [
+            "rotu/release/GC/NTSC-U/US"
+          ],
+          "exemplar": "rotu/release/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "SURF": {
+          "count": 1085,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "TEXS": {
+          "count": 1218,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "TEXT": {
+          "count": 8432,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+        },
+        "TIMR": {
+          "count": 182,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HIP"
+        },
+        "TPIK": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP"
+        },
+        "TRIG": {
+          "count": 15012,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "TRWT": {
+          "count": 112,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "UIM ": {
+          "count": 945,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a303.HIP"
+        },
+        "VOLU": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/DD/dd01.HIP"
+        },
+        "WIRE": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        }
+      }
+    },
+    "AssetInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "LayerDebug.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 12672,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "LayerHeader.AssetCount": {
+      "kind": "summary",
+      "distinct": 144,
+      "min": 0,
+      "max": 2958
+    },
+    "LayerHeader.AssetIds": {
+      "kind": "summary",
+      "distinct": 568,
+      "minLength": 0,
+      "maxLength": 2958
+    },
+    "LayerHeader.Type": {
+      "kind": "set",
+      "values": {
+        "0x00000000": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000001": {
+          "count": 1728,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000002": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000003": {
+          "count": 3888,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000004": {
+          "count": 1728,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000005": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000007": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000008": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x00000009": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x0000000A": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "0x0000000B": {
+          "count": 1296,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "LayerInf.Value": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackageCount.AssetCount": {
+      "kind": "summary",
+      "distinct": 80,
+      "min": 1,
+      "max": 2962
+    },
+    "PackageCount.LayerCount": {
+      "kind": "set",
+      "values": {
+        "13": {
+          "count": 72,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP"
+        },
+        "17": {
+          "count": 288,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "21": {
+          "count": 24,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B3/b301.HIP"
+        },
+        "29": {
+          "count": 48,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/BB/bb01.HIP"
+        },
+        "33": {
+          "count": 96,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/DD/dd01.HIP"
+        },
+        "37": {
+          "count": 48,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/RF/rf01.HIP"
+        }
+      }
+    },
+    "PackageCount.MaxAssetSize": {
+      "kind": "summary",
+      "distinct": 128,
+      "min": 604,
+      "max": 49021160
+    },
+    "PackageCount.MaxLayerSize": {
+      "kind": "summary",
+      "distinct": 152,
+      "min": 10145,
+      "max": 52012076
+    },
+    "PackageCount.MaxXFormAssetSize": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 240,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+        },
+        "12": {
+          "count": 1,
+          "builds": [
+            "rotu/release/GC/NTSC-U/US"
+          ],
+          "exemplar": "rotu/release/GC/NTSC-U/US/MN/mnui_US.hip"
+        },
+        "4244": {
+          "count": 14,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MM/mm01.HIP"
+        },
+        "4300": {
+          "count": 14,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/BB/bb01.HIP"
+        },
+        "4608": {
+          "count": 42,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "4872": {
+          "count": 70,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HIP"
+        },
+        "32952": {
+          "count": 24,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnls.HIP"
+        },
+        "33464": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP"
+        },
+        "66232": {
+          "count": 10,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/font.HIP"
+        },
+        "131256": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+        },
+        "234132": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B3/b301.HOP"
+        },
+        "253452": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/RF/rf01.HOP"
+        },
+        "262328": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/PL/PLYR.HIP"
+        },
+        "298812": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MT/mt01.HOP"
+        },
+        "304044": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/DD/dd01.HOP"
+        },
+        "342172": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HOP"
+        },
+        "354012": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MM/mm01.HOP"
+        },
+        "363948": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/UW/uw01.HOP"
+        },
+        "436996": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/UT/ut01.HOP"
+        },
+        "478372": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/BB/bb01.HOP"
+        },
+        "634980": {
+          "count": 21,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "644188": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B2/b201.HOP"
+        },
+        "649444": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HOP"
+        },
+        "673484": {
+          "count": 14,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a302.HOP"
+        },
+        "674244": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B1/b101.HOP"
+        },
+        "703460": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP"
+        },
+        "715356": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HOP"
+        },
+        "792580": {
+          "count": 7,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP"
+        }
+      }
+    },
+    "PackageCreated.CreatedDate": {
+      "kind": "summary",
+      "distinct": 282,
+      "min": "2005-08-26T03:52:26.0000000+00:00",
+      "max": "2005-11-09T01:05:24.0000000+00:00"
+    },
+    "PackageCreated.CreatedDateString": {
+      "kind": "summary",
+      "distinct": 282,
+      "minLength": 24,
+      "maxLength": 24
+    },
+    "PackageFlags.Flags": {
+      "kind": "set",
+      "values": {
+        "0x0000002E": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackageModified.ModifiedDate": {
+      "kind": "summary",
+      "distinct": 282,
+      "min": "2005-08-26T03:52:26.0000000+00:00",
+      "max": "2005-11-09T01:05:24.0000000+00:00"
+    },
+    "PackagePlatform.GameName": {
+      "kind": "set",
+      "values": {
+        "Incredibles": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackagePlatform.Language": {
+      "kind": "set",
+      "values": {
+        "DE": {
+          "count": 24,
+          "builds": [
+            "rotu/release/GC/PAL/DE-FR"
+          ],
+          "exemplar": "rotu/release/GC/PAL/DE-FR/A1/a101_DE.hip"
+        },
+        "FR": {
+          "count": 72,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_FR.hip"
+        },
+        "JP": {
+          "count": 161,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+        },
+        "UK": {
+          "count": 51,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_UK.hip"
+        },
+        "US": {
+          "count": 268,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackagePlatform.PlatformId": {
+      "kind": "set",
+      "values": {
+        "GC": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackagePlatform.PlatformName": {
+      "kind": "set",
+      "values": {
+        "null": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackagePlatform.Region": {
+      "kind": "set",
+      "values": {
+        "NTSC": {
+          "count": 429,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "PAL": {
+          "count": 147,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_FR.hip"
+        }
+      }
+    },
+    "PackageVersion.ClientVersion": {
+      "kind": "set",
+      "values": {
+        "0x000A000F": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackageVersion.CompatVersion": {
+      "kind": "set",
+      "values": {
+        "1": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "PackageVersion.SubVersion": {
+      "kind": "set",
+      "values": {
+        "2": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "StreamData.Data": {
+      "kind": "summary",
+      "minLength": 10176,
+      "maxLength": 66838048
+    },
+    "StreamData.Padding": {
+      "kind": "summary",
+      "minLength": 0,
+      "maxLength": 30
+    },
+    "StreamData.PaddingAmount": {
+      "kind": "set",
+      "values": {
+        "0": {
+          "count": 52,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP"
+        },
+        "2": {
+          "count": 6,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/CC/cc01_FR.hip"
+        },
+        "4": {
+          "count": 45,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+        },
+        "6": {
+          "count": 20,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HOP"
+        },
+        "8": {
+          "count": 31,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        },
+        "10": {
+          "count": 55,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HOP"
+        },
+        "12": {
+          "count": 31,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HIP"
+        },
+        "14": {
+          "count": 24,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+        },
+        "16": {
+          "count": 43,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HOP"
+        },
+        "18": {
+          "count": 31,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HIP"
+        },
+        "20": {
+          "count": 21,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201_JP.hip"
+        },
+        "22": {
+          "count": 52,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102_JP.hip"
+        },
+        "24": {
+          "count": 60,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+        },
+        "26": {
+          "count": 52,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HIP"
+        },
+        "28": {
+          "count": 21,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a303.HIP"
+        },
+        "30": {
+          "count": 32,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP"
+        }
+      }
+    },
+    "StreamHeader.Value": {
+      "kind": "set",
+      "values": {
+        "4294967295": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    }
+  },
+  "invariants": {
+    "assetChecksumMatchesData": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 1,
+        "passing": 300331
+      },
+      "violated": [
+        {
+          "path": "rotu/prototype_2005-09-15/GC/PAL/FR-UK/B3/b301.HOP",
+          "id": "0x9D41E846",
+          "expected": "0x1525A94D",
+          "actual": "0x9F599EB7"
+        }
+      ]
+    },
+    "assetIdMatchesNameHash": {
+      "checked": 300332,
+      "outcomes": {
+        "anim-suffix": 1176,
+        "direct": 292031,
+        "truncated": 5900,
+        "unexplained": 1225
+      },
+      "unexplained": [
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car_wagon_grey_aone",
+          "expected": "0x0453C6A0",
+          "actual": "0xDFE4F363",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car_wagon_yellow_aone",
+          "expected": "0x0A60DF55",
+          "actual": "0x4C6EEB3A",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "tree_pine_aone",
+          "expected": "0x1E7516A4",
+          "actual": "0xBA26EACF",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car03_aone",
+          "expected": "0x208BFA32",
+          "actual": "0x965FE349",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car01_aone",
+          "expected": "0x4E08A1A0",
+          "actual": "0x9F574C63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car_mini_red_aone",
+          "expected": "0x533E3F63",
+          "actual": "0xA6C0E534",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car_wagon_blue_aone",
+          "expected": "0x6E1B9337",
+          "actual": "0x3AFFEF90",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "trash_plastic_aone",
+          "expected": "0x734BE7A0",
+          "actual": "0x76EA2E63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car_police_Aone",
+          "expected": "0x95B6D518",
+          "actual": "0x08DBCC0B",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "car02_aone",
+          "expected": "0xB74A4DE9",
+          "actual": "0x9ADB97D6",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+          "name": "trash_plastic_fallen_aone",
+          "expected": "0xC31E07A9",
+          "actual": "0x71CD3F16",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car_wagon_grey_aone",
+          "expected": "0x0453C6A0",
+          "actual": "0xDFE4F363",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car_wagon_yellow_aone",
+          "expected": "0x0A60DF55",
+          "actual": "0x4C6EEB3A",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "tree_pine_aone",
+          "expected": "0x1E7516A4",
+          "actual": "0xBA26EACF",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car03_aone",
+          "expected": "0x208BFA32",
+          "actual": "0x965FE349",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car01_aone",
+          "expected": "0x4E08A1A0",
+          "actual": "0x9F574C63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car_mini_red_aone",
+          "expected": "0x533E3F63",
+          "actual": "0xA6C0E534",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car_wagon_blue_aone",
+          "expected": "0x6E1B9337",
+          "actual": "0x3AFFEF90",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "trash_plastic_aone",
+          "expected": "0x734BE7A0",
+          "actual": "0x76EA2E63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car_police_Aone",
+          "expected": "0x95B6D518",
+          "actual": "0x08DBCC0B",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "car02_aone",
+          "expected": "0xB74A4DE9",
+          "actual": "0x9ADB97D6",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP",
+          "name": "trash_plastic_fallen_aone",
+          "expected": "0xC31E07A9",
+          "actual": "0x71CD3F16",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car_wagon_grey_aone",
+          "expected": "0x0453C6A0",
+          "actual": "0xDFE4F363",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "driller_device_aone",
+          "expected": "0x0671B9F4",
+          "actual": "0xDEBBF03F",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car_wagon_yellow_aone",
+          "expected": "0x0A60DF55",
+          "actual": "0x4C6EEB3A",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "tree_pine_aone",
+          "expected": "0x1E7516A4",
+          "actual": "0xBA26EACF",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car03_aone",
+          "expected": "0x208BFA32",
+          "actual": "0x965FE349",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "driller_device_door_aone",
+          "expected": "0x21D11147",
+          "actual": "0x154AD740",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "arm_aone",
+          "expected": "0x446E2193",
+          "actual": "0x65379444",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car01_aone",
+          "expected": "0x4E08A1A0",
+          "actual": "0x9F574C63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car_mini_red_aone",
+          "expected": "0x533E3F63",
+          "actual": "0xA6C0E534",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car_wagon_blue_aone",
+          "expected": "0x6E1B9337",
+          "actual": "0x3AFFEF90",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "trash_plastic_aone",
+          "expected": "0x734BE7A0",
+          "actual": "0x76EA2E63",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car_police_Aone",
+          "expected": "0x95B6D518",
+          "actual": "0x08DBCC0B",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "car02_aone",
+          "expected": "0xB74A4DE9",
+          "actual": "0x9ADB97D6",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HOP",
+          "name": "trash_plastic_fallen_aone",
+          "expected": "0xC31E07A9",
+          "actual": "0x71CD3F16",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP",
+          "name": "iceChunk_Lrg_A2",
+          "expected": "0xB4EC6523",
+          "actual": "0x1D78F074",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP",
+          "name": "iceChunk_Med_A2",
+          "expected": "0xD27F2A42",
+          "actual": "0x346410F9",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP",
+          "name": "iceChunk_Sm_A2",
+          "expected": "0xD5999436",
+          "actual": "0xAB4F28B5",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HOP",
+          "name": "robot_drill_extra_idle_snowman",
+          "expected": "0xDE30173A",
+          "actual": "0xD1E521E0",
+          "type": "Animation"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "Grubshooter_Twister_A2",
+          "expected": "0x018E18B4",
+          "actual": "0x2497BE7F",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "Ranger_Wall_A2",
+          "expected": "0x29B9CB93",
+          "actual": "0xBADC0244",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "molebase_wall_0_A2",
+          "expected": "0x2C304B69",
+          "actual": "0x7A08F456",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "Sci_Crystal_01_A2",
+          "expected": "0x3A586883",
+          "actual": "0xAD7F3394",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "iceChunk_Lrg_A2",
+          "expected": "0xB4EC6523",
+          "actual": "0x1D78F074",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "Grubshooter_Ball_A2",
+          "expected": "0xC093EEDD",
+          "actual": "0x11C1BC92",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "iceChunk_Med_A2",
+          "expected": "0xD27F2A42",
+          "actual": "0x346410F9",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "iceChunk_Sm_A2",
+          "expected": "0xD5999436",
+          "actual": "0xAB4F28B5",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HOP",
+          "name": "Hefty_Iron_Sci_Crystal_01_A2",
+          "expected": "0xF2B96099",
+          "actual": "0x68E14466",
+          "type": "1145394004"
+        },
+        {
+          "path": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HOP",
+          "name": "Sci_Crystal_01_A2",
+          "expected": "0x3A586883",
+          "actual": "0xAD7F3394",
+          "type": "1145394004"
+        }
+      ]
+    },
+    "assetIdsUnique": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 0,
+        "passing": 300332
+      }
+    },
+    "assetOffsetsInBounds": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 0,
+        "passing": 300332
+      }
+    },
+    "createdDateStringMatchesTimestamp": {
+      "checked": 576,
+      "outcomes": {
+        "violated": 0,
+        "passing": 576
+      }
+    },
+    "createdDateStringTrailingWhitespace": {
+      "kind": "set",
+      "values": {
+        "": {
+          "count": 576,
+          "builds": [
+            "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+            "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+            "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-J/JP",
+            "rotu/release/GC/NTSC-U/US",
+            "rotu/release/GC/PAL/DE-FR",
+            "rotu/release/GC/PAL/FR-UK"
+          ],
+          "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+        }
+      }
+    },
+    "fileNameSetWhenSourceFile": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 0,
+        "passing": 300332
+      }
+    },
+    "lastAssetInLayerHasZeroPlus": {
+      "checked": 4120,
+      "outcomes": {
+        "violated": 0,
+        "passing": 4120
+      }
+    },
+    "layerAssetCountsSumWithinTotal": {
+      "checked": 576,
+      "outcomes": {
+        "violated": 0,
+        "passing": 576
+      }
+    },
+    "layerAssetIdsResolve": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 0,
+        "passing": 300332
+      }
+    },
+    "packageCountsMatchTree": {
+      "checked": 1152,
+      "outcomes": {
+        "violated": 0,
+        "passing": 1152
+      }
+    },
+    "packageMaxSizesMatchTree": {
+      "checked": 1728,
+      "outcomes": {
+        "violated": 0,
+        "passing": 1728
+      }
+    },
+    "paddingIsHomogeneous": {
+      "checked": 524,
+      "outcomes": {
+        "violated": 0,
+        "passing": 524
+      },
+      "fillBytes": {
+        "kind": "set",
+        "values": {
+          "0x33": {
+            "count": 524,
+            "builds": [
+              "rotu/prototype_2005-09-15/GC/NTSC-J/JP",
+              "rotu/prototype_2005-09-15/GC/PAL/FR-UK",
+              "rotu/prototype_2005-10-31/GC/NTSC-J/JP",
+              "rotu/release/GC/NTSC-J/JP",
+              "rotu/release/GC/NTSC-U/US",
+              "rotu/release/GC/PAL/DE-FR",
+              "rotu/release/GC/PAL/FR-UK"
+            ],
+            "exemplar": "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP"
+          }
+        }
+      }
+    },
+    "plusMatchesAlignment": {
+      "checked": 31474,
+      "outcomes": {
+        "violated": 0,
+        "passing": 31474
+      }
+    },
+    "sourceFlagsExclusive": {
+      "checked": 300332,
+      "outcomes": {
+        "violated": 0,
+        "passing": 300332
+      }
+    },
+    "structural": {
+      "AssetDebug": {
+        "checked": 300332,
+        "outcomes": {
+          "violated": 0,
+          "passing": 300332
+        }
+      },
+      "AssetHeader": {
+        "checked": 300332,
+        "outcomes": {
+          "violated": 0,
+          "passing": 300332
+        }
+      },
+      "AssetInf": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "AssetStream": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "AssetTable": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "Dictionary": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "HIPA": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "LayerDebug": {
+        "checked": 12672,
+        "outcomes": {
+          "violated": 0,
+          "passing": 12672
+        }
+      },
+      "LayerHeader": {
+        "checked": 12672,
+        "outcomes": {
+          "violated": 0,
+          "passing": 12672
+        }
+      },
+      "LayerInf": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "LayerTable": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "Package": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackageCount": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackageCreated": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackageFlags": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackageModified": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackagePlatform": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "PackageVersion": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "StreamData": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      },
+      "StreamHeader": {
+        "checked": 576,
+        "outcomes": {
+          "violated": 0,
+          "passing": 576
+        }
+      }
+    }
+  }
+}
