@@ -1310,111 +1310,11 @@
     "assetIdMatchesNameHash": {
       "checked": 165160,
       "outcomes": {
-        "anim-suffix": 1692,
+        "anim-suffix": 2162,
         "direct": 162188,
-        "truncated": 1266,
-        "unexplained": 14
+        "truncated": 810
       },
-      "unexplained": [
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/bc/bc01.HOP",
-          "name": "lab_equip_big_ball_thing_idle",
-          "expected": "0x8535EFFB",
-          "actual": "0x1B8CD151",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/bc/bc01.HOP",
-          "name": "lab_equip_big_tower_thingy_hit",
-          "expected": "0xA824DD97",
-          "actual": "0x337F122D",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/boot.HIP",
-          "name": "teleportation_box_closedtoopen",
-          "expected": "0xFCD34B38",
-          "actual": "0x2B85707E",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/gy/gy02.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/rb/rb01.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/rb/rb02.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/rb/rb03.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/bc/bc01.HOP",
-          "name": "lab_equip_big_ball_thing_idle",
-          "expected": "0x8535EFFB",
-          "actual": "0x1B8CD151",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/bc/bc01.HOP",
-          "name": "lab_equip_big_tower_thingy_hit",
-          "expected": "0xA824DD97",
-          "actual": "0x337F122D",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/boot.HIP",
-          "name": "teleportation_box_closedtoopen",
-          "expected": "0xFCD34B38",
-          "actual": "0x2B85707E",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/gy/gy02.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/rb/rb01.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/rb/rb02.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/rb/rb03.HOP",
-          "name": "platform_collapse_rb_idle_down",
-          "expected": "0x527F261A",
-          "actual": "0x12722AC0",
-          "type": "Animation"
-        }
-      ]
+      "unexplained": []
     },
     "assetIdsUnique": {
       "checked": 165160,

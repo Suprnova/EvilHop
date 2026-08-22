@@ -59,6 +59,20 @@ public class AssetIdMatchesNameHashInvariantTests
     }
 
     [Fact]
+    public void Check_DestructibleAssetName_ClassifiesAsDffDestruct()
+    {
+        // The exporter keys a DEST asset off its model's full filename, extension and all, then
+        // tags it - so the appended candidate is ".dff_destruct" rather than an extension swap.
+        uint id = BKDRHash.Calculate("building_cornerD_A04_hs.dff_destruct");
+        var header = Header("building_cornerD_A04_hs", AssetType.DestructibleAsset, id);
+        var invariant = new AssetIdMatchesNameHashInvariant();
+
+        invariant.Check(ArchiveOf(header));
+
+        Assert.Equal(1, invariant.ToJson()["outcomes"]!["dff-destruct"]!.GetValue<long>());
+    }
+
+    [Fact]
     public void Check_MorphTargetNameWithExtensionReplaced_ClassifiesAsMphtReplace()
     {
         uint id = BKDRHash.Calculate("face.mph");

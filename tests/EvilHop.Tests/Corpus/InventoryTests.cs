@@ -146,6 +146,9 @@ public class InventoryTests
                 if (type == AssetType.Animation)
                     Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".anm")));
 
+                if (type == AssetType.DestructibleAsset)
+                    Assert.NotEqual(id, BKDRHash.Calculate(name + ".dff_destruct"));
+
                 if (type == AssetType.MorphTarget)
                 {
                     Assert.NotEqual(id, BKDRHash.Calculate(Path.ChangeExtension(name, ".mph")));
