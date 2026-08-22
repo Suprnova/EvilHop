@@ -7,7 +7,12 @@ namespace EvilHop.Corpus.Extraction;
 /// </summary>
 internal sealed class FieldAccumulator(FieldKind kind)
 {
-    private const int CardinalityCap = 64;
+    // TODO: either refactor this to use something other than a cardinality cap, or add an override
+    // for particular fields (i.e., AssetHeader.Type). AssetHeader.Type was being degraded to
+    // "summary" in incredibles.json, while AssetHeader.Plus wasn't. Some fields are always useful
+    // in sets, while some fields should always be "summary", cardinality might not be the right
+    // call.
+    private const int CardinalityCap = 70;
 
     private sealed class Occurrence
     {
