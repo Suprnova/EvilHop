@@ -1423,25 +1423,9 @@
     "plusMatchesAlignment": {
       "checked": 7786,
       "outcomes": {
-        "violated": 2,
-        "passing": 7784
-      },
-      "violated": [
-        {
-          "path": "bfbb/release/GC/NTSC-U/US/pg/pg12.HIP",
-          "id": "0xDB2E662D",
-          "alignment": 4,
-          "expectedPlus": 0,
-          "actualPlus": 12
-        },
-        {
-          "path": "bfbb/release/GC/PAL/UK/pg/pg12.HIP",
-          "id": "0xDB2E662D",
-          "alignment": 4,
-          "expectedPlus": 0,
-          "actualPlus": 12
-        }
-      ]
+        "violated": 0,
+        "passing": 7786
+      }
     },
     "sourceFlagsExclusive": {
       "checked": 165160,

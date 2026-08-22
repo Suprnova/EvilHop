@@ -162,12 +162,13 @@ public class AssetHeader : Block
     /// of the next's.
     /// </summary>
     /// <remarks>
-    /// This value is calculated using <see cref="AssetDebug.Alignment"/>. For the last
-    /// <c>Asset</c> in a <c>Layer</c>, this value is 0.
+    /// This pads up to the *next* <c>Asset</c>'s own <see cref="AssetDebug.Alignment"/>
+    /// requirement, not this <c>Asset</c>'s. For the last <c>Asset</c> in a <c>Layer</c>,
+    /// this value is 0.
     /// </remarks>
     /// Validation TODO: When last asset in layer, equals 0.
     /// When added to Offset and Size, does not exceed total archive size.
-    /// Valid calculation using ADBG.alignment.
+    /// Valid calculation using the next Asset's ADBG.alignment.
     public uint Plus
     {
         get => GetManagedBlockField(ref field);
@@ -202,13 +203,18 @@ public class AssetDebug : Block
 
     // TODO: validate this is actually an int and not uint
     /// <summary>
-    /// The multiple of bytes to align the <c>Asset</c>'s data to.
+    /// The multiple of bytes this <c>Asset</c>'s own data <see cref="AssetHeader.Offset"/> aligns
+    /// to.
     /// </summary>
     /// <remarks>
-    /// A value of -1 uses the default alignment value for the particular <see cref="AssetType"/>.
+    /// Any non-positive value, including 0, uses a default alignment for the particular
+    /// <see cref="AssetType"/>. Most types default to 16, at least four (<c>BinkVideo</c>,
+    /// <c>CutsceneTable</c>, <c>StreamingTexture</c>, <c>Wireframe</c>) use 32, and a few
+    /// (<c>PickupTypes</c>, <c>ReactiveAnimation</c>, <c>ThrowableTable</c>) to at least 128.
+    /// EvilHop does not model this table; it exposes the raw stored value.
     /// </remarks>
     /// Validation TODO: Ensure -1 alignments actually exist.
-    /// Valid calculation of AHDR.plus using this.
+    /// Valid calculation of the *previous* Asset's AHDR.plus using this.
     public int Alignment
     {
         get => GetManagedBlockField(ref field);

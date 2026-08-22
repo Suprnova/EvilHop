@@ -81,43 +81,62 @@ public class AssetOffsetsInBoundsInvariantTests
 
 public class PlusMatchesAlignmentInvariantTests
 {
-    private static AssetHeader Header(uint offset, uint size, uint plus, int alignment)
+    private static AssetHeader Header(uint id, uint offset, uint size, uint plus, int alignment)
     {
-        var header = BlockFactory.CreateAssetHeader(1, "a", offset, size, plus);
+        var header = BlockFactory.CreateAssetHeader(id, "a", offset, size, plus);
         header.Debug.Alignment = alignment;
         return header;
     }
 
     [Fact]
-    public void Check_PlusPadsEndToAlignmentBoundary_Passes()
+    public void Check_PlusPadsEndToNextAssetsAlignmentBoundary_Passes()
     {
         // offset 0 + size 10 = 10; next 32-byte boundary is 32, so plus should be 22.
-        var header = Header(offset: 0, size: 10, plus: 22, alignment: 32);
+        var header = Header(id: 1, offset: 0, size: 10, plus: 22, alignment: 4);
+        var next = Header(id: 2, offset: 32, size: 0, plus: 0, alignment: 32);
         var invariant = new PlusMatchesAlignmentInvariant();
 
-        invariant.Check(TestArchive.Of(archiveLength: 1000, header));
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, next));
 
         Assert.Equal(1, invariant.ToJson()["outcomes"]!["passing"]!.GetValue<long>());
     }
 
     [Fact]
-    public void Check_PlusDoesNotMatchExpectedPadding_RecordsViolation()
+    public void Check_PlusMatchesOwnAlignmentButNotNextAssets_RecordsViolation()
     {
-        var header = Header(offset: 0, size: 10, plus: 0, alignment: 32);
+        // Plus pads to this asset's own 32-byte alignment (22), but the next asset needs 4-byte
+        // alignment, which offset 10 already satisfies - the next-asset rule expects 0, not 22.
+        var header = Header(id: 1, offset: 0, size: 10, plus: 22, alignment: 32);
+        var next = Header(id: 2, offset: 32, size: 0, plus: 0, alignment: 4);
         var invariant = new PlusMatchesAlignmentInvariant();
 
-        invariant.Check(TestArchive.Of(archiveLength: 1000, header));
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, next));
 
         Assert.Equal(1, invariant.ToJson()["outcomes"]!["violated"]!.GetValue<long>());
     }
 
     [Fact]
-    public void Check_NegativeAlignment_IsSkipped()
+    public void Check_NextAssetDeclaresNonPositiveAlignment_FallsBackToSixteenByteDefault()
     {
-        var header = Header(offset: 0, size: 10, plus: 0, alignment: -1);
+        // offset 0 + size 10 = 10; the next asset's alignment isn't usable (-1 means "use the
+        // type's default"), so the 16-byte default applies - next 16-byte boundary is 16, plus 6.
+        var header = Header(id: 1, offset: 0, size: 10, plus: 6, alignment: 4);
+        var next = Header(id: 2, offset: 16, size: 0, plus: 0, alignment: -1);
         var invariant = new PlusMatchesAlignmentInvariant();
 
-        invariant.Check(TestArchive.Of(archiveLength: 1000, header));
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, next));
+
+        Assert.Equal(1, invariant.ToJson()["outcomes"]!["passing"]!.GetValue<long>());
+    }
+
+    [Fact]
+    public void Check_OwnAlignmentNonPositive_IsSkipped()
+    {
+        var header = Header(id: 1, offset: 0, size: 10, plus: 0, alignment: -1);
+        var next = Header(id: 2, offset: 10, size: 0, plus: 0, alignment: 4);
+        var invariant = new PlusMatchesAlignmentInvariant();
+
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, next));
 
         Assert.Equal(0, invariant.ToJson()["checked"]!.GetValue<long>());
     }
@@ -127,12 +146,24 @@ public class PlusMatchesAlignmentInvariantTests
     {
         // A layer's own trailing padding is real, but never attributed to an asset's Plus - only
         // non-last assets carry their alignment padding that way.
-        var header = Header(offset: 0, size: 10, plus: 0, alignment: 32);
+        var header = Header(id: 1, offset: 0, size: 10, plus: 0, alignment: 32);
+        var next = Header(id: 2, offset: 10, size: 0, plus: 0, alignment: 4);
         var layer = BlockFactory.Create<LayerHeader>();
         layer.AssetIds = [header.Id];
         var invariant = new PlusMatchesAlignmentInvariant();
 
-        invariant.Check(TestArchive.Of(archiveLength: 1000, header, layer));
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header, next, layer));
+
+        Assert.Equal(0, invariant.ToJson()["checked"]!.GetValue<long>());
+    }
+
+    [Fact]
+    public void Check_PhysicallyLastAssetInArchive_IsSkippedForLackOfANextAsset()
+    {
+        var header = Header(id: 1, offset: 0, size: 10, plus: 0, alignment: 32);
+        var invariant = new PlusMatchesAlignmentInvariant();
+
+        invariant.Check(TestArchive.Of(archiveLength: 1000, header));
 
         Assert.Equal(0, invariant.ToJson()["checked"]!.GetValue<long>());
     }
