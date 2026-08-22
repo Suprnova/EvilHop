@@ -1,6 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 namespace EvilHop.Tests.Corpus;
@@ -84,7 +85,7 @@ public class InventoryTests
         Assert.NotNull(property.GetSetMethod());
     }
 
-    [Theory(Skip = "Skipped pending a refactoring of corpus inventory degradation logic and AssetType implementation")]
+    [Theory]
     [MemberData(nameof(FieldKeys))]
     public void Field_EnumTypedRecordedValues_AreAllDefinedEnumMembers(string fieldKey)
     {

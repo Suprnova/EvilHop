@@ -26,32 +26,32 @@ public class FieldAccumulatorTests
     public void ToSummary_AtCapBoundary_StaysSet()
     {
         var accumulator = new FieldAccumulator(FieldKind.Numeric);
-        for (uint i = 0; i < 64; i++) accumulator.Record(i, "build", "path");
+        for (uint i = 0; i < 70; i++) accumulator.Record(i, "build", "path");
 
         var set = Assert.IsType<ValueSet>(accumulator.ToSummary());
 
-        Assert.Equal(64, set.Values.Count);
+        Assert.Equal(70, set.Values.Count);
     }
 
     [Fact]
     public void ToSummary_OverCap_DegradesToSummaryWithExactDistinctAndMinMax()
     {
         var accumulator = new FieldAccumulator(FieldKind.Numeric);
-        for (uint i = 0; i < 65; i++) accumulator.Record(i, "build", "path");
+        for (uint i = 0; i < 71; i++) accumulator.Record(i, "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
         var json = digest.ToJson();
 
-        Assert.Equal(65, digest.Distinct);
+        Assert.Equal(71, digest.Distinct);
         Assert.Equal(0u, json["min"]!.GetValue<uint>());
-        Assert.Equal(64u, json["max"]!.GetValue<uint>());
+        Assert.Equal(70u, json["max"]!.GetValue<uint>());
     }
 
     [Fact]
     public void ToSummary_TextOverCap_RecordsLengthRangeNotMinMax()
     {
         var accumulator = new FieldAccumulator(FieldKind.Text);
-        for (int i = 0; i < 65; i++) accumulator.Record(new string('a', i), "build", "path");
+        for (int i = 0; i < 71; i++) accumulator.Record(new string('a', i), "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
         var json = digest.ToJson();
@@ -59,20 +59,20 @@ public class FieldAccumulatorTests
         Assert.False(json.ContainsKey("min"));
         Assert.False(json.ContainsKey("max"));
         Assert.Equal(0, json["minLength"]!.GetValue<int>());
-        Assert.Equal(64, json["maxLength"]!.GetValue<int>());
+        Assert.Equal(70, json["maxLength"]!.GetValue<int>());
     }
 
     [Fact]
     public void ToSummary_CollectionOverCap_RecordsElementCountRange()
     {
         var accumulator = new FieldAccumulator(FieldKind.Collection);
-        for (int i = 0; i < 65; i++) accumulator.Record(Enumerable.Range(0, i).ToArray(), "build", "path");
+        for (int i = 0; i < 71; i++) accumulator.Record(Enumerable.Range(0, i).ToArray(), "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
         var json = digest.ToJson();
 
         Assert.Equal(0, json["minLength"]!.GetValue<int>());
-        Assert.Equal(64, json["maxLength"]!.GetValue<int>());
+        Assert.Equal(70, json["maxLength"]!.GetValue<int>());
     }
 
     [Fact]
