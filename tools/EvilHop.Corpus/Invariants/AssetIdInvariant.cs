@@ -64,6 +64,11 @@ internal sealed class AssetIdMatchesNameHashInvariant : IInvariant
             if (BKDRHash.Calculate(Path.ChangeExtension(name, ".anm")) == id) return "anim-suffix";
         }
 
+        if (type == AssetType.DestructibleAsset)
+        {
+            if (BKDRHash.Calculate(name + ".dff_destruct") == id) return "dff-destruct";
+        }
+
         if (type == AssetType.MorphTarget)
         {
             if (BKDRHash.Calculate(Path.ChangeExtension(name, ".mph")) == id) return "mpht-replace";

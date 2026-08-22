@@ -8,6 +8,7 @@
 /// <remarks>
 /// Backed by a uint field that maps to <see cref="Blocks.LayerHeader.Type"/>.
 /// </remarks>
+/// TODO: wrong mapping types for N100F (no TextureStream, no JSPInfo) and BFBB (no TextureStream).
 public enum LayerType : uint
 {
     Default = 0,

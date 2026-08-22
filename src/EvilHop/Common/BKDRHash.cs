@@ -21,7 +21,7 @@ public class BKDRHash
     public static uint Calculate(string str)
     {
         uint seed = 131, hash = 0;
-        byte[] bytes = [.. Encoding.ASCII.GetBytes(str).Take(32)];
+        byte[] bytes = [.. Encoding.ASCII.GetBytes(str)];
 
         for (int i = 0; i < bytes.Length; i++)
         {

@@ -2339,89 +2339,11 @@
       "checked": 6324,
       "outcomes": {
         "anim-suffix": 56,
+        "dff-destruct": 11,
         "direct": 6073,
-        "truncated": 184,
-        "unexplained": 11
+        "truncated": 184
       },
-      "unexplained": [
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
-          "name": "cylinder_1x1x1",
-          "expected": "0x02748579",
-          "actual": "0x38AAB006",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
-          "name": "cube_1x1x1",
-          "expected": "0x380C8DA2",
-          "actual": "0xFE577419",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "crate_radish_kd",
-          "expected": "0x12174728",
-          "actual": "0xC0D96FBB",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "jar_olive_kd",
-          "expected": "0x343F715A",
-          "actual": "0x4F36FA81",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "cube_1x1x1",
-          "expected": "0x380C8DA2",
-          "actual": "0xFE577419",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "tomato_sliced_kd",
-          "expected": "0x3EA5B432",
-          "actual": "0xDC5C0149",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "crate_kd_dest",
-          "expected": "0x6DBFC40B",
-          "actual": "0xC25B08EC",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "crate_broccoli_kd",
-          "expected": "0x88824110",
-          "actual": "0xE2E82133",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "cabbage_kd",
-          "expected": "0x99F20734",
-          "actual": "0xF11345FF",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "crate_carrot_kd",
-          "expected": "0xBA5708B6",
-          "actual": "0xBDA65235",
-          "type": "1145394004"
-        },
-        {
-          "path": "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP",
-          "name": "barrel_wood_kd_dest",
-          "expected": "0xFC626A98",
-          "actual": "0xA0AA308B",
-          "type": "1145394004"
-        }
-      ]
+      "unexplained": []
     },
     "assetIdsUnique": {
       "checked": 6324,
