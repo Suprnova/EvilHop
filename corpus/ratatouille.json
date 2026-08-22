@@ -2440,10 +2440,10 @@
       }
     },
     "plusMatchesAlignment": {
-      "checked": 231,
+      "checked": 224,
       "outcomes": {
         "violated": 0,
-        "passing": 231
+        "passing": 224
       }
     },
     "sourceFlagsExclusive": {

@@ -129,14 +129,20 @@ internal sealed class LastAssetInLayerHasZeroPlusInvariant : IInvariant
 }
 
 /// <summary>
-/// <c>AHDR.Plus</c> pads this asset's end up to its own <see cref="AssetDebug.Alignment"/> boundary.
-/// Skipped when alignment is non-positive (<c>-1</c> means "use the type's default", which this
-/// invariant does not have a table for), and for the last asset in each layer - per the wiki, only
-/// non-last assets carry their alignment padding in <c>Plus</c>; a layer's own trailing padding
-/// (see <see cref="LastAssetInLayerHasZeroPlusInvariant"/>) is never attributed to an asset.
+/// <c>AHDR.Plus</c> pads this asset's end up to the boundary the *next* asset needs, not this asset's
+/// own <see cref="AssetDebug.Alignment"/>. A next alignment that isn't positive falls back to a
+/// <see cref="DefaultAlignment"/>.
+///
+/// Still gated on *this* asset's own alignment being positive, and skipped for the last asset in each
+/// layer (see <see cref="LastAssetInLayerHasZeroPlusInvariant"/>). Assets whose own alignment isn't
+/// positive don't reliably follow the <see cref="DefaultAlignment"/>, so they stay excluded rather
+/// than being asserted against a guess.
 /// </summary>
 internal sealed class PlusMatchesAlignmentInvariant : IInvariant
 {
+    /// <summary>The alignment assumed for a next asset that declares a non-positive one.</summary>
+    private const uint DefaultAlignment = 16;
+
     /// <inheritdoc/>
     public string Name => "plusMatchesAlignment";
 
@@ -151,14 +157,20 @@ internal sealed class PlusMatchesAlignmentInvariant : IInvariant
             .Select(assetIds => assetIds[^1])
             .ToHashSet();
 
-        foreach (var header in archive.AllBlocks.OfType<AssetHeader>())
+        var ordered = archive.AllBlocks.OfType<AssetHeader>().OrderBy(h => h.Offset).ToList();
+
+        for (int i = 0; i < ordered.Count - 1; i++)
         {
+            var header = ordered[i];
             if (lastInLayer.Contains(header.Id)) continue;
 
             var debug = header.GetChild<AssetDebug>();
             if (debug is null || debug.Alignment <= 0) continue;
 
-            uint alignment = (uint)debug.Alignment;
+            var nextDebug = ordered[i + 1].GetChild<AssetDebug>();
+            if (nextDebug is null) continue;
+
+            uint alignment = nextDebug.Alignment > 0 ? (uint)nextDebug.Alignment : DefaultAlignment;
             uint end = header.Offset + header.Size;
             uint expectedPlus = (alignment - (end % alignment)) % alignment;
 
@@ -166,7 +178,7 @@ internal sealed class PlusMatchesAlignmentInvariant : IInvariant
             {
                 ["path"] = archive.RelativePath,
                 ["id"] = $"0x{header.Id:X8}",
-                ["alignment"] = debug.Alignment,
+                ["nextAlignment"] = nextDebug.Alignment,
                 ["expectedPlus"] = expectedPlus,
                 ["actualPlus"] = header.Plus
             });
