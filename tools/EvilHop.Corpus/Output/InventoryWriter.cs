@@ -14,9 +14,13 @@ internal static class InventoryWriter
     // The default encoder escapes characters like '+' (e.g. a UTC offset becomes "+00:00") on
     // the assumption the JSON might be embedded in HTML. This file is only ever read as JSON, so
     // that protection just adds noise to a file meant to be readable in a diff.
+    //
+    // NewLine defaults to Environment.NewLine, which would make the committed file's bytes depend
+    // on which OS generated it. The inventory is committed and diffed, so it is always LF.
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         WriteIndented = true,
+        NewLine = "\n",
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
@@ -33,7 +37,7 @@ internal static class InventoryWriter
         };
 
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        File.WriteAllText(path, root.ToJsonString(SerializerOptions) + Environment.NewLine);
+        File.WriteAllText(path, root.ToJsonString(SerializerOptions) + "\n");
     }
 
     private static JsonArray BuildBuildsArray(InventoryBuilder builder)

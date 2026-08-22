@@ -55,6 +55,16 @@ public class InventoryWriterTests : IDisposable
     }
 
     [Fact]
+    public void Write_OnAnyPlatform_SeparatesLinesWithLineFeedsOnly()
+    {
+        InventoryWriter.Write(path, BuildSampleInventory());
+
+        string text = File.ReadAllText(path);
+        Assert.DoesNotContain('\r', text);
+        Assert.EndsWith("\n", text);
+    }
+
+    [Fact]
     public void Write_BuildsInsertedOutOfOrder_SortsBuildsArrayByKey()
     {
         InventoryWriter.Write(path, BuildSampleInventory());
