@@ -109,9 +109,7 @@ public class FieldAccumulatorTests
     public void ToSummary_NonPrintableEnumKey_FallsBackToHex()
     {
         var accumulator = new FieldAccumulator(FieldKind.Numeric);
-
-        // Unknown = 0x00000000, all NUL bytes - not printable ASCII.
-        accumulator.Record(EvilHop.Common.AssetType.Unknown, "build", "path");
+        accumulator.Record((EvilHop.Common.AssetType)0x00000000, "build", "path");
 
         var set = Assert.IsType<ValueSet>(accumulator.ToSummary());
 

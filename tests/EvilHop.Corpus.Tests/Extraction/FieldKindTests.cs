@@ -18,7 +18,7 @@ public class FieldKindTests
     [Fact]
     public void FormatKey_AllZeroEnum_FallsBackToHex()
     {
-        string key = FieldKind.Numeric.FormatKey(AssetType.Unknown);
+        string key = FieldKind.Numeric.FormatKey((AssetType)0x00000000);
 
         Assert.Equal("0x00000000", key);
     }
