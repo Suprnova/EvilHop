@@ -107,6 +107,5 @@ public enum AssetType : uint
     VillainProperties = 0x56494C50,
     Volume = 0x564F4C55,
     Wireframe = 0x57495245,
-    ZipLine = 0x5A4C494E,
-    Unknown = 0x00000000
+    ZipLine = 0x5A4C494E
 }

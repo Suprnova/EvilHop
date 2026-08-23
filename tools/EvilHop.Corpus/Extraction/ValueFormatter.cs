@@ -56,8 +56,8 @@ internal static class ValueFormatter
 
     /// <summary>
     /// Renders <paramref name="value"/>'s big-endian bytes as ASCII, the way its on-disk FourCC
-    /// would read (e.g. <c>0x414E494D</c> as <c>ANIM</c>) - only when every byte is printable, so a
-    /// value like <see cref="EvilHop.Common.AssetType.Unknown"/> (all zero bytes) still falls back to hex.
+    /// would read (e.g. <c>0x414E494D</c> as <c>ANIM</c>) - only when every byte is printable, so an
+    /// unprintable value falls back to hex.
     /// </summary>
     private static bool TryFormatAsAscii(ulong value, int byteCount, out string ascii)
     {
