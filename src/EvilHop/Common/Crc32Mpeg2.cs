@@ -1,11 +1,11 @@
-namespace EvilHop.Corpus.Invariants;
+namespace EvilHop.Common;
 
 /// <summary>
 /// Computes the CRC-32/MPEG-2 checksum <see cref="Blocks.AssetDebug.Checksum"/> is validated
 /// against - unreflected, with a <c>0xFFFFFFFF</c> initial value and no final XOR, unlike the more
 /// common reflected CRC-32/ISO-HDLC variant.
 /// </summary>
-internal static class Crc32Mpeg2
+public static class Crc32Mpeg2
 {
     private const uint Polynomial = 0x04C11DB7;
 
@@ -14,6 +14,8 @@ internal static class Crc32Mpeg2
     /// <summary>
     /// Computes the CRC-32/MPEG-2 checksum of <paramref name="data"/>.
     /// </summary>
+    /// <param name="data">The bytes to checksum.</param>
+    /// <returns>The computed checksum.</returns>
     public static uint Compute(ReadOnlySpan<byte> data)
     {
         uint crc = 0xFFFFFFFF;

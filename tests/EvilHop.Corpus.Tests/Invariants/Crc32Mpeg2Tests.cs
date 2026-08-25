@@ -1,4 +1,4 @@
-using EvilHop.Corpus.Invariants;
+using EvilHop.Common;
 using System.Text;
 
 namespace EvilHop.Corpus.Tests.Invariants;

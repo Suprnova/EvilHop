@@ -16,6 +16,11 @@ namespace EvilHop.Serialization;
 /// <param name="StreamDataHasPaddingField">
 /// Whether a <c>DPAK</c> block's content leads with a padding-amount field before its data.
 /// </param>
+/// <param name="EntityHasPadding">
+/// Whether an <c>EntityAsset</c>'s on-disk layout inserts four bytes of padding after its four flag
+/// bytes. True for <see cref="GameVersion.BFBB"/> release builds, false for every other game and,
+/// per the wiki, for BFBB beta builds too.
+/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
 /// the <see langword="with"/> keyword.
@@ -23,7 +28,8 @@ namespace EvilHop.Serialization;
 public sealed record FormatProfile(
     GameVersion Game,
     PlatformFieldOrder PlatformFieldOrder,
-    bool StreamDataHasPaddingField);
+    bool StreamDataHasPaddingField,
+    bool EntityHasPadding = false);
 
 /// <summary>
 /// Which field a <c>PLAT</c> block's run of strings maps to.
