@@ -16,7 +16,7 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// <summary>
     /// The <see cref="Serialization.Serializer"/> used to construct this <see cref="Archive"/>. 
     /// </summary>
-    public Serializer Serializer { get; set; } = serializer;
+    public Serializer Serializer { get; } = serializer;
 
     /// <summary>
     /// The root <see cref="Block"/> objects that make up this <see cref="Archive"/>.
