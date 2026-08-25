@@ -10,50 +10,12 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Entity_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class EntityAsset : BaseAsset
+public abstract class EntityAsset : BaseAsset, IPhysicalEntityAsset
 {
     /// <summary>
     /// Information about the <see cref="EntityAsset"/>'s properties in-game.
     /// </summary>
     public EntityFlags EntityFlags { get; set; }
-
-    /// <summary>
-    /// The <see cref="EntityAsset"/>'s subtype, if applicable.
-    /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.Pickup"/></item>
-    /// <item><see cref="AssetType.Platform"/></item>
-    /// <item><see cref="AssetType.Trigger"/></item>
-    /// </list>
-    /// </remarks>
-    public byte Subtype { get; set; }
-
-    /// <summary>
-    /// Unknown. Always 0.
-    /// </summary>
-    public byte PFlags { get; set; }
-
-    /// <summary>
-    /// The <see cref="EntityAsset"/>'s <c>moreFlags</c> byte.
-    /// </summary>
-    public CollisionFlags CollisionFlags { get; set; }
-
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Surface"/> asset this
-    /// <see cref="EntityAsset"/> uses, if any.
-    /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.ElectricArcGenerator"/></item>
-    /// <item><see cref="AssetType.SimpleObject"/></item>
-    /// <item><see cref="AssetType.Platform"/></item>
-    /// <item><see cref="AssetType.UI"/></item>
-    /// </list>
-    /// </remarks>
-    public AssetId SurfaceId { get; set; }
 
     /// <summary>
     /// The <see cref="EntityAsset"/>'s rotation.
@@ -92,49 +54,87 @@ public abstract class EntityAsset : BaseAsset
     /// </summary>
     public float SeeThrough { get; set; }
 
-    /// <summary>
-    /// Unknown. Usually 255.
-    /// </summary>
-    public float SeeThroughSpeed { get; set; }
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalEntityAsset Physical => this;
 
+    private protected byte _subtype;
+    byte IPhysicalEntityAsset.Subtype { get => _subtype; set => _subtype = value; }
+
+    private protected CollisionFlags _collisionFlags;
+    CollisionFlags IPhysicalEntityAsset.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
+
+    private protected byte _pFlags;
+    byte IPhysicalEntityAsset.PFlags { get => _pFlags; set => _pFlags = value; }
+
+    private protected AssetId _surfaceId;
+    AssetId IPhysicalEntityAsset.SurfaceId { get => _surfaceId; set => _surfaceId = value; }
+
+    private protected AssetId _modelId;
+    AssetId IPhysicalEntityAsset.ModelId { get => _modelId; set => _modelId = value; }
+
+    private protected AssetId _animListId;
+    AssetId IPhysicalEntityAsset.AnimListId { get => _animListId; set => _animListId = value; }
+
+    private protected float _seeThroughSpeed;
+    float IPhysicalEntityAsset.SeeThroughSpeed { get => _seeThroughSpeed; set => _seeThroughSpeed = value; }
+
+    /// <summary>
+    /// Reads a single <see cref="CollisionFlags"/> bit, for a derived type projecting it as a
+    /// named trait. Traits must project the bit, never store a copy of it.
+    /// </summary>
+    private protected bool HasCollisionFlag(CollisionFlags flag) => (_collisionFlags & flag) != 0;
+
+    /// <summary>
+    /// Sets or clears a single <see cref="CollisionFlags"/> bit, leaving every other bit alone.
+    /// </summary>
+    private protected void SetCollisionFlag(CollisionFlags flag, bool value) =>
+        _collisionFlags = value ? _collisionFlags | flag : _collisionFlags & ~flag;
+}
+
+/// <summary>
+/// An explicit interface used to interact with <see cref="EntityAsset"/>'s underlying values.
+/// </summary>
+public interface IPhysicalEntityAsset : IPhysicalBaseAsset
+{
+    /// <summary>
+    /// The <see cref="EntityAsset"/>'s subtype, if applicable.
+    /// </summary>
+    /// <remarks>
+    /// <para>Used by:</para>
+    /// <list type="bullet">
+    /// <item><see cref="AssetType.Pickup"/></item>
+    /// <item><see cref="AssetType.Platform"/></item>
+    /// <item><see cref="AssetType.Trigger"/></item>
+    /// </list>
+    /// </remarks>
+    byte Subtype { get; set; }
+    /// <summary>
+    /// Unknown. Always 0.
+    /// </summary>
+    byte PFlags { get; set; }
+    /// <summary>
+    /// Flags relating to this <see cref="EntityAsset"/>'s collision.
+    /// </summary>
+    CollisionFlags CollisionFlags { get; set; }
+    /// <summary>
+    /// The <see cref="AssetId"/> of the <see cref="AssetType.Surface"/> asset this
+    /// <see cref="EntityAsset"/> uses, if any.
+    /// </summary>
+    AssetId SurfaceId { get; set; }
     /// <summary>
     /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> or <see cref="AssetType.ModelInfo"/>
     /// that this <see cref="EntityAsset"/> uses, if any.
     /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.Boulder"/></item>
-    /// <item><see cref="AssetType.Button"/></item>
-    /// <item><see cref="AssetType.DestructibleObject"/></item>
-    /// <item><see cref="AssetType.ElectricArcGenerator"/></item>
-    /// <item><see cref="AssetType.Hangable"/></item>
-    /// <item><see cref="AssetType.Pendulum"/></item>
-    /// <item><see cref="AssetType.Platform"/></item>
-    /// <item><see cref="AssetType.Pickup"/></item>
-    /// <item><see cref="AssetType.Player"/></item>
-    /// <item><see cref="AssetType.SimpleObject"/></item>
-    /// <item><see cref="AssetType.UI"/></item>
-    /// <item><see cref="AssetType.Villain"/></item>
-    /// </list>
-    /// </remarks>
-    public AssetId ModelId { get; set; }
-
+    AssetId ModelId { get; set; }
     /// <summary>
     /// The <see cref="AssetId"/> of the <see cref="AssetType.Animation"/> or
     /// <see cref="AssetType.AnimationList"/> that this <see cref="EntityAsset"/> uses, if any.
     /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.DestructibleObject"/></item>
-    /// <item><see cref="AssetType.Platform"/></item>
-    /// <item><see cref="AssetType.SimpleObject"/></item>
-    /// </list>
-    /// <para>If <see langword="this"/> is a <see cref="AssetType.UI"/> asset, this points to a
-    /// <see cref="AssetType.Sound"/> asset instead.</para>
-    /// </remarks>
-    public AssetId AnimListId { get; set; }
+    AssetId AnimListId { get; set; }
+    /// <summary>
+    /// Unknown. Usually 255.
+    /// </summary>
+    float SeeThroughSpeed { get; set; }
 }
 
 /// <summary>
@@ -193,7 +193,7 @@ public enum EntityFlags : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="EntityAsset.CollisionFlags"/>.
+/// Represents all known values for <see cref="IPhysicalEntityAsset.CollisionFlags"/>.
 /// </summary>
 [Flags]
 public enum CollisionFlags : byte
@@ -228,15 +228,6 @@ public enum CollisionFlags : byte
     /// The <see cref="EntityAsset"/> is grabbable by Patrick in <see cref="GameVersion.BFBB"/>
     /// and <see cref="GameVersion.TSSM"/>.
     /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.Boulder"/></item>
-    /// <item><see cref="AssetType.DestructibleAsset"/></item>
-    /// <item><see cref="AssetType.SimpleObject"/></item>
-    /// <item><see cref="AssetType.Villain"/></item>
-    /// </list>
-    /// </remarks>
     Grabbable = 1 << 3,
     /// <summary>
     /// The <see cref="EntityAsset"/> sends <b>Hit</b> events when attacked.
@@ -253,7 +244,7 @@ public enum CollisionFlags : byte
     /// <item><see cref="AssetType.SimpleObject"/></item>
     /// </list>
     /// </remarks>
-    NoShadow = 1 << 5,
+    AnimateCollision = 1 << 5,
     /// <summary>
     /// The <see cref="EntityAsset"/> can be ledge-grabbed by the player. Requires
     /// <see cref="PreciseCollision"/>.
