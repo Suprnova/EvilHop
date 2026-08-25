@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
 using System.Text.Json.Nodes;
 
 namespace EvilHop.Corpus.Invariants;

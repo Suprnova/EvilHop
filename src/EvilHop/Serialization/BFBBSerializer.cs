@@ -12,7 +12,8 @@ public sealed class BFBBSerializer(FormatProfile profile) : Serializer(profile)
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.BFBB,
         PlatformFieldOrder.PlatformNameRegionLanguage,
-        StreamDataHasPaddingField: true);
+        StreamDataHasPaddingField: true,
+        EntityHasPadding: true);
 
     /// <summary>
     /// Initializes a new instance of <see cref="BFBBSerializer"/> with <see cref="DefaultProfile"/>.

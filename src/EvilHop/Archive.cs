@@ -1,4 +1,5 @@
-﻿using EvilHop.Blocks;
+﻿using EvilHop.Assets;
+using EvilHop.Blocks;
 using EvilHop.Serialization;
 
 namespace EvilHop;
@@ -38,4 +39,16 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to save to.</param>
     public void Save(Stream stream) => Serializer.Write(stream, Roots);
+
+    /// <summary>
+    /// Enters Asset Mode, returning a session that owns this <see cref="Archive"/>'s assets until it
+    /// is committed or disposed.
+    /// </summary>
+    /// <remarks>
+    /// While the session is open, the <c>ATOC</c>, <c>LTOC</c>, and <c>DPAK</c> blocks are detached
+    /// from <see cref="Roots"/> and their fields are locked. Any reference to them taken beforehand
+    /// is orphaned for the session's lifetime and is not reused afterward.
+    /// </remarks>
+    /// <returns>A new <see cref="Assets.AssetSession"/> over this <see cref="Archive"/>.</returns>
+    public AssetSession OpenAssets() => AssetSession.Open(this);
 }
