@@ -270,4 +270,46 @@ public class BlockTests
 
         Assert.Contains("Cannot modify field of type Int32 on block of type TestBlock", ex.Message);
     }
+
+    [Fact]
+    public void LockFields_NestedChildren_LocksSelfAndEveryDescendant()
+    {
+        var child = new TestBlock();
+        var grandchild = new OtherTestBlock();
+        testBlock.Children.Add(child);
+        child.Children.Add(grandchild);
+
+        testBlock.LockFields();
+
+        Assert.True(testBlock.AreBlockFieldsLocked);
+        Assert.True(child.AreBlockFieldsLocked);
+        Assert.True(grandchild.AreBlockFieldsLocked);
+    }
+
+    [Fact]
+    public void UnlockFields_NestedChildren_UnlocksSelfAndEveryDescendant()
+    {
+        var child = new TestBlock();
+        var grandchild = new OtherTestBlock();
+        testBlock.Children.Add(child);
+        child.Children.Add(grandchild);
+        testBlock.LockFields();
+
+        testBlock.UnlockFields();
+
+        Assert.False(testBlock.AreBlockFieldsLocked);
+        Assert.False(child.AreBlockFieldsLocked);
+        Assert.False(grandchild.AreBlockFieldsLocked);
+    }
+
+    [Fact]
+    public void LockFields_ChildAddedAfterward_IsNotRetroactivelyLocked()
+    {
+        testBlock.LockFields();
+        var lateChild = new TestBlock();
+
+        testBlock.Children.Add(lateChild);
+
+        Assert.False(lateChild.AreBlockFieldsLocked);
+    }
 }

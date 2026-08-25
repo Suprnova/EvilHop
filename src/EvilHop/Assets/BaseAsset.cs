@@ -25,7 +25,6 @@ public abstract class BaseAsset : Asset
     /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.
     /// </summary>
     public BaseAssetFlags BaseFlags { get; set; }
-
     /// <summary>
     /// The number of links stored for this <see cref="BaseAsset"/>, read directly from its fixed
     /// header.

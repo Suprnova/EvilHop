@@ -82,6 +82,31 @@ public abstract class Block
     internal bool AreBlockFieldsLocked { get; set; } = false;
 
     /// <summary>
+    /// Locks this <see cref="Block"/>'s own fields and recurses into every current child, locking
+    /// theirs too.
+    /// </summary>
+    /// <remarks>
+    /// Only reaches children present at the time of the call - a <see cref="Block"/> added to
+    /// <see cref="Children"/> afterward is not retroactively locked.
+    /// </remarks>
+    internal void LockFields()
+    {
+        AreBlockFieldsLocked = true;
+        foreach (var child in Children) child.LockFields();
+    }
+
+    /// <summary>
+    /// Unlocks this <see cref="Block"/>'s own fields and recurses into every current child,
+    /// unlocking theirs too. The inverse of <see cref="LockFields"/>, with the same
+    /// children-present-at-call-time caveat.
+    /// </summary>
+    internal void UnlockFields()
+    {
+        AreBlockFieldsLocked = false;
+        foreach (var child in Children) child.UnlockFields();
+    }
+
+    /// <summary>
     /// Returns the value of the specified field.
     /// </summary>
     /// <remarks>
