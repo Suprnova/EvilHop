@@ -4,8 +4,11 @@ using EvilHop.Common;
 namespace EvilHop.Assets;
 
 /// <summary>
-/// 
+/// A named grouping of <see cref="Asset"/>s, based on the "category" of their type.
 /// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#Layers">Heavy Iron Modding documentation</seealso>
+/// </remarks>
 public sealed class Layer
 {
     /// <summary>

@@ -3,7 +3,7 @@
 namespace EvilHop.Primitives;
 
 /// <summary>
-/// Represents a reference to an <c>Asset</c>.
+/// Represents a reference to an <see cref="Assets.Asset"/>.
 /// </summary>
 /// <param name="Value">The underlying Asset ID uint.</param>
 public readonly record struct AssetId(uint Value)
