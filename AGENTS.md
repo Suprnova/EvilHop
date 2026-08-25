@@ -38,6 +38,18 @@ Examples of prohibited invalid states:
 - A multi-parent relationship (enforced by single-parent rule in children collection, physically unrepresentable on disk).
 - A cycle in the block tree (enforced by no-cycles rule in children collection, physically unrepresentable on disk).
 
+### The Block Layer Is Where You Write Anything
+
+The block layer is where you write anything. The asset layer is where consistency is maintained for you.
+
+### Support Is Three States, Not Two
+
+An asset type's codec support is one of three states, not a binary "done or not":
+
+- **Typed**: Fields are modelled. Read and write fields.
+- **Payload**: A file embedded in the archive, native fields not modelled yet. Import/export as a file today; fields may follow.
+- **Untyped**: Structured, but not modelled yet. Fields may appear in a future version.
+
 ### Put The Developer First
 
 Every aspect of the library puts the developer first. We prioritize rich documentation, clear error messages, and a simple API. We never sacrifice developer experience for performance or code complexity.
