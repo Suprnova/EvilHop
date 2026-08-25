@@ -4,6 +4,19 @@ EvilHop is a C# .NET library for reading, writing, and modifying HIP archive fil
 
 The library is in alpha and is not used in any production applications. Breaking changes are normal and expected. Do not worry about maintaining backward compatibility.
 
+## Repository Layout
+
+| Path | What it is |
+|---|---|
+| `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`, `Validation/`. |
+| `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. |
+| `tools/EvilHop.Corpus/` | Console tool that reads `artifacts/` and writes `corpus/`. Depends on `EvilHop`; `EvilHop` never depends on it. |
+| `tests/EvilHop.Corpus.Tests/` | Tests for the tool itself. |
+| `corpus/` | Committed per-game inventories generated from real archives. |
+| `artifacts/` | Local, gitignored corpus of real game archives. |
+
+Build and test with `dotnet build` / `dotnet test` from the repository root.
+
 ## Foundational Concepts
 
 ### Two-Layer Architecture
@@ -19,9 +32,14 @@ This also means we support two tiers of consumers, and we treat both of them as 
 
 ### Dumb Data Holders
 
-Blocks and Assets are dumb by default. They do not self-serialize, self-validate, derive values, or maintain direct references to each other.
+Blocks and Assets are dumb by default. They do not self-serialize, self-validate, derive one fact from another, or maintain direct references to each other.
 
-The children of a Block are the exception to this rule - Blocks maintain a list of children, and that collection enforces a single-parent, no-cycles architecture.
+"Derive one fact from another" is the precise form of the rule, and it matters: an Asset's `Id` must never be recomputed from its `Name`, because roughly 2% of real assets have an ID that is not the hash of the name stored alongside it. Two on-disk copies of *the same* fact are a different case - see "Two Surfaces" below.
+
+Two exceptions:
+
+- The children of a Block. Blocks maintain a list of children, and that collection enforces a single-parent, no-cycles architecture.
+- An Asset's physical surface defaults to its logical counterpart where the format stores one value twice, so the two cannot silently disagree unless the file itself did.
 
 ### Write Anything, Validate Optionally
 
@@ -41,6 +59,30 @@ Examples of prohibited invalid states:
 ### The Block Layer Is Where You Write Anything
 
 The block layer is where you write anything. The asset layer is where consistency is maintained for you.
+
+A consumer who genuinely needs a corrupt offset or a wrong checksum - to reproduce a shipped bug, or to test a loader - drops to the block layer and writes it directly. The asset layer offers no override for those, because an override would reintroduce the ambiguity the split removes.
+
+### Asset Mode Is A Session
+
+The two layers are mutually exclusive because a session owns the blocks that describe assets while it is open. `archive.OpenAssets()` returns an `AssetSession`, which detaches `ATOC`/`LTOC`/`DPAK` from the block tree and locks their fields; `Commit()` - explicit, or on `Dispose()` - rebuilds them from the assets and reattaches.
+
+Committing from `Dispose()` is only safe because **commit is total**: every asset serializes unconditionally, typed assets writing their fields and untyped ones writing the bytes they were given. Nothing a consumer can set makes serialization impossible. If that ever stops being true, commit-on-dispose has to go with it.
+
+Failure to parse an asset degrades it to its untyped form and records a diagnostic. It never throws - one malformed asset must not make an entire archive unopenable.
+
+### Two Surfaces: Logical And Physical
+
+An asset's fields do not all serve the same reader, so every asset class has two surfaces:
+
+- **Logical** - ordinary public properties, one per fact, named for what it means to the game.
+- **Physical** - an `IPhysical*` interface implemented explicitly and reached through `asset.Physical`, carrying every value the format stores, including ones the logical surface derives or omits. For byte-exact reproduction, deliberately malformed data, and the codecs themselves.
+
+Deciding where a field goes, in order:
+
+1. **Is it already determined by something else on the object?** Then it is physical and must not also be logical. It defaults to whatever determines it, and its setter clears that override when assigned a matching value, so a codec can assign from disk unconditionally.
+2. **Otherwise, is it of real interest to someone editing the game object?** Yes means logical, no means physical as a plain stored field. This half is ergonomics and cheap to reverse.
+
+Fields the layout reserves for every type but only *some* types use are physical, and concrete types opt into them through trait interfaces (`IHasModel`, `IGrabbable`, ...). A trait projects onto the physical storage; it never stores a copy.
 
 ### Support Is Three States, Not Two
 
@@ -67,7 +109,12 @@ Governing rule: **the Corpus tool records observations; tests assert them agains
 - Block: A single unit of data, containing a block's Tag, Size, Data, and Children.
 - Tag: A 4-character identifier for a block, physically read from and written to the Archive.
 - Asset: A high-level logical object composed of multiple blocks. Represents a single object in the game world. All assets contain an ID, a Type, and a Name.
-- Layer: A grouping of assets based of the "category" of their type.
+- Layer: A grouping of assets based on the "category" of their type.
+- Session: The scoped object (`AssetSession`) that owns the asset-describing blocks while Asset Mode is active.
+- Codec: The reader/writer for one asset type. Registered by `AssetType`, declaring which games it supports.
+- Shape: Which level of the asset hierarchy a type's bytes are known to follow (`Asset`, `BaseAsset`, `EntityAsset`, `DynaAsset`, payload). Seeds the codec registry with generic handlers; a real codec overwrites its type's entry.
+- Trait: An interface a concrete asset type implements to expose a field the layout reserves for its whole family but only some types use.
+- Profile: `FormatProfile`, the per-game (sometimes per-build) switches a serializer reads with.
 
 ## Further Reference
 - [Heavy Iron Modding Wiki](https://heavyironmodding.org)

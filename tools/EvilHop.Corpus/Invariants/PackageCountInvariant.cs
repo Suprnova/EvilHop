@@ -47,9 +47,8 @@ internal sealed class PackageCountsMatchTreeInvariant : IInvariant
 /// size is the sum of <c>Size + Plus</c> over every entry in its <see cref="LayerHeader.AssetIds"/> -
 /// once per listing, not once per distinct asset ID. Confirmed against
 /// <c>n100f/prototype_2001-06-11</c>, the only build where a listed asset ID repeats within a single
-/// layer and its last asset carries a non-zero <c>Plus</c> - the only build where this sum-of-listings
-/// definition and a simpler first-to-last byte extent disagree (see
-/// <c>docs/Divergences from Community Documentation.md</c>).
+/// layer and its last asset carries a non-zero <c>Plus</c>, and therefore the only build where this
+/// sum-of-listings definition and a simpler first-to-last byte extent disagree.
 /// </summary>
 internal sealed class PackageMaxSizesMatchTreeInvariant : IInvariant
 {

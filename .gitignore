@@ -430,3 +430,6 @@ FodyWeavers.xsd
 
 # EvilHop.Corpus --dump output
 /dump/
+
+# Design docs and implementation plans - intentionally local, never committed
+/docs/

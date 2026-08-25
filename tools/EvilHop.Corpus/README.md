@@ -41,9 +41,8 @@ dotnet run --project tools/EvilHop.Corpus -- verify artifacts/n100f artifacts/bf
 - `--round-trip` - `verify`-only. Additionally writes each parsed archive back out and diffs it
   against the original file's bytes, failing any archive that doesn't match exactly. The strongest
   available check of the library's round-trip fidelity claim, run against real archives instead of
-  hand-built fixtures - see `docs/Serializer Writing Design.md` §1. Off by default: it roughly doubles
-  per-archive memory and time, and plain `verify` still answers "does everything under this root
-  parse" on its own.
+  hand-built fixtures. Off by default: it roughly doubles per-archive memory and time, and plain
+  `verify` still answers "does everything under this root parse" on its own.
 
 `verify` parses every archive and reports failures with a non-zero exit code, without writing
 anything (unless `--round-trip` is passed, which writes only to an in-memory buffer for comparison).
