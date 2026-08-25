@@ -91,9 +91,9 @@ line per failure.
 
 `--round-trip` reads each archive, writes it back out to an in-memory buffer, and diffs that buffer
 against the original file's bytes — nothing is written to disk. It's the real-corpus counterpart to
-`SerializerContractTests.Read_ThenWrite_MinimalFixture_ProducesIdenticalBytes`
-(`docs/Serializer Writing Design.md` §1, §7): that test proves the claim against one hand-built
-fixture per serializer, this proves it against every real archive under a root.
+`SerializerContractTests.Read_ThenWrite_MinimalFixture_ProducesIdenticalBytes`: that test proves the
+claim against one hand-built fixture per serializer, this proves it against every real archive under
+a root.
 
 ```
 dotnet run --project tools/EvilHop.Corpus -c Release -- verify --round-trip artifacts/n100f
