@@ -124,16 +124,44 @@ public class AssetCodecsTests
         Assert.Equal(data, Write(Read(type, data)));
     }
 
-    [Fact(Skip = "Failing, don't wanna investigate rn")]
+    /// <summary>
+    /// Bytes 12-15 of an entity are BFBB's padding. They are always zero in real archives, and the
+    /// codec writes them as zero rather than preserving them, so a fixture that round-trips has to
+    /// have them zeroed too.
+    /// </summary>
+    private static byte[] EntityBytes(int length, bool zeroPadding)
+    {
+        byte[] data = [.. Enumerable.Range(1, length).Select(i => (byte)i)];
+        if (zeroPadding) Array.Clear(data, 12, 4);
+        return data;
+    }
+
+    [Fact]
     public void Read_ThenWrite_EntityWithPadding_ReproducesTheInputBytes()
     {
         // BFBB's four padding bytes sit after the flag bytes, so a BFBB entity's prefix is four
         // bytes longer than every other game's. Round-tripping under BFBB's own profile is what
         // proves the switch is read consistently on both sides.
-        byte[] data = [.. Enumerable.Range(1, 100).Select(i => (byte)i)];
+        byte[] data = EntityBytes(100, zeroPadding: true);
         var profile = BFBBSerializer.DefaultProfile;
 
         Assert.Equal(data, Write(Read(AssetType.Trigger, data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_EntityWithNonZeroPadding_NormalizesItToZero()
+    {
+        // The one region the asset layer deliberately does not preserve. It is zero in every
+        // canonically-pathed BFBB archive checked, so regenerating it costs no real fidelity - but
+        // it is a documented exception to "unknown bytes are carried through untouched", not an
+        // oversight.
+        byte[] data = EntityBytes(100, zeroPadding: false);
+        var profile = BFBBSerializer.DefaultProfile;
+
+        byte[] written = Write(Read(AssetType.Trigger, data, profile), profile);
+
+        Assert.Equal<byte>([0, 0, 0, 0], written.AsSpan(12, 4).ToArray());
+        Assert.Equal(data.AsSpan(16).ToArray(), written.AsSpan(16).ToArray());
     }
 
     [Fact]
