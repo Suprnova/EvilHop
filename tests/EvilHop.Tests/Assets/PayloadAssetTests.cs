@@ -26,4 +26,14 @@ public class PayloadAssetTests
             File.Delete(path);
         }
     }
+
+    [Fact]
+    public void SetUnparsedTail_ThrowsNotSupported()
+    {
+        // A payload's whole body is the embedded file, so accepting these bytes would silently
+        // discard them at commit.
+        var asset = new TestPayloadAsset();
+
+        Assert.Throws<NotSupportedException>(() => asset.SetUnparsedTail([0x01, 0x02]));
+    }
 }

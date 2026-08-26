@@ -1,11 +1,10 @@
 using System.Buffers.Binary;
 using System.Numerics;
 
-namespace EvilHop.Assets;
+namespace EvilHop.Primitives;
 
 /// <summary>
-/// Big-endian write helpers for the field types asset data uses beyond
-/// <see cref="Primitives.EvilInt"/>'s unsigned integers.
+/// Big-endian write helpers for the field types beyond <see cref="EvilInt"/>'s unsigned integers.
 /// </summary>
 /// <remarks>
 /// <see cref="BinaryWriter"/> writes multi-byte values little-endian, which is the wrong order for

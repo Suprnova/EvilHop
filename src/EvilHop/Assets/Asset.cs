@@ -85,7 +85,10 @@ public abstract class Asset : IPhysicalAsset
     /// Overwrites the existing <see cref="UnparsedTail"/>, if any, with the provided bytes.
     /// </summary>
     /// <param name="bytes">The bytes to append at the end of this <see cref="Asset"/>'s data.</param>
-    public void SetUnparsedTail(byte[] bytes) => UnparsedTail = bytes;
+    /// <exception cref="NotSupportedException">
+    /// If this <see cref="Asset"/> has no unparsed region for the bytes to go in.
+    /// </exception>
+    public virtual void SetUnparsedTail(byte[] bytes) => UnparsedTail = bytes;
 }
 
 /// <summary>

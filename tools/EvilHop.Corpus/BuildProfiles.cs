@@ -4,12 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace EvilHop.Corpus;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
         StreamDataHasPaddingField = StreamDataHasPaddingField ?? profile.StreamDataHasPaddingField,
-        PlatformFieldOrder = PlatformFieldOrder ?? profile.PlatformFieldOrder
+        PlatformFieldOrder = PlatformFieldOrder ?? profile.PlatformFieldOrder,
+        EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding
     };
 }
 
