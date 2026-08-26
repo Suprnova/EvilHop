@@ -1,12 +1,44 @@
 {
   "builds": [
     {
+      "key": "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
+      "archives": 128
+    },
+    {
       "key": "bfbb/release/GC/NTSC-U/US",
+      "archives": 132
+    },
+    {
+      "key": "bfbb/release/GC/PAL/DE",
       "archives": 132
     },
     {
       "key": "bfbb/release/GC/PAL/UK",
       "archives": 132
+    },
+    {
+      "key": "bfbb/release/PS2/NTSC-U/US",
+      "archives": 117
+    },
+    {
+      "key": "bfbb/release/PS2/PAL/DE",
+      "archives": 117
+    },
+    {
+      "key": "bfbb/release/PS2/PAL/FR",
+      "archives": 117
+    },
+    {
+      "key": "bfbb/release/PS2/PAL/UK",
+      "archives": 117
+    },
+    {
+      "key": "bfbb/release/PS2/PAL/UK-r1",
+      "archives": 117
+    },
+    {
+      "key": "bfbb/release/XBOX/NTSC-U/US",
+      "archives": 121
     }
   ],
   "fields": {
@@ -14,70 +46,118 @@
       "kind": "set",
       "values": {
         "-858993460": {
-          "count": 180,
+          "count": 373,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/gl/New Folder/gl01.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/gl/New Folder/gl01.HIP"
         },
         "-1": {
-          "count": 2308,
+          "count": 10193,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0": {
-          "count": 154248,
+          "count": 726868,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "4": {
-          "count": 10,
+          "count": 36,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/mn-pal/mnu3.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/mn/mnu3.HIP"
         },
         "16": {
-          "count": 728,
+          "count": 12780,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "32": {
-          "count": 7686,
+          "count": 15324,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
+        },
+        "2048": {
+          "count": 11856,
+          "builds": [
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
+          ],
+          "exemplar": "bfbb/release/PS2/NTSC-U/US/B1/B101.HOP"
         }
       }
     },
     "AssetDebug.Checksum": {
       "kind": "summary",
-      "distinct": 51041,
+      "distinct": 118566,
       "min": 484,
       "max": 4294967295
     },
     "AssetDebug.FileName": {
       "kind": "summary",
-      "distinct": 5161,
+      "distinct": 5488,
       "minLength": 0,
       "maxLength": 77
     },
     "AssetDebug.Name": {
       "kind": "summary",
-      "distinct": 39317,
+      "distinct": 39421,
       "minLength": 2,
       "maxLength": 31
     },
@@ -85,712 +165,1041 @@
       "kind": "set",
       "values": {
         "0x00000001": {
-          "count": 106,
+          "count": 506,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "0x00000002": {
-          "count": 112062,
+          "count": 527818,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000005": {
-          "count": 14380,
+          "count": 68034,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "0x00000006": {
-          "count": 15998,
+          "count": 75021,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000009": {
-          "count": 22382,
+          "count": 104947,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "0x0000000D": {
-          "count": 232,
+          "count": 1104,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "AssetHeader.Id": {
       "kind": "summary",
-      "distinct": 39420,
+      "distinct": 39495,
       "min": 10939,
       "max": 4294842920
     },
     "AssetHeader.Offset": {
       "kind": "summary",
-      "distinct": 42792,
+      "distinct": 97621,
       "min": 0,
-      "max": 85130752
+      "max": 178593792
     },
     "AssetHeader.Plus": {
-      "kind": "set",
-      "values": {
-        "0": {
-          "count": 71966,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "1": {
-          "count": 52,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "2": {
-          "count": 100,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "3": {
-          "count": 132,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b301.HOP"
-        },
-        "4": {
-          "count": 34770,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "5": {
-          "count": 122,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "6": {
-          "count": 174,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "7": {
-          "count": 194,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "8": {
-          "count": 36076,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "9": {
-          "count": 138,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "10": {
-          "count": 106,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "11": {
-          "count": 168,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "12": {
-          "count": 20432,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "13": {
-          "count": 134,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "14": {
-          "count": 322,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "15": {
-          "count": 194,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "16": {
-          "count": 66,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc02.HOP"
-        },
-        "18": {
-          "count": 2,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/gl/New Folder/gl01.HOP"
-        },
-        "20": {
-          "count": 2,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "24": {
-          "count": 4,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "25": {
-          "count": 4,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "28": {
-          "count": 2,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        }
-      }
+      "kind": "summary",
+      "distinct": 812,
+      "min": 0,
+      "max": 2046
     },
     "AssetHeader.Size": {
       "kind": "summary",
-      "distinct": 3872,
+      "distinct": 8749,
       "min": 0,
-      "max": 35006464
+      "max": 42989568
     },
     "AssetHeader.Type": {
       "kind": "set",
       "values": {
         "ALST": {
-          "count": 398,
+          "count": 1816,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "ANIM": {
-          "count": 14752,
+          "count": 68629,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "ATBL": {
-          "count": 1784,
+          "count": 8307,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "BOUL": {
-          "count": 354,
+          "count": 1487,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "BUTN": {
-          "count": 446,
+          "count": 2014,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b303.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b3/b303.HIP"
         },
         "CAM ": {
-          "count": 2018,
+          "count": 9473,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "CNTR": {
-          "count": 1062,
+          "count": 4162,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "COLL": {
-          "count": 100,
+          "count": 488,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "COND": {
-          "count": 678,
+          "count": 2883,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b303.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b3/b303.HIP"
         },
         "CRDT": {
-          "count": 10,
+          "count": 36,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/mn-pal/mnu3.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/mn/mnu3.HIP"
         },
         "CSN ": {
-          "count": 66,
+          "count": 318,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "CSNM": {
-          "count": 66,
+          "count": 318,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "CTOC": {
-          "count": 44,
+          "count": 208,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "DPAT": {
-          "count": 946,
+          "count": 4460,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "DSCO": {
-          "count": 18,
+          "count": 90,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc01.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/bc/bc01.HIP"
         },
         "DSTR": {
-          "count": 728,
+          "count": 3576,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "DYNA": {
-          "count": 2488,
+          "count": 11686,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "EGEN": {
-          "count": 134,
+          "count": 670,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b303.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b3/b303.HIP"
         },
         "ENV ": {
-          "count": 116,
+          "count": 551,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "FLY ": {
-          "count": 38,
+          "count": 178,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bb/bb01.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/bb/bb01.HIP"
         },
         "FOG ": {
-          "count": 74,
+          "count": 358,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "GRUP": {
-          "count": 1456,
+          "count": 6391,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "JAW ": {
-          "count": 106,
+          "count": 505,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "JSP ": {
-          "count": 456,
+          "count": 2068,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "LKIT": {
-          "count": 232,
+          "count": 1104,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "LODT": {
-          "count": 122,
+          "count": 574,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "MAPR": {
-          "count": 116,
+          "count": 551,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "MINF": {
-          "count": 1932,
+          "count": 9030,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "MODL": {
-          "count": 14380,
+          "count": 68034,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "MRKR": {
-          "count": 1910,
+          "count": 8728,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "MVPT": {
-          "count": 5598,
+          "count": 26240,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b2/b201.HIP"
         },
         "PARE": {
-          "count": 620,
+          "count": 2848,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PARP": {
-          "count": 386,
+          "count": 1685,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PARS": {
-          "count": 382,
+          "count": 1665,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PICK": {
-          "count": 2,
+          "count": 10,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/boot.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/boot.HIP"
         },
         "PIPT": {
-          "count": 122,
+          "count": 574,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "PKUP": {
-          "count": 5510,
+          "count": 26802,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PLAT": {
-          "count": 6082,
+          "count": 28534,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PLYR": {
-          "count": 118,
+          "count": 561,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PORT": {
-          "count": 396,
+          "count": 1870,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "RAW ": {
-          "count": 2,
+          "count": 10,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/boot.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/boot.HIP"
         },
         "RWTX": {
-          "count": 13758,
+          "count": 64646,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "SFX ": {
-          "count": 2878,
+          "count": 13798,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "SHDW": {
-          "count": 140,
+          "count": 644,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "SHRP": {
-          "count": 1164,
+          "count": 5543,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "SIMP": {
-          "count": 36652,
+          "count": 178651,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "SND ": {
-          "count": 4096,
+          "count": 19505,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "SNDI": {
-          "count": 140,
+          "count": 645,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "SNDS": {
-          "count": 3524,
+          "count": 16777,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HOP"
         },
         "SURF": {
-          "count": 490,
+          "count": 2316,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "TEXT": {
-          "count": 17578,
+          "count": 82512,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "TIMR": {
-          "count": 3644,
+          "count": 16375,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "TRIG": {
-          "count": 4352,
+          "count": 20636,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "UI  ": {
-          "count": 1240,
+          "count": 4513,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "UIFT": {
-          "count": 1792,
+          "count": 6181,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc03.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/bc/bc03.HIP"
         },
         "VIL ": {
-          "count": 7408,
+          "count": 34916,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "VILP": {
-          "count": 56,
+          "count": 280,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc01.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/bc/bc01.HIP"
         }
       }
     },
@@ -798,12 +1207,20 @@
       "kind": "set",
       "values": {
         "0": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -811,101 +1228,181 @@
       "kind": "set",
       "values": {
         "4294967295": {
-          "count": 3952,
+          "count": 18434,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "LayerHeader.AssetCount": {
       "kind": "summary",
-      "distinct": 179,
+      "distinct": 326,
       "min": 0,
-      "max": 2180
+      "max": 2181
     },
     "LayerHeader.AssetIds": {
       "kind": "summary",
-      "distinct": 842,
+      "distinct": 1057,
       "minLength": 0,
-      "maxLength": 2180
+      "maxLength": 2181
     },
     "LayerHeader.Type": {
       "kind": "set",
       "values": {
         "0x00000000": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000001": {
-          "count": 790,
+          "count": 3686,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000002": {
-          "count": 788,
+          "count": 3682,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000003": {
-          "count": 792,
+          "count": 3690,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000004": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000006": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000007": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x00000008": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "0x0000000A": {
-          "count": 262,
+          "count": 1226,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -913,69 +1410,87 @@
       "kind": "set",
       "values": {
         "0": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "PackageCount.AssetCount": {
       "kind": "summary",
-      "distinct": 115,
+      "distinct": 297,
       "min": 0,
-      "max": 2180
+      "max": 2181
     },
     "PackageCount.LayerCount": {
       "kind": "set",
       "values": {
         "11": {
-          "count": 2,
+          "count": 4,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/font2.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/font2.HIP"
         },
         "15": {
-          "count": 262,
+          "count": 1226,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "PackageCount.MaxAssetSize": {
       "kind": "summary",
-      "distinct": 103,
+      "distinct": 267,
       "min": 0,
-      "max": 35006464
+      "max": 42989568
     },
     "PackageCount.MaxLayerSize": {
       "kind": "summary",
-      "distinct": 124,
+      "distinct": 529,
       "min": 0,
-      "max": 85018112
+      "max": 178334004
     },
     "PackageCount.MaxXFormAssetSize": {
       "kind": "summary",
-      "distinct": 80,
+      "distinct": 188,
       "min": 0,
       "max": 2726760
     },
     "PackageCreated.CreatedDate": {
       "kind": "summary",
-      "distinct": 130,
+      "distinct": 488,
       "min": "2003-02-21T02:26:11.0000000+00:00",
-      "max": "2003-09-23T22:25:15.0000000+00:00"
+      "max": "2003-11-24T23:20:00.0000000+00:00"
     },
     "PackageCreated.CreatedDateString": {
       "kind": "summary",
-      "distinct": 130,
+      "distinct": 488,
       "minLength": 24,
       "maxLength": 25
     },
@@ -983,66 +1498,140 @@
       "kind": "set",
       "values": {
         "0x0000002E": {
-          "count": 2,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/font2.HIP"
-        },
-        "0x0229002E": {
-          "count": 258,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "0x0251002E": {
           "count": 4,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK"
+          ],
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/font2.HIP"
+        },
+        "0x0229002E": {
+          "count": 514,
+          "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
+            "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK"
+          ],
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
+        },
+        "0x022A002E": {
+          "count": 121,
+          "builds": [
+            "bfbb/release/XBOX/NTSC-U/US"
+          ],
+          "exemplar": "bfbb/release/XBOX/NTSC-U/US/b1/b101.HIP"
+        },
+        "0x022C002E": {
+          "count": 345,
+          "builds": [
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
+          ],
+          "exemplar": "bfbb/release/PS2/NTSC-U/US/B1/B101.HIP"
+        },
+        "0x0251002E": {
+          "count": 6,
+          "builds": [
+            "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
           "exemplar": "bfbb/release/GC/NTSC-U/US/mn-pal/mnu3.HIP"
+        },
+        "0x0254002E": {
+          "count": 6,
+          "builds": [
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
+          ],
+          "exemplar": "bfbb/release/PS2/PAL/UK-r1/MN/MNU3.HIP"
+        },
+        "0x0294002E": {
+          "count": 117,
+          "builds": [
+            "bfbb/release/PS2/PAL/FR"
+          ],
+          "exemplar": "bfbb/release/PS2/PAL/FR/B1/B101.HIP"
+        },
+        "0x0314002E": {
+          "count": 117,
+          "builds": [
+            "bfbb/release/PS2/PAL/DE"
+          ],
+          "exemplar": "bfbb/release/PS2/PAL/DE/B1/B101.HIP"
         }
       }
     },
     "PackageModified.ModifiedDate": {
       "kind": "summary",
-      "distinct": 130,
+      "distinct": 488,
       "min": "2003-02-21T02:26:11.0000000+00:00",
-      "max": "2003-09-23T22:25:15.0000000+00:00"
+      "max": "2003-11-24T23:20:00.0000000+00:00"
     },
     "PackagePlatform.GameName": {
       "kind": "set",
       "values": {
         "Sponge Bob": {
-          "count": 262,
+          "count": 1226,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "PackagePlatform.Language": {
       "kind": "set",
       "values": {
-        "US Common": {
-          "count": 258,
+        "French": {
+          "count": 117,
           "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/PS2/PAL/FR"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/release/PS2/PAL/FR/B1/B101.HIP"
+        },
+        "German": {
+          "count": 117,
+          "builds": [
+            "bfbb/release/PS2/PAL/DE"
+          ],
+          "exemplar": "bfbb/release/PS2/PAL/DE/B1/B101.HIP"
+        },
+        "US Common": {
+          "count": 980,
+          "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
+            "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
+          ],
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "United Kingdom": {
-          "count": 4,
+          "count": 12,
           "builds": [
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
           ],
           "exemplar": "bfbb/release/GC/NTSC-U/US/mn-pal/mnu3.HIP"
         }
@@ -1052,12 +1641,32 @@
       "kind": "set",
       "values": {
         "GC": {
-          "count": 262,
+          "count": 520,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
+        },
+        "P2": {
+          "count": 585,
+          "builds": [
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
+          ],
+          "exemplar": "bfbb/release/PS2/NTSC-U/US/B1/B101.HIP"
+        },
+        "XB": {
+          "count": 121,
+          "builds": [
+            "bfbb/release/XBOX/NTSC-U/US"
+          ],
+          "exemplar": "bfbb/release/XBOX/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -1065,12 +1674,32 @@
       "kind": "set",
       "values": {
         "GameCube": {
-          "count": 262,
+          "count": 520,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
+        },
+        "PlayStation 2": {
+          "count": 585,
+          "builds": [
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
+          ],
+          "exemplar": "bfbb/release/PS2/NTSC-U/US/B1/B101.HIP"
+        },
+        "Xbox": {
+          "count": 121,
+          "builds": [
+            "bfbb/release/XBOX/NTSC-U/US"
+          ],
+          "exemplar": "bfbb/release/XBOX/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -1078,18 +1707,29 @@
       "kind": "set",
       "values": {
         "NTSC": {
-          "count": 258,
+          "count": 980,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "PAL": {
-          "count": 4,
+          "count": 246,
           "builds": [
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1"
           ],
           "exemplar": "bfbb/release/GC/NTSC-U/US/mn-pal/mnu3.HIP"
         }
@@ -1099,12 +1739,20 @@
       "kind": "set",
       "values": {
         "0x000A000F": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -1112,12 +1760,20 @@
       "kind": "set",
       "values": {
         "1": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
@@ -1125,454 +1781,655 @@
       "kind": "set",
       "values": {
         "2": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     },
     "StreamData.Data": {
       "kind": "summary",
       "minLength": 0,
-      "maxLength": 85115392
+      "maxLength": 178577408
     },
     "StreamData.Padding": {
       "kind": "summary",
       "minLength": 0,
-      "maxLength": 30
+      "maxLength": 2044
     },
     "StreamData.PaddingAmount": {
-      "kind": "set",
-      "values": {
-        "0": {
-          "count": 22,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b302.HIP"
-        },
-        "2": {
-          "count": 10,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
-        },
-        "4": {
-          "count": 18,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HIP"
-        },
-        "6": {
-          "count": 18,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HOP"
-        },
-        "8": {
-          "count": 6,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b303.HIP"
-        },
-        "10": {
-          "count": 16,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc01.HIP"
-        },
-        "12": {
-          "count": 14,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc04.HOP"
-        },
-        "14": {
-          "count": 18,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b301.HIP"
-        },
-        "16": {
-          "count": 24,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b2/b201.HOP"
-        },
-        "18": {
-          "count": 14,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bb/bb01.HIP"
-        },
-        "20": {
-          "count": 10,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b301.HOP"
-        },
-        "22": {
-          "count": 18,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bb/bb04.HIP"
-        },
-        "24": {
-          "count": 26,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b3/b303.HOP"
-        },
-        "26": {
-          "count": 12,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/bc/bc02.HIP"
-        },
-        "28": {
-          "count": 20,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/font2.HIP"
-        },
-        "30": {
-          "count": 10,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/gl/gl02.HIP"
-        },
-        "null": {
-          "count": 8,
-          "builds": [
-            "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
-          ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/sp/backup/spsb.HIP"
-        }
-      }
+      "kind": "summary",
+      "distinct": 354,
+      "min": 0,
+      "max": 858993459
     },
     "StreamHeader.Value": {
       "kind": "set",
       "values": {
         "4294967295": {
-          "count": 264,
+          "count": 1230,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         }
       }
     }
   },
   "invariants": {
     "assetChecksumMatchesData": {
-      "checked": 165148,
+      "checked": 777405,
       "outcomes": {
-        "violated": 0,
-        "passing": 165148
-      }
+        "violated": 9607,
+        "passing": 767798
+      },
+      "violated": [
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x0011A41B",
+          "expected": "0xC1DBF495",
+          "actual": "0x4D2A86AA"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x0011A41C",
+          "expected": "0xE0B5388B",
+          "actual": "0xBA74B3F6"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x0011A41D",
+          "expected": "0x52530154",
+          "actual": "0x7D91FFE3"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x00F51B8A",
+          "expected": "0xD364B915",
+          "actual": "0xBBC46670"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x03BEDDB5",
+          "expected": "0x18D0F728",
+          "actual": "0xA61ED4B6"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x0570D017",
+          "expected": "0xEE0490A5",
+          "actual": "0xF2C901FD"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x095FFA03",
+          "expected": "0x215584F6",
+          "actual": "0xF0DC8CE6"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x09EC84A4",
+          "expected": "0xA9A4EA75",
+          "actual": "0x29DEA96A"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x153FB743",
+          "expected": "0xB6DAFB8F",
+          "actual": "0x685F79C3"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x15BAB430",
+          "expected": "0xD361F114",
+          "actual": "0x44079717"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x176D0414",
+          "expected": "0xD361F114",
+          "actual": "0x44079717"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x1850083D",
+          "expected": "0x8EDC2235",
+          "actual": "0x40F4BFEC"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x1EAF6028",
+          "expected": "0xDFF2707B",
+          "actual": "0x5B60BEC1"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x26CD6D94",
+          "expected": "0x8B72FC71",
+          "actual": "0xFFA1727E"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x32BA1673",
+          "expected": "0x55813EEB",
+          "actual": "0xDD612F0A"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x38B5BA95",
+          "expected": "0x54089851",
+          "actual": "0xCD68D9DF"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x3A7E1867",
+          "expected": "0x0307D7C7",
+          "actual": "0xC5DB9902"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x46028AD3",
+          "expected": "0x957BFA5C",
+          "actual": "0x865ABA83"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x49E8DA36",
+          "expected": "0x27F80375",
+          "actual": "0xAAFAFFC1"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x4A4370E6",
+          "expected": "0x4247E1C4",
+          "actual": "0xD4B699D3"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x4D8799B1",
+          "expected": "0x70C6C24F",
+          "actual": "0x0EDB9E6D"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F98C",
+          "expected": "0x2ADC27E1",
+          "actual": "0xF85E9533"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F98D",
+          "expected": "0xAA868B54",
+          "actual": "0x5427E1AD"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F98E",
+          "expected": "0xD54F10C7",
+          "actual": "0x300F3227"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F98F",
+          "expected": "0x7142D47F",
+          "actual": "0x08141526"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F990",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F991",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F992",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F993",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118F994",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA0E",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA0F",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA10",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA11",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA12",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA13",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5118FA14",
+          "expected": "0x597464B6",
+          "actual": "0xDF893C47"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x53A9C7C9",
+          "expected": "0x97D87EF8",
+          "actual": "0xFCF9A0F6"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x5BD12737",
+          "expected": "0xB5313A44",
+          "actual": "0x23359AA1"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x64B7F6ED",
+          "expected": "0xDF13DE49",
+          "actual": "0xB9CAEC61"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x64F29B52",
+          "expected": "0x89F740DB",
+          "actual": "0xA08CE49F"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x6D5EDD88",
+          "expected": "0xE82ACCF5",
+          "actual": "0x8ACC265B"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x720FBA83",
+          "expected": "0x82E4AB87",
+          "actual": "0xCBBA8B3E"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x7612C79D",
+          "expected": "0xAC218A80",
+          "actual": "0x7D859942"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x87474787",
+          "expected": "0x8330B550",
+          "actual": "0x7E506244"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x876AEE1E",
+          "expected": "0x2B661755",
+          "actual": "0xC9236E6A"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x87A07DEE",
+          "expected": "0xDDC013AC",
+          "actual": "0x238134D0"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x88F3731E",
+          "expected": "0xDCF17161",
+          "actual": "0xE0A3B696"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x88F3731F",
+          "expected": "0x5CABDDD4",
+          "actual": "0x4CDAC208"
+        },
+        {
+          "path": "bfbb/release/PS2/PAL/FR/B1/B101.HIP",
+          "id": "0x88F37320",
+          "expected": "0x23624647",
+          "actual": "0x28F21182"
+        }
+      ]
     },
     "assetIdMatchesNameHash": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
-        "anim-suffix": 2162,
-        "direct": 162188,
-        "truncated": 810
+        "anim-suffix": 10140,
+        "direct": 763546,
+        "truncated": 3744
       },
       "unexplained": []
     },
     "assetIdsUnique": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
         "violated": 0,
-        "passing": 165160
+        "passing": 777430
       }
     },
     "assetOffsetsInBounds": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
         "violated": 0,
-        "passing": 165160
+        "passing": 777430
       }
     },
     "createdDateStringMatchesTimestamp": {
-      "checked": 264,
+      "checked": 1230,
       "outcomes": {
         "violated": 0,
-        "passing": 264
+        "passing": 1230
       }
     },
     "createdDateStringTrailingWhitespace": {
       "kind": "set",
       "values": {
         "": {
-          "count": 262,
+          "count": 1226,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
-            "bfbb/release/GC/PAL/UK"
+            "bfbb/release/GC/PAL/DE",
+            "bfbb/release/GC/PAL/UK",
+            "bfbb/release/PS2/NTSC-U/US",
+            "bfbb/release/PS2/PAL/DE",
+            "bfbb/release/PS2/PAL/FR",
+            "bfbb/release/PS2/PAL/UK",
+            "bfbb/release/PS2/PAL/UK-r1",
+            "bfbb/release/XBOX/NTSC-U/US"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
         },
         "\n": {
-          "count": 2,
+          "count": 4,
           "builds": [
+            "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
             "bfbb/release/GC/NTSC-U/US",
+            "bfbb/release/GC/PAL/DE",
             "bfbb/release/GC/PAL/UK"
           ],
-          "exemplar": "bfbb/release/GC/NTSC-U/US/font2.HIP"
+          "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/font2.HIP"
         }
       }
     },
     "fileNameSetWhenSourceFile": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
         "violated": 0,
-        "passing": 165160
+        "passing": 777430
       }
     },
     "lastAssetInLayerHasZeroPlus": {
-      "checked": 1934,
+      "checked": 8961,
       "outcomes": {
         "violated": 0,
-        "passing": 1934
+        "passing": 8961
       }
     },
     "layerAssetCountsSumWithinTotal": {
-      "checked": 264,
+      "checked": 1230,
       "outcomes": {
         "violated": 0,
-        "passing": 264
+        "passing": 1230
       }
     },
     "layerAssetIdsResolve": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
         "violated": 0,
-        "passing": 165160
+        "passing": 777430
       }
     },
     "packageCountsMatchTree": {
-      "checked": 528,
+      "checked": 2460,
       "outcomes": {
         "violated": 0,
-        "passing": 528
+        "passing": 2460
       }
     },
     "packageMaxSizesMatchTree": {
-      "checked": 792,
+      "checked": 3690,
       "outcomes": {
         "violated": 0,
-        "passing": 792
+        "passing": 3690
       }
     },
     "paddingIsHomogeneous": {
-      "checked": 234,
+      "checked": 1169,
       "outcomes": {
         "violated": 0,
-        "passing": 234
+        "passing": 1169
       },
       "fillBytes": {
         "kind": "set",
         "values": {
           "0x33": {
-            "count": 234,
+            "count": 1169,
             "builds": [
+              "bfbb/prototype_2003-10-01/GC/NTSC-U/US",
               "bfbb/release/GC/NTSC-U/US",
-              "bfbb/release/GC/PAL/UK"
+              "bfbb/release/GC/PAL/DE",
+              "bfbb/release/GC/PAL/UK",
+              "bfbb/release/PS2/NTSC-U/US",
+              "bfbb/release/PS2/PAL/DE",
+              "bfbb/release/PS2/PAL/FR",
+              "bfbb/release/PS2/PAL/UK",
+              "bfbb/release/PS2/PAL/UK-r1",
+              "bfbb/release/XBOX/NTSC-U/US"
             ],
-            "exemplar": "bfbb/release/GC/NTSC-U/US/b1/b101.HIP"
+            "exemplar": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b1/b101.HIP"
           }
         }
       }
     },
     "plusMatchesAlignment": {
-      "checked": 7786,
+      "checked": 37085,
       "outcomes": {
         "violated": 0,
-        "passing": 7786
+        "passing": 37085
       }
     },
     "sourceFlagsExclusive": {
-      "checked": 165160,
+      "checked": 777430,
       "outcomes": {
         "violated": 0,
-        "passing": 165160
+        "passing": 777430
       }
     },
     "structural": {
       "AssetDebug": {
-        "checked": 165160,
+        "checked": 777430,
         "outcomes": {
           "violated": 0,
-          "passing": 165160
+          "passing": 777430
         }
       },
       "AssetHeader": {
-        "checked": 165160,
+        "checked": 777430,
         "outcomes": {
           "violated": 0,
-          "passing": 165160
+          "passing": 777430
         }
       },
       "AssetInf": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "AssetStream": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "AssetTable": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "Dictionary": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "HIPA": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "LayerDebug": {
-        "checked": 3952,
+        "checked": 18434,
         "outcomes": {
           "violated": 0,
-          "passing": 3952
+          "passing": 18434
         }
       },
       "LayerHeader": {
-        "checked": 3952,
+        "checked": 18434,
         "outcomes": {
           "violated": 0,
-          "passing": 3952
+          "passing": 18434
         }
       },
       "LayerInf": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "LayerTable": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "Package": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "PackageCount": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "PackageCreated": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "PackageFlags": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "PackageModified": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "PackagePlatform": {
-        "checked": 262,
+        "checked": 1226,
         "outcomes": {
           "violated": 0,
-          "passing": 262
+          "passing": 1226
         }
       },
       "PackageVersion": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "StreamData": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       },
       "StreamHeader": {
-        "checked": 264,
+        "checked": 1230,
         "outcomes": {
           "violated": 0,
-          "passing": 264
+          "passing": 1230
         }
       }
     }

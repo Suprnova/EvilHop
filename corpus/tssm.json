@@ -5,12 +5,64 @@
       "archives": 138
     },
     {
+      "key": "tssm/release/GC/NTSC-U/US-r1",
+      "archives": 138
+    },
+    {
+      "key": "tssm/release/GC/PAL/DE",
+      "archives": 147
+    },
+    {
       "key": "tssm/release/GC/PAL/FR-NL",
       "archives": 193
     },
     {
       "key": "tssm/release/GC/PAL/FR-UK",
       "archives": 138
+    },
+    {
+      "key": "tssm/release/GC/PAL/UK",
+      "archives": 138
+    },
+    {
+      "key": "tssm/release/PS2/NTSC-U/US",
+      "archives": 136
+    },
+    {
+      "key": "tssm/release/PS2/PAL/DE",
+      "archives": 147
+    },
+    {
+      "key": "tssm/release/PS2/PAL/ES",
+      "archives": 147
+    },
+    {
+      "key": "tssm/release/PS2/PAL/FR-NL",
+      "archives": 191
+    },
+    {
+      "key": "tssm/release/PS2/PAL/IT",
+      "archives": 147
+    },
+    {
+      "key": "tssm/release/PS2/PAL/UK",
+      "archives": 136
+    },
+    {
+      "key": "tssm/release/XBOX/NTSC-U/US",
+      "archives": 136
+    },
+    {
+      "key": "tssm/release/XBOX/PAL/DE",
+      "archives": 145
+    },
+    {
+      "key": "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+      "archives": 279
+    },
+    {
+      "key": "tssm/release/XBOX/PAL/UK",
+      "archives": 136
     }
   ],
   "fields": {
@@ -18,76 +70,156 @@
       "kind": "set",
       "values": {
         "-1": {
-          "count": 16477,
+          "count": 88022,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0": {
-          "count": 150710,
+          "count": 802280,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "1": {
-          "count": 11634,
+          "count": 22036,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "4": {
-          "count": 12,
+          "count": 63,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401_US.hip"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b401_US.hip"
         },
         "16": {
-          "count": 1380,
+          "count": 15778,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "32": {
-          "count": 112,
+          "count": 196,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
+        },
+        "2048": {
+          "count": 30125,
+          "builds": [
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/PS2/NTSC-U/US/B1/B101.HOP"
         }
       }
     },
     "AssetDebug.Checksum": {
       "kind": "summary",
-      "distinct": 48757,
+      "distinct": 122610,
       "min": 15147,
       "max": 4294967295
     },
     "AssetDebug.FileName": {
       "kind": "summary",
-      "distinct": 7791,
+      "distinct": 28604,
       "minLength": 0,
-      "maxLength": 92
+      "maxLength": 94
     },
     "AssetDebug.Name": {
       "kind": "summary",
-      "distinct": 40443,
+      "distinct": 41149,
       "minLength": 2,
       "maxLength": 31
     },
@@ -95,410 +227,160 @@
       "kind": "set",
       "values": {
         "0x00000001": {
-          "count": 151,
+          "count": 870,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
         },
         "0x00000002": {
-          "count": 137335,
+          "count": 731148,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000005": {
-          "count": 9062,
+          "count": 48525,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "0x00000006": {
-          "count": 10942,
+          "count": 56408,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000009": {
-          "count": 22634,
+          "count": 120477,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "0x0000000D": {
-          "count": 201,
+          "count": 1072,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "AssetHeader.Id": {
       "kind": "summary",
-      "distinct": 40553,
+      "distinct": 41259,
       "min": 9122,
       "max": 4294827848
     },
     "AssetHeader.Offset": {
       "kind": "summary",
-      "distinct": 45505,
-      "min": 1120,
-      "max": 15753376
+      "distinct": 95021,
+      "min": 0,
+      "max": 179402752
     },
     "AssetHeader.Plus": {
-      "kind": "set",
-      "values": {
-        "0": {
-          "count": 45710,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "1": {
-          "count": 111,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "2": {
-          "count": 51,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
-        },
-        "3": {
-          "count": 81,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401.HOP"
-        },
-        "4": {
-          "count": 72532,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "5": {
-          "count": 60,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "6": {
-          "count": 66,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "7": {
-          "count": 63,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "8": {
-          "count": 41790,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "9": {
-          "count": 48,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am04.HOP"
-        },
-        "10": {
-          "count": 39,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb03.HOP"
-        },
-        "11": {
-          "count": 105,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am02.HOP"
-        },
-        "12": {
-          "count": 19397,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "13": {
-          "count": 117,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "14": {
-          "count": 71,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am02.HOP"
-        },
-        "15": {
-          "count": 21,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B3/b301.HOP"
-        },
-        "124": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B2/b201.HIP"
-        },
-        "188": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/PT/pt03.HIP"
-        },
-        "348": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/TR/tr02.HIP"
-        },
-        "396": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B3/b301.HIP"
-        },
-        "524": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb02.HIP"
-        },
-        "588": {
-          "count": 5,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/JK/jk01.HIP"
-        },
-        "620": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/GG/gg02.HIP"
-        },
-        "700": {
-          "count": 1,
-          "builds": [
-            "tssm/release/GC/PAL/FR-NL"
-          ],
-          "exemplar": "tssm/release/GC/PAL/FR-NL/TR/tr01.HIP"
-        },
-        "748": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am03.HIP"
-        },
-        "844": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "908": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am04.HIP"
-        },
-        "1212": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HIP"
-        },
-        "1596": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
-        },
-        "1628": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am02.HIP"
-        },
-        "1708": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/PT/pt02.HIP"
-        },
-        "1740": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/JK/jk02.HIP"
-        },
-        "1756": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/TT/tt02.HIP"
-        },
-        "1916": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/DE/de02.HIP"
-        },
-        "1948": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/TR/tr03.HIP"
-        },
-        "1980": {
-          "count": 1,
-          "builds": [
-            "tssm/release/GC/PAL/FR-NL"
-          ],
-          "exemplar": "tssm/release/GC/PAL/FR-NL/DE/de01.HIP"
-        },
-        "2012": {
-          "count": 5,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/DE/de01.HIP"
-        }
-      }
+      "kind": "summary",
+      "distinct": 524,
+      "min": 0,
+      "max": 2044
     },
     "AssetHeader.Size": {
       "kind": "summary",
-      "distinct": 2423,
+      "distinct": 10951,
       "min": 0,
       "max": 131018952
     },
@@ -506,526 +388,1296 @@
       "kind": "set",
       "values": {
         "ALST": {
-          "count": 419,
+          "count": 2269,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "ANIM": {
-          "count": 10934,
+          "count": 58373,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "ATBL": {
-          "count": 651,
+          "count": 3482,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "BOUL": {
-          "count": 477,
+          "count": 2544,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
         },
         "BUTN": {
-          "count": 300,
+          "count": 1600,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb02.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP"
         },
         "CAM ": {
-          "count": 705,
+          "count": 3760,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "CNTR": {
-          "count": 942,
+          "count": 5024,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "COLL": {
-          "count": 48,
+          "count": 256,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HOP"
         },
         "COND": {
-          "count": 1359,
+          "count": 7248,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b401.HIP"
         },
         "CRDT": {
-          "count": 12,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401_US.hip"
-        },
-        "CSN ": {
-          "count": 112,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
-        },
-        "CSNM": {
-          "count": 81,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HIP"
-        },
-        "CSSS": {
-          "count": 110,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
-        },
-        "CTOC": {
-          "count": 56,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
-        },
-        "DEST": {
-          "count": 249,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am02.HOP"
-        },
-        "DPAT": {
-          "count": 1281,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "DSCO": {
-          "count": 18,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/TT/tt01.HIP"
-        },
-        "DYNA": {
-          "count": 16414,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "EGEN": {
-          "count": 102,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/PT/pt01.HIP"
-        },
-        "ENV ": {
-          "count": 102,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "FLY ": {
-          "count": 39,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401.HIP"
-        },
-        "FOG ": {
-          "count": 72,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "GRUP": {
-          "count": 2471,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "JAW ": {
-          "count": 113,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
-        },
-        "JSP ": {
-          "count": 1086,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "LKIT": {
-          "count": 201,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "LODT": {
-          "count": 87,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "MAPR": {
-          "count": 102,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "MINF": {
-          "count": 1086,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "MODL": {
-          "count": 9062,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "MRKR": {
-          "count": 180,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b402.HIP"
-        },
-        "MVPT": {
-          "count": 6255,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "PARE": {
-          "count": 885,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
-        },
-        "PARP": {
-          "count": 591,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
-        },
-        "PARS": {
-          "count": 525,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
-        },
-        "PICK": {
-          "count": 3,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/boot.HIP"
-        },
-        "PIPT": {
-          "count": 147,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "PKUP": {
-          "count": 7026,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "PLAT": {
-          "count": 7677,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "PLYR": {
-          "count": 102,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "PORT": {
-          "count": 384,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "RANM": {
           "count": 63,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b401_US.hip"
+        },
+        "CSN ": {
+          "count": 588,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
+        },
+        "CSNM": {
+          "count": 432,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HIP"
+        },
+        "CSSS": {
+          "count": 750,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
+        },
+        "CTOC": {
+          "count": 294,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
+        },
+        "DEST": {
+          "count": 1328,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+        },
+        "DPAT": {
+          "count": 6832,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "DSCO": {
+          "count": 96,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/TT/tt01.HIP"
+        },
+        "DYNA": {
+          "count": 87686,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "EGEN": {
+          "count": 544,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/PT/pt01.HIP"
+        },
+        "ENV ": {
+          "count": 544,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "FLY ": {
+          "count": 208,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b401.HIP"
+        },
+        "FOG ": {
+          "count": 384,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "GRUP": {
+          "count": 13164,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "JAW ": {
+          "count": 590,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
+        },
+        "JSP ": {
+          "count": 4152,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+        },
+        "LKIT": {
+          "count": 1072,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "LODT": {
+          "count": 464,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+        },
+        "MAPR": {
+          "count": 544,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+        },
+        "MINF": {
+          "count": 5802,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "MODL": {
+          "count": 48525,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+        },
+        "MRKR": {
+          "count": 960,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b402.HIP"
+        },
+        "MVPT": {
+          "count": 33360,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "PARE": {
+          "count": 4720,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+        },
+        "PARP": {
+          "count": 3152,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+        },
+        "PARS": {
+          "count": 2800,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+        },
+        "PICK": {
+          "count": 16,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/boot.HIP"
+        },
+        "PIPT": {
+          "count": 784,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+        },
+        "PKUP": {
+          "count": 37472,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "PLAT": {
+          "count": 40964,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "PLYR": {
+          "count": 544,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "PORT": {
+          "count": 2048,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "RANM": {
+          "count": 336,
+          "builds": [
+            "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "RAW ": {
+          "count": 74,
+          "builds": [
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/PS2/NTSC-U/US/PLAT.HIP"
         },
         "RWTX": {
-          "count": 8873,
+          "count": 47174,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "SCRP": {
-          "count": 3249,
+          "count": 17338,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "SDFX": {
-          "count": 6042,
+          "count": 32224,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "SGRP": {
-          "count": 8025,
+          "count": 42810,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "SHRP": {
-          "count": 1023,
+          "count": 5456,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "SIMP": {
-          "count": 54813,
+          "count": 292630,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "SND ": {
-          "count": 5023,
+          "count": 26787,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "SNDI": {
-          "count": 250,
+          "count": 1401,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
         },
         "SNDS": {
-          "count": 6555,
+          "count": 34504,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP"
         },
         "SPLN": {
-          "count": 3,
+          "count": 16,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/GG/gg02.HOP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/GG/gg02.HOP"
         },
         "SURF": {
-          "count": 651,
+          "count": 3472,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B1/b101.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B1/b101.HIP"
         },
         "TEXS": {
-          "count": 204,
+          "count": 1088,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/MN/mnui.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/MN/mnui.HIP"
         },
         "TEXT": {
-          "count": 6542,
+          "count": 32916,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01_US.hip"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01_US.hip"
         },
         "TIMR": {
-          "count": 768,
+          "count": 4106,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "TRIG": {
-          "count": 5511,
+          "count": 29322,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "UIM ": {
-          "count": 264,
+          "count": 1408,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/MN/mnuc.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/MN/mnuc.HIP"
         }
       }
     },
@@ -1033,13 +1685,26 @@
       "kind": "set",
       "values": {
         "0": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
@@ -1047,25 +1712,38 @@
       "kind": "set",
       "values": {
         "4294967295": {
-          "count": 10033,
+          "count": 53288,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "LayerHeader.AssetCount": {
       "kind": "summary",
-      "distinct": 162,
+      "distinct": 186,
       "min": 0,
       "max": 3925
     },
     "LayerHeader.AssetIds": {
       "kind": "summary",
-      "distinct": 1150,
+      "distinct": 1491,
       "minLength": 0,
       "maxLength": 3925
     },
@@ -1073,103 +1751,246 @@
       "kind": "set",
       "values": {
         "0x00000000": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000001": {
-          "count": 1407,
+          "count": 7476,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000002": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000003": {
-          "count": 2952,
+          "count": 15669,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000004": {
-          "count": 1407,
+          "count": 7476,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000005": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000007": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000008": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x00000009": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x0000000A": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "0x0000000B": {
-          "count": 984,
+          "count": 5223,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
@@ -1177,19 +1998,32 @@
       "kind": "set",
       "values": {
         "0": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "PackageCount.AssetCount": {
       "kind": "summary",
-      "distinct": 147,
+      "distinct": 217,
       "min": 0,
       "max": 3925
     },
@@ -1197,106 +2031,210 @@
       "kind": "set",
       "values": {
         "13": {
-          "count": 135,
+          "count": 714,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/backup/font.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/backup/font.HIP"
         },
         "17": {
-          "count": 174,
+          "count": 930,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "25": {
-          "count": 20,
+          "count": 106,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/PT/pt03.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/PT/pt03.HIP"
         },
         "29": {
-          "count": 50,
+          "count": 265,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B4/b401.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/B4/b401.HIP"
         },
         "33": {
-          "count": 40,
+          "count": 212,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/GG/gg02.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/GG/gg02.HIP"
         },
         "37": {
-          "count": 10,
+          "count": 53,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/DE/de01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/DE/de01.HIP"
         },
         "41": {
-          "count": 30,
+          "count": 159,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BB/bb01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
         },
         "45": {
-          "count": 10,
+          "count": 53,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/TT/tt01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/TT/tt01.HIP"
         }
       }
     },
     "PackageCount.MaxAssetSize": {
       "kind": "summary",
-      "distinct": 212,
+      "distinct": 516,
       "min": 0,
       "max": 131018952
     },
     "PackageCount.MaxLayerSize": {
       "kind": "summary",
-      "distinct": 223,
+      "distinct": 693,
       "min": 0,
-      "max": 131018952
+      "max": 178762800
     },
     "PackageCount.MaxXFormAssetSize": {
       "kind": "summary",
-      "distinct": 103,
+      "distinct": 183,
       "min": 0,
       "max": 131018952
     },
     "PackageCreated.CreatedDate": {
       "kind": "summary",
-      "distinct": 342,
-      "min": "2004-09-02T11:30:55.0000000+00:00",
-      "max": "2004-11-19T00:40:00.0000000+00:00"
+      "distinct": 1656,
+      "min": "2004-09-01T15:57:03.0000000+00:00",
+      "max": "2004-12-06T20:14:58.0000000+00:00"
     },
     "PackageCreated.CreatedDateString": {
       "kind": "summary",
-      "distinct": 342,
+      "distinct": 1656,
       "minLength": 24,
       "maxLength": 24
     },
@@ -1304,83 +2242,184 @@
       "kind": "set",
       "values": {
         "0x0000002E": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "PackageModified.ModifiedDate": {
       "kind": "summary",
-      "distinct": 342,
-      "min": "2004-09-02T11:30:55.0000000+00:00",
-      "max": "2004-11-19T00:40:00.0000000+00:00"
+      "distinct": 1656,
+      "min": "2004-09-01T15:57:03.0000000+00:00",
+      "max": "2004-12-06T20:14:58.0000000+00:00"
     },
     "PackagePlatform.GameName": {
       "kind": "set",
       "values": {
         "Incredibles": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "PackagePlatform.Language": {
       "kind": "set",
       "values": {
-        "FR": {
-          "count": 47,
+        "DE": {
+          "count": 133,
           "builds": [
-            "tssm/release/GC/PAL/FR-NL"
+            "tssm/release/GC/PAL/DE",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/XBOX/PAL/DE"
+          ],
+          "exemplar": "tssm/release/GC/PAL/DE/AM/am01_DE.hip"
+        },
+        "ES": {
+          "count": 88,
+          "builds": [
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL"
+          ],
+          "exemplar": "tssm/release/PS2/PAL/ES/AM/AM01_ES.HIP"
+        },
+        "FR": {
+          "count": 135,
+          "builds": [
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL"
           ],
           "exemplar": "tssm/release/GC/PAL/FR-NL/AM/am01_FR.hip"
         },
-        "NL": {
-          "count": 46,
+        "IT": {
+          "count": 106,
           "builds": [
-            "tssm/release/GC/PAL/FR-NL"
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL"
+          ],
+          "exemplar": "tssm/release/PS2/PAL/ES/AM/AM02.HIP"
+        },
+        "NL": {
+          "count": 138,
+          "builds": [
+            "tssm/release/GC/PAL/FR-NL",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL"
           ],
           "exemplar": "tssm/release/GC/PAL/FR-NL/AM/am01_NL.hip"
         },
         "UK": {
-          "count": 42,
+          "count": 158,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/DE/de01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/DE/de01.HIP"
         },
         "US": {
-          "count": 334,
+          "count": 1734,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "PackagePlatform.PlatformId": {
       "kind": "set",
       "values": {
+        "BX": {
+          "count": 696,
+          "builds": [
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
+          ],
+          "exemplar": "tssm/release/XBOX/NTSC-U/US/AM/am01.HIP"
+        },
         "GC": {
-          "count": 469,
+          "count": 892,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
+        },
+        "PS2": {
+          "count": 904,
+          "builds": [
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK"
+          ],
+          "exemplar": "tssm/release/PS2/NTSC-U/US/AM/AM01.HIP"
         }
       }
     },
@@ -1388,13 +2427,26 @@
       "kind": "set",
       "values": {
         "null": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
@@ -1402,22 +2454,47 @@
       "kind": "set",
       "values": {
         "NTSC": {
-          "count": 334,
+          "count": 1734,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         },
         "PAL": {
-          "count": 135,
+          "count": 758,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/DE/de01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/DE/de01.HIP"
         }
       }
     },
@@ -1425,13 +2502,26 @@
       "kind": "set",
       "values": {
         "0x000A000F": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
@@ -1439,13 +2529,26 @@
       "kind": "set",
       "values": {
         "1": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
@@ -1453,468 +2556,720 @@
       "kind": "set",
       "values": {
         "2": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "StreamData.Data": {
       "kind": "summary",
       "minLength": 0,
-      "maxLength": 131418464
+      "maxLength": 179343360
     },
     "StreamData.Padding": {
       "kind": "summary",
       "minLength": 0,
-      "maxLength": 30
+      "maxLength": 2046
     },
     "StreamData.PaddingAmount": {
-      "kind": "set",
-      "values": {
-        "0": {
-          "count": 34,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B2/b201.HOP"
-        },
-        "2": {
-          "count": 47,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
-        },
-        "4": {
-          "count": 22,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am03.HOP"
-        },
-        "6": {
-          "count": 18,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am02.HIP"
-        },
-        "8": {
-          "count": 22,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HOP"
-        },
-        "10": {
-          "count": 20,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am04.HIP"
-        },
-        "12": {
-          "count": 29,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/FB/fb02.HIP"
-        },
-        "14": {
-          "count": 18,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/PL/PLP3.HIP"
-        },
-        "16": {
-          "count": 29,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/B3/b301.HOP"
-        },
-        "18": {
-          "count": 32,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/JK/jk02.HIP"
-        },
-        "20": {
-          "count": 35,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am04.HOP"
-        },
-        "22": {
-          "count": 30,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/backup/font.HIP"
-        },
-        "24": {
-          "count": 38,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01_US.hip"
-        },
-        "26": {
-          "count": 34,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/BL/bl03.HIP"
-        },
-        "28": {
-          "count": 21,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/MN/mnus.HOP"
-        },
-        "30": {
-          "count": 36,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am03.HIP"
-        },
-        "858993459": {
-          "count": 4,
-          "builds": [
-            "tssm/release/GC/NTSC-U/US",
-            "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
-          ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/plat.HIP"
-        }
-      }
+      "kind": "summary",
+      "distinct": 305,
+      "min": 0,
+      "max": 858993459
     },
     "StreamHeader.Value": {
       "kind": "set",
       "values": {
         "4294967295": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     }
   },
   "invariants": {
     "assetChecksumMatchesData": {
-      "checked": 180325,
+      "checked": 958492,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958492
       }
     },
     "assetIdMatchesNameHash": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
-        "anim-suffix": 1973,
-        "dff-destruct": 249,
-        "direct": 176815,
-        "truncated": 1288
+        "anim-suffix": 10531,
+        "dff-destruct": 1328,
+        "direct": 939818,
+        "truncated": 6823
       },
       "unexplained": []
     },
     "assetIdsUnique": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958500
       }
     },
     "assetOffsetsInBounds": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958500
       }
     },
     "createdDateStringMatchesTimestamp": {
-      "checked": 469,
+      "checked": 2492,
       "outcomes": {
         "violated": 0,
-        "passing": 469
+        "passing": 2492
       }
     },
     "createdDateStringTrailingWhitespace": {
       "kind": "set",
       "values": {
         "": {
-          "count": 469,
+          "count": 2492,
           "builds": [
             "tssm/release/GC/NTSC-U/US",
+            "tssm/release/GC/NTSC-U/US-r1",
+            "tssm/release/GC/PAL/DE",
             "tssm/release/GC/PAL/FR-NL",
-            "tssm/release/GC/PAL/FR-UK"
+            "tssm/release/GC/PAL/FR-UK",
+            "tssm/release/GC/PAL/UK",
+            "tssm/release/PS2/NTSC-U/US",
+            "tssm/release/PS2/PAL/DE",
+            "tssm/release/PS2/PAL/ES",
+            "tssm/release/PS2/PAL/FR-NL",
+            "tssm/release/PS2/PAL/IT",
+            "tssm/release/PS2/PAL/UK",
+            "tssm/release/XBOX/NTSC-U/US",
+            "tssm/release/XBOX/PAL/DE",
+            "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+            "tssm/release/XBOX/PAL/UK"
           ],
-          "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+          "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
         }
       }
     },
     "fileNameSetWhenSourceFile": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958500
       }
     },
     "lastAssetInLayerHasZeroPlus": {
-      "checked": 3290,
+      "checked": 16093,
       "outcomes": {
         "violated": 0,
-        "passing": 3290
+        "passing": 16093
       }
     },
     "layerAssetCountsSumWithinTotal": {
-      "checked": 469,
+      "checked": 2492,
       "outcomes": {
         "violated": 0,
-        "passing": 469
+        "passing": 2492
       }
     },
     "layerAssetIdsResolve": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958500
       }
     },
     "packageCountsMatchTree": {
-      "checked": 938,
+      "checked": 4984,
       "outcomes": {
         "violated": 0,
-        "passing": 938
+        "passing": 4984
       }
     },
     "packageMaxSizesMatchTree": {
-      "checked": 1407,
+      "checked": 7476,
       "outcomes": {
         "violated": 0,
-        "passing": 1407
+        "passing": 7476
       }
     },
     "paddingIsHomogeneous": {
-      "checked": 435,
+      "checked": 2425,
       "outcomes": {
         "violated": 0,
-        "passing": 435
+        "passing": 2425
       },
       "fillBytes": {
         "kind": "set",
         "values": {
           "0x33": {
-            "count": 435,
+            "count": 2425,
             "builds": [
               "tssm/release/GC/NTSC-U/US",
+              "tssm/release/GC/NTSC-U/US-r1",
+              "tssm/release/GC/PAL/DE",
               "tssm/release/GC/PAL/FR-NL",
-              "tssm/release/GC/PAL/FR-UK"
+              "tssm/release/GC/PAL/FR-UK",
+              "tssm/release/GC/PAL/UK",
+              "tssm/release/PS2/NTSC-U/US",
+              "tssm/release/PS2/PAL/DE",
+              "tssm/release/PS2/PAL/ES",
+              "tssm/release/PS2/PAL/FR-NL",
+              "tssm/release/PS2/PAL/IT",
+              "tssm/release/PS2/PAL/UK",
+              "tssm/release/XBOX/NTSC-U/US",
+              "tssm/release/XBOX/PAL/DE",
+              "tssm/release/XBOX/PAL/ES-FR-IT-NL",
+              "tssm/release/XBOX/PAL/UK"
             ],
-            "exemplar": "tssm/release/GC/NTSC-U/US/AM/am01.HIP"
+            "exemplar": "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP"
           }
         }
       }
     },
     "plusMatchesAlignment": {
-      "checked": 11611,
+      "checked": 62062,
       "outcomes": {
-        "violated": 0,
-        "passing": 11611
-      }
+        "violated": 87,
+        "passing": 61975
+      },
+      "violated": [
+        {
+          "path": "tssm/release/PS2/PAL/DE/B1/B101_DE.HIP",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1056
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/B2/B201_DE.HIP",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 608
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/B4/B401_DE.HIP",
+          "id": "0xE91B6C1C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 672
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/BB/BB03_DE.HIP",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1056
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/JK/JK01_DE.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 512
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/JK/JK02_DE.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 512
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/PT/PT03_DE.HIP",
+          "id": "0x28A16D6F",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 288
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/TR/TR02_DE.HIP",
+          "id": "0x0AB8CAFC",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 144
+        },
+        {
+          "path": "tssm/release/PS2/PAL/DE/TT/TT01_DE.HIP",
+          "id": "0xD5817A64",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1872
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/B1/B101_ES.HIP",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1008
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/B2/B201_ES.HIP",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 880
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/B3/B301_ES.HIP",
+          "id": "0xDEF0B4F0",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 736
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/B4/B401_ES.HIP",
+          "id": "0xE91B6C1C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 208
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/BB/BB03_ES.HIP",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1248
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/JK/JK01_ES.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1808
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/JK/JK02_ES.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1808
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/PT/PT03_ES.HIP",
+          "id": "0x28A16D6F",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 928
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/TR/TR02_ES.HIP",
+          "id": "0x0AB8CAFC",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1952
+        },
+        {
+          "path": "tssm/release/PS2/PAL/ES/TT/TT01_ES.HIP",
+          "id": "0xD5817A64",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1504
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/B1/B101_FR.HIP",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1440
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/B1/B101_NL.HIP",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 208
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/B2/B201_FR.HIP",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1728
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/B2/B201_NL.HIP",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1936
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/B3/B301_FR.HIP",
+          "id": "0xDEF0B4F0",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1904
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/BB/BB03_FR.HIP",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 224
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/BB/BB03_NL.HIP",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1792
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/JK/JK01_FR.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1664
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/JK/JK02_FR.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1664
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/JK/JK02_NL.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1296
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/PT/PT03_FR.HIP",
+          "id": "0x28A16D6F",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1104
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/PT/PT03_NL.HIP",
+          "id": "0x28A16D6F",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1792
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/TR/TR02_FR.HIP",
+          "id": "0x0AB8CAFC",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 576
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/TR/TR02_NL.HIP",
+          "id": "0x0AB8CAFC",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 576
+        },
+        {
+          "path": "tssm/release/PS2/PAL/FR-NL/TT/TT01_NL.HIP",
+          "id": "0xD5817A64",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 512
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/B1/B101_IT.HIP",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1408
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/B2/B201_IT.HIP",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1776
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/B3/B301_IT.HIP",
+          "id": "0xDEF0B4F0",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1904
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/B4/B401_IT.HIP",
+          "id": "0xE91B6C1C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1904
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/BB/BB03_IT.HIP",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1504
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/JK/JK01_IT.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1152
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/JK/JK02_IT.HIP",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1152
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/PT/PT03_IT.HIP",
+          "id": "0x28A16D6F",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 800
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/TR/TR02_IT.HIP",
+          "id": "0x0AB8CAFC",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 576
+        },
+        {
+          "path": "tssm/release/PS2/PAL/IT/TT/TT01_IT.HIP",
+          "id": "0xD5817A64",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1344
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/B1/b101_DE.hip",
+          "id": "0x0E3FC04C",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 116
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/B2/b201_DE.hip",
+          "id": "0x3775B162",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1828
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/BB/bb03_DE.hip",
+          "id": "0xA3E9E53B",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 1908
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/DE/de01_DE.hip",
+          "id": "0xCBB0D6D1",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 400
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/JK/jk01_DE.hip",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 796
+        },
+        {
+          "path": "tssm/release/XBOX/PAL/DE/JK/jk02_DE.hip",
+          "id": "0x6E884180",
+          "nextAlignment": 1,
+          "expectedPlus": 0,
+          "actualPlus": 796
+        }
+      ]
     },
     "sourceFlagsExclusive": {
-      "checked": 180325,
+      "checked": 958500,
       "outcomes": {
         "violated": 0,
-        "passing": 180325
+        "passing": 958500
       }
     },
     "structural": {
       "AssetDebug": {
-        "checked": 180325,
+        "checked": 958500,
         "outcomes": {
           "violated": 0,
-          "passing": 180325
+          "passing": 958500
         }
       },
       "AssetHeader": {
-        "checked": 180325,
+        "checked": 958500,
         "outcomes": {
           "violated": 0,
-          "passing": 180325
+          "passing": 958500
         }
       },
       "AssetInf": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "AssetStream": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "AssetTable": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "Dictionary": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "HIPA": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "LayerDebug": {
-        "checked": 10033,
+        "checked": 53288,
         "outcomes": {
           "violated": 0,
-          "passing": 10033
+          "passing": 53288
         }
       },
       "LayerHeader": {
-        "checked": 10033,
+        "checked": 53288,
         "outcomes": {
           "violated": 0,
-          "passing": 10033
+          "passing": 53288
         }
       },
       "LayerInf": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "LayerTable": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "Package": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackageCount": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackageCreated": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackageFlags": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackageModified": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackagePlatform": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "PackageVersion": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "StreamData": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       },
       "StreamHeader": {
-        "checked": 469,
+        "checked": 2492,
         "outcomes": {
           "violated": 0,
-          "passing": 469
+          "passing": 2492
         }
       }
     }
