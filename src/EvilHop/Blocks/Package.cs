@@ -334,6 +334,7 @@ public enum PackFlags : uint
     Unknown21 = 1U << 20,
     Unknown22 = 1U << 21,
     Unknown23 = 1U << 22,
+    Unknown24 = 1U << 23,
     Unknown25 = 1U << 24,
     Unknown26 = 1U << 25,
     Default = Unknown2 | Unknown3 | Unknown4 | Unknown6,
