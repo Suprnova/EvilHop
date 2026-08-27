@@ -83,11 +83,41 @@ public partial class Serializer
         writer.Write(block.Value);
 
     /// <summary>
+    /// <see cref="LayerType"/>'s own numeric values, in the order N100F stores them on disk - it has
+    /// no <see cref="LayerType.TextureStream"/> or <see cref="LayerType.JSPInfo"/>, so every value
+    /// from <see cref="LayerType.BSP"/> on is shifted down two from <see cref="LayerType"/>'s numbering.
+    /// </summary>
+    private static readonly LayerType[] N100FLayerTypeOrder =
+    [
+        LayerType.Default, LayerType.Texture, LayerType.BSP, LayerType.Model, LayerType.Animation,
+        LayerType.VRAM, LayerType.SRAM, LayerType.SoundTable, LayerType.Cutscene, LayerType.CutsceneTable
+    ];
+
+    /// <summary>
+    /// BFBB's on-disk order: <see cref="N100FLayerTypeOrder"/> plus a <see cref="LayerType.JSPInfo"/>
+    /// BFBB has that N100F doesn't, still with no <see cref="LayerType.TextureStream"/>.
+    /// </summary>
+    private static readonly LayerType[] BFBBLayerTypeOrder = [.. N100FLayerTypeOrder, LayerType.JSPInfo];
+
+    /// <summary>
+    /// The on-disk <see cref="LayerType"/> order for <paramref name="game"/>, or <see langword="null"/>
+    /// for a game whose order already matches <see cref="LayerType"/>'s own numbering.
+    /// </summary>
+    private static LayerType[]? LayerTypeOrder(GameVersion game) => game switch
+    {
+        GameVersion.N100F => N100FLayerTypeOrder,
+        GameVersion.BFBB => BFBBLayerTypeOrder,
+        _ => null
+    };
+
+    /// <summary>
     /// Reads the fields of a <see cref="LayerHeader"/> (LHDR) block.
     /// </summary>
-    protected static void ReadLayerHeader(EndianReader reader, LayerHeader block, uint size)
+    protected void ReadLayerHeader(EndianReader reader, LayerHeader block, uint size)
     {
-        block.Type = (LayerType)reader.ReadUInt32();
+        uint raw = reader.ReadUInt32();
+        var order = LayerTypeOrder(Profile.Game);
+        block.Type = order != null && raw < order.Length ? order[raw] : (LayerType)raw;
 
         uint assetCount = reader.ReadUInt32();
         block.AssetCount = assetCount;
@@ -101,9 +131,12 @@ public partial class Serializer
     /// <summary>
     /// Writes the fields of a <see cref="LayerHeader"/> (LHDR) block.
     /// </summary>
-    protected static void WriteLayerHeader(EndianWriter writer, LayerHeader block)
+    protected void WriteLayerHeader(EndianWriter writer, LayerHeader block)
     {
-        writer.Write((uint)block.Type);
+        var order = LayerTypeOrder(Profile.Game);
+        int index = order != null ? Array.IndexOf(order, block.Type) : -1;
+        writer.Write(index >= 0 ? (uint)index : (uint)block.Type);
+
         writer.Write(block.AssetCount);
         foreach (uint id in block.AssetIds)
             writer.Write(id);

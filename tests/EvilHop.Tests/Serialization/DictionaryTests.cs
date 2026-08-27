@@ -1,6 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -271,6 +272,110 @@ public class DictionaryTests
             w.Write(BlockBytes.Build("LDBG", expectedLdbg));
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
+    }
+
+    [Theory]
+    [InlineData(2u, LayerType.BSP)]
+    [InlineData(9u, LayerType.CutsceneTable)]
+    public void ReadBlock_Lhdr_N100F_TranslatesShiftedRawValue(uint raw, LayerType expected)
+    {
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var content = BlockBytes.Content(w =>
+        {
+            w.Write((int)raw);
+            w.Write(0);
+            w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
+        });
+        var reader = BlockBytes.Reader("LHDR", content);
+
+        var block = (LayerHeader)serializer.ReadBlockPublic(reader);
+
+        Assert.Equal(expected, block.Type);
+    }
+
+    [Fact]
+    public void ReadBlock_Lhdr_Bfbb_TranslatesRawValueToJSPInfo()
+    {
+        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile);
+        var content = BlockBytes.Content(w =>
+        {
+            w.Write(10);
+            w.Write(0);
+            w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
+        });
+        var reader = BlockBytes.Reader("LHDR", content);
+
+        var block = (LayerHeader)serializer.ReadBlockPublic(reader);
+
+        Assert.Equal(LayerType.JSPInfo, block.Type);
+    }
+
+    [Fact]
+    public void ReadBlock_Lhdr_ModernGame_UsesLayerTypeNumberingDirectly()
+    {
+        var serializer = new TestSerializer(TSSMSerializer.DefaultProfile);
+        var content = BlockBytes.Content(w =>
+        {
+            w.Write((uint)LayerType.TextureStream);
+            w.Write(0);
+            w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
+        });
+        var reader = BlockBytes.Reader("LHDR", content);
+
+        var block = (LayerHeader)serializer.ReadBlockPublic(reader);
+
+        Assert.Equal(LayerType.TextureStream, block.Type);
+    }
+
+    [Fact]
+    public void WriteBlock_Lhdr_N100F_WritesShiftedRawValueForBsp()
+    {
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var debug = serializer.CreateBlock<LayerDebug>();
+        var block = serializer.CreateBlock<LayerHeader>();
+        block.Type = LayerType.BSP;
+        block.AssetIds = [];
+        block.Debug = debug;
+
+        var written = BlockBytes.WriteBlock(serializer, block);
+        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        reader.BaseStream.Position = 8; // skip tag + size
+
+        Assert.Equal(2u, reader.ReadUInt32());
+    }
+
+    [Fact]
+    public void WriteBlock_Lhdr_Bfbb_WritesJSPInfoAtRawTen()
+    {
+        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile);
+        var debug = serializer.CreateBlock<LayerDebug>();
+        var block = serializer.CreateBlock<LayerHeader>();
+        block.Type = LayerType.JSPInfo;
+        block.AssetIds = [];
+        block.Debug = debug;
+
+        var written = BlockBytes.WriteBlock(serializer, block);
+        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        reader.BaseStream.Position = 8; // skip tag + size
+
+        Assert.Equal(10u, reader.ReadUInt32());
+    }
+
+    [Fact]
+    public void WriteBlock_Lhdr_N100F_TypeNotValidForGame_FallsBackToLayerTypeNumericValue()
+    {
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var debug = serializer.CreateBlock<LayerDebug>();
+        var block = serializer.CreateBlock<LayerHeader>();
+        block.Type = LayerType.TextureStream; // N100F has no TextureStream
+        block.AssetIds = [];
+        block.Debug = debug;
+
+        var written = BlockBytes.WriteBlock(serializer, block);
+        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        reader.BaseStream.Position = 8; // skip tag + size
+
+        Assert.Equal((uint)LayerType.TextureStream, reader.ReadUInt32());
     }
 
     [Fact]
