@@ -7,7 +7,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_UnderCap_RecordsFullSet()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
 
         accumulator.Record(1u, "n100f/release", "n100f/release/a.HIP");
         accumulator.Record(2u, "n100f/release", "n100f/release/a.HIP");
@@ -25,7 +25,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_AtCapBoundary_StaysSet()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
         for (uint i = 0; i < 70; i++) accumulator.Record(i, "build", "path");
 
         var set = Assert.IsType<ValueSet>(accumulator.ToSummary());
@@ -34,9 +34,20 @@ public class FieldAccumulatorTests
     }
 
     [Fact]
+    public void ToSummary_OverCapButNeverDegradesField_StaysSet()
+    {
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "AssetHeader.Type");
+        for (uint i = 0; i < 71; i++) accumulator.Record(i, "build", "path");
+
+        var set = Assert.IsType<ValueSet>(accumulator.ToSummary());
+
+        Assert.Equal(71, set.Values.Count);
+    }
+
+    [Fact]
     public void ToSummary_OverCap_DegradesToSummaryWithExactDistinctAndMinMax()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
         for (uint i = 0; i < 71; i++) accumulator.Record(i, "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
@@ -50,7 +61,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_TextOverCap_RecordsLengthRangeNotMinMax()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Text);
+        var accumulator = new FieldAccumulator(FieldKind.Text, "Test.Field");
         for (int i = 0; i < 71; i++) accumulator.Record(new string('a', i), "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
@@ -65,7 +76,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_CollectionOverCap_RecordsElementCountRange()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Collection);
+        var accumulator = new FieldAccumulator(FieldKind.Collection, "Test.Field");
         for (int i = 0; i < 71; i++) accumulator.Record(Enumerable.Range(0, i).ToArray(), "build", "path");
 
         var digest = Assert.IsType<ValueDigest>(accumulator.ToSummary());
@@ -78,7 +89,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_Bytes_NeverRecordsContentsOnlyLengthRange()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Bytes);
+        var accumulator = new FieldAccumulator(FieldKind.Bytes, "Test.Field");
         accumulator.Record(new byte[3], "build", "path");
         accumulator.Record(new byte[7], "build", "path");
         accumulator.Record(new byte[7], "build", "path");
@@ -95,7 +106,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_PrintableFourCcEnumKey_FormatsAsAscii()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
 
         // Texture = 0x52575458, which reads as the ASCII FourCC "RWTX".
         accumulator.Record(EvilHop.Common.AssetType.Texture, "build", "path");
@@ -108,7 +119,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_NonPrintableEnumKey_FallsBackToHex()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
         accumulator.Record((EvilHop.Common.AssetType)0x00000000, "build", "path");
 
         var set = Assert.IsType<ValueSet>(accumulator.ToSummary());
@@ -119,7 +130,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToJson_PlainNumericKeys_SortByMagnitudeNotLexicographically()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Numeric);
+        var accumulator = new FieldAccumulator(FieldKind.Numeric, "Test.Field");
         foreach (uint value in new uint[] { 0, 10, 12, 2, 20 })
             accumulator.Record(value, "build", "path");
 
@@ -131,7 +142,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToSummary_HexKind_FormatsKeyAsTwoDigitHex()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Hex);
+        var accumulator = new FieldAccumulator(FieldKind.Hex, "Test.Field");
 
         accumulator.Record((byte)0x33, "build", "path");
 
@@ -143,7 +154,7 @@ public class FieldAccumulatorTests
     [Fact]
     public void ToJson_HexKind_SortsByMagnitude()
     {
-        var accumulator = new FieldAccumulator(FieldKind.Hex);
+        var accumulator = new FieldAccumulator(FieldKind.Hex, "Test.Field");
         foreach (byte value in new byte[] { 0x33, 0x02, 0xFF })
             accumulator.Record(value, "build", "path");
 
