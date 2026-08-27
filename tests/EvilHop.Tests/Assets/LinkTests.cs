@@ -6,6 +6,27 @@ namespace EvilHop.Tests.Assets;
 public class LinkTests
 {
     [Fact]
+    public void DefaultConstructor_ParamsHasFourZeroedSlots()
+    {
+        var link = new Link();
+
+        Assert.Equal(4, link.Params.Length);
+        Assert.All(link.Params, p => Assert.IsType<RawParameter>(p));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(3)]
+    [InlineData(5)]
+    public void Params_SetToWrongLength_ThrowsArgumentException(int length)
+    {
+        var link = new Link();
+        var wrongLength = new Parameter[length];
+
+        Assert.Throws<ArgumentException>(() => link.Params = wrongLength);
+    }
+
+    [Fact]
     public void Params_AllFourPopulated_WriteToSixteenBytesInOrder()
     {
         var link = new Link
