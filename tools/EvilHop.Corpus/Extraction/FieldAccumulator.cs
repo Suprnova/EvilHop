@@ -2,16 +2,22 @@ namespace EvilHop.Corpus.Extraction;
 
 /// <summary>
 /// Accumulates every observed value of a single field across the whole corpus and produces its
-/// <see cref="ValueSummary"/>. One instance per field key (e.g. <c>"AssetHeader.Type"</c>),
-/// persisting across archives.
+/// <see cref="ValueSummary"/>. One instance per <paramref name="fieldKey"/> (e.g.
+/// <c>"AssetHeader.Type"</c>), persisting across archives.
 /// </summary>
-internal sealed class FieldAccumulator(FieldKind kind)
+/// <param name="kind">How the field's CLR type is tracked and summarized.</param>
+/// <param name="fieldKey">
+/// The field's key, checked against <see cref="NeverDegrades"/> to decide whether cardinality alone
+/// can degrade this field to a digest.
+/// </param>
+internal sealed class FieldAccumulator(FieldKind kind, string fieldKey)
 {
-    // TODO: either refactor this to use something other than a cardinality cap, or add an override
-    // for particular fields (i.e., AssetHeader.Type). AssetHeader.Type was being degraded to
-    // "summary" in incredibles.json, while AssetHeader.Plus wasn't. Some fields are always useful
-    // in sets, while some fields should always be "summary", cardinality might not be the right
-    // call.
+    /// <summary>
+    /// An override for fields that are closed, meaningful enumerations and stay a full
+    /// <see cref="ValueSet"/> no matter how many distinct values are observed.
+    /// </summary>
+    private static readonly HashSet<string> NeverDegrades = ["AssetHeader.Type"];
+
     private const int CardinalityCap = 70;
 
     private sealed class Occurrence
@@ -48,7 +54,7 @@ internal sealed class FieldAccumulator(FieldKind kind)
             return;
         }
 
-        if (!isNewKey || _topValues.Count >= CardinalityCap)
+        if (!isNewKey || (_topValues.Count >= CardinalityCap && !NeverDegrades.Contains(fieldKey)))
         {
             _degraded = true;
             _topValues.Clear();
