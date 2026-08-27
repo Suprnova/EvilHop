@@ -147,7 +147,6 @@ public partial class Serializer
 
         foreach (var assign in slots)
         {
-            // TODO: flag this somehow?
             if (reader.BaseStream.Position >= end) return;
             assign(block, reader.ReadEvilString());
         }

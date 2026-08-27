@@ -63,9 +63,11 @@ public abstract class Block
     /// <typeparam name="T">The type of <see cref="Block"/> to replace.</typeparam>
     /// <param name="value">The new <see cref="Block"/>.</param>
     /// <returns>The replaced <see cref="Block"/> if present, otherwise <see langword="null"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when this block's fields are locked.</exception>
     public T? SetChild<T>(T? value) where T : Block
     {
-        // TODO: see if this should throw when AreBlockFieldsLocked is true
+        EnsureFieldsUnlocked();
+
         var candidate = GetChild<T>();
         if (candidate != null) Children.Remove(candidate);
 
@@ -131,14 +133,24 @@ public abstract class Block
     /// <exception cref="InvalidOperationException">Thrown when the block fields are locked.</exception>
     protected void SetManagedBlockField<T>(ref T field, T value)
     {
-        // todo: custom exception?
-        if (AreBlockFieldsLocked)
-            throw new InvalidOperationException(
-                $"Cannot modify field of type {typeof(T).Name} on block of type {GetType().Name}" +
-                $"because block fields are locked. Release the lock by exiting Asset Mode from" +
-                $"{nameof(Archive)} before attempting to modify block fields."
-                );
-
+        EnsureFieldsUnlocked();
         field = value;
+    }
+
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException"/> if <see cref="AreBlockFieldsLocked"/> is
+    /// <see langword="true"/>. Shared by every mutation a lock guards - a managed field or a child
+    /// replacement alike - since either would otherwise be silently discarded by the
+    /// <see cref="Archive"/> session that owns the lock.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the block fields are locked.</exception>
+    protected void EnsureFieldsUnlocked()
+    {
+        if (!AreBlockFieldsLocked) return;
+
+        throw new InvalidOperationException(
+            $"Cannot modify block of type {GetType().Name} because its fields are locked. Release " +
+            $"the lock by exiting Asset Mode from {nameof(Archive)} before attempting to modify " +
+            $"block fields.");
     }
 }

@@ -61,12 +61,17 @@ public class AssetTable : Block
     /// <summary>
     /// The <see cref="AssetHeader"/> children of the <see cref="AssetTable"/>.
     /// </summary>
-    /// TODO: bad UX? you'd expect this to be mutable, and you'd expect to be able to
-    /// modify Headers in-place
+    /// <exception cref="InvalidOperationException">Thrown when this block's fields are locked.</exception>
     public IEnumerable<AssetHeader> Headers
     {
         get => GetChildren<AssetHeader>();
-        set => throw new NotImplementedException();
+        set
+        {
+            EnsureFieldsUnlocked();
+
+            foreach (var header in GetChildren<AssetHeader>().ToList()) Children.Remove(header);
+            foreach (var header in value) Children.Add(header);
+        }
     }
 
     internal AssetTable() { }
@@ -276,10 +281,17 @@ public class LayerTable : Block
     /// <summary>
     /// The <see cref="LayerHeader"/> children of the <see cref="AssetTable"/>.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when this block's fields are locked.</exception>
     public IEnumerable<LayerHeader> Headers
     {
         get => GetChildren<LayerHeader>();
-        set => throw new NotImplementedException();
+        set
+        {
+            EnsureFieldsUnlocked();
+
+            foreach (var header in GetChildren<LayerHeader>().ToList()) Children.Remove(header);
+            foreach (var header in value) Children.Add(header);
+        }
     }
 
     internal LayerTable() { }

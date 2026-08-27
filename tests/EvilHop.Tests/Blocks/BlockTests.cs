@@ -268,7 +268,29 @@ public class BlockTests
 
         var ex = Assert.Throws<InvalidOperationException>(() => testBlock.ManagedField = newValue);
 
-        Assert.Contains("Cannot modify field of type Int32 on block of type TestBlock", ex.Message);
+        Assert.Contains("Cannot modify block of type TestBlock because its fields are locked", ex.Message);
+    }
+
+    [Fact]
+    public void SetChild_WhenLocked_ThrowsInvalidOperationException()
+    {
+        testBlock.AreBlockFieldsLocked = true;
+        var value = new TestBlock();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => testBlock.SetChild(value));
+
+        Assert.Contains("Cannot modify block of type TestBlock because its fields are locked", ex.Message);
+    }
+
+    [Fact]
+    public void SetChild_WhenLocked_LeavesChildrenUnchanged()
+    {
+        var existing = new TestBlock();
+        testBlock.Children.Add(existing);
+        testBlock.AreBlockFieldsLocked = true;
+
+        Assert.ThrowsAny<InvalidOperationException>(() => testBlock.SetChild(new TestBlock()));
+        Assert.Same(existing, Assert.Single(testBlock.GetChildren<TestBlock>()));
     }
 
     [Fact]
