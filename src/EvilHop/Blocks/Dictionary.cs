@@ -201,7 +201,6 @@ public class AssetDebug : Block
     /// <inheritdoc/>
     protected internal override string Tag => "ADBG";
 
-    // TODO: validate this is actually an int and not uint
     /// <summary>
     /// The multiple of bytes this <c>Asset</c>'s own data <see cref="AssetHeader.Offset"/> aligns
     /// to.
@@ -213,7 +212,6 @@ public class AssetDebug : Block
     /// (<c>PickupTypes</c>, <c>ReactiveAnimation</c>, <c>ThrowableTable</c>) to at least 128.
     /// EvilHop does not model this table; it exposes the raw stored value.
     /// </remarks>
-    /// Validation TODO: Ensure -1 alignments actually exist.
     /// Valid calculation of the *previous* Asset's AHDR.plus using this.
     public int Alignment
     {
