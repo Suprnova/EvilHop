@@ -1,6 +1,7 @@
 using EvilHop.Assets;
 using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
@@ -25,15 +26,18 @@ public class AssetCodecsTests
 
     private static Asset Read(AssetType type, byte[] data, FormatProfile? profile = null)
     {
+        profile ??= N100FSerializer.DefaultProfile;
         var (header, debug) = HeaderFor(type);
-        return AssetCodecs.Read(data, header, debug, profile ?? N100FSerializer.DefaultProfile);
+        using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
+        return AssetCodecs.Read(reader, header, debug, profile);
     }
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
+        profile ??= N100FSerializer.DefaultProfile;
         using var stream = new MemoryStream();
-        using (var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true))
-            AssetCodecs.Write(asset, writer, profile ?? N100FSerializer.DefaultProfile);
+        using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
+            AssetCodecs.Write(asset, writer, profile);
         return stream.ToArray();
     }
 

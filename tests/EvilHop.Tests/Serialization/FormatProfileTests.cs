@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
@@ -35,5 +36,15 @@ public class FormatProfileTests
         Assert.False(IncrediblesSerializer.DefaultProfile.EntityHasPadding);
         Assert.False(ROTUSerializer.DefaultProfile.EntityHasPadding);
         Assert.False(RatatouilleSerializer.DefaultProfile.EntityHasPadding);
+    }
+
+    [Fact]
+    public void Endianness_DefaultsToBig()
+    {
+        // Every current DefaultProfile is a GameCube build. Deriving this per platform instead of
+        // defaulting it is unsolved.
+        var profile = new FormatProfile(GameVersion.N100F, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+
+        Assert.Equal(Endianness.Big, profile.Endianness);
     }
 }

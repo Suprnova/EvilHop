@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
@@ -17,7 +18,7 @@ internal class TestSerializer : Serializer
 
     public TestSerializer(FormatProfile profile) : base(profile) { }
 
-    public Block ReadBlockPublic(BinaryReader reader) => ReadBlock(reader);
+    public Block ReadBlockPublic(EndianReader reader) => ReadBlock(reader);
 
-    public void WriteBlockPublic(BinaryWriter writer, Block block) => WriteBlock(writer, block);
+    public void WriteBlockPublic(EndianWriter writer, Block block) => WriteBlock(writer, block);
 }

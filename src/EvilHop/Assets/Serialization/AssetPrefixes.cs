@@ -1,6 +1,4 @@
 using EvilHop.Primitives;
-using System.Buffers.Binary;
-using System.Numerics;
 
 namespace EvilHop.Assets.Serialization;
 
@@ -14,31 +12,26 @@ namespace EvilHop.Assets.Serialization;
 /// </remarks>
 internal static class BaseAssetPrefix
 {
-    /// <summary>The prefix's length in bytes.</summary>
-    public const int Length = 8;
-
     /// <summary>
-    /// Reads the prefix from the start of <paramref name="data"/> into <paramref name="asset"/>.
+    /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="asset"/>.
     /// </summary>
-    /// <returns>The offset immediately past the prefix.</returns>
-    public static int Read(BaseAsset asset, ReadOnlySpan<byte> data)
+    public static void Read(BaseAsset asset, EndianReader reader)
     {
-        asset.Physical.BaseId = new AssetId(BinaryPrimitives.ReadUInt32BigEndian(data));
-        asset.Physical.BaseType = data[4];
-        asset.Physical.LinkCount = data[5];
-        asset.BaseFlags = (BaseAssetFlags)BinaryPrimitives.ReadInt16BigEndian(data[6..]);
-        return Length;
+        asset.Physical.BaseId = reader.ReadAssetId();
+        asset.Physical.BaseType = reader.ReadByte();
+        asset.Physical.LinkCount = reader.ReadByte();
+        asset.BaseFlags = (BaseAssetFlags)reader.ReadInt16();
     }
 
     /// <summary>
     /// Writes <paramref name="asset"/>'s prefix to <paramref name="writer"/>.
     /// </summary>
-    public static void Write(BaseAsset asset, BinaryWriter writer)
+    public static void Write(BaseAsset asset, EndianWriter writer)
     {
-        writer.WriteEvilInt(asset.Physical.BaseId.Value);
+        writer.Write(asset.Physical.BaseId);
         writer.Write(asset.Physical.BaseType);
         writer.Write(asset.Physical.LinkCount);
-        writer.WriteBigEndian((short)asset.BaseFlags);
+        writer.Write((short)asset.BaseFlags);
     }
 }
 
@@ -49,47 +42,35 @@ internal static class BaseAssetPrefix
 internal static class EntityAssetPrefix
 {
     /// <summary>
-    /// The prefix's length in bytes, excluding <see cref="Common.GameVersion.BFBB"/>'s
-    /// four padding bytes.
-    /// </summary>
-    public const int Length = 72;
-
-    /// <summary>
-    /// Reads the prefix from <paramref name="data"/> at <paramref name="offset"/> into
-    /// <paramref name="asset"/>.
+    /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="asset"/>.
     /// </summary>
     /// <param name="asset">The <see cref="EntityAsset"/> to populate.</param>
-    /// <param name="data">The asset's data.</param>
-    /// <param name="offset">The offset to begin reading at.</param>
+    /// <param name="reader">The reader to read from.</param>
     /// <param name="hasPadding">
     /// Whether this build inserts four bytes of padding after the four flag bytes, from
     /// <see cref="EvilHop.Serialization.FormatProfile.EntityHasPadding"/>.
     /// </param>
-    /// <returns>The offset immediately past the prefix.</returns>
-    public static int Read(EntityAsset asset, ReadOnlySpan<byte> data, int offset, bool hasPadding)
+    public static void Read(EntityAsset asset, EndianReader reader, bool hasPadding)
     {
-        asset.EntityFlags = (EntityFlags)data[offset];
-        asset.Physical.Subtype = data[offset + 1];
-        asset.Physical.PFlags = data[offset + 2];
-        asset.Physical.CollisionFlags = (CollisionFlags)data[offset + 3];
-        offset += 4;
+        asset.EntityFlags = (EntityFlags)reader.ReadByte();
+        asset.Physical.Subtype = reader.ReadByte();
+        asset.Physical.PFlags = reader.ReadByte();
+        asset.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte();
 
         // Read and discarded, never modelled - it is always zero where it exists.
-        if (hasPadding) offset += 4;
+        if (hasPadding) reader.ReadBytes(4);
 
-        asset.Physical.SurfaceId = ReadAssetId(data, ref offset);
-        asset.Angle = ReadVector3(data, ref offset);
-        asset.Position = ReadVector3(data, ref offset);
-        asset.Scale = ReadVector3(data, ref offset);
-        asset.RedMultiplier = ReadSingle(data, ref offset);
-        asset.GreenMultiplier = ReadSingle(data, ref offset);
-        asset.BlueMultiplier = ReadSingle(data, ref offset);
-        asset.SeeThrough = ReadSingle(data, ref offset);
-        asset.Physical.SeeThroughSpeed = ReadSingle(data, ref offset);
-        asset.Physical.ModelId = ReadAssetId(data, ref offset);
-        asset.Physical.AnimListId = ReadAssetId(data, ref offset);
-
-        return offset;
+        asset.Physical.SurfaceId = reader.ReadAssetId();
+        asset.Angle = reader.ReadVector3();
+        asset.Position = reader.ReadVector3();
+        asset.Scale = reader.ReadVector3();
+        asset.RedMultiplier = reader.ReadSingle();
+        asset.GreenMultiplier = reader.ReadSingle();
+        asset.BlueMultiplier = reader.ReadSingle();
+        asset.SeeThrough = reader.ReadSingle();
+        asset.Physical.SeeThroughSpeed = reader.ReadSingle();
+        asset.Physical.ModelId = reader.ReadAssetId();
+        asset.Physical.AnimListId = reader.ReadAssetId();
     }
 
     /// <summary>
@@ -101,7 +82,7 @@ internal static class EntityAssetPrefix
     /// Whether this build writes four bytes of padding after the four flag bytes. Written as zero
     /// where it applies.
     /// </param>
-    public static void Write(EntityAsset asset, BinaryWriter writer, bool hasPadding)
+    public static void Write(EntityAsset asset, EndianWriter writer, bool hasPadding)
     {
         writer.Write((byte)asset.EntityFlags);
         writer.Write(asset.Physical.Subtype);
@@ -110,35 +91,18 @@ internal static class EntityAssetPrefix
 
         if (hasPadding) writer.Write(new byte[4]);
 
-        writer.WriteEvilInt(asset.Physical.SurfaceId.Value);
-        writer.WriteBigEndian(asset.Angle);
-        writer.WriteBigEndian(asset.Position);
-        writer.WriteBigEndian(asset.Scale);
-        writer.WriteBigEndian(asset.RedMultiplier);
-        writer.WriteBigEndian(asset.GreenMultiplier);
-        writer.WriteBigEndian(asset.BlueMultiplier);
-        writer.WriteBigEndian(asset.SeeThrough);
-        writer.WriteBigEndian(asset.Physical.SeeThroughSpeed);
-        writer.WriteEvilInt(asset.Physical.ModelId.Value);
-        writer.WriteEvilInt(asset.Physical.AnimListId.Value);
+        writer.Write(asset.Physical.SurfaceId);
+        writer.Write(asset.Angle);
+        writer.Write(asset.Position);
+        writer.Write(asset.Scale);
+        writer.Write(asset.RedMultiplier);
+        writer.Write(asset.GreenMultiplier);
+        writer.Write(asset.BlueMultiplier);
+        writer.Write(asset.SeeThrough);
+        writer.Write(asset.Physical.SeeThroughSpeed);
+        writer.Write(asset.Physical.ModelId);
+        writer.Write(asset.Physical.AnimListId);
     }
-
-    private static AssetId ReadAssetId(ReadOnlySpan<byte> data, ref int offset)
-    {
-        var id = new AssetId(BinaryPrimitives.ReadUInt32BigEndian(data[offset..]));
-        offset += 4;
-        return id;
-    }
-
-    private static float ReadSingle(ReadOnlySpan<byte> data, ref int offset)
-    {
-        float value = BinaryPrimitives.ReadSingleBigEndian(data[offset..]);
-        offset += 4;
-        return value;
-    }
-
-    private static Vector3 ReadVector3(ReadOnlySpan<byte> data, ref int offset) =>
-        new(ReadSingle(data, ref offset), ReadSingle(data, ref offset), ReadSingle(data, ref offset));
 }
 
 /// <summary>
@@ -147,29 +111,23 @@ internal static class EntityAssetPrefix
 /// </summary>
 internal static class DynaAssetPrefix
 {
-    /// <summary>The prefix's length in bytes.</summary>
-    public const int Length = 8;
-
     /// <summary>
-    /// Reads the prefix from <paramref name="data"/> at <paramref name="offset"/> into
-    /// <paramref name="asset"/>.
+    /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="asset"/>.
     /// </summary>
-    /// <returns>The offset immediately past the prefix.</returns>
-    public static int Read(DynaAsset asset, ReadOnlySpan<byte> data, int offset)
+    public static void Read(DynaAsset asset, EndianReader reader)
     {
-        asset.DynaType = BinaryPrimitives.ReadUInt32BigEndian(data[offset..]);
-        asset.Version = BinaryPrimitives.ReadInt16BigEndian(data[(offset + 4)..]);
-        asset.Handle = BinaryPrimitives.ReadInt16BigEndian(data[(offset + 6)..]);
-        return offset + Length;
+        asset.Physical.DynaType = reader.ReadUInt32();
+        asset.Physical.Version = reader.ReadInt16();
+        asset.Physical.Handle = reader.ReadInt16();
     }
 
     /// <summary>
     /// Writes <paramref name="asset"/>'s prefix to <paramref name="writer"/>.
     /// </summary>
-    public static void Write(DynaAsset asset, BinaryWriter writer)
+    public static void Write(DynaAsset asset, EndianWriter writer)
     {
-        writer.WriteEvilInt(asset.DynaType);
-        writer.WriteBigEndian(asset.Version);
-        writer.WriteBigEndian(asset.Handle);
+        writer.Write(asset.Physical.DynaType);
+        writer.Write(asset.Physical.Version);
+        writer.Write(asset.Physical.Handle);
     }
 }

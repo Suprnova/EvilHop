@@ -9,7 +9,7 @@ public class DictionaryTests
     [Fact]
     public void ReadBlock_Ainf_ReadsExpectedFields()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0));
+        var content = BlockBytes.Content(w => w.Write(0));
         var reader = BlockBytes.Reader("AINF", content);
 
         var block = (AssetInf)new TestSerializer().ReadBlockPublic(reader);
@@ -24,7 +24,7 @@ public class DictionaryTests
         var block = serializer.CreateBlock<AssetInf>();
         block.Value = 0;
 
-        var expected = BlockBytes.Build("AINF", BlockBytes.Content(w => w.WriteEvilInt(0)));
+        var expected = BlockBytes.Build("AINF", BlockBytes.Content(w => w.Write(0)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 
@@ -36,16 +36,16 @@ public class DictionaryTests
             w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("");
-            w.WriteEvilInt(0x12345678);
+            w.Write(0x12345678);
         });
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1001);
-            w.WriteEvilInt((uint)AssetType.Texture);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(8);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt((uint)AssetFlags.None);
+            w.Write(1001);
+            w.Write((uint)AssetType.Texture);
+            w.Write(0);
+            w.Write(8);
+            w.Write(0);
+            w.Write((uint)AssetFlags.None);
             w.Write(BlockBytes.Build("ADBG", adbg));
         });
         var reader = BlockBytes.Reader("AHDR", content);
@@ -86,16 +86,16 @@ public class DictionaryTests
             w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("");
-            w.WriteEvilInt(0x12345678);
+            w.Write(0x12345678);
         });
         var expected = BlockBytes.Build("AHDR", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1001);
-            w.WriteEvilInt((uint)AssetType.Texture);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(8);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt((uint)AssetFlags.None);
+            w.Write(1001);
+            w.Write((uint)AssetType.Texture);
+            w.Write(0);
+            w.Write(8);
+            w.Write(0);
+            w.Write((uint)AssetFlags.None);
             w.Write(BlockBytes.Build("ADBG", expectedAdbg));
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
@@ -106,19 +106,19 @@ public class DictionaryTests
     {
         var adbg = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(0);
+            w.Write(0);
             w.WriteEvilString("");
             w.WriteEvilString("");
-            w.WriteEvilInt(0);
+            w.Write(0);
         });
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(0xFFFFFFFF);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(0);
-            w.WriteEvilInt(0);
+            w.Write(0);
+            w.Write(0xFFFFFFFF);
+            w.Write(0);
+            w.Write(0);
+            w.Write(0);
+            w.Write(0);
             w.Write(BlockBytes.Build("ADBG", adbg));
         });
         var reader = BlockBytes.Reader("AHDR", content);
@@ -136,7 +136,7 @@ public class DictionaryTests
             w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("source.txt");
-            w.WriteEvilInt(0x12345678);
+            w.Write(0x12345678);
         });
         var reader = BlockBytes.Reader("ADBG", content);
 
@@ -163,7 +163,7 @@ public class DictionaryTests
             w.Write([0xFF, 0xFF, 0xFF, 0xFF]);
             w.WriteEvilString("test_asset");
             w.WriteEvilString("source.txt");
-            w.WriteEvilInt(0x12345678);
+            w.Write(0x12345678);
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
@@ -177,10 +177,10 @@ public class DictionaryTests
 
         var expected = BlockBytes.Build("ADBG", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(16);
+            w.Write(16);
             w.WriteEvilString("");
             w.WriteEvilString("");
-            w.WriteEvilInt(0);
+            w.Write(0);
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
@@ -190,10 +190,10 @@ public class DictionaryTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(16);
+            w.Write(16);
             w.WriteEvilString("");
             w.WriteEvilString("");
-            w.WriteEvilInt(0);
+            w.Write(0);
         });
         var reader = BlockBytes.Reader("ADBG", content);
 
@@ -205,7 +205,7 @@ public class DictionaryTests
     [Fact]
     public void ReadBlock_Linf_ReadsExpectedFields()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0));
+        var content = BlockBytes.Content(w => w.Write(0));
         var reader = BlockBytes.Reader("LINF", content);
 
         var block = (LayerInf)new TestSerializer().ReadBlockPublic(reader);
@@ -220,21 +220,21 @@ public class DictionaryTests
         var block = serializer.CreateBlock<LayerInf>();
         block.Value = 0;
 
-        var expected = BlockBytes.Build("LINF", BlockBytes.Content(w => w.WriteEvilInt(0)));
+        var expected = BlockBytes.Build("LINF", BlockBytes.Content(w => w.Write(0)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 
     [Fact]
     public void ReadBlock_Lhdr_ReadsExpectedFieldsAndAssetIdsArray()
     {
-        var ldbg = BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF));
+        var ldbg = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt((uint)LayerType.Default);
-            w.WriteEvilInt(3);
-            w.WriteEvilInt(101);
-            w.WriteEvilInt(102);
-            w.WriteEvilInt(103);
+            w.Write((uint)LayerType.Default);
+            w.Write(3);
+            w.Write(101);
+            w.Write(102);
+            w.Write(103);
             w.Write(BlockBytes.Build("LDBG", ldbg));
         });
         var reader = BlockBytes.Reader("LHDR", content);
@@ -260,14 +260,14 @@ public class DictionaryTests
         block.AssetIds = [101u, 102u, 103u];
         block.Debug = debug;
 
-        var expectedLdbg = BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF));
+        var expectedLdbg = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
         var expected = BlockBytes.Build("LHDR", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt((uint)LayerType.Default);
-            w.WriteEvilInt(3);
-            w.WriteEvilInt(101);
-            w.WriteEvilInt(102);
-            w.WriteEvilInt(103);
+            w.Write((uint)LayerType.Default);
+            w.Write(3);
+            w.Write(101);
+            w.Write(102);
+            w.Write(103);
             w.Write(BlockBytes.Build("LDBG", expectedLdbg));
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
@@ -276,7 +276,7 @@ public class DictionaryTests
     [Fact]
     public void ReadBlock_Ldbg_ReadsExpectedFields()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF));
+        var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
         var reader = BlockBytes.Reader("LDBG", content);
 
         var block = (LayerDebug)new TestSerializer().ReadBlockPublic(reader);
@@ -291,7 +291,7 @@ public class DictionaryTests
         var block = serializer.CreateBlock<LayerDebug>();
         block.Value = 0xFFFFFFFF;
 
-        var expected = BlockBytes.Build("LDBG", BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF)));
+        var expected = BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0xFFFFFFFF)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 }

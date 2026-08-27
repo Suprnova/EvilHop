@@ -99,10 +99,6 @@ public enum AssetType : uint
     UI = 0x55492020,
     UIFont = 0x55494654,
     UIMotion = 0x55494D20,
-    // BFBB's on-disk FourCC for what the community calls "NPC" - distinct from N100F's NPC (0x4E504320),
-    // which uses a different FourCC entirely. Both represent the same concept; not renamed to NPC here
-    // to keep the two format-specific values distinguishable. Applies to non-hostile characters too,
-    // not just villains.
     Villain = 0x56494C20,
     VillainProperties = 0x56494C50,
     Volume = 0x564F4C55,

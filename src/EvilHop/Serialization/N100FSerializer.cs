@@ -5,7 +5,7 @@ namespace EvilHop.Serialization;
 /// <summary>
 /// Reads and writes HIP archives built for <see cref="GameVersion.N100F"/>. 
 /// </summary>
-/// <param name="profile">The format quirks and game identity this serializer reads with.</param>
+/// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class N100FSerializer(FormatProfile profile) : Serializer(profile)
 {
     /// <summary>The profile every N100F build reads correctly under, except the 2001-06-11 prototype.</summary>

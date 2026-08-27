@@ -11,9 +11,9 @@ public class PackageTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(2);
-            w.WriteEvilInt(0x00040006);
-            w.WriteEvilInt(1);
+            w.Write(2);
+            w.Write(0x00040006);
+            w.Write(1);
         });
         var reader = BlockBytes.Reader("PVER", content);
 
@@ -35,9 +35,9 @@ public class PackageTests
 
         var expected = BlockBytes.Build("PVER", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(2);
-            w.WriteEvilInt(0x00040006);
-            w.WriteEvilInt(1);
+            w.Write(2);
+            w.Write(0x00040006);
+            w.Write(1);
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
@@ -45,7 +45,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Pflg_ReadsExpectedFields()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0x2E));
+        var content = BlockBytes.Content(w => w.Write(0x2E));
         var reader = BlockBytes.Reader("PFLG", content);
 
         var block = (PackageFlags)new TestSerializer().ReadBlockPublic(reader);
@@ -56,7 +56,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Pflg_NonStandardValue_ReadsAsIs()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF));
+        var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
         var reader = BlockBytes.Reader("PFLG", content);
 
         var block = (PackageFlags)new TestSerializer().ReadBlockPublic(reader);
@@ -71,7 +71,7 @@ public class PackageTests
         var block = serializer.CreateBlock<PackageFlags>();
         block.Flags = PackFlags.Default;
 
-        var expected = BlockBytes.Build("PFLG", BlockBytes.Content(w => w.WriteEvilInt(0x2E)));
+        var expected = BlockBytes.Build("PFLG", BlockBytes.Content(w => w.Write(0x2E)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 
@@ -80,11 +80,11 @@ public class PackageTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1);
-            w.WriteEvilInt(2);
-            w.WriteEvilInt(3);
-            w.WriteEvilInt(4);
-            w.WriteEvilInt(5);
+            w.Write(1);
+            w.Write(2);
+            w.Write(3);
+            w.Write(4);
+            w.Write(5);
         });
         var reader = BlockBytes.Reader("PCNT", content);
 
@@ -110,11 +110,11 @@ public class PackageTests
 
         var expected = BlockBytes.Build("PCNT", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1);
-            w.WriteEvilInt(2);
-            w.WriteEvilInt(3);
-            w.WriteEvilInt(4);
-            w.WriteEvilInt(5);
+            w.Write(1);
+            w.Write(2);
+            w.Write(3);
+            w.Write(4);
+            w.Write(5);
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
@@ -124,7 +124,7 @@ public class PackageTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1028661674);
+            w.Write(1028661674);
             w.WriteEvilString("Tue Aug 06 12:21:14 2002\n");
         });
         var reader = BlockBytes.Reader("PCRT", content);
@@ -145,7 +145,7 @@ public class PackageTests
 
         var expected = BlockBytes.Build("PCRT", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(1028661674);
+            w.Write(1028661674);
             w.WriteEvilString("Tue Aug 06 12:21:14 2002\n");
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
@@ -154,7 +154,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Pmod_ReadsRawUnixTimeAsUtc()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(1029000000));
+        var content = BlockBytes.Content(w => w.Write(1029000000));
         var reader = BlockBytes.Reader("PMOD", content);
 
         var block = (PackageModified)new TestSerializer().ReadBlockPublic(reader);
@@ -169,7 +169,7 @@ public class PackageTests
         var block = serializer.CreateBlock<PackageModified>();
         block.ModifiedDate = DateTimeOffset.FromUnixTimeSeconds(1029000000);
 
-        var expected = BlockBytes.Build("PMOD", BlockBytes.Content(w => w.WriteEvilInt(1029000000)));
+        var expected = BlockBytes.Build("PMOD", BlockBytes.Content(w => w.Write(1029000000)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 
