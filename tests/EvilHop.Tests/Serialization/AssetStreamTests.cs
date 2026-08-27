@@ -59,6 +59,19 @@ public class AssetStreamTests
     }
 
     [Fact]
+    public void ReadBlock_Dpak_SizeTooSmallForPaddingField_ReadsAllContentAsDataWithoutThrowing()
+    {
+        var content = BlockBytes.Content(w => w.Write([0xAA, 0xBB, 0xCC]));
+        var reader = BlockBytes.Reader("DPAK", content);
+
+        var block = (StreamData)new TestSerializer().ReadBlockPublic(reader);
+
+        Assert.Null(block.PaddingAmount);
+        Assert.Empty(block.Padding);
+        Assert.Equal([0xAA, 0xBB, 0xCC], block.Data);
+    }
+
+    [Fact]
     public void WriteBlock_Dpak_PaddingAmountSet_WritesPaddingAmountThenPaddingThenData()
     {
         var serializer = new TestSerializer();
