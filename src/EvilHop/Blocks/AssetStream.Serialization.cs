@@ -21,14 +21,13 @@ public partial class Serializer
 
     /// <summary>
     /// Reads the fields of a <see cref="StreamData"/> (DPAK) block. <paramref name="size"/> is
-    /// used to compute <see cref="StreamData.Data"/>'s length, and to detect the no-assets case
-    /// (<c>size == 0</c>, leaving <see cref="StreamData.PaddingAmount"/> <see langword="null"/>).
+    /// used to compute <see cref="StreamData.Data"/>'s length, and to detect the no-assets and
+    /// too-small-for-padding cases (<c>size &lt; 4</c>, leaving <see cref="StreamData.PaddingAmount"/>
+    /// <see langword="null"/>).
     /// </summary>
     protected void ReadStreamData(EndianReader reader, StreamData block, uint size)
     {
-        if (size == 0) return;
-
-        if (!Profile.StreamDataHasPaddingField)
+        if (!Profile.StreamDataHasPaddingField || size < 4)
         {
             block.Data = reader.ReadBytes((int)size);
             return;
