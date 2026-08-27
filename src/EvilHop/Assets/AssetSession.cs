@@ -53,7 +53,7 @@ public sealed class AssetSession : IDisposable
     // TODO: dear god make this a config struct
     private AssetSession(
         Archive archive,
-        Blocks.Dictionary dictionary,
+        Dictionary dictionary,
         StreamData streamData,
         uint assetInfValue,
         uint layerInfValue,
