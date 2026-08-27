@@ -23,6 +23,8 @@ internal static class InvariantRegistry
         new PackageMaxSizesMatchTreeInvariant(),
         new CreatedDateStringMatchesTimestampInvariant(),
         new CreatedDateStringTrailingWhitespaceInvariant(),
-        new PaddingIsHomogeneousInvariant()
+        new PaddingIsHomogeneousInvariant(),
+        new PackageFlagsDefaultAlwaysPresentInvariant(),
+        new PackageFlagsUpperWordInvariant()
     ];
 }

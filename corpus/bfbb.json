@@ -2242,6 +2242,20 @@
         "passing": 2460
       }
     },
+    "packageFlagsDefaultAlwaysPresent": {
+      "checked": 1230,
+      "outcomes": {
+        "violated": 0,
+        "passing": 1230
+      }
+    },
+    "packageFlagsUpperWordMatchesPlatform": {
+      "checked": 1230,
+      "outcomes": {
+        "violated": 0,
+        "passing": 1230
+      }
+    },
     "packageMaxSizesMatchTree": {
       "checked": 3690,
       "outcomes": {
