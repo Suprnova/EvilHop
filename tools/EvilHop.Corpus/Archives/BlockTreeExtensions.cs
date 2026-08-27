@@ -1,6 +1,6 @@
 using EvilHop.Blocks;
 
-namespace EvilHop.Corpus;
+namespace EvilHop.Corpus.Archives;
 
 /// <summary>
 /// Recursive traversal helpers over the public <see cref="Block.Children"/> API. Every extractor

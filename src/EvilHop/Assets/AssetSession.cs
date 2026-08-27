@@ -1,6 +1,8 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 

@@ -1,4 +1,4 @@
-﻿namespace EvilHop.Blocks;
+namespace EvilHop.Blocks;
 
 /// <summary>
 /// A no-data <see cref="Block"/> that serves as the root parent for all <c>Asset</c> data

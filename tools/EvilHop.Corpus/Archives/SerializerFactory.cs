@@ -1,7 +1,7 @@
 using EvilHop.Common;
 using EvilHop.Serialization;
 
-namespace EvilHop.Corpus;
+namespace EvilHop.Corpus.Archives;
 
 /// <summary>
 /// Resolves a <see cref="GameVersion"/> and its <see cref="FormatProfile"/> to a <see cref="Serializer"/> instance.

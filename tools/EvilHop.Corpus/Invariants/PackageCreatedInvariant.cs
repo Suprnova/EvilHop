@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Extraction;
 using System.Globalization;
 using System.Text.Json.Nodes;

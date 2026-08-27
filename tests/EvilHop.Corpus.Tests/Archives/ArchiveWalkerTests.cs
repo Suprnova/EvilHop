@@ -1,4 +1,6 @@
-namespace EvilHop.Corpus.Tests;
+using EvilHop.Corpus.Archives;
+
+namespace EvilHop.Corpus.Tests.Archives;
 
 public class ArchiveWalkerTests : IDisposable
 {

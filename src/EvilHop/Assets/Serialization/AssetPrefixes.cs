@@ -2,7 +2,7 @@ using EvilHop.Primitives;
 using System.Buffers.Binary;
 using System.Numerics;
 
-namespace EvilHop.Assets;
+namespace EvilHop.Assets.Serialization;
 
 /// <summary>
 /// Reads and writes the fixed 8-byte header every <see cref="BaseAsset"/> begins with.
@@ -48,7 +48,10 @@ internal static class BaseAssetPrefix
 /// </summary>
 internal static class EntityAssetPrefix
 {
-    /// <summary>The prefix's length in bytes, excluding <c>BFBB</c>'s four padding bytes.</summary>
+    /// <summary>
+    /// The prefix's length in bytes, excluding <see cref="Common.GameVersion.BFBB"/>'s
+    /// four padding bytes.
+    /// </summary>
     public const int Length = 72;
 
     /// <summary>
@@ -60,8 +63,7 @@ internal static class EntityAssetPrefix
     /// <param name="offset">The offset to begin reading at.</param>
     /// <param name="hasPadding">
     /// Whether this build inserts four bytes of padding after the four flag bytes, from
-    /// <see cref="Serialization.FormatProfile.EntityHasPadding"/>. This is the only site in the
-    /// library that reads it, no matter how many <see cref="EntityAsset"/> codecs exist.
+    /// <see cref="EvilHop.Serialization.FormatProfile.EntityHasPadding"/>.
     /// </param>
     /// <returns>The offset immediately past the prefix.</returns>
     public static int Read(EntityAsset asset, ReadOnlySpan<byte> data, int offset, bool hasPadding)

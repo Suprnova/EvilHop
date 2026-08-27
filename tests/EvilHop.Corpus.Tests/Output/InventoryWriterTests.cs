@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Output;
 using System.Text.Json;
 

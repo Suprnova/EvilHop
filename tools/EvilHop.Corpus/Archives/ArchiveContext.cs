@@ -1,6 +1,6 @@
 using EvilHop.Blocks;
 
-namespace EvilHop.Corpus;
+namespace EvilHop.Corpus.Archives;
 
 /// <summary>
 /// A single parsed archive, in hand just long enough to be observed by extraction and invariants
