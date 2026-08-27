@@ -47,7 +47,6 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
         // Links.Count at that moment would always see 0. The rule is instead a codec-side one - a
         // codec that parses links into Links leaves this alone and lets it derive; one that cannot
         // locate them sets it, and Links stays empty. See the interface's own remarks.
-        // TODO: i dont think we respected this in codec's implementation
         set => _overriddenLinkCount = value;
     }
 }
