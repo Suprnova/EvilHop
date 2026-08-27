@@ -4,7 +4,7 @@ namespace EvilHop.Tests;
 
 public class ArchiveTests
 {
-    private static Stream OpenMinimalFixture() =>
+    private static FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "n100f", "minimal.hip"));
 
     [Fact]

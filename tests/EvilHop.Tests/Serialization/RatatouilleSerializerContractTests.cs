@@ -6,6 +6,6 @@ public class RatatouilleSerializerContractTests : SerializerContractTests
 {
     protected override Serializer CreateSerializer() => new RatatouilleSerializer();
 
-    protected override Stream OpenMinimalFixture() =>
+    protected override FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "ratatouille", "minimal.hip"));
 }

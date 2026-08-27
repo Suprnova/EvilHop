@@ -1,5 +1,4 @@
 using EvilHop.Blocks;
-using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Globalization;
 
@@ -15,7 +14,7 @@ public abstract class SerializerContractTests
 {
     protected abstract Serializer CreateSerializer();
 
-    protected virtual Stream OpenMinimalFixture() =>
+    protected virtual FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "n100f", "minimal.hip"));
 
     /// <summary>
