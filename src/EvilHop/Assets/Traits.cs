@@ -76,7 +76,7 @@ public interface IHasModel
 }
 
 /// <summary>
-/// Indicates an <see cref="IHasAnimList"/> can be animated with an <see cref="AssetType.Animation"/>.
+/// Indicates an <see cref="EntityAsset"/> can be animated with an <see cref="AssetType.Animation"/>.
 /// </summary>
 /// <remarks>
 /// <para>Used by:</para>
