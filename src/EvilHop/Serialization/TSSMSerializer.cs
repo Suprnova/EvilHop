@@ -11,6 +11,7 @@ public sealed class TSSMSerializer(FormatProfile profile) : Serializer(profile)
     /// <summary>The profile every TSSM build reads correctly under.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.TSSM,
+        Platform.GameCube,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 

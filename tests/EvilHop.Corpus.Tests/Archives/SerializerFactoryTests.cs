@@ -77,7 +77,7 @@ public class SerializerFactoryTests
     {
         // Every GameVersion member has a serializer today, so this uses a value outside the enum's
         // defined range to exercise the switch's default arm rather than a real, still-missing game.
-        var profile = new FormatProfile((GameVersion)999, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+        var profile = new FormatProfile((GameVersion)999, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         var ex = Assert.Throws<NotSupportedException>(() => SerializerFactory.Create(profile));
 

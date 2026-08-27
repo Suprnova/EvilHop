@@ -11,6 +11,7 @@ public sealed class BFBBSerializer(FormatProfile profile) : Serializer(profile)
     /// <summary>The profile every BFBB build reads correctly under.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.BFBB,
+        Platform.GameCube,
         PlatformFieldOrder.PlatformNameRegionLanguage,
         StreamDataHasPaddingField: true,
         EntityHasPadding: true);

@@ -11,6 +11,7 @@ public sealed class IncrediblesSerializer(FormatProfile profile) : Serializer(pr
     /// <summary>The profile every Incredibles build reads correctly under.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.Incredibles,
+        Platform.GameCube,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 

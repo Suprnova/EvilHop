@@ -11,6 +11,7 @@ public sealed class RatatouilleSerializer(FormatProfile profile) : Serializer(pr
     /// <summary>The profile every Ratatouille build reads correctly under.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.Ratatouille,
+        Platform.GameCube,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 
