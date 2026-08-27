@@ -1,5 +1,4 @@
 using EvilHop.Primitives;
-using System.Buffers.Binary;
 
 namespace EvilHop.Assets;
 
@@ -12,11 +11,10 @@ public abstract class Parameter
     private protected Parameter() { }
 
     /// <summary>
-    /// Writes this <see cref="Parameter"/>'s value to <paramref name="destination"/>, which must be
-    /// exactly 4 bytes, big-endian.
+    /// Writes this <see cref="Parameter"/>'s value, exactly 4 bytes, to <paramref name="writer"/>.
     /// </summary>
-    /// <param name="destination">The destination to write to.</param>
-    internal abstract void WriteTo(Span<byte> destination);
+    /// <param name="writer">The writer to write to.</param>
+    internal abstract void WriteTo(EndianWriter writer);
 }
 
 /// <summary>
@@ -31,7 +29,7 @@ public sealed class RawParameter(byte[] bytes) : Parameter
     public byte[] Bytes { get; set; } = bytes;
 
     /// <inheritdoc/>
-    internal override void WriteTo(Span<byte> destination) => Bytes.CopyTo(destination);
+    internal override void WriteTo(EndianWriter writer) => writer.Write(Bytes);
 }
 
 /// <summary>
@@ -46,8 +44,7 @@ public sealed class FloatParameter(float value) : Parameter
     public float Value { get; set; } = value;
 
     /// <inheritdoc/>
-    internal override void WriteTo(Span<byte> destination) =>
-        BinaryPrimitives.WriteSingleBigEndian(destination, Value);
+    internal override void WriteTo(EndianWriter writer) => writer.Write(Value);
 }
 
 /// <summary>
@@ -62,8 +59,7 @@ public sealed class IntParameter(int value) : Parameter
     public int Value { get; set; } = value;
 
     /// <inheritdoc/>
-    internal override void WriteTo(Span<byte> destination) =>
-        BinaryPrimitives.WriteInt32BigEndian(destination, Value);
+    internal override void WriteTo(EndianWriter writer) => writer.Write(Value);
 }
 
 /// <summary>
@@ -78,6 +74,5 @@ public sealed class AssetIdParameter(AssetId value) : Parameter
     public AssetId Value { get; set; } = value;
 
     /// <inheritdoc/>
-    internal override void WriteTo(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, Value.Value);
+    internal override void WriteTo(EndianWriter writer) => writer.Write(Value);
 }

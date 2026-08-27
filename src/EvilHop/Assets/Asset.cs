@@ -33,7 +33,7 @@ public abstract class Asset : IPhysicalAsset
     public string FileName { get; set; } = String.Empty;
 
     /// <summary>
-    /// The <see cref="Layer"/> that this <see cref="Asset"/> belongs to.
+    /// The <see cref="Assets.Layer"/> that this <see cref="Asset"/> belongs to.
     /// </summary>
     public Layer? Layer { get; internal set; }
 
@@ -54,9 +54,7 @@ public abstract class Asset : IPhysicalAsset
     AssetType IPhysicalAsset.Type
     {
         get => _overriddenType ?? this.Type;
-        // Assigning the value this already derives clears the override rather than pinning one, so
-        // a codec can populate this unconditionally from disk without freezing the asset out of
-        // tracking later changes to Type. See IPhysicalBaseAsset.BaseId for the same pattern.
+        // prevents equivalent type assignments from being interpretted as an "override"
         set => _overriddenType = value == Type ? null : value;
     }
 

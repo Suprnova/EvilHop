@@ -216,7 +216,7 @@ public abstract class SerializerContractTests
     public void Read_SizeMismatch_ThrowsFormatException()
     {
         // AINF always reads 4 bytes, but declares a content size of 2 - an overshoot.
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0));
+        var content = BlockBytes.Content(w => w.Write(0));
         byte[] bytes =
         [
             .. "AINF"u8.ToArray(),
@@ -233,7 +233,7 @@ public abstract class SerializerContractTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(0);
+            w.Write(0);
             w.Write("ab"u8.ToArray());
             w.Write((byte)0x00);
             w.Write((byte)0x01); // malformed second null byte

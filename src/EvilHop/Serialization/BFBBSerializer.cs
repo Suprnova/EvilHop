@@ -5,7 +5,7 @@ namespace EvilHop.Serialization;
 /// <summary>
 /// Reads and writes HIP archives built for <see cref="GameVersion.BFBB"/>. 
 /// </summary>
-/// <param name="profile">The format quirks and game identity this serializer reads with.</param>
+/// /// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class BFBBSerializer(FormatProfile profile) : Serializer(profile)
 {
     /// <summary>The profile every BFBB build reads correctly under.</summary>

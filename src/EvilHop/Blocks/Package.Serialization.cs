@@ -9,67 +9,67 @@ public partial class Serializer
     /// <summary>
     /// Reads the fields of a <see cref="PackageVersion"/> (PVER) block.
     /// </summary>
-    protected static void ReadPackageVersion(BinaryReader reader, PackageVersion block, uint size)
+    protected static void ReadPackageVersion(EndianReader reader, PackageVersion block, uint size)
     {
-        block.SubVersion = reader.ReadEvilInt();
-        block.ClientVersion = (ClientVersion)reader.ReadEvilInt();
-        block.CompatVersion = reader.ReadEvilInt();
+        block.SubVersion = reader.ReadUInt32();
+        block.ClientVersion = (ClientVersion)reader.ReadUInt32();
+        block.CompatVersion = reader.ReadUInt32();
     }
 
     /// <summary>
     /// Writes the fields of a <see cref="PackageVersion"/> (PVER) block.
     /// </summary>
-    protected static void WritePackageVersion(BinaryWriter writer, PackageVersion block)
+    protected static void WritePackageVersion(EndianWriter writer, PackageVersion block)
     {
-        writer.WriteEvilInt(block.SubVersion);
-        writer.WriteEvilInt((uint)block.ClientVersion);
-        writer.WriteEvilInt(block.CompatVersion);
+        writer.Write(block.SubVersion);
+        writer.Write((uint)block.ClientVersion);
+        writer.Write(block.CompatVersion);
     }
 
     /// <summary>
     /// Reads the fields of a <see cref="PackageFlags"/> (PFLG) block.
     /// </summary>
-    protected static void ReadPackageFlags(BinaryReader reader, PackageFlags block, uint size)
+    protected static void ReadPackageFlags(EndianReader reader, PackageFlags block, uint size)
     {
-        block.Flags = (PackFlags)reader.ReadEvilInt();
+        block.Flags = (PackFlags)reader.ReadUInt32();
     }
 
     /// <summary>
     /// Writes the fields of a <see cref="PackageFlags"/> (PFLG) block.
     /// </summary>
-    protected static void WritePackageFlags(BinaryWriter writer, PackageFlags block) =>
-        writer.WriteEvilInt((uint)block.Flags);
+    protected static void WritePackageFlags(EndianWriter writer, PackageFlags block) =>
+        writer.Write((uint)block.Flags);
 
     /// <summary>
     /// Reads the fields of a <see cref="PackageCount"/> (PCNT) block.
     /// </summary>
-    protected static void ReadPackageCount(BinaryReader reader, PackageCount block, uint size)
+    protected static void ReadPackageCount(EndianReader reader, PackageCount block, uint size)
     {
-        block.AssetCount = reader.ReadEvilInt();
-        block.LayerCount = reader.ReadEvilInt();
-        block.MaxAssetSize = reader.ReadEvilInt();
-        block.MaxLayerSize = reader.ReadEvilInt();
-        block.MaxXFormAssetSize = reader.ReadEvilInt();
+        block.AssetCount = reader.ReadUInt32();
+        block.LayerCount = reader.ReadUInt32();
+        block.MaxAssetSize = reader.ReadUInt32();
+        block.MaxLayerSize = reader.ReadUInt32();
+        block.MaxXFormAssetSize = reader.ReadUInt32();
     }
 
     /// <summary>
     /// Writes the fields of a <see cref="PackageCount"/> (PCNT) block.
     /// </summary>
-    protected static void WritePackageCount(BinaryWriter writer, PackageCount block)
+    protected static void WritePackageCount(EndianWriter writer, PackageCount block)
     {
-        writer.WriteEvilInt(block.AssetCount);
-        writer.WriteEvilInt(block.LayerCount);
-        writer.WriteEvilInt(block.MaxAssetSize);
-        writer.WriteEvilInt(block.MaxLayerSize);
-        writer.WriteEvilInt(block.MaxXFormAssetSize);
+        writer.Write(block.AssetCount);
+        writer.Write(block.LayerCount);
+        writer.Write(block.MaxAssetSize);
+        writer.Write(block.MaxLayerSize);
+        writer.Write(block.MaxXFormAssetSize);
     }
 
     /// <summary>
     /// Reads the fields of a <see cref="PackageCreated"/> (PCRT) block.
     /// </summary>
-    protected static void ReadPackageCreated(BinaryReader reader, PackageCreated block, uint size)
+    protected static void ReadPackageCreated(EndianReader reader, PackageCreated block, uint size)
     {
-        uint rawCreatedDate = reader.ReadEvilInt();
+        uint rawCreatedDate = reader.ReadUInt32();
         block.CreatedDate = DateTimeOffset.FromUnixTimeSeconds(rawCreatedDate);
         block.CreatedDateString = reader.ReadEvilString();
     }
@@ -77,26 +77,26 @@ public partial class Serializer
     /// <summary>
     /// Writes the fields of a <see cref="PackageCreated"/> (PCRT) block.
     /// </summary>
-    protected static void WritePackageCreated(BinaryWriter writer, PackageCreated block)
+    protected static void WritePackageCreated(EndianWriter writer, PackageCreated block)
     {
-        writer.WriteEvilInt((uint)block.CreatedDate.ToUnixTimeSeconds());
+        writer.Write((uint)block.CreatedDate.ToUnixTimeSeconds());
         writer.WriteEvilString(block.CreatedDateString);
     }
 
     /// <summary>
     /// Reads the fields of a <see cref="PackageModified"/> (PMOD) block.
     /// </summary>
-    protected static void ReadPackageModified(BinaryReader reader, PackageModified block, uint size)
+    protected static void ReadPackageModified(EndianReader reader, PackageModified block, uint size)
     {
-        uint rawModifiedDate = reader.ReadEvilInt();
+        uint rawModifiedDate = reader.ReadUInt32();
         block.ModifiedDate = DateTimeOffset.FromUnixTimeSeconds(rawModifiedDate);
     }
 
     /// <summary>
     /// Writes the fields of a <see cref="PackageModified"/> (PMOD) block.
     /// </summary>
-    protected static void WritePackageModified(BinaryWriter writer, PackageModified block) =>
-        writer.WriteEvilInt((uint)block.ModifiedDate.ToUnixTimeSeconds());
+    protected static void WritePackageModified(EndianWriter writer, PackageModified block) =>
+        writer.Write((uint)block.ModifiedDate.ToUnixTimeSeconds());
 
     private static readonly Action<PackagePlatform, string>[] PlatformNameRegionLanguageSlots =
     [
@@ -133,12 +133,9 @@ public partial class Serializer
     ];
 
     /// <summary>
-    /// Reads the fields of a <see cref="PackagePlatform"/> (PLAT) block: a run of <c>EvilString</c>s
-    /// whose field mapping is governed by <see cref="FormatProfile.PlatformFieldOrder"/>. A run
-    /// shorter than the mapped layout leaves the trailing fields at their initializer values,
-    /// bounded by <paramref name="size"/>.
+    /// Reads the fields of a <see cref="PackagePlatform"/> (PLAT) block.
     /// </summary>
-    protected void ReadPackagePlatform(BinaryReader reader, PackagePlatform block, uint size)
+    protected void ReadPackagePlatform(EndianReader reader, PackagePlatform block, uint size)
     {
         long end = reader.BaseStream.Position + size;
         var slots = Profile.PlatformFieldOrder switch
@@ -150,19 +147,16 @@ public partial class Serializer
 
         foreach (var assign in slots)
         {
+            // TODO: flag this somehow?
             if (reader.BaseStream.Position >= end) return;
             assign(block, reader.ReadEvilString());
         }
     }
 
     /// <summary>
-    /// Writes the fields of a <see cref="PackagePlatform"/> (PLAT) block: a run of <c>EvilString</c>s
-    /// whose field mapping is governed by <see cref="FormatProfile.PlatformFieldOrder"/>. Always
-    /// writes the active layout's full field count, substituting <c>""</c> for any unset field -
-    /// including a <see langword="null"/> <see cref="PackagePlatform.PlatformName"/> - since nothing
-    /// in the model records how many fields a truncated <c>PLAT</c> originally had.
+    /// Writes the fields of a <see cref="PackagePlatform"/> (PLAT) block.
     /// </summary>
-    protected void WritePackagePlatform(BinaryWriter writer, PackagePlatform block)
+    protected void WritePackagePlatform(EndianWriter writer, PackagePlatform block)
     {
         var slots = Profile.PlatformFieldOrder switch
         {

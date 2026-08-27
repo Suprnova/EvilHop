@@ -13,7 +13,7 @@ public class BKDRHash
     /// <remarks>
     /// This algorithm is modified from the traditional BKDR algorithm in the sense that
     /// characters between 0x60-0x7F are remapped to 0x40-0x5F.
-    /// <para><seealso href="https://discord.com/channels/446321271635050506/469375373067550740/1442579231987990788">Related discussion</seealso></para>
+    /// <para><seealso href="https://discord.com/channels/446321271635050506/469375373067550740/1540563491856064582">Related discussion</seealso></para>
     /// <para><seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets">Heavy Iron Modding documentation</seealso></para>
     /// </remarks>
     /// <param name="str">The <see langword="string"/> to calculate the hash of.</param>

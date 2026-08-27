@@ -1,10 +1,10 @@
 namespace EvilHop.Assets;
 
 /// <summary>
-/// An <see cref="Asset"/> whose body is a file embedded verbatim in the archive - a RenderWare
-/// stream, a Bink video, an audio stream - rather than a <see cref="BaseAsset"/>-shaped game-object
-/// record.
+/// An <see cref="Asset"/> whose body is a file embedded verbatim in the archive, such as
+/// a RenderWare stream, a Bink video, or an audio stream.
 /// </summary>
+/// TODO: We should only operate on streams, not a file, right?
 public abstract class PayloadAsset : Asset
 {
     internal byte[] Data { get; set; } = [];

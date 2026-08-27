@@ -1,9 +1,8 @@
 namespace EvilHop.Common;
 
 /// <summary>
-/// Computes the CRC-32/MPEG-2 checksum <see cref="Blocks.AssetDebug.Checksum"/> is validated
-/// against - unreflected, with a <c>0xFFFFFFFF</c> initial value and no final XOR, unlike the more
-/// common reflected CRC-32/ISO-HDLC variant.
+/// Computes the CRC-32/MPEG-2 checksum <see cref="Blocks.AssetDebug.Checksum"/> is calculated
+/// with.
 /// </summary>
 public static class Crc32Mpeg2
 {

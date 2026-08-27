@@ -5,7 +5,7 @@ namespace EvilHop.Serialization;
 /// <summary>
 /// Reads and writes HIP archives built for <see cref="GameVersion.Ratatouille"/>.
 /// </summary>
-/// <param name="profile">The format quirks and game identity this serializer reads with.</param>
+/// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class RatatouilleSerializer(FormatProfile profile) : Serializer(profile)
 {
     /// <summary>The profile every Ratatouille build reads correctly under.</summary>

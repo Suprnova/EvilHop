@@ -6,26 +6,31 @@ using System.Text;
 namespace EvilHop.Serialization;
 
 /// <summary>
-/// Reads and writes HIP archives. Every game agrees on the same block envelope - tag, size, fields,
-/// then children until the declared size is consumed - and a <see cref="FormatProfile"/> carries the
-/// handful of quirks that envelope alone doesn't resolve.
+/// Reads and writes HIP archives.
 /// </summary>
+/// <remarks>
+/// Every game agrees on the same block envelope - tag, size, fields, then children until the
+/// declared size is consumed - and a <see cref="FormatProfile"/> carries the handful of quirks
+/// that envelope alone doesn't resolve.
+/// </remarks>
 public abstract partial class Serializer
 {
     private readonly record struct BlockHandler(
         Func<Block> Create,
-        Action<BinaryReader, Block, uint>? ReadFields,
-        Action<BinaryWriter, Block>? WriteFields
+        Action<EndianReader, Block, uint>? ReadFields,
+        Action<EndianWriter, Block>? WriteFields
     );
 
     private readonly Dictionary<string, BlockHandler> _handlers = [];
 
-    /// <summary>The format quirks and game identity this serializer reads with.</summary>
+    /// <summary>
+    /// The format quirks and game identity this serializer reads with.
+    /// </summary>
     public FormatProfile Profile { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="Serializer"/>, registering all twenty base block
-    /// types.
+    /// Initializes a new instance of <see cref="Serializer"/>, registering all twenty base
+    /// <see cref="Block"/> types.
     /// </summary>
     /// <param name="profile">The format quirks and game identity this serializer reads with.</param>
     protected Serializer(FormatProfile profile)
@@ -58,16 +63,15 @@ public abstract partial class Serializer
     }
 
     /// <summary>
-    /// Registers a block type <typeparamref name="T"/>'s creation and field read/write handlers,
-    /// keyed by the block's own <see cref="Block.Tag"/>. Re-registering an already-registered tag
-    /// overwrites its handler.
+    /// Registers a <typeparamref name="T"/> <see cref="Block"/>'s creation, read, and write
+    /// handlers to its <see cref="Block.Tag"/>, replacing whatever was there.
     /// </summary>
     /// <typeparam name="T">The <see cref="Block"/> type to register.</typeparam>
     /// <param name="readFields">Reads the block's type-specific fields, if any.</param>
     /// <param name="writeFields">Writes the block's type-specific fields, if any.</param>
     protected void RegisterBlock<T>(
-        Action<BinaryReader, T, uint>? readFields = null,
-        Action<BinaryWriter, T>? writeFields = null) where T : Block
+        Action<EndianReader, T, uint>? readFields = null,
+        Action<EndianWriter, T>? writeFields = null) where T : Block
     {
         static Block Create() => (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
 
@@ -101,7 +105,7 @@ public abstract partial class Serializer
     /// </exception>
     public List<Block> Read(Stream stream)
     {
-        using var reader = new BinaryReader(stream, Encoding.ASCII, leaveOpen: false);
+        using var reader = new EndianReader(stream, Endianness.Big);
 
         var roots = new List<Block>();
         while (reader.BaseStream.Position < reader.BaseStream.Length)
@@ -119,10 +123,10 @@ public abstract partial class Serializer
     /// Thrown when the block's tag has no registered handler, or its content doesn't consume
     /// exactly the number of bytes its Size field declares.
     /// </exception>
-    protected Block ReadBlock(BinaryReader reader)
+    protected Block ReadBlock(EndianReader reader)
     {
         string tag = ReadTag(reader);
-        uint size = reader.ReadEvilInt();
+        uint size = reader.ReadUInt32();
         long contentStart = reader.BaseStream.Position;
 
         if (!_handlers.TryGetValue(tag, out var handler))
@@ -165,7 +169,7 @@ public abstract partial class Serializer
             throw new ArgumentException(
                 "The destination stream must support seeking, to backpatch each block's Size field.", nameof(stream));
 
-        using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: false);
+        using var writer = new EndianWriter(stream, Endianness.Big);
         foreach (var root in roots)
             WriteBlock(writer, root);
     }
@@ -176,7 +180,7 @@ public abstract partial class Serializer
     /// <param name="writer">The writer to write the block to.</param>
     /// <param name="block">The <see cref="Block"/> to write, including its children.</param>
     /// <exception cref="FormatException">Thrown when the block's tag has no registered handler.</exception>
-    protected void WriteBlock(BinaryWriter writer, Block block)
+    protected void WriteBlock(EndianWriter writer, Block block)
     {
         if (!_handlers.TryGetValue(block.Tag, out var handler))
             throw new FormatException($"Unknown block tag '{block.Tag}'.");
@@ -184,7 +188,7 @@ public abstract partial class Serializer
         writer.Write(Encoding.ASCII.GetBytes(block.Tag));
 
         long sizePosition = writer.BaseStream.Position;
-        writer.WriteEvilInt(0); // placeholder, backpatched below
+        writer.Write(0u); // placeholder, backpatched below
         long contentStart = writer.BaseStream.Position;
 
         handler.WriteFields?.Invoke(writer, block);
@@ -193,7 +197,7 @@ public abstract partial class Serializer
 
         long contentEnd = writer.BaseStream.Position;
         writer.BaseStream.Position = sizePosition;
-        writer.WriteEvilInt((uint)(contentEnd - contentStart));
+        writer.Write((uint)(contentEnd - contentStart));
         writer.BaseStream.Position = contentEnd;
     }
 

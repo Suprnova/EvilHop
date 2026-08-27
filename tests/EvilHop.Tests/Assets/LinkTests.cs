@@ -19,9 +19,10 @@ public class LinkTests
             ]
         };
 
-        var bytes = new byte[16];
-        for (int i = 0; i < 4; i++)
-            link.Params[i].WriteTo(bytes.AsSpan(i * 4, 4));
+        using var stream = new MemoryStream();
+        using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
+            foreach (var parameter in link.Params)
+                parameter.WriteTo(writer);
 
         Assert.Equal<byte>(
         [
@@ -29,6 +30,6 @@ public class LinkTests
             0x00, 0x00, 0x00, 0x04,
             0x3F, 0x80, 0x00, 0x00,
             0xDE, 0xAD, 0xBE, 0xEF,
-        ], bytes);
+        ], stream.ToArray());
     }
 }

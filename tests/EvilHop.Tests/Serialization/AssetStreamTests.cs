@@ -9,7 +9,7 @@ public class AssetStreamTests
     [Fact]
     public void ReadBlock_Dhdr_ReadsExpectedFields()
     {
-        var content = BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF));
+        var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
         var reader = BlockBytes.Reader("DHDR", content);
 
         var block = (StreamHeader)new TestSerializer().ReadBlockPublic(reader);
@@ -24,7 +24,7 @@ public class AssetStreamTests
         var block = serializer.CreateBlock<StreamHeader>();
         block.Value = 0xFFFFFFFF;
 
-        var expected = BlockBytes.Build("DHDR", BlockBytes.Content(w => w.WriteEvilInt(0xFFFFFFFF)));
+        var expected = BlockBytes.Build("DHDR", BlockBytes.Content(w => w.Write(0xFFFFFFFF)));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
 
@@ -33,7 +33,7 @@ public class AssetStreamTests
     {
         var content = BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(2);
+            w.Write(2);
             w.Write([0x33, 0x33]);
             w.Write([0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02, 0x03, 0x04]);
         });
@@ -69,7 +69,7 @@ public class AssetStreamTests
 
         var expected = BlockBytes.Build("DPAK", BlockBytes.Content(w =>
         {
-            w.WriteEvilInt(2);
+            w.Write(2);
             w.Write([0x33, 0x33]);
             w.Write([0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02, 0x03, 0x04]);
         }));

@@ -12,22 +12,22 @@ internal static class BlockBytes
     public static byte[] Build(string tag, byte[] content)
     {
         using var stream = new MemoryStream();
-        using (var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true))
+        using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
         {
             writer.Write(System.Text.Encoding.ASCII.GetBytes(tag));
-            writer.WriteEvilInt((uint)content.Length);
+            writer.Write((uint)content.Length);
             writer.Write(content);
         }
         return stream.ToArray();
     }
 
-    public static BinaryReader Reader(string tag, byte[] content) =>
-        new(new MemoryStream(Build(tag, content)));
+    public static EndianReader Reader(string tag, byte[] content) =>
+        new(new MemoryStream(Build(tag, content)), Endianness.Big);
 
-    public static byte[] Content(Action<BinaryWriter> build)
+    public static byte[] Content(Action<EndianWriter> build)
     {
         using var stream = new MemoryStream();
-        using var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true);
+        using var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true);
         build(writer);
         return stream.ToArray();
     }
@@ -40,7 +40,7 @@ internal static class BlockBytes
     public static byte[] WriteBlock(TestSerializer serializer, Block block)
     {
         using var stream = new MemoryStream();
-        using (var writer = new BinaryWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true))
+        using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
             serializer.WriteBlockPublic(writer, block);
         return stream.ToArray();
     }

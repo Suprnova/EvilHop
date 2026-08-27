@@ -12,15 +12,12 @@ namespace EvilHop.Assets;
 /// <see cref="Asset"/>s; committing rebuilds those blocks and reattaches them.
 /// </summary>
 /// <remarks>
-/// <para>
-/// While a session is open, the block-level view of <c>ATOC</c>, <c>LTOC</c>, and <c>DPAK</c> is
-/// unavailable: their fields are locked, and a reference captured before opening is orphaned.
-/// <c>HIPA</c> and <c>PACK</c> stay attached and fully editable throughout.
-/// </para>
-/// <para>
-/// Commit is total - every asset serializes unconditionally - so there is no failure path, which is
-/// what makes committing from <see cref="Dispose"/> safe.
-/// </para>
+/// <para>The following blocks are locked and unavailable from <see cref="Archive"/> while open:</para>
+/// <list type="bullet">
+/// <item><see cref="AssetTable"/></item>
+/// <item><see cref="LayerTable"/></item>
+/// <item><see cref="StreamData"/></item>
+/// </list>
 /// </remarks>
 public sealed class AssetSession : IDisposable
 {
@@ -32,29 +29,28 @@ public sealed class AssetSession : IDisposable
     /// Problems encountered while opening, one line each. An asset that fails to parse degrades to
     /// its untyped form and is reported here rather than throwing.
     /// </summary>
+    /// TODO: struct this, at least a reference to the asset
     public IReadOnlyList<string> Diagnostics => _diagnostics;
     private readonly List<string> _diagnostics = [];
 
     /// <summary>
-    /// The assets whose bytes differ from what they were at open, computed during
-    /// <see cref="Commit"/> and empty before it. Compared using this session's own checksum of the
-    /// bytes actually read, not the archive's stored <see cref="AssetDebug.Checksum"/>, which is
-    /// occasionally already wrong on disk.
+    /// The assets whose bytes differ from what they were at open, calculated via the session's checksum.
     /// </summary>
     public IReadOnlyList<AssetId> ChangedAssets { get; private set; } = [];
 
     private readonly Archive _archive;
-    private readonly Blocks.Dictionary _dictionary;
+    private readonly Dictionary _dictionary;
     private readonly StreamData _streamData;
     private readonly uint _assetInfValue;
     private readonly uint _layerInfValue;
     private readonly byte _fillByte;
     private readonly List<AssetId> _originalAtocOrder;
-    private readonly System.Collections.Generic.Dictionary<AssetId, uint> _openChecksums;
-    private readonly System.Collections.Generic.Dictionary<(AssetId Before, AssetId After), byte[]> _capturedGaps;
+    private readonly Dictionary<AssetId, uint> _openChecksums;
+    private readonly Dictionary<(AssetId Before, AssetId After), byte[]> _capturedGaps;
     private HashSet<AssetId> _changedLookup = [];
     private bool _committed;
 
+    // TODO: dear god make this a config struct
     private AssetSession(
         Archive archive,
         Blocks.Dictionary dictionary,
@@ -63,8 +59,8 @@ public sealed class AssetSession : IDisposable
         uint layerInfValue,
         byte fillByte,
         List<AssetId> originalAtocOrder,
-        System.Collections.Generic.Dictionary<AssetId, uint> openChecksums,
-        System.Collections.Generic.Dictionary<(AssetId, AssetId), byte[]> capturedGaps)
+        Dictionary<AssetId, uint> openChecksums,
+        Dictionary<(AssetId, AssetId), byte[]> capturedGaps)
     {
         _archive = archive;
         _dictionary = dictionary;
@@ -77,18 +73,22 @@ public sealed class AssetSession : IDisposable
         _capturedGaps = capturedGaps;
     }
 
+    // TODO: evaluate whether or not AssetSession should even hold these serialization concerns
+
     /// <summary>The fill byte assumed when an archive carries no padding to sample one from.</summary>
     private const byte DefaultFillByte = 0x33;
 
     /// <summary>The alignment assumed for an asset that declares a non-positive one.</summary>
+    /// TODO: Make this respect observed Alignment defaults for non-positive values in corpora
     private const uint DefaultAlignment = 16;
 
-    /// <summary><c>DPAK</c>'s data begins on a boundary of this many bytes.</summary>
+    /// <summary><see cref="StreamData"/>'s data begins on a boundary of this many bytes.</summary>
+    /// TODO: Make this respect FormatProfile's platform
     private const int DataAlignment = 32;
 
     internal static AssetSession Open(Archive archive)
     {
-        var dictionary = archive.Roots.OfType<Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var stream = archive.Roots.OfType<AssetStream>().Single();
         var assetTable = dictionary.AssetTable;
         var layerTable = dictionary.LayerTable;
@@ -118,7 +118,7 @@ public sealed class AssetSession : IDisposable
 
         dictionary.AssetTable = null!;
         dictionary.LayerTable = null!;
-        streamData.UnlockFields();
+        streamData.UnlockFields(); // TODO: what?
         streamData.Data = [];
         streamData.LockFields();
 
@@ -143,7 +143,7 @@ public sealed class AssetSession : IDisposable
 
     private void ParseLayers(LayerTable layerTable, List<AssetHeader> headers, long dataStart)
     {
-        var byId = new System.Collections.Generic.Dictionary<uint, AssetHeader>();
+        var byId = new Dictionary<uint, AssetHeader>();
         foreach (var header in headers) byId.TryAdd(header.Id, header);
 
         var seen = new HashSet<uint>();
@@ -166,9 +166,7 @@ public sealed class AssetSession : IDisposable
 
                 if (!seen.Add(id))
                 {
-                    _diagnostics.Add(
-                        $"Asset 0x{id:X8} is listed more than once. The duplicate listing is dropped, " +
-                        $"so this archive will not round-trip byte-for-byte.");
+                    _diagnostics.Add($"Asset 0x{id:X8} is listed more than once. The duplicate listing is dropped.");
                     continue;
                 }
 
@@ -182,18 +180,20 @@ public sealed class AssetSession : IDisposable
     private Asset ParseOne(AssetHeader header, long dataStart)
     {
         var debug = header.Debug;
-        ReadOnlySpan<byte> slice = TryGetRange(dataStart, _streamData.Data.Length, header.Offset, header.Size, out var range)
-            ? _streamData.Data.AsSpan(range)
-            : [];
+        bool inRange = TryGetRange(dataStart, _streamData.Data.Length, header.Offset, header.Size, out var range);
+        ReadOnlySpan<byte> slice = inRange ? _streamData.Data.AsSpan(range) : [];
 
-        if (range.Equals(default(Range)) && header.Size > 0)
+        if (!inRange && header.Size > 0)
             _diagnostics.Add($"Asset 0x{header.Id:X8} ({header.Type}) declares bytes outside DPAK. Degraded to empty.");
 
         _openChecksums[new AssetId(header.Id)] = Crc32Mpeg2.Compute(slice);
 
         try
         {
-            return AssetCodecs.Read(slice, header, debug, _archive.Serializer.Profile);
+            var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);
+            using var stream = new MemoryStream(_streamData.Data, offset, length, writable: false);
+            var reader = new EndianReader(stream, _archive.Serializer.Profile.Endianness);
+            return AssetCodecs.Read(reader, header, debug, _archive.Serializer.Profile);
         }
         catch (Exception ex)
         {
@@ -206,22 +206,25 @@ public sealed class AssetSession : IDisposable
     }
 
     /// <summary>
-    /// Rebuilds <c>ATOC</c>, <c>LTOC</c>, and <c>DPAK</c> from the current assets and reattaches
-    /// them. Calling this twice is a no-op the second time.
+    /// Rebuilds <see cref="AssetTable"/>, <see cref="LayerTable"/>, and <see cref="StreamData"/>
+    /// from the current assets and reattaches them. Calling this twice is a no-op the second time.
     /// </summary>
+    /// TODO: look into how expensive committing, releasing, writing, and reopening a session is.
+    /// the use case for that is autosave, and hanging the application for a long time when that
+    /// happens seems like a bad idea
     public void Commit()
     {
         if (_committed) return;
         _committed = true;
 
         var ordered = _layers.SelectMany(layer => layer.Assets).ToList();
-        var serialized = new System.Collections.Generic.Dictionary<AssetId, byte[]>();
-        var checksums = new System.Collections.Generic.Dictionary<AssetId, uint>();
+        var serialized = new Dictionary<AssetId, byte[]>();
+        var checksums = new Dictionary<AssetId, uint>();
 
         foreach (var asset in ordered)
         {
             using var buffer = new MemoryStream();
-            using (var writer = new BinaryWriter(buffer, System.Text.Encoding.ASCII, leaveOpen: true))
+            using (var writer = new EndianWriter(buffer, _archive.Serializer.Profile.Endianness, leaveOpen: true))
                 AssetCodecs.Write(asset, writer, _archive.Serializer.Profile);
 
             byte[] bytes = buffer.ToArray();
@@ -255,12 +258,12 @@ public sealed class AssetSession : IDisposable
         _streamData.Data = BuildData(ordered, serialized, headers, dataStart);
     }
 
-    private System.Collections.Generic.Dictionary<AssetId, AssetHeader> BuildHeaders(
+    private Dictionary<AssetId, AssetHeader> BuildHeaders(
         List<Asset> ordered,
-        System.Collections.Generic.Dictionary<AssetId, byte[]> serialized,
-        System.Collections.Generic.Dictionary<AssetId, uint> checksums)
+        Dictionary<AssetId, byte[]> serialized,
+        Dictionary<AssetId, uint> checksums)
     {
-        var headers = new System.Collections.Generic.Dictionary<AssetId, AssetHeader>();
+        var headers = new Dictionary<AssetId, AssetHeader>();
 
         foreach (var asset in ordered)
         {
@@ -278,7 +281,7 @@ public sealed class AssetSession : IDisposable
         return headers;
     }
 
-    private AssetTable BuildAssetTable(System.Collections.Generic.Dictionary<AssetId, AssetHeader> headers)
+    private AssetTable BuildAssetTable(Dictionary<AssetId, AssetHeader> headers)
     {
         var table = _archive.Serializer.CreateBlock<AssetTable>();
         var inf = _archive.Serializer.CreateBlock<AssetInf>();
@@ -292,8 +295,8 @@ public sealed class AssetSession : IDisposable
     }
 
     /// <summary>
-    /// Rebuilds <c>ATOC</c>'s ordering: surviving assets keep their captured relative order, removed
-    /// ones simply drop out, and assets added during the session land at the end.
+    /// Rebuilds <see cref="AssetTable"/>'s ordering: surviving assets keep their captured relative
+    /// order, removed ones simply drop out, and assets added during the session land at the end.
     /// </summary>
     private List<AssetId> ReplayAtocOrder(IEnumerable<AssetId> currentIds)
     {
@@ -331,12 +334,13 @@ public sealed class AssetSession : IDisposable
 
     /// <summary>
     /// Lays every asset out in layer order, assigning <see cref="AssetHeader.Offset"/> and
-    /// <see cref="AssetHeader.Plus"/> as it goes, and returns the resulting <c>DPAK</c> data.
+    /// <see cref="AssetHeader.Plus"/> as it goes, and returns the resulting
+    /// <see cref="StreamData"/> data.
     /// </summary>
     private byte[] BuildData(
         List<Asset> ordered,
-        System.Collections.Generic.Dictionary<AssetId, byte[]> serialized,
-        System.Collections.Generic.Dictionary<AssetId, AssetHeader> headers,
+        Dictionary<AssetId, byte[]> serialized,
+        Dictionary<AssetId, AssetHeader> headers,
         long dataStart)
     {
         var lastInLayer = _layers
@@ -407,11 +411,6 @@ public sealed class AssetSession : IDisposable
     /// The serialized length of <paramref name="archive"/> in its current state, measured by writing
     /// it without retaining the bytes.
     /// </summary>
-    /// <remarks>
-    /// Used to locate where <c>DPAK</c>'s data begins, which is the archive's length minus that
-    /// data's own length. Measuring rather than computing keeps block-envelope sizing in
-    /// <c>Serializer</c> alone.
-    /// </remarks>
     private static long MeasureLength(Archive archive)
     {
         using var counter = new LengthMeasuringStream();
@@ -437,7 +436,7 @@ public sealed class AssetSession : IDisposable
 
     /// <summary>
     /// A write-only <see cref="Stream"/> that records how many bytes pass through it without
-    /// keeping them. Seekable, because <c>Serializer</c> backpatches each block's size field.
+    /// keeping them. Seekable, because <see cref="Serializer"/> backpatches each block's size field.
     /// </summary>
     private sealed class LengthMeasuringStream : Stream
     {

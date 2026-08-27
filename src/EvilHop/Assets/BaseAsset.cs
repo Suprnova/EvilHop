@@ -27,9 +27,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     AssetId IPhysicalBaseAsset.BaseId
     {
         get => _overriddenBaseId ?? this.Id;
-        // Assigning a value equal to Id clears the override rather than pinning one. A codec reads
-        // this straight from disk without checking, and the asset still follows later changes to
-        // Id unless the file itself disagreed - which is the only case worth preserving.
+        // prevents equivalent id assignments from being interpretted as an "override"
         set => _overriddenBaseId = value == Id ? null : value;
     }
 
@@ -49,6 +47,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
         // Links.Count at that moment would always see 0. The rule is instead a codec-side one - a
         // codec that parses links into Links leaves this alone and lets it derive; one that cannot
         // locate them sets it, and Links stays empty. See the interface's own remarks.
+        // TODO: i dont think we respected this in codec's implementation
         set => _overriddenLinkCount = value;
     }
 }
@@ -64,9 +63,7 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
     /// asset's own data.
     /// </summary>
     /// <remarks>
-    /// Follows <see cref="Asset.Id"/> unless the two disagreed on disk. Setting this to a value
-    /// equal to <see cref="Asset.Id"/> restores that behaviour; setting it to anything else pins
-    /// the disagreement and preserves it through a round trip.
+    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
     /// </remarks>
     AssetId BaseId { get; set; }
     /// <summary>
