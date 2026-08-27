@@ -8,9 +8,13 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Events#Links">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// TODO: type-safe abstraction for events
 public struct Link
 {
+    /// <summary>
+    /// Initializes a new instance of <see cref="Link"/> with four zeroed <see cref="Params"/> slots.
+    /// </summary>
+    public Link() { }
+
     /// <summary>
     /// The event on the owning <see cref="BaseAsset"/> that triggers this <see cref="Link"/>.
     /// </summary>
@@ -23,15 +27,23 @@ public struct Link
     /// The <see cref="AssetId"/> this <see cref="Link"/> sends <see cref="DestinationEvent"/> to.
     /// </summary>
     public AssetId DestinationAssetId { get; set; }
+
+    private Parameter[] _params = ZeroedParams();
     /// <summary>
     /// The four parameter slots passed alongside <see cref="DestinationEvent"/>. Always exactly 4
     /// elements, in order.
     /// </summary>
-    /// TODO: Determine if sanitising this is the codec's responsibility, and if we just zero
-    /// unallocated indices to reach 4 elements.
-    public Parameter[] Params { get; set; }
+    /// <exception cref="ArgumentException">The assigned array's length isn't 4.</exception>
+    public Parameter[] Params
+    {
+        readonly get => _params;
+        set => _params = value.Length == 4
+            ? value
+            : throw new ArgumentException($"{nameof(Params)} must contain exactly 4 elements.", nameof(value));
+    }
+
     /// <summary>
-    /// A supplemental <see cref="AssetId"/> parameter for <see cref="DestinationEvent"/>. 
+    /// A supplemental <see cref="AssetId"/> parameter for <see cref="DestinationEvent"/>.
     /// </summary>
     public AssetId ParamWidgetAssetId { get; set; }
     /// <summary>
@@ -39,4 +51,7 @@ public struct Link
     /// trigger this <see cref="Link"/>, if non-null.
     /// </summary>
     public AssetId CheckAssetId { get; set; }
+
+    private static Parameter[] ZeroedParams() =>
+        [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
 }
