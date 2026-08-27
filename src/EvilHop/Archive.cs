@@ -1,4 +1,4 @@
-﻿using EvilHop.Assets;
+using EvilHop.Assets;
 using EvilHop.Blocks;
 using EvilHop.Serialization;
 

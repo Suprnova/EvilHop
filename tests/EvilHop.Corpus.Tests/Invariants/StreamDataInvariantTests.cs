@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Invariants;
 
 namespace EvilHop.Corpus.Tests.Invariants;

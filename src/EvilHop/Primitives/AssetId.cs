@@ -1,4 +1,4 @@
-﻿using EvilHop.Common;
+using EvilHop.Common;
 
 namespace EvilHop.Primitives;
 

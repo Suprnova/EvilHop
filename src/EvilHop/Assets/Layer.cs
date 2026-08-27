@@ -1,4 +1,4 @@
-﻿using EvilHop.Blocks;
+using EvilHop.Blocks;
 using EvilHop.Common;
 
 namespace EvilHop.Assets;

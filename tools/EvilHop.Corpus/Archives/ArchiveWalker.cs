@@ -1,4 +1,4 @@
-namespace EvilHop.Corpus;
+namespace EvilHop.Corpus.Archives;
 
 /// <summary>
 /// A single archive file discovered under a corpus root.

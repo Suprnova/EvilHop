@@ -1,4 +1,4 @@
-﻿using EvilHop.Primitives;
+using EvilHop.Primitives;
 
 namespace EvilHop.Assets;
 

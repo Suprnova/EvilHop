@@ -3,7 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Serialization;
 
-namespace EvilHop.Tests.Assets;
+namespace EvilHop.Tests.Serialization;
 
 public class AssetCodecsTests
 {

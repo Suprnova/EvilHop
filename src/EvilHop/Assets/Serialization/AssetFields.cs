@@ -1,11 +1,11 @@
 using EvilHop.Blocks;
 using EvilHop.Primitives;
 
-namespace EvilHop.Assets;
+namespace EvilHop.Assets.Serialization;
 
 /// <summary>
-/// Copies the fields an <see cref="Asset"/> sources from its <c>AHDR</c>/<c>ADBG</c> blocks rather
-/// than from its own slice of <see cref="StreamData.Data"/>.
+/// Copies the fields an <see cref="Asset"/> sources from its <see cref="AssetHeader"/> and
+/// <see cref="AssetDebug"/> blocks rather than from its own slice of <see cref="StreamData.Data"/>.
 /// </summary>
 /// <remarks>
 /// Every codec's read path starts here, generic or concrete, so this population is written once

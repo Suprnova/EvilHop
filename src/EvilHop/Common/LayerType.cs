@@ -1,4 +1,4 @@
-﻿namespace EvilHop.Common;
+namespace EvilHop.Common;
 
 #pragma warning disable CS1591 // Missing XML comment
 

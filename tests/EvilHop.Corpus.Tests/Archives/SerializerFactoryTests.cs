@@ -1,7 +1,8 @@
 using EvilHop.Common;
+using EvilHop.Corpus.Archives;
 using EvilHop.Serialization;
 
-namespace EvilHop.Corpus.Tests;
+namespace EvilHop.Corpus.Tests.Archives;
 
 public class SerializerFactoryTests
 {

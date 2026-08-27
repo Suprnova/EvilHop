@@ -1,4 +1,5 @@
 using EvilHop.Corpus;
+using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Invariants;
 using EvilHop.Corpus.Output;
 using EvilHop.Serialization;

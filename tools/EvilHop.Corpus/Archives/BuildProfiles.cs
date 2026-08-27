@@ -2,7 +2,7 @@ using EvilHop.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace EvilHop.Corpus;
+namespace EvilHop.Corpus.Archives;
 
 internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding)
 {

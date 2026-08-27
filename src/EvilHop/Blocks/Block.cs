@@ -1,4 +1,4 @@
-﻿namespace EvilHop.Blocks;
+namespace EvilHop.Blocks;
 
 /// <summary>
 /// The abstract base class from which all block types derive.

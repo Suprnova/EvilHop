@@ -1,4 +1,4 @@
-﻿using EvilHop.Blocks;
+using EvilHop.Blocks;
 using EvilHop.Serialization;
 using EvilHop.Tests.Serialization;
 

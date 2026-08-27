@@ -1,4 +1,4 @@
-﻿namespace EvilHop.Blocks;
+namespace EvilHop.Blocks;
 
 /// <summary>
 /// A no-data, no-children <see cref="Block"/> at the start of every HIP archive.

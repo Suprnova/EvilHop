@@ -1,4 +1,4 @@
-﻿using EvilHop.Blocks;
+using EvilHop.Blocks;
 
 namespace EvilHop.Tests.Blocks;
 
