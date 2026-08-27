@@ -11,6 +11,7 @@ public sealed class N100FSerializer(FormatProfile profile) : Serializer(profile)
     /// <summary>The profile every N100F build reads correctly under, except the 2001-06-11 prototype.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.N100F,
+        Platform.GameCube,
         PlatformFieldOrder.PlatformNameRegionLanguage,
         StreamDataHasPaddingField: true);
 

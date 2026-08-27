@@ -12,6 +12,11 @@ namespace EvilHop.Serialization;
 /// <param name="Game">
 /// The game this profile belongs to.
 /// </param>
+/// <param name="Platform">
+/// The console this build targets. Every archive observed agrees with its console's hardware byte
+/// order and disc sector size, so <see cref="Platform"/> alone determines both rather than letting
+/// them vary independently.
+/// </param>
 /// <param name="PlatformFieldOrder">
 /// Which fields a <see cref="PackagePlatform"/>'s strings maps to.
 /// </param>
@@ -23,25 +28,23 @@ namespace EvilHop.Serialization;
 /// flag bytes. True for <see cref="GameVersion.BFBB"/> release builds, false for every other game,
 /// including beta builds.
 /// </param>
-/// <param name="Endianness">
-/// The byte order of an asset's own fields, as opposed to the block envelope's, which is always
-/// big-endian regardless of platform. GameCube archives are big-endian; PS2 and Xbox archives are
-/// little-endian. <c>DefaultProfile</c> assumes GameCube.
-/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
-/// the <see langword="with"/> keyword.
+/// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
 /// </remarks>
-/// TODO: Deriving per platform is unresolved. Move Endianness to be located after Game once
-/// resolved. On the fence about storing platform as an enum and deriving endianness from it.
-/// Capturing the platform seems smart, but doesn't allow setting platform and endianness
-/// independently (though why would anyone need that?).
 public sealed record FormatProfile(
     GameVersion Game,
+    Platform Platform,
     PlatformFieldOrder PlatformFieldOrder,
     bool StreamDataHasPaddingField,
-    bool EntityHasPadding = false,
-    Endianness Endianness = Endianness.Big);
+    bool EntityHasPadding = false)
+{
+    /// <summary>
+    /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always
+    /// big-endian regardless of platform.
+    /// </summary>
+    public Endianness Endianness => Platform == Platform.GameCube ? Endianness.Big : Endianness.Little;
+}
 
 /// <summary>
 /// Which field a <see cref="PackagePlatform"/> block's run of strings maps to.

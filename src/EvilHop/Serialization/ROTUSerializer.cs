@@ -11,6 +11,7 @@ public sealed class ROTUSerializer(FormatProfile profile) : Serializer(profile)
     /// <summary>The profile every ROTU build reads correctly under.</summary>
     public static FormatProfile DefaultProfile { get; } = new(
         GameVersion.ROTU,
+        Platform.GameCube,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 

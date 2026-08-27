@@ -9,7 +9,7 @@ public class FormatProfileTests
     [Fact]
     public void Profile_WithSwitchChanged_LeavesOtherSwitchesIntact()
     {
-        var profile = new FormatProfile(GameVersion.N100F, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+        var profile = new FormatProfile(GameVersion.N100F, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         var changed = profile with { StreamDataHasPaddingField = false };
 
@@ -21,7 +21,7 @@ public class FormatProfileTests
     [Fact]
     public void EntityHasPadding_DefaultsToFalse()
     {
-        var profile = new FormatProfile(GameVersion.N100F, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+        var profile = new FormatProfile(GameVersion.N100F, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         Assert.False(profile.EntityHasPadding);
     }
@@ -41,10 +41,18 @@ public class FormatProfileTests
     [Fact]
     public void Endianness_DefaultsToBig()
     {
-        // Every current DefaultProfile is a GameCube build. Deriving this per platform instead of
-        // defaulting it is unsolved.
-        var profile = new FormatProfile(GameVersion.N100F, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+        var profile = new FormatProfile(GameVersion.N100F, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         Assert.Equal(Endianness.Big, profile.Endianness);
+    }
+
+    [Theory]
+    [InlineData(Platform.Xbox)]
+    [InlineData(Platform.PlayStation2)]
+    public void Endianness_IsLittle_ForNonGameCubePlatforms(Platform platform)
+    {
+        var profile = new FormatProfile(GameVersion.N100F, platform, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+
+        Assert.Equal(Endianness.Little, profile.Endianness);
     }
 }
