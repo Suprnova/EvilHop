@@ -7,7 +7,7 @@ public class BFBBSerializerContractTests : SerializerContractTests
 {
     protected override Serializer CreateSerializer() => new BFBBSerializer();
 
-    protected override Stream OpenMinimalFixture() =>
+    protected override FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "bfbb", "minimal.hip"));
 
     /// <summary>
@@ -15,7 +15,7 @@ public class BFBBSerializerContractTests : SerializerContractTests
     /// envelope every game owes. <c>PLAT</c> is the one confirmed structural change BFBB introduces
     /// over N100F, so it gets its own fixture here rather than living in the shared base.
     /// </summary>
-    private static Stream OpenMinimalWithPlatFixture() =>
+    private static FileStream OpenMinimalWithPlatFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "bfbb", "minimal-with-plat.hip"));
 
     [Fact]

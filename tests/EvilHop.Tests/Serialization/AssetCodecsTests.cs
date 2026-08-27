@@ -46,7 +46,7 @@ public class AssetCodecsTests
     [InlineData(AssetType.Player)]
     [InlineData(AssetType.SimpleObject)]
     public void Read_EntityShapedType_ProducesAnEntityAsset(AssetType type) =>
-        Assert.IsAssignableFrom<EntityAsset>(Read(type, new byte[80]));
+        Assert.IsType<EntityAsset>(Read(type, new byte[80]), exactMatch: false);
 
     [Theory]
     [InlineData(AssetType.Group)]
@@ -56,20 +56,20 @@ public class AssetCodecsTests
     {
         var asset = Read(type, new byte[16]);
 
-        Assert.IsAssignableFrom<BaseAsset>(asset);
-        Assert.IsNotAssignableFrom<EntityAsset>(asset);
+        Assert.IsType<BaseAsset>(asset, exactMatch: false);
+        Assert.IsNotType<EntityAsset>(asset, exactMatch: false);
     }
 
     [Fact]
     public void Read_Dynamic_ProducesADynaAsset() =>
-        Assert.IsAssignableFrom<DynaAsset>(Read(AssetType.Dynamic, new byte[16]));
+        Assert.IsType<DynaAsset>(Read(AssetType.Dynamic, new byte[16]), exactMatch: false);
 
     [Theory]
     [InlineData(AssetType.Texture)]
     [InlineData(AssetType.Model)]
     [InlineData(AssetType.BinkVideo)]
     public void Read_PayloadShapedType_ProducesAPayloadAsset(AssetType type) =>
-        Assert.IsAssignableFrom<PayloadAsset>(Read(type, new byte[16]));
+        Assert.IsType<PayloadAsset>(Read(type, new byte[16]), exactMatch: false);
 
     [Theory]
     [InlineData(AssetType.Animation)]

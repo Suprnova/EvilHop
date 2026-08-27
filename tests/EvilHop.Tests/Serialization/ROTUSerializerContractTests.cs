@@ -6,6 +6,6 @@ public class ROTUSerializerContractTests : SerializerContractTests
 {
     protected override Serializer CreateSerializer() => new ROTUSerializer();
 
-    protected override Stream OpenMinimalFixture() =>
+    protected override FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "rotu", "minimal.hip"));
 }

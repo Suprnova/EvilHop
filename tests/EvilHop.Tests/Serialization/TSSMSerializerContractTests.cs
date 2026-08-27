@@ -6,6 +6,6 @@ public class TSSMSerializerContractTests : SerializerContractTests
 {
     protected override Serializer CreateSerializer() => new TSSMSerializer();
 
-    protected override Stream OpenMinimalFixture() =>
+    protected override FileStream OpenMinimalFixture() =>
         File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "tssm", "minimal.hip"));
 }
