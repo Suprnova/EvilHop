@@ -6,9 +6,10 @@ namespace EvilHop.Common;
 /// Specifies the type of a <c>Layer</c>.
 /// </summary>
 /// <remarks>
-/// Backed by a uint field that maps to <see cref="Blocks.LayerHeader.Type"/>.
+/// Backed by a uint field that maps to <see cref="Blocks.LayerHeader.Type"/>. These values are the
+/// on-disk numbering for every game from TSSM on. N100F and BFBB have special handling for these
+/// values in <see cref="Serialization.Serializer"/>.
 /// </remarks>
-/// TODO: wrong mapping types for N100F (no TextureStream, no JSPInfo) and BFBB (no TextureStream).
 public enum LayerType : uint
 {
     Default = 0,
