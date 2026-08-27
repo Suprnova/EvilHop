@@ -28,6 +28,21 @@ public class PayloadAssetTests
     }
 
     [Fact]
+    public void SaveTo_ThenLoadFrom_StreamRoundTripsData()
+    {
+        byte[] original = [0xDE, 0xAD, 0xBE, 0xEF];
+        var asset = new TestPayloadAsset { Data = original };
+        using var stream = new MemoryStream();
+
+        asset.SaveTo(stream);
+        stream.Position = 0;
+        var loaded = new TestPayloadAsset();
+        loaded.LoadFrom(stream);
+
+        Assert.Equal(original, loaded.Data);
+    }
+
+    [Fact]
     public void SetUnparsedTail_ThrowsNotSupported()
     {
         // A payload's whole body is the embedded file, so accepting these bytes would silently
