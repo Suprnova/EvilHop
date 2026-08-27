@@ -106,6 +106,38 @@ public class DictionaryTests
     }
 
     [Fact]
+    public void AssetTable_Headers_Setter_ReplacesExistingHeaders()
+    {
+        var atoc = new AssetTable();
+        atoc.Children.Add(new AssetHeader());
+        var replacement = new AssetHeader();
+
+        atoc.Headers = [replacement];
+
+        Assert.Same(replacement, Assert.Single(atoc.Headers));
+    }
+
+    [Fact]
+    public void AssetTable_Headers_Setter_ClearsReplacedHeaderParent()
+    {
+        var atoc = new AssetTable();
+        var original = new AssetHeader();
+        atoc.Children.Add(original);
+
+        atoc.Headers = [];
+
+        Assert.Null(original.Parent);
+    }
+
+    [Fact]
+    public void AssetTable_Headers_Setter_WhenLocked_ThrowsInvalidOperationException()
+    {
+        var atoc = new AssetTable { AreBlockFieldsLocked = true };
+
+        Assert.Throws<InvalidOperationException>(() => atoc.Headers = []);
+    }
+
+    [Fact]
     public void AssetHeader_Tag_IsCorrect()
     {
         var header = new AssetHeader();
@@ -211,6 +243,38 @@ public class DictionaryTests
     {
         var inf = new LayerInf();
         Assert.Equal("LINF", inf.Tag);
+    }
+
+    [Fact]
+    public void LayerTable_Headers_Setter_ReplacesExistingHeaders()
+    {
+        var ltoc = new LayerTable();
+        ltoc.Children.Add(new LayerHeader());
+        var replacement = new LayerHeader();
+
+        ltoc.Headers = [replacement];
+
+        Assert.Same(replacement, Assert.Single(ltoc.Headers));
+    }
+
+    [Fact]
+    public void LayerTable_Headers_Setter_ClearsReplacedHeaderParent()
+    {
+        var ltoc = new LayerTable();
+        var original = new LayerHeader();
+        ltoc.Children.Add(original);
+
+        ltoc.Headers = [];
+
+        Assert.Null(original.Parent);
+    }
+
+    [Fact]
+    public void LayerTable_Headers_Setter_WhenLocked_ThrowsInvalidOperationException()
+    {
+        var ltoc = new LayerTable { AreBlockFieldsLocked = true };
+
+        Assert.Throws<InvalidOperationException>(() => ltoc.Headers = []);
     }
 
     [Fact]
