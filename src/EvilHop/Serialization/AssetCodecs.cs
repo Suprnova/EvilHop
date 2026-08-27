@@ -98,9 +98,24 @@ internal static class AssetCodecs
             };
     }
 
-    // TODO: these should really be a hierarchy, right? ReadPlain always populates AssetFields,
-    // it would just require passing the asset and promoting it, plus each method owning its own
-    // unparsed tail.
+    /// <summary>
+    /// Populates <paramref name="asset"/>'s header-sourced fields and reads its
+    /// <see cref="BaseAssetPrefix"/> - the two steps every <see cref="BaseAsset"/>-shaped codec
+    /// starts with, regardless of what follows.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="BaseAssetPrefix.Read"/> always sets <see cref="IPhysicalBaseAsset.LinkCount"/> as
+    /// an override, matching the "cannot locate them" half of that property's contract - none of
+    /// the shapes below parse links into <see cref="BaseAsset.Links"/>. A future codec that does
+    /// must not treat this helper's LinkCount as final.
+    /// </remarks>
+    private static T PopulateBase<T>(T asset, AssetHeader header, AssetDebug debug, EndianReader reader)
+        where T : BaseAsset
+    {
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+        return asset;
+    }
 
     private static Asset ReadPlain(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -115,9 +130,7 @@ internal static class AssetCodecs
 
     private static Asset ReadBase(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = new GenericBaseAsset();
-        AssetFields.Populate(asset, header, debug);
-        BaseAssetPrefix.Read(asset, reader);
+        var asset = PopulateBase(new GenericBaseAsset(), header, debug, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -130,9 +143,7 @@ internal static class AssetCodecs
 
     private static Asset ReadEntity(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = new GenericEntityAsset();
-        AssetFields.Populate(asset, header, debug);
-        BaseAssetPrefix.Read(asset, reader);
+        var asset = PopulateBase(new GenericEntityAsset(), header, debug, reader);
         EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -148,9 +159,7 @@ internal static class AssetCodecs
 
     private static Asset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = new GenericDynaAsset();
-        AssetFields.Populate(asset, header, debug);
-        BaseAssetPrefix.Read(asset, reader);
+        var asset = PopulateBase(new GenericDynaAsset(), header, debug, reader);
         DynaAssetPrefix.Read(asset, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
