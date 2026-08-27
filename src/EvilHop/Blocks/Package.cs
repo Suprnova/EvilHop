@@ -327,22 +327,24 @@ public enum PackFlags : uint
     Unknown3 = 1U << 2,
     Unknown4 = 1U << 3,
     Unknown6 = 1U << 5,
-    Unknown17 = 1U << 16,
-    Unknown18 = 1U << 17,
-    Unknown19 = 1U << 18,
-    Unknown20 = 1U << 19,
-    Unknown21 = 1U << 20,
-    Unknown22 = 1U << 21,
-    Unknown23 = 1U << 22,
-    Unknown24 = 1U << 23,
-    Unknown25 = 1U << 24,
-    Unknown26 = 1U << 25,
-    Default = Unknown2 | Unknown3 | Unknown4 | Unknown6,
-    DE_PS2_BFBB = Unknown21 | Unknown19,
-    US_GC_BFBB = Unknown22 | Unknown20 | Unknown17,
-    US_XBOX_BFBB = Unknown22 | Unknown20 | Unknown18,
-    US_PS2_BFBB = Unknown22 | Unknown20 | Unknown19,
-    GC_MNPAL_BFBB = Unknown23 | Unknown21 | Unknown17,
-    US_BFBB = Unknown26,
-    DE_PS2_BFBB_2 = Unknown26 | Unknown25
+
+    GameCube = 1U << 16,
+    Xbox = 1U << 17,
+    PlayStation2 = 1U << 18,
+
+    NTSC = 1U << 19,
+    PAL = 1U << 20,
+
+    LanguageUSCommon = 1U << 21,
+    LanguageUnitedKingdom = 1U << 22,
+    LanguageFrench = 1U << 23,
+    LanguageGerman = 1U << 24,
+
+    Platform = 1U << 25,
+
+    PlatformMask = GameCube | Xbox | PlayStation2,
+    RegionMask = NTSC | PAL,
+    LanguageMask = LanguageUSCommon | LanguageUnitedKingdom | LanguageFrench | LanguageGerman,
+
+    Default = Unknown2 | Unknown3 | Unknown4 | Unknown6
 }
