@@ -2413,6 +2413,20 @@
         "passing": 52
       }
     },
+    "packageFlagsDefaultAlwaysPresent": {
+      "checked": 26,
+      "outcomes": {
+        "violated": 0,
+        "passing": 26
+      }
+    },
+    "packageFlagsUpperWordMatchesPlatform": {
+      "checked": 26,
+      "outcomes": {
+        "violated": 0,
+        "passing": 26
+      }
+    },
     "packageMaxSizesMatchTree": {
       "checked": 78,
       "outcomes": {
