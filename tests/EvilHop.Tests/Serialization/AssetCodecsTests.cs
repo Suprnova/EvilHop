@@ -179,7 +179,65 @@ public class AssetCodecsTests
         Assert.NotEqual(without.Physical.SurfaceId, withPadding.Physical.SurfaceId);
     }
 
+    [Fact]
+    public void Read_EntityShapedType_ReadsColorMultiplierInRgbaOrder()
+    {
+        byte[] data =
+        [
+            .. new byte[8],         // BaseAssetPrefix: BaseId, BaseType, LinkCount, BaseFlags
+            0x00, 0x00, 0x00, 0x00, // EntityFlags/Subtype/PFlags/CollisionFlags
+            0x00, 0x00, 0x00, 0x00, // SurfaceId
+            .. new byte[36],        // Angle/Position/Scale
+            0x3F, 0x80, 0x00, 0x00, // R = 1.0f
+            0x40, 0x00, 0x00, 0x00, // G = 2.0f
+            0x40, 0x40, 0x00, 0x00, // B = 3.0f
+            0x40, 0x80, 0x00, 0x00, // A = 4.0f
+            0x00, 0x00, 0x00, 0x00, // SeeThroughSpeed
+            0x00, 0x00, 0x00, 0x00, // ModelId
+            0x00, 0x00, 0x00, 0x00, // AnimListId
+        ];
+
+        var entity = (EntityAsset)Read(AssetType.Trigger, data, N100FSerializer.DefaultProfile);
+
+        Assert.Equal(new RgbaColor(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
+    }
+
     private sealed class StubAsset : Asset;
+
+    [Fact]
+    public void Write_GenericAssetCarryingAShapedType_FallsBackToItsOwnUnparsedTail()
+    {
+        // Mirrors what AssetSession.ParseOne does for an asset too short to parse under its shape's
+        // codec (for example, zero bytes - not even enough for the fixed BaseAsset prefix): it
+        // degrades to a bare GenericAsset while keeping the AssetType that failure happened under.
+        // Dispatching on that AssetType alone would route it to WriteBase and throw on the cast.
+        var asset = new GenericAsset { Type = AssetType.Group };
+        asset.SetUnparsedTail([0xDE, 0xAD]);
+
+        Assert.Equal<byte>([0xDE, 0xAD], Write(asset));
+    }
+
+    [Fact]
+    public void Register_AfterAnAssetOfThatTypeWasAlreadyRead_WriteFallsBackToItsRuntimeShape()
+    {
+        // Chosen for its own sake, like Register_OverwritesTheSeededGenericHandler: this permanently
+        // repoints the entry, so it must be a type nothing else in this class asserts on.
+        const AssetType type = AssetType.SlideProperty;
+        var asset = (BaseAsset)Read(type, new byte[16]);
+        byte[] beforeRegistration = Write(asset);
+
+        AssetCodecs.Register<StubAsset>(
+            type,
+            (data, header, debug, profile) => new StubAsset(),
+            (stub, writer, profile) => writer.Write("stub"u8));
+
+        // Handlers is one global table: registering a new codec for `type` retargets every asset
+        // that already carries it, not just future reads. `asset` is still a GenericBaseAsset, not a
+        // StubAsset, so an unchecked cast in the new handler would throw here.
+        byte[] afterRegistration = Write(asset);
+
+        Assert.Equal(beforeRegistration, afterRegistration);
+    }
 
     [Fact]
     public void Register_OverwritesTheSeededGenericHandler()

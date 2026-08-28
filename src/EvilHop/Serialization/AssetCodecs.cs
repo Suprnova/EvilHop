@@ -64,7 +64,7 @@ internal static class AssetCodecs
     public static void Register<T>(AssetType type, ReadFunc<T> read, WriteFunc<T> write) where T : Asset =>
         Handlers[type] = new CodecHandler(
             (data, header, debug, profile) => read(data, header, debug, profile),
-            (asset, writer, profile) => write((T)asset, writer, profile));
+            Guarded(write));
 
     /// <summary>
     /// Reads one asset, dispatching based on <see cref="AssetHeader.Type"/>.
@@ -81,7 +81,6 @@ internal static class AssetCodecs
     public static void Write(Asset asset, EndianWriter writer, FormatProfile profile) =>
         Resolve(asset.Type).Write(asset, writer, profile);
 
-    // TODO: should this dispatch on typeof() or "asset is TypedAsset"?
     private static CodecHandler Resolve(AssetType type) =>
         Handlers.TryGetValue(type, out var handler) ? handler : Fallback;
 
@@ -90,12 +89,39 @@ internal static class AssetCodecs
         foreach (var (type, shape) in ShapesByType)
             Handlers[type] = shape switch
             {
-                AssetShape.BaseAsset => new CodecHandler(ReadBase, WriteBase),
-                AssetShape.EntityAsset => new CodecHandler(ReadEntity, WriteEntity),
-                AssetShape.DynaAsset => new CodecHandler(ReadDyna, WriteDyna),
-                AssetShape.Payload => new CodecHandler(ReadPayload, WritePayload),
+                AssetShape.BaseAsset => new CodecHandler(ReadBase, Guarded<BaseAsset>(WriteBase)),
+                AssetShape.EntityAsset => new CodecHandler(ReadEntity, Guarded<EntityAsset>(WriteEntity)),
+                AssetShape.DynaAsset => new CodecHandler(ReadDyna, Guarded<DynaAsset>(WriteDyna)),
+                AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
                 _ => Fallback
             };
+    }
+
+    /// <summary>
+    /// Wraps a shape-specific writer so a shape mismatch degrades to writing by the asset's own
+    /// runtime shape.
+    /// </summary>
+    private static WriteFunc Guarded<T>(WriteFunc<T> write) where T : Asset =>
+        (asset, writer, profile) =>
+        {
+            if (asset is T typed) write(typed, writer, profile);
+            else WriteByShape(asset, writer, profile);
+        };
+
+    /// <summary>
+    /// Writes <paramref name="asset"/> using the generic writer for its own runtime shape, ignoring
+    /// whichever <see cref="AssetType"/>-keyed handler would otherwise apply.
+    /// </summary>
+    private static void WriteByShape(Asset asset, EndianWriter writer, FormatProfile profile)
+    {
+        switch (asset)
+        {
+            case EntityAsset entity: WriteEntity(entity, writer, profile); break;
+            case DynaAsset dyna: WriteDyna(dyna, writer, profile); break;
+            case BaseAsset baseAsset: WriteBase(baseAsset, writer, profile); break;
+            case PayloadAsset payload: WritePayload(payload, writer, profile); break;
+            default: WritePlain(asset, writer, profile); break;
+        }
     }
 
     /// <summary>
@@ -135,9 +161,9 @@ internal static class AssetCodecs
         return asset;
     }
 
-    private static void WriteBase(Asset asset, EndianWriter writer, FormatProfile profile)
+    private static void WriteBase(BaseAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        BaseAssetPrefix.Write((BaseAsset)asset, writer);
+        BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }
 
@@ -149,12 +175,11 @@ internal static class AssetCodecs
         return asset;
     }
 
-    private static void WriteEntity(Asset asset, EndianWriter writer, FormatProfile profile)
+    private static void WriteEntity(EntityAsset entity, EndianWriter writer, FormatProfile profile)
     {
-        var entity = (EntityAsset)asset;
         BaseAssetPrefix.Write(entity, writer);
         EntityAssetPrefix.Write(entity, writer, profile.EntityHasPadding);
-        writer.Write(asset.GetUnparsedTail());
+        writer.Write(entity.GetUnparsedTail());
     }
 
     private static Asset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
@@ -165,12 +190,11 @@ internal static class AssetCodecs
         return asset;
     }
 
-    private static void WriteDyna(Asset asset, EndianWriter writer, FormatProfile profile)
+    private static void WriteDyna(DynaAsset dyna, EndianWriter writer, FormatProfile profile)
     {
-        var dyna = (DynaAsset)asset;
         BaseAssetPrefix.Write(dyna, writer);
         DynaAssetPrefix.Write(dyna, writer);
-        writer.Write(asset.GetUnparsedTail());
+        writer.Write(dyna.GetUnparsedTail());
     }
 
     private static Asset ReadPayload(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
@@ -181,8 +205,8 @@ internal static class AssetCodecs
         return asset;
     }
 
-    private static void WritePayload(Asset asset, EndianWriter writer, FormatProfile profile) =>
-        writer.Write(((PayloadAsset)asset).Data);
+    private static void WritePayload(PayloadAsset asset, EndianWriter writer, FormatProfile profile) =>
+        writer.Write(asset.Data);
 
     private enum AssetShape { BaseAsset, EntityAsset, DynaAsset, Payload }
 
