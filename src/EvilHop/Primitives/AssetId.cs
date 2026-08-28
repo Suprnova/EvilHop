@@ -6,7 +6,6 @@ namespace EvilHop.Primitives;
 /// Represents a reference to an <see cref="Assets.Asset"/>.
 /// </summary>
 /// <param name="Value">The underlying Asset ID uint.</param>
-/// TODO: extension on Asset for .CalculateId()?
 public readonly record struct AssetId(uint Value)
 {
     /// <summary>
