@@ -1,5 +1,7 @@
 using EvilHop.Assets;
 using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Assets;
@@ -25,16 +27,24 @@ public class AssetSessionTests
     /// opaque. Loading one and pointing its offsets at the real data start makes it a valid archive
     /// at the asset layer without hand-assembling a second set of fixtures.
     /// </summary>
-    private static Archive LoadRepaired(string game)
+    private static Archive LoadRepaired(string game) => LoadRepaired(game, SerializerFor(game));
+
+    /// <summary>
+    /// <paramref name="mutate"/> runs before offsets are repaired, so a change that resizes a block
+    /// (e.g. a <see cref="LayerHeader"/>'s <see cref="LayerHeader.AssetIds"/>) is still reflected in
+    /// the recomputed data start.
+    /// </summary>
+    private static Archive LoadRepaired(string game, Serializer serializer, Action<EvilHop.Blocks.Dictionary>? mutate = null)
     {
         byte[] bytes = File.ReadAllBytes(
             Path.Combine(AppContext.BaseDirectory, "TestData", game, "minimal.hip"));
 
-        var archive = Archive.Load(new MemoryStream(bytes), SerializerFor(game));
+        var archive = Archive.Load(new MemoryStream(bytes), serializer);
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
         var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        mutate?.Invoke(dictionary);
 
-        uint dataStart = (uint)(bytes.Length - streamData.Data.Length);
+        uint dataStart = (uint)(Save(archive).Length - streamData.Data.Length);
         foreach (var header in dictionary.AssetTable.Headers)
             header.Offset = dataStart;
 
@@ -80,6 +90,23 @@ public class AssetSessionTests
         using var session = archive.OpenAssets();
 
         Assert.Empty(session.Diagnostics);
+    }
+
+    [Fact]
+    public void OpenAssets_DuplicateLayerListing_ReportsDiagnosticForThatAsset()
+    {
+        uint assetId = 0;
+        var archive = LoadRepaired("n100f", SerializerFor("n100f"), dictionary =>
+        {
+            assetId = dictionary.AssetTable.Headers.Single().Id;
+            var layerHeader = dictionary.LayerTable.Headers.Single();
+            layerHeader.AssetIds = [.. layerHeader.AssetIds, assetId];
+        });
+
+        using var session = archive.OpenAssets();
+
+        var diagnostic = Assert.Single(session.Diagnostics);
+        Assert.Equal(new AssetId(assetId), diagnostic.AssetId);
     }
 
     [Fact]
@@ -164,6 +191,30 @@ public class AssetSessionTests
     }
 
     [Fact]
+    public void OpenAssets_LocksDictionaryAgainstReplacingAssetTable()
+    {
+        var archive = LoadRepaired("n100f");
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var replacement = archive.Serializer.CreateBlock<AssetTable>();
+
+        using var session = archive.OpenAssets();
+
+        Assert.Throws<InvalidOperationException>(() => { dictionary.AssetTable = replacement; });
+    }
+
+    [Fact]
+    public void OpenAssets_LocksAssetStreamAgainstReplacingData()
+    {
+        var archive = LoadRepaired("n100f");
+        var stream = archive.Roots.OfType<AssetStream>().Single();
+        var replacement = archive.Serializer.CreateBlock<StreamData>();
+
+        using var session = archive.OpenAssets();
+
+        Assert.Throws<InvalidOperationException>(() => { stream.Data = replacement; });
+    }
+
+    [Fact]
     public void OpenAssets_LeavesPackageFieldsSettable()
     {
         var archive = LoadRepaired("n100f");
@@ -188,6 +239,22 @@ public class AssetSessionTests
     }
 
     [Fact]
+    public void Commit_LeavesDictionaryAndAssetStreamSettableAgain()
+    {
+        var archive = LoadRepaired("n100f");
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var stream = archive.Roots.OfType<AssetStream>().Single();
+        var session = archive.OpenAssets();
+
+        session.Commit();
+        dictionary.LayerTable = archive.Serializer.CreateBlock<LayerTable>();
+        stream.Data = archive.Serializer.CreateBlock<StreamData>();
+
+        Assert.NotNull(dictionary.LayerTable);
+        Assert.NotNull(stream.Data);
+    }
+
+    [Fact]
     public void Commit_AssignsAbsoluteOffsetPointingAtTheAssetsBytes()
     {
         byte[] canonical = Canonical("n100f");
@@ -206,6 +273,19 @@ public class AssetSessionTests
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
 
         Assert.Equal(0, (canonical.Length - streamData.Data.Length) % 32);
+    }
+
+    [Fact]
+    public void Commit_PadsStreamDataToA2048ByteSectorOnPlayStation2()
+    {
+        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+        var archive = LoadRepaired("n100f", new N100FSerializer(profile));
+        var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
+
+        using (archive.OpenAssets()) { }
+        byte[] saved = Save(archive);
+
+        Assert.Equal(0, (saved.Length - streamData.Data.Length) % 2048);
     }
 
     [Fact]
