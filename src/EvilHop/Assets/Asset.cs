@@ -87,6 +87,17 @@ public abstract class Asset : IPhysicalAsset
     /// If this <see cref="Asset"/> has no unparsed region for the bytes to go in.
     /// </exception>
     public virtual void SetUnparsedTail(byte[] bytes) => UnparsedTail = bytes;
+
+    /// <summary>
+    /// Recalculates and assigns <see cref="Id"/> from this <see cref="Asset"/>'s <see cref="Name"/>
+    /// and <see cref="Type"/>.
+    /// </summary>
+    /// <remarks>
+    /// Only touches <see cref="Id"/>. A <see cref="BaseAsset"/> whose
+    /// <see cref="IPhysicalBaseAsset.BaseId"/> is explicitly overridden keeps that override -
+    /// recalculating the logical ID doesn't resolve a disagreement you created on purpose.
+    /// </remarks>
+    public void CalculateId() => Id = AssetId.FromName(Name, Type);
 }
 
 /// <summary>

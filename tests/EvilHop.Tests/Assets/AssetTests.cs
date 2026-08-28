@@ -50,4 +50,14 @@ public class AssetTests
 
         Assert.Equal(new AssetId(0x1234), asset.Id);
     }
+
+    [Fact]
+    public void CalculateId_SetsIdFromNameAndType()
+    {
+        var asset = new TestAsset { Name = "foo.dff", Type = AssetType.Animation };
+
+        asset.CalculateId();
+
+        Assert.Equal(AssetId.FromName("foo.dff", AssetType.Animation), asset.Id);
+    }
 }
