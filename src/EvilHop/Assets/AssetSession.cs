@@ -7,6 +7,18 @@ using EvilHop.Serialization;
 namespace EvilHop.Assets;
 
 /// <summary>
+/// A problem encountered while opening an <see cref="AssetSession"/>, attributed to the asset that
+/// caused it.
+/// </summary>
+/// <param name="AssetId">The asset the problem was encountered for.</param>
+/// <param name="Message">A human-readable description of the problem.</param>
+public readonly record struct AssetDiagnostic(AssetId AssetId, string Message)
+{
+    /// <inheritdoc/>
+    public override string ToString() => $"{AssetId}: {Message}";
+}
+
+/// <summary>
 /// Owns an <see cref="Archive"/>'s assets for the duration of a scope. Opening one detaches the
 /// blocks that describe assets from the block tree and parses them into <see cref="Layer"/>s of
 /// <see cref="Asset"/>s; committing rebuilds those blocks and reattaches them.
@@ -14,8 +26,10 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <para>The following blocks are locked and unavailable from <see cref="Archive"/> while open:</para>
 /// <list type="bullet">
+/// <item><see cref="Dictionary"/></item>
 /// <item><see cref="AssetTable"/></item>
 /// <item><see cref="LayerTable"/></item>
+/// <item><see cref="AssetStream"/></item>
 /// <item><see cref="StreamData"/></item>
 /// </list>
 /// </remarks>
@@ -26,12 +40,11 @@ public sealed class AssetSession : IDisposable
     private readonly List<Layer> _layers = [];
 
     /// <summary>
-    /// Problems encountered while opening, one line each. An asset that fails to parse degrades to
-    /// its untyped form and is reported here rather than throwing.
+    /// Problems encountered while opening. An asset that fails to parse degrades to its untyped form
+    /// and is reported here rather than throwing.
     /// </summary>
-    /// TODO: struct this, at least a reference to the asset
-    public IReadOnlyList<string> Diagnostics => _diagnostics;
-    private readonly List<string> _diagnostics = [];
+    public IReadOnlyList<AssetDiagnostic> Diagnostics => _diagnostics;
+    private readonly List<AssetDiagnostic> _diagnostics = [];
 
     /// <summary>
     /// The assets whose bytes differ from what they were at open, calculated via the session's checksum.
@@ -40,6 +53,7 @@ public sealed class AssetSession : IDisposable
 
     private readonly Archive _archive;
     private readonly Dictionary _dictionary;
+    private readonly AssetStream _stream;
     private readonly StreamData _streamData;
     private readonly uint _assetInfValue;
     private readonly uint _layerInfValue;
@@ -50,41 +64,51 @@ public sealed class AssetSession : IDisposable
     private HashSet<AssetId> _changedLookup = [];
     private bool _committed;
 
-    // TODO: dear god make this a config struct
-    private AssetSession(
-        Archive archive,
-        Dictionary dictionary,
-        StreamData streamData,
-        uint assetInfValue,
-        uint layerInfValue,
-        byte fillByte,
-        List<AssetId> originalAtocOrder,
-        Dictionary<AssetId, uint> openChecksums,
-        Dictionary<(AssetId, AssetId), byte[]> capturedGaps)
+    /// <summary>The blocks this session was opened against.</summary>
+    private readonly record struct SessionTarget(Archive Archive, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
+
+    /// <summary>
+    /// Scalars captured while opening, before the blocks that carried them are detached or cleared:
+    /// <see cref="AssetTable"/> and <see cref="LayerTable"/> stop being reachable through
+    /// <see cref="Dictionary"/> once a session owns them, so their <c>Inf.Value</c> is copied out
+    /// rather than read back from a block that's no longer there.
+    /// </summary>
+    private readonly record struct CapturedValues(uint AssetInfValue, uint LayerInfValue, byte FillByte);
+
+    /// <summary>State accumulated for diffing the session's assets against what they were at open.</summary>
+    private readonly record struct ChangeTracking(
+        List<AssetId> OriginalAtocOrder,
+        Dictionary<AssetId, uint> OpenChecksums,
+        Dictionary<(AssetId Before, AssetId After), byte[]> CapturedGaps);
+
+    private AssetSession(SessionTarget target, CapturedValues captured, ChangeTracking changeTracking)
     {
-        _archive = archive;
-        _dictionary = dictionary;
-        _streamData = streamData;
-        _assetInfValue = assetInfValue;
-        _layerInfValue = layerInfValue;
-        _fillByte = fillByte;
-        _originalAtocOrder = originalAtocOrder;
-        _openChecksums = openChecksums;
-        _capturedGaps = capturedGaps;
+        _archive = target.Archive;
+        _dictionary = target.Dictionary;
+        _stream = target.Stream;
+        _streamData = target.StreamData;
+        _assetInfValue = captured.AssetInfValue;
+        _layerInfValue = captured.LayerInfValue;
+        _fillByte = captured.FillByte;
+        _originalAtocOrder = changeTracking.OriginalAtocOrder;
+        _openChecksums = changeTracking.OpenChecksums;
+        _capturedGaps = changeTracking.CapturedGaps;
     }
 
-    // TODO: evaluate whether or not AssetSession should even hold these serialization concerns
-
-    /// <summary>The fill byte assumed when an archive carries no padding to sample one from.</summary>
+    /// <summary>
+    /// The fill byte assumed when an archive carries no padding to sample one from.
+    /// </summary>
     private const byte DefaultFillByte = 0x33;
 
-    /// <summary>The alignment assumed for an asset that declares a non-positive one.</summary>
-    /// TODO: Make this respect observed Alignment defaults for non-positive values in corpora
+    /// <summary>
+    /// The alignment assumed for an asset that declares a non-positive one.
+    /// </summary>
     private const uint DefaultAlignment = 16;
 
-    /// <summary><see cref="StreamData"/>'s data begins on a boundary of this many bytes.</summary>
-    /// TODO: Make this respect FormatProfile's platform
-    private const int DataAlignment = 32;
+    /// <summary>
+    /// The boundary <see cref="StreamData"/>'s data begins on.
+    /// </summary>
+    private static uint DataAlignmentFor(Platform platform) => platform == Platform.GameCube ? 32u : 2048u;
 
     internal static AssetSession Open(Archive archive)
     {
@@ -98,29 +122,25 @@ public sealed class AssetSession : IDisposable
         long dataStart = MeasureLength(archive) - streamData.Data.Length;
 
         var session = new AssetSession(
-            archive,
-            dictionary,
-            streamData,
-            assetTable.Inf.Value,
-            layerTable.Inf.Value,
-            streamData.Padding.Length > 0 ? streamData.Padding[0] : DefaultFillByte,
-            [.. headers.Select(h => new AssetId(h.Id))],
-            [],
-            []);
+            new SessionTarget(archive, dictionary, stream, streamData),
+            new CapturedValues(
+                assetTable.Inf.Value,
+                layerTable.Inf.Value,
+                streamData.Padding.Length > 0 ? streamData.Padding[0] : DefaultFillByte),
+            new ChangeTracking([.. headers.Select(h => new AssetId(h.Id))], [], []));
 
         session.CaptureGaps(headers, dataStart);
         session.ParseLayers(layerTable, headers, dataStart);
 
-        // Locked only after parsing - reading these blocks is how the assets get built.
         assetTable.LockFields();
         layerTable.LockFields();
-        streamData.LockFields();
 
         dictionary.AssetTable = null!;
         dictionary.LayerTable = null!;
-        streamData.UnlockFields(); // TODO: what?
+        dictionary.LockFields();
+
         streamData.Data = [];
-        streamData.LockFields();
+        stream.LockFields();
 
         return session;
     }
@@ -160,13 +180,13 @@ public sealed class AssetSession : IDisposable
             {
                 if (!byId.TryGetValue(id, out var header))
                 {
-                    _diagnostics.Add($"Asset 0x{id:X8} is listed by a layer but has no ATOC entry. Skipped.");
+                    _diagnostics.Add(new AssetDiagnostic(new AssetId(id), "Listed by a layer but has no ATOC entry. Skipped."));
                     continue;
                 }
 
                 if (!seen.Add(id))
                 {
-                    _diagnostics.Add($"Asset 0x{id:X8} is listed more than once. The duplicate listing is dropped.");
+                    _diagnostics.Add(new AssetDiagnostic(new AssetId(id), "Listed more than once. The duplicate listing is dropped."));
                     continue;
                 }
 
@@ -184,7 +204,7 @@ public sealed class AssetSession : IDisposable
         ReadOnlySpan<byte> slice = inRange ? _streamData.Data.AsSpan(range) : [];
 
         if (!inRange && header.Size > 0)
-            _diagnostics.Add($"Asset 0x{header.Id:X8} ({header.Type}) declares bytes outside DPAK. Degraded to empty.");
+            _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) declares bytes outside DPAK. Degraded to empty."));
 
         _openChecksums[new AssetId(header.Id)] = Crc32Mpeg2.Compute(slice);
 
@@ -197,7 +217,7 @@ public sealed class AssetSession : IDisposable
         }
         catch (Exception ex)
         {
-            _diagnostics.Add($"Asset 0x{header.Id:X8} ({header.Type}) failed to parse: {ex.Message}. Degraded to raw bytes.");
+            _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) failed to parse: {ex.Message}. Degraded to raw bytes."));
             var fallback = new GenericAsset();
             AssetFields.Populate(fallback, header, debug);
             fallback.SetUnparsedTail(slice.ToArray());
@@ -209,9 +229,6 @@ public sealed class AssetSession : IDisposable
     /// Rebuilds <see cref="AssetTable"/>, <see cref="LayerTable"/>, and <see cref="StreamData"/>
     /// from the current assets and reattaches them. Calling this twice is a no-op the second time.
     /// </summary>
-    /// TODO: look into how expensive committing, releasing, writing, and reopening a session is.
-    /// the use case for that is autosave, and hanging the application for a long time when that
-    /// happens seems like a bad idea
     public void Commit()
     {
         if (_committed) return;
@@ -241,16 +258,18 @@ public sealed class AssetSession : IDisposable
         var assetTable = BuildAssetTable(headers);
         var layerTable = BuildLayerTable();
 
+        _dictionary.UnlockFields();
         _dictionary.AssetTable = assetTable;
         _dictionary.LayerTable = layerTable;
 
-        _streamData.UnlockFields();
+        _stream.UnlockFields();
         _streamData.PaddingAmount = 0;
         _streamData.Padding = [];
         _streamData.Data = [];
 
         long dataStart = MeasureLength(_archive);
-        int paddingAmount = (int)((DataAlignment - dataStart % DataAlignment) % DataAlignment);
+        long dataAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
+        int paddingAmount = (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment);
         _streamData.PaddingAmount = (uint)paddingAmount;
         _streamData.Padding = FillBytes(paddingAmount);
         dataStart += paddingAmount;
