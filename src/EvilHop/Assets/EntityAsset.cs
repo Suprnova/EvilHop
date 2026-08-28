@@ -32,27 +32,10 @@ public abstract class EntityAsset : BaseAsset, IPhysicalEntityAsset
     /// </summary>
     public Vector3 Scale { get; set; }
 
-    // TODO: see if this should be a Color struct (System.Drawing doesn't seem like it'll work)
-
     /// <summary>
-    /// The red channel of the <see cref="EntityAsset"/>'s color multiplier.
+    /// The <see cref="EntityAsset"/>'s color multiplier, alpha included.
     /// </summary>
-    public float RedMultiplier { get; set; }
-
-    /// <summary>
-    /// The green channel of the <see cref="EntityAsset"/>'s color multiplier.
-    /// </summary>
-    public float GreenMultiplier { get; set; }
-
-    /// <summary>
-    /// The blue channel of the <see cref="EntityAsset"/>'s color multiplier.
-    /// </summary>
-    public float BlueMultiplier { get; set; }
-
-    /// <summary>
-    /// The <see cref="EntityAsset"/>'s alpha channel multiplier.
-    /// </summary>
-    public float SeeThrough { get; set; }
+    public RgbaColor ColorMultiplier { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalEntityAsset Physical => this;
@@ -132,10 +115,19 @@ public interface IPhysicalEntityAsset : IPhysicalBaseAsset
     /// </summary>
     AssetId AnimListId { get; set; }
     /// <summary>
-    /// Unknown. Usually 255.
+    /// Always 255. Unused.
     /// </summary>
     float SeeThroughSpeed { get; set; }
 }
+
+/// <summary>
+/// An RGBA color multiplier.
+/// </summary>
+/// <param name="R">The red channel.</param>
+/// <param name="G">The green channel.</param>
+/// <param name="B">The blue channel.</param>
+/// <param name="A">The alpha channel.</param>
+public readonly record struct RgbaColor(float R, float G, float B, float A);
 
 /// <summary>
 /// Represents all known values for <see cref="EntityAsset.EntityFlags"/>.

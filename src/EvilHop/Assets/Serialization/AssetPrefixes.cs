@@ -64,10 +64,7 @@ internal static class EntityAssetPrefix
         asset.Angle = reader.ReadVector3();
         asset.Position = reader.ReadVector3();
         asset.Scale = reader.ReadVector3();
-        asset.RedMultiplier = reader.ReadSingle();
-        asset.GreenMultiplier = reader.ReadSingle();
-        asset.BlueMultiplier = reader.ReadSingle();
-        asset.SeeThrough = reader.ReadSingle();
+        asset.ColorMultiplier = new RgbaColor(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         asset.Physical.SeeThroughSpeed = reader.ReadSingle();
         asset.Physical.ModelId = reader.ReadAssetId();
         asset.Physical.AnimListId = reader.ReadAssetId();
@@ -95,10 +92,10 @@ internal static class EntityAssetPrefix
         writer.Write(asset.Angle);
         writer.Write(asset.Position);
         writer.Write(asset.Scale);
-        writer.Write(asset.RedMultiplier);
-        writer.Write(asset.GreenMultiplier);
-        writer.Write(asset.BlueMultiplier);
-        writer.Write(asset.SeeThrough);
+        writer.Write(asset.ColorMultiplier.R);
+        writer.Write(asset.ColorMultiplier.G);
+        writer.Write(asset.ColorMultiplier.B);
+        writer.Write(asset.ColorMultiplier.A);
         writer.Write(asset.Physical.SeeThroughSpeed);
         writer.Write(asset.Physical.ModelId);
         writer.Write(asset.Physical.AnimListId);

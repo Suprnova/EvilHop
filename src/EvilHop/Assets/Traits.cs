@@ -86,7 +86,6 @@ public interface IHasModel
 /// <item><see cref="AssetType.SimpleObject"/></item>
 /// </list>
 /// </remarks>
-/// TODO: Double check is UI -> SND relationship belongs here, or in another trait
 public interface IHasAnimList
 {
     /// <summary>
