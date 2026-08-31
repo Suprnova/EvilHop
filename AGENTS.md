@@ -10,9 +10,6 @@ The library is in alpha and is not used in any production applications. Breaking
 |---|---|
 | `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`, `Validation/`. |
 | `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. |
-| `tools/EvilHop.Corpus/` | Console tool that reads `artifacts/` and writes `corpus/`. Depends on `EvilHop`; `EvilHop` never depends on it. |
-| `tests/EvilHop.Corpus.Tests/` | Tests for the tool itself. |
-| `corpus/` | Committed per-game inventories generated from real archives. |
 | `artifacts/` | Local, gitignored corpus of real game archives. |
 | `docs/` | Living architecture documents. See below. |
 
@@ -109,12 +106,6 @@ An asset type's codec support is one of three states, not a binary "done or not"
 Every aspect of the library puts the developer first. We prioritize rich documentation, clear error messages, and a simple API. We never sacrifice developer experience for performance or code complexity.
 
 All architectural and design decisions should be approached from the perspective of developers using both layers of the library.
-
-## Corpus and Real Archives
-
-`artifacts/` is a local, gitignored corpus of real game archives - never a build or test dependency, and the full test suite must pass without it. `tools/EvilHop.Corpus` reads it to generate small committed inventories under `corpus/`, which hermetic tests assert against.
-
-Governing rule: **the Corpus tool records observations; tests assert them against current code.** An inventory must never contain a value whose correctness depends on EvilHop's source.
 
 ## Further Reference
 - [Heavy Iron Modding Wiki](https://heavyironmodding.org)

@@ -85,13 +85,6 @@ by both layers: [`GameVersion`](../src/EvilHop/Common/GameVersion.cs),
 [`src/EvilHop/Validation/`](../src/EvilHop/Validation/) is reserved for the `Validate()` surface
 described in the project glossary but not yet implemented - the directory currently holds no code.
 
-## Corpus Tooling
-
-[`tools/EvilHop.Corpus/`](../tools/EvilHop.Corpus/) is a separate console tool, depended on by
-nothing in `src/EvilHop/`, that reads real archives from a local `artifacts/` directory and
-generates the committed inventories under [`corpus/`](../corpus/) that hermetic tests assert
-against.
-
 ## Planned Documents
 
 This overview will be supplemented by dedicated documents for the asset layer and serialization as
