@@ -1,3 +1,5 @@
+using EvilHop.Validation;
+
 namespace EvilHop.Blocks;
 
 /// <summary>
@@ -7,7 +9,6 @@ namespace EvilHop.Blocks;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#STRM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required DHDR and DPAK block.
 public class AssetStream : Block
 {
     /// <inheritdoc/>
@@ -16,6 +17,7 @@ public class AssetStream : Block
     /// <summary>
     /// The child <see cref="StreamHeader"/> of the <see cref="AssetStream"/>.
     /// </summary>
+    [RequiredChild]
     public StreamHeader Header
     {
         get => GetRequiredChild<StreamHeader>();
@@ -25,6 +27,7 @@ public class AssetStream : Block
     /// <summary>
     /// The child <see cref="StreamData"/> of the <see cref="AssetStream"/>.
     /// </summary>
+    [RequiredChild]
     public StreamData Data
     {
         get => GetRequiredChild<StreamData>();
@@ -40,7 +43,7 @@ public class AssetStream : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DHDR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class StreamHeader : Block
 {
     /// <inheritdoc/>
@@ -49,7 +52,7 @@ public class StreamHeader : Block
     /// <summary>
     /// Unknown. Always 0xFFFFFFFF.
     /// </summary>
-    /// Validation TODO: Always 0xFFFFFFFF.
+    [ConstantValue(0xFFFFFFFFu)]
     public uint Value { get; set; }
 
     internal StreamHeader() { }
@@ -67,7 +70,7 @@ public class StreamHeader : Block
 /// which is an empty block when it already ends aligned.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DPAK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class StreamData : Block
 {
     /// <inheritdoc/>

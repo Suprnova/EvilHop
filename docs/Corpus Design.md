@@ -286,6 +286,19 @@ per-game.
 `Archive`, `Block`, and `Asset` implement `IValidatable`. A container's `Validate` yields its own
 issues then recurses. `Validate` never throws and never mutates.
 
+**Block-level and asset-level validation are two calls, not one, and they are meaningful at different
+times.** `Archive.Validate()` walks the block tree as currently attached. While an `AssetSession` is
+open, `ATOC`/`LTOC` are genuinely detached from `DICT` and `DPAK`'s data is genuinely empty — that's
+not a bug in the session, it's the archive's assets being owned by the session instead of by the block
+tree for the duration of the edit. A block-level rule reading that state faithfully reports what's
+there, which is correct for the *tree* and wrong for the *archive*: `DICT` requiring an `AssetTable`
+it doesn't currently have is a real fact about EvilHop's in-memory staging, not a defect in the
+archive being edited. So block-level validation is only meaningful before a session opens or after it
+commits; asset-level validation — checking the `Asset`s themselves, once asset rules exist — is only
+possible *while* a session is open, since that's the only time `Asset` objects exist at all. A
+complete validation of an archive mid-edit is therefore two calls at two different times, each
+covering only what's actually present when it runs, not one call that sees everything at once.
+
 The library cannot derive `Origin` or `Role`. It reads streams; it has no filename, no sibling
 directory, and no way to know whether a byte sequence came off a retail disc or out of a level
 editor. So it does not try. It **owns the vocabulary and the entry point**, and the caller supplies
@@ -400,7 +413,7 @@ The starter set, deliberately small:
 | `[ClosedEnum]` | Raw value maps to a defined member of the property's enum type. |
 | `[DefinedBits]` | No bit outside the property's `[Flags]` enum is ever set. |
 | `[RequiredBits(v)]` | Every bit in `v` is always set. |
-| `[RequiredChild]` / `[OptionalChild]` | Child multiplicity. `[RequiredChild]` means exactly one, which is what "required" has always meant here; scoped, it means exactly one *in that scope* and none outside it. `[OptionalChild]` means at most one, for children genuinely present-or-absent within a single scope. |
+| `[RequiredChild]` / `[RepeatableChild]` | Child multiplicity. `[RequiredChild]` means exactly one, which is what "required" has always meant here; scoped, it means exactly one *in that scope* and none outside it. `[RepeatableChild]` means zero or more — for children that repeat freely within a container, such as an archive's own `AHDR`/`LHDR` listings, rather than being present-or-absent. An archive with no assets or no layers is valid, so zero is a legal count, not a missing-required-child violation. |
 | `[NoChildren]` | Class-level. This block is a leaf. |
 
 `PackagePlatform` is the case that shows why scoping belongs on the multiplicity attribute rather

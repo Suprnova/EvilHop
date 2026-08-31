@@ -1,4 +1,6 @@
 using EvilHop.Blocks;
+using EvilHop.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Blocks;
 
@@ -317,5 +319,30 @@ public class DictionaryTests
     {
         var debug = new LayerDebug();
         Assert.Equal("LDBG", debug.Tag);
+    }
+
+    [Fact]
+    public void Validate_AssetTableAndLayerTableMissing_ReportsBothRequiredChildIssues()
+    {
+        var dictionary = new Dictionary();
+
+        var issues = dictionary.Validate(new ValidationContext(N100FSerializer.DefaultProfile));
+
+        Assert.Contains(issues, i => i.RuleId == "dict.assettable-required");
+        Assert.Contains(issues, i => i.RuleId == "dict.layertable-required");
+    }
+
+    [Fact]
+    public void Validate_AssetTableAndLayerTablePresent_ReportsNeitherRequiredChildIssue()
+    {
+        var dictionary = new Dictionary
+        {
+            AssetTable = new AssetTable { Inf = new AssetInf() },
+            LayerTable = new LayerTable { Inf = new LayerInf() }
+        };
+
+        var issues = dictionary.Validate(new ValidationContext(N100FSerializer.DefaultProfile));
+
+        Assert.DoesNotContain(issues, i => i.RuleId is "dict.assettable-required" or "dict.layertable-required");
     }
 }

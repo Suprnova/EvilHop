@@ -50,7 +50,7 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots) : IValid
     /// from <see cref="Roots"/> and their fields are locked. Any reference to them taken beforehand
     /// is orphaned for the session's lifetime and is not reused afterward.
     /// </remarks>
-    /// <returns>A new <see cref="Assets.AssetSession"/> over this <see cref="Archive"/>.</returns>
+    /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
     public AssetSession OpenAssets() => AssetSession.Open(this);
 
     /// <summary>
@@ -58,10 +58,19 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots) : IValid
     /// <see cref="ValidationContext"/> built from what the archive itself knows.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// <see cref="ValidationContext.Origin"/> and <see cref="ValidationContext.Role"/> are left as
     /// <see cref="ArchiveOrigin.Unknown"/> and <see cref="ArchiveRole.Unknown"/> respectively,
     /// since the archive has no way to derive them itself. Use
     /// <see cref="Validate(ValidationContext)"/> to supply them.
+    /// </para>
+    /// <para>
+    /// This checks the block tree as currently attached, which is only a faithful picture of the
+    /// archive while no <see cref="AssetSession"/> is open on it. While one is open, the
+    /// blocks it owns are detached or emptied rather than missing on disk, so calling this reports
+    /// them as violations of their own right - call it before opening a session, or after
+    /// <see cref="AssetSession.Commit"/> or disposal, for a meaningful result.
+    /// </para>
     /// </remarks>
     /// <returns>The <see cref="ValidationIssue"/>s found.</returns>
     public IEnumerable<ValidationIssue> Validate() => Validate(new ValidationContext(Serializer.Profile));

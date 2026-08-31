@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Validation;
 
 namespace EvilHop.Blocks;
 
@@ -9,7 +10,6 @@ namespace EvilHop.Blocks;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DICT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required ATOC and LTOC children.
 public class Dictionary : Block
 {
     /// <inheritdoc/>
@@ -18,6 +18,7 @@ public class Dictionary : Block
     /// <summary>
     /// The child <see cref="AssetTable"/> of the <see cref="Dictionary"/>.
     /// </summary>
+    [RequiredChild]
     public AssetTable AssetTable
     {
         get => GetRequiredChild<AssetTable>();
@@ -27,6 +28,7 @@ public class Dictionary : Block
     /// <summary>
     /// The child <see cref="LayerTable"/> of the <see cref="Dictionary"/>.
     /// </summary>
+    [RequiredChild]
     public LayerTable LayerTable
     {
         get => GetRequiredChild<LayerTable>();
@@ -43,7 +45,6 @@ public class Dictionary : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#ATOC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required AINF child.
 public class AssetTable : Block
 {
     /// <inheritdoc/>
@@ -52,6 +53,7 @@ public class AssetTable : Block
     /// <summary>
     /// The child <see cref="AssetInf"/> of the <see cref="AssetTable"/>.
     /// </summary>
+    [RequiredChild]
     public AssetInf Inf
     {
         get => GetRequiredChild<AssetInf>();
@@ -62,6 +64,7 @@ public class AssetTable : Block
     /// The <see cref="AssetHeader"/> children of the <see cref="AssetTable"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when this block's fields are locked.</exception>
+    [RepeatableChild]
     public IEnumerable<AssetHeader> Headers
     {
         get => GetChildren<AssetHeader>();
@@ -83,7 +86,7 @@ public class AssetTable : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#AINF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class AssetInf : Block
 {
     /// <inheritdoc/>
@@ -92,7 +95,7 @@ public class AssetInf : Block
     /// <summary>
     /// Unknown. Always 0.
     /// </summary>
-    /// Validation TODO: Always 0.
+    [ConstantValue(0u)]
     public uint Value { get; set; }
 
     internal AssetInf() { }
@@ -105,7 +108,6 @@ public class AssetInf : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#AHDR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required ADBG child.
 public class AssetHeader : Block
 {
     /// <inheritdoc/>
@@ -114,6 +116,7 @@ public class AssetHeader : Block
     /// <summary>
     /// The child <see cref="AssetDebug"/> of the <see cref="AssetHeader"/>.
     /// </summary>
+    [RequiredChild]
     public AssetDebug Debug
     {
         get => GetRequiredChild<AssetDebug>();
@@ -135,7 +138,7 @@ public class AssetHeader : Block
     /// <summary>
     /// The <c>Asset</c>'s type.
     /// </summary>
-    /// Validation TODO: Maps to closed enum value.
+    [ClosedEnum]
     public AssetType Type
     {
         get => GetManagedBlockField(ref field);
@@ -200,7 +203,7 @@ public class AssetHeader : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#ADBG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class AssetDebug : Block
 {
     /// <inheritdoc/>
@@ -263,7 +266,6 @@ public class AssetDebug : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LTOC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required LINF child.
 public class LayerTable : Block
 {
     /// <inheritdoc/>
@@ -272,6 +274,7 @@ public class LayerTable : Block
     /// <summary>
     /// The child <see cref="LayerInf"/> of the <see cref="LayerTable"/>.
     /// </summary>
+    [RequiredChild]
     public LayerInf Inf
     {
         get => GetRequiredChild<LayerInf>();
@@ -282,6 +285,7 @@ public class LayerTable : Block
     /// The <see cref="LayerHeader"/> children of the <see cref="AssetTable"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when this block's fields are locked.</exception>
+    [RepeatableChild]
     public IEnumerable<LayerHeader> Headers
     {
         get => GetChildren<LayerHeader>();
@@ -303,7 +307,7 @@ public class LayerTable : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LINF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class LayerInf : Block
 {
     /// <inheritdoc/>
@@ -312,7 +316,7 @@ public class LayerInf : Block
     /// <summary>
     /// Unknown. Always 0.
     /// </summary>
-    /// Validation TODO: Always 0.
+    [ConstantValue(0u)]
     public uint Value { get; set; }
 
     internal LayerInf() { }
@@ -325,7 +329,6 @@ public class LayerInf : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LHDR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: Required LDBG.
 public class LayerHeader : Block
 {
     /// <inheritdoc/>
@@ -334,6 +337,7 @@ public class LayerHeader : Block
     /// <summary>
     /// The child <see cref="LayerDebug"/> of the <see cref="LayerHeader"/>.
     /// </summary>
+    [RequiredChild]
     public LayerDebug Debug
     {
         get => GetRequiredChild<LayerDebug>();
@@ -343,7 +347,7 @@ public class LayerHeader : Block
     /// <summary>
     /// The <c>Layer</c>'s type.
     /// </summary>
-    /// Validation TODO: Maps to closed enum value.
+    [ClosedEnum]
     public LayerType Type
     {
         get => GetManagedBlockField(ref field);
@@ -380,7 +384,7 @@ public class LayerHeader : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#LDBG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class LayerDebug : Block
 {
     /// <inheritdoc/>
@@ -389,7 +393,7 @@ public class LayerDebug : Block
     /// <summary>
     /// Unknown. Always 0xFFFFFFFF besides in N100F Prototype.
     /// </summary>
-    /// Validation TODO: Always 0xFFFFFFFF in non-N100F Proto.
+    [ConstantValue(0xFFFFFFFFu, From = GameVersion.BFBB)]
     public uint Value { get; set; }
 
     internal LayerDebug() { }

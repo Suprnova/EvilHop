@@ -32,6 +32,10 @@ public readonly record struct AssetDiagnostic(AssetId AssetId, string Message)
 /// <item><see cref="AssetStream"/></item>
 /// <item><see cref="StreamData"/></item>
 /// </list>
+/// <para>
+/// See <see cref="Archive.Validate()"/> for what this means for block-level validation while a
+/// session is open.
+/// </para>
 /// </remarks>
 public sealed class AssetSession : IDisposable
 {

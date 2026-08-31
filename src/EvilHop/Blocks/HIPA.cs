@@ -1,3 +1,5 @@
+using EvilHop.Validation;
+
 namespace EvilHop.Blocks;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace EvilHop.Blocks;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#HIPA">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class HIPA : Block
 {
     /// <inheritdoc/>

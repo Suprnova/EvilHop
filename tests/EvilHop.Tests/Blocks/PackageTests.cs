@@ -2,6 +2,7 @@ using EvilHop.Blocks;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using EvilHop.Tests.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Blocks;
 
@@ -240,5 +241,47 @@ public class PackageTests
         var pack = (Package)new TestSerializer().ReadBlockPublic(reader);
 
         Assert.NotNull(pack.Platform);
+    }
+
+    private static Package ValidPackage() => new()
+    {
+        Version = new PackageVersion { SubVersion = 2, ClientVersion = ClientVersion.Default, CompatVersion = 1 },
+        Flags = new PackageFlags { Flags = PackFlags.Default },
+        Counts = new PackageCount(),
+        Created = new PackageCreated(),
+        Modified = new PackageModified(),
+        Platform = new PackagePlatform { Region = "NTSC" }
+    };
+
+    [Fact]
+    public void Validate_EveryChildValid_ReturnsEmpty()
+    {
+        var pack = ValidPackage();
+
+        var issues = pack.Validate(new ValidationContext(BFBBSerializer.DefaultProfile));
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public void Validate_ChildFieldInvalid_ReportsIssueThroughChildRecursion()
+    {
+        var pack = ValidPackage();
+        pack.Version.SubVersion = 3;
+
+        var issues = pack.Validate(new ValidationContext(BFBBSerializer.DefaultProfile));
+
+        Assert.Contains(issues, i => i.RuleId == "pver.subversion-constant");
+    }
+
+    [Fact]
+    public void Validate_PlatformMissing_ReportsRequiredChildIssue()
+    {
+        var pack = ValidPackage();
+        pack.Platform = null;
+
+        var issues = pack.Validate(new ValidationContext(BFBBSerializer.DefaultProfile));
+
+        Assert.Contains(issues, i => i.RuleId == "pack.platform-required");
     }
 }

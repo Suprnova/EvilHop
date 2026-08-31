@@ -35,7 +35,8 @@ public abstract class Block : IValidatable
     /// Yields this block's own issues, then recurses into every child's.
     /// </remarks>
     public virtual IEnumerable<ValidationIssue> Validate(ValidationContext context) =>
-        Children.SelectMany(child => child.Validate(context));
+        ValidationCatalogue.Instance.Validate(this, context)
+            .Concat(Children.SelectMany(child => child.Validate(context)));
 
     /// <summary>
     /// Searches this <see cref="Block"/>'s immediate children for a child of the specified type

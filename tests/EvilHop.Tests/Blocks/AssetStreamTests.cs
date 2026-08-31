@@ -1,6 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Serialization;
 using EvilHop.Tests.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Blocks;
 
@@ -117,5 +118,30 @@ public class AssetStreamTests
         Assert.Null(data.PaddingAmount);
         Assert.Empty(data.Padding);
         Assert.Empty(data.Data);
+    }
+
+    [Fact]
+    public void Validate_HeaderAndDataMissing_ReportsBothRequiredChildIssues()
+    {
+        var assetStream = new AssetStream();
+
+        var issues = assetStream.Validate(new ValidationContext(N100FSerializer.DefaultProfile));
+
+        Assert.Contains(issues, i => i.RuleId == "strm.header-required");
+        Assert.Contains(issues, i => i.RuleId == "strm.data-required");
+    }
+
+    [Fact]
+    public void Validate_HeaderValueWrong_ReportsConstantValueIssue()
+    {
+        var assetStream = new AssetStream
+        {
+            Header = new StreamHeader { Value = 0 },
+            Data = new StreamData()
+        };
+
+        var issues = assetStream.Validate(new ValidationContext(N100FSerializer.DefaultProfile));
+
+        Assert.Contains(issues, i => i.RuleId == "dhdr.value-constant");
     }
 }

@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Assets;
 
@@ -359,5 +360,23 @@ public class AssetSessionTests
         using (archive.OpenAssets()) { }
 
         Assert.Equal(["ATOC", "LTOC"], dictionary.Children.Select(child => child.Tag));
+    }
+
+    /// <summary>
+    /// Documents a known, deliberate consequence of Asset Mode rather than a defect: while a session
+    /// owns <c>DICT</c>'s children, block-level validation of the archive genuinely has no
+    /// <c>AssetTable</c>/<c>LayerTable</c> to find. If this changes (e.g. <see cref="Archive.Validate()"/>
+    /// learns to skip session-owned blocks), this test is expected to change with it.
+    /// </summary>
+    [Fact]
+    public void Validate_WhileSessionOpen_ReportsDictionaryChildrenMissing()
+    {
+        var archive = LoadRepaired("n100f");
+        using var session = archive.OpenAssets();
+
+        var issues = archive.Validate();
+
+        Assert.Contains(issues, i => i.RuleId == "dict.assettable-required");
+        Assert.Contains(issues, i => i.RuleId == "dict.layertable-required");
     }
 }

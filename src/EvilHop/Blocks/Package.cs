@@ -1,3 +1,5 @@
+using EvilHop.Common;
+using EvilHop.Validation;
 using System.Globalization;
 
 namespace EvilHop.Blocks;
@@ -8,9 +10,6 @@ namespace EvilHop.Blocks;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PACK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: 5 children pre-Battle, otherwise 6
-/// Required children: PVER, PFLG, PCNT, PCRT, and PMOD pre-Battle, plus PLAT post-Battle
-/// Group ExpectedChildCount and RequiredChild into one attribute, since Required always means exactly 1 instance
 public class Package : Block
 {
     /// <inheritdoc/>
@@ -19,6 +18,7 @@ public class Package : Block
     /// <summary>
     /// The child <see cref="PackageVersion"/> of the <see cref="Package"/>.
     /// </summary>
+    [RequiredChild]
     public PackageVersion Version
     {
         get => GetRequiredChild<PackageVersion>();
@@ -28,6 +28,7 @@ public class Package : Block
     /// <summary>
     /// The child <see cref="PackageFlags"/> of the <see cref="Package"/>.
     /// </summary>
+    [RequiredChild]
     public PackageFlags Flags
     {
         get => GetRequiredChild<PackageFlags>();
@@ -37,6 +38,7 @@ public class Package : Block
     /// <summary>
     /// The child <see cref="PackageCount"/> of the <see cref="Package"/>.
     /// </summary>
+    [RequiredChild]
     public PackageCount Counts
     {
         get => GetRequiredChild<PackageCount>();
@@ -46,6 +48,7 @@ public class Package : Block
     /// <summary>
     /// The child <see cref="PackageCreated"/> of the <see cref="Package"/>.
     /// </summary>
+    [RequiredChild]
     public PackageCreated Created
     {
         get => GetRequiredChild<PackageCreated>();
@@ -55,6 +58,7 @@ public class Package : Block
     /// <summary>
     /// The child <see cref="PackageModified"/> of the <see cref="Package"/>.
     /// </summary>
+    [RequiredChild]
     public PackageModified Modified
     {
         get => GetRequiredChild<PackageModified>();
@@ -67,6 +71,7 @@ public class Package : Block
     /// <remarks>
     /// Only present from BFBB onwards.
     /// </remarks>
+    [RequiredChild(From = GameVersion.BFBB)]
     public PackagePlatform? Platform
     {
         get => GetChild<PackagePlatform>();
@@ -83,7 +88,7 @@ public class Package : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PVER">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class PackageVersion : Block
 {
     /// <inheritdoc/>
@@ -92,20 +97,26 @@ public class PackageVersion : Block
     /// <summary>
     /// Unknown. Always 2.
     /// </summary>
-    /// Validation TODO: Always 2.
+    [ConstantValue(2u)]
     public uint SubVersion { get; set; }
 
     /// <summary>
     /// Indicate the version of the client consuming the archive.
     /// </summary>
-    /// Validation TODO: Always 0x00000001 in N100F proto, 0x00040006 in N100F,
-    /// and 0X000A000F in all others.
+    /// <remarks>
+    /// N100F alone shipped both a prototype (<see cref="Blocks.ClientVersion.N100FPrototype"/>) and a
+    /// release (<see cref="Blocks.ClientVersion.N100FRelease"/>) build; nothing currently
+    /// distinguishes those two builds from each other, so the rule stays widened to that closed pair
+    /// for N100F rather than picking one.
+    /// </remarks>
+    [AllowedValues(ClientVersion.N100FPrototype, ClientVersion.N100FRelease, Games = [GameVersion.N100F])]
+    [ConstantValue(ClientVersion.Default, From = GameVersion.BFBB)]
     public ClientVersion ClientVersion { get; set; }
 
     /// <summary>
     /// Unknown. Always 1.
     /// </summary>
-    /// Validation TODO: Always 1.
+    [ConstantValue(1u)]
     public uint CompatVersion { get; set; }
 
     internal PackageVersion() { }
@@ -118,7 +129,7 @@ public class PackageVersion : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PFLG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class PackageFlags : Block
 {
     /// <inheritdoc/>
@@ -127,7 +138,8 @@ public class PackageFlags : Block
     /// <summary>
     /// Unknown.
     /// </summary>
-    /// Validation TODO: Ensure a valid combination of flags.
+    [RequiredBits(PackFlags.Default)]
+    [DefinedBits]
     public PackFlags Flags { get; set; }
 
     internal PackageFlags() { }
@@ -140,7 +152,7 @@ public class PackageFlags : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PCNT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class PackageCount : Block
 {
     /// <inheritdoc/>
@@ -187,8 +199,8 @@ public class PackageCount : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PCRT">Heavy Iron Modding documentation </seealso>
 /// </remarks>
-/// Validation TODO: No children.
 /// CreatedDate and CreatedDateString represent the same time.
+[NoChildren]
 public class PackageCreated : Block
 {
     /// <inheritdoc/>
@@ -239,7 +251,7 @@ public class PackageCreated : Block
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PMOD">Heavy Iron Modding documentation </seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class PackageModified : Block
 {
     /// <inheritdoc/>
@@ -265,7 +277,7 @@ public class PackageModified : Block
 /// Introduced in Battle. Not present in N100F.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#PLAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// Validation TODO: No children.
+[NoChildren]
 public class PackagePlatform : Block
 {
     /// <inheritdoc/>
@@ -288,7 +300,7 @@ public class PackagePlatform : Block
     /// <summary>
     /// The archive's target region.
     /// </summary>
-    /// Validation TODO: "NTSC" or "PAL".
+    [AllowedValues("NTSC", "PAL")]
     public string Region { get; set; } = "";
 
     /// <summary>
