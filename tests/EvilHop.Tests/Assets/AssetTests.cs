@@ -1,6 +1,8 @@
 using EvilHop.Assets;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Assets;
 
@@ -59,5 +61,17 @@ public class AssetTests
         asset.CalculateId();
 
         Assert.Equal(AssetId.FromName("foo.dff", AssetType.Animation), asset.Id);
+    }
+
+    [Fact]
+    public void Validate_ReturnsEmpty()
+    {
+        var asset = new TestAsset();
+        var context = new ValidationContext(
+            new FormatProfile(GameVersion.BFBB, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: false));
+
+        var issues = asset.Validate(context);
+
+        Assert.Empty(issues);
     }
 }

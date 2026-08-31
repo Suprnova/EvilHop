@@ -1,4 +1,7 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop.Tests.Blocks;
 
@@ -6,6 +9,8 @@ public class BlockTests
 {
     private readonly TestBlock testBlock;
     private readonly int managedFieldValue = 16614;
+    private readonly ValidationContext context = new(
+        new FormatProfile(GameVersion.BFBB, Platform.GameCube, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: false));
 
     public BlockTests()
     {
@@ -30,6 +35,23 @@ public class BlockTests
     {
         protected internal override string Tag => "OTHR";
     }
+
+    private sealed class RecordingBlock : Block
+    {
+        protected internal override string Tag => "RECD";
+
+        public List<ValidationIssue> OwnIssues { get; } = [];
+        public ValidationContext? ReceivedContext { get; private set; }
+
+        public override IEnumerable<ValidationIssue> Validate(ValidationContext context)
+        {
+            ReceivedContext = context;
+            return OwnIssues.Concat(base.Validate(context));
+        }
+    }
+
+    private static ValidationIssue MakeIssue(string ruleId) =>
+        new(ruleId, Severity.Warning, new ArchiveSite(), "test issue");
 
     [Fact]
     public void GetChildren_NoChildren_ReturnsEmpty()
@@ -333,5 +355,69 @@ public class BlockTests
         testBlock.Children.Add(lateChild);
 
         Assert.False(lateChild.AreBlockFieldsLocked);
+    }
+
+    [Fact]
+    public void Validate_NoChildren_ReturnsEmpty()
+    {
+        var issues = testBlock.Validate(context);
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public void Validate_ChildWithIssue_ReturnsChildsIssue()
+    {
+        var issue = MakeIssue("child-rule");
+        var child = new RecordingBlock();
+        child.OwnIssues.Add(issue);
+        testBlock.Children.Add(child);
+
+        var issues = testBlock.Validate(context);
+
+        Assert.Equal(issue, Assert.Single(issues));
+    }
+
+    [Fact]
+    public void Validate_MultipleChildrenWithIssues_ReturnsEveryChildsIssue()
+    {
+        var firstIssue = MakeIssue("first-rule");
+        var secondIssue = MakeIssue("second-rule");
+        var first = new RecordingBlock();
+        first.OwnIssues.Add(firstIssue);
+        var second = new RecordingBlock();
+        second.OwnIssues.Add(secondIssue);
+        testBlock.Children.Add(first);
+        testBlock.Children.Add(second);
+
+        var issues = testBlock.Validate(context);
+
+        Assert.Equal([firstIssue, secondIssue], issues);
+    }
+
+    [Fact]
+    public void Validate_GrandchildWithIssue_ReturnsGrandchildsIssue()
+    {
+        var issue = MakeIssue("grandchild-rule");
+        var child = new TestBlock();
+        var grandchild = new RecordingBlock();
+        grandchild.OwnIssues.Add(issue);
+        child.Children.Add(grandchild);
+        testBlock.Children.Add(child);
+
+        var issues = testBlock.Validate(context);
+
+        Assert.Equal(issue, Assert.Single(issues));
+    }
+
+    [Fact]
+    public void Validate_ChildBlock_PassesContextThrough()
+    {
+        var child = new RecordingBlock();
+        testBlock.Children.Add(child);
+
+        testBlock.Validate(context).ToList();
+
+        Assert.Same(context, child.ReceivedContext);
     }
 }

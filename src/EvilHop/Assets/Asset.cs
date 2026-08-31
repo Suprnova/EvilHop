@@ -1,6 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Validation;
 
 namespace EvilHop.Assets;
 
@@ -10,7 +11,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class Asset : IPhysicalAsset
+public abstract class Asset : IPhysicalAsset, IValidatable
 {
     /// <summary>
     /// The <see cref="Asset"/>'s ID.
@@ -98,6 +99,9 @@ public abstract class Asset : IPhysicalAsset
     /// recalculating the logical ID doesn't resolve a disagreement you created on purpose.
     /// </remarks>
     public void CalculateId() => Id = AssetId.FromName(Name, Type);
+
+    /// <inheritdoc/>
+    public virtual IEnumerable<ValidationIssue> Validate(ValidationContext context) => [];
 }
 
 /// <summary>

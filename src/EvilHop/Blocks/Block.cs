@@ -1,3 +1,5 @@
+using EvilHop.Validation;
+
 namespace EvilHop.Blocks;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace EvilHop.Blocks;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#Structure">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class Block
+public abstract class Block : IValidatable
 {
     /// <summary>
     /// The 4-byte ASCII identifier for this block type.
@@ -27,6 +29,13 @@ public abstract class Block
     {
         Children = new BlockChildren(this);
     }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Yields this block's own issues, then recurses into every child's.
+    /// </remarks>
+    public virtual IEnumerable<ValidationIssue> Validate(ValidationContext context) =>
+        Children.SelectMany(child => child.Validate(context));
 
     /// <summary>
     /// Searches this <see cref="Block"/>'s immediate children for a child of the specified type

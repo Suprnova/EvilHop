@@ -1,6 +1,7 @@
 using EvilHop.Assets;
 using EvilHop.Blocks;
 using EvilHop.Serialization;
+using EvilHop.Validation;
 
 namespace EvilHop;
 
@@ -12,7 +13,7 @@ namespace EvilHop;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
+public class Archive(Serializer serializer, IReadOnlyList<Block> roots) : IValidatable
 {
     /// <summary>
     /// The <see cref="Serialization.Serializer"/> used to construct this <see cref="Archive"/>. 
@@ -51,4 +52,21 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// </remarks>
     /// <returns>A new <see cref="Assets.AssetSession"/> over this <see cref="Archive"/>.</returns>
     public AssetSession OpenAssets() => AssetSession.Open(this);
+
+    /// <summary>
+    /// Checks this <see cref="Archive"/> against the archive format's invariants, using a
+    /// <see cref="ValidationContext"/> built from what the archive itself knows.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ValidationContext.Origin"/> and <see cref="ValidationContext.Role"/> are left as
+    /// <see cref="ArchiveOrigin.Unknown"/> and <see cref="ArchiveRole.Unknown"/> respectively,
+    /// since the archive has no way to derive them itself. Use
+    /// <see cref="Validate(ValidationContext)"/> to supply them.
+    /// </remarks>
+    /// <returns>The <see cref="ValidationIssue"/>s found.</returns>
+    public IEnumerable<ValidationIssue> Validate() => Validate(new ValidationContext(Serializer.Profile));
+
+    /// <inheritdoc/>
+    public IEnumerable<ValidationIssue> Validate(ValidationContext context) =>
+        Roots.SelectMany(root => root.Validate(context));
 }
