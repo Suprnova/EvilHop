@@ -1,7 +1,7 @@
 # EvilHop Architecture Overview
 
 A map of EvilHop for maintainers and contributors. See [`../AGENTS.md`](../AGENTS.md) for the
-project's conventions and glossary.
+project's conventions and [`glossary.md`](glossary.md) for its jargon.
 
 ## Entry Point
 
@@ -94,5 +94,5 @@ against.
 
 ## Planned Documents
 
-This overview will be supplemented by dedicated documents for the asset layer, serialization, and
-a glossary as they're written.
+This overview will be supplemented by dedicated documents for the asset layer and serialization as
+they're written. See [`glossary.md`](glossary.md) for terminology.

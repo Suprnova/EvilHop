@@ -27,6 +27,7 @@ document is a broken link rather than a plausible-sounding lie. Update the relev
 same change that moves the code it describes.
 
 - [`docs/overview.md`](docs/overview.md) - the whole library, one level deep.
+- [`docs/glossary.md`](docs/glossary.md) - every block and the asset/serialization jargon built on top of them.
 
 ## Foundational Concepts
 
@@ -114,18 +115,6 @@ All architectural and design decisions should be approached from the perspective
 `artifacts/` is a local, gitignored corpus of real game archives - never a build or test dependency, and the full test suite must pass without it. `tools/EvilHop.Corpus` reads it to generate small committed inventories under `corpus/`, which hermetic tests assert against.
 
 Governing rule: **the Corpus tool records observations; tests assert them against current code.** An inventory must never contain a value whose correctness depends on EvilHop's source.
-
-## Glossary
-- Archive: A single HIP file made up of a tree of blocks.
-- Block: A single unit of data, containing a block's Tag, Size, Data, and Children.
-- Tag: A 4-character identifier for a block, physically read from and written to the Archive.
-- Asset: A high-level logical object composed of multiple blocks. Represents a single object in the game world. All assets contain an ID, a Type, and a Name.
-- Layer: A grouping of assets based on the "category" of their type.
-- Session: The scoped object (`AssetSession`) that owns the asset-describing blocks while Asset Mode is active.
-- Codec: The reader/writer for one asset type. Registered by `AssetType`, declaring which games it supports.
-- Shape: Which level of the asset hierarchy a type's bytes are known to follow (`Asset`, `BaseAsset`, `EntityAsset`, `DynaAsset`, payload). Seeds the codec registry with generic handlers; a real codec overwrites its type's entry.
-- Trait: An interface a concrete asset type implements to expose a field the layout reserves for its whole family but only some types use.
-- Profile: `FormatProfile`, the per-game (sometimes per-build) switches a serializer reads with.
 
 ## Further Reference
 - [Heavy Iron Modding Wiki](https://heavyironmodding.org)
