@@ -14,8 +14,19 @@ The library is in alpha and is not used in any production applications. Breaking
 | `tests/EvilHop.Corpus.Tests/` | Tests for the tool itself. |
 | `corpus/` | Committed per-game inventories generated from real archives. |
 | `artifacts/` | Local, gitignored corpus of real game archives. |
+| `docs/` | Living architecture documents. See below. |
 
 Build and test with `dotnet build` / `dotnet test` from the repository root.
+
+## Living Documents
+
+`docs/` holds committed, durable architecture documents - not design docs or implementation plans,
+which stay local per the global `AGENTS.md` convention. Each document describes a subsystem as it
+currently stands, using relative links to the source files that back each claim, so a stale
+document is a broken link rather than a plausible-sounding lie. Update the relevant document in the
+same change that moves the code it describes.
+
+- [`docs/overview.md`](docs/overview.md) - the whole library, one level deep.
 
 ## Foundational Concepts
 
