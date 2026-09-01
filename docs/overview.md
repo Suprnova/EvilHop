@@ -1,7 +1,8 @@
 # EvilHop Architecture Overview
 
 A map of EvilHop for maintainers and contributors. See [`../AGENTS.md`](../AGENTS.md) for the
-project's conventions and [`glossary.md`](glossary.md) for its jargon.
+project's conventions, [`architecture.md`](architecture.md) for how it is designed, and
+[`glossary.md`](glossary.md) for its jargon.
 
 ## Entry Point
 
