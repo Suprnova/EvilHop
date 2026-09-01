@@ -1,13 +1,15 @@
 using EvilHop.Blocks;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace EvilHop.Validation;
 
 /// <summary>
 /// Reflects once over every declarative validation attribute in the assembly and materializes them
-/// into runnable <see cref="ValueRule"/>s, so that validating a <see cref="Block"/> never itself
-/// touches reflection.
+/// into runnable <see cref="ValueRule"/>s and <see cref="Observable"/>s, so that neither validating
+/// nor observing a <see cref="Block"/> ever itself touches reflection.
 /// </summary>
 public sealed class ValidationCatalogue
 {
@@ -17,9 +19,21 @@ public sealed class ValidationCatalogue
     private static readonly Lazy<ValidationCatalogue> Lazy = new(Build);
 
     private readonly IReadOnlyDictionary<Type, IReadOnlyList<Entry>> _entriesByType;
+    private readonly IReadOnlyDictionary<Type, IReadOnlyList<Observable>> _observablesByType;
+    private readonly IReadOnlyDictionary<string, Observable> _observablesById;
 
-    private ValidationCatalogue(IReadOnlyDictionary<Type, IReadOnlyList<Entry>> entriesByType) =>
+    /// <summary>Every <see cref="Observable"/> declared in the assembly, the union every consumer reads.</summary>
+    public IReadOnlyList<Observable> Observables { get; }
+
+    private ValidationCatalogue(
+        IReadOnlyDictionary<Type, IReadOnlyList<Entry>> entriesByType,
+        IReadOnlyDictionary<Type, IReadOnlyList<Observable>> observablesByType)
+    {
         _entriesByType = entriesByType;
+        _observablesByType = observablesByType;
+        _observablesById = observablesByType.Values.SelectMany(o => o).ToDictionary(o => o.Id);
+        Observables = [.. _observablesById.Values];
+    }
 
     /// <summary>
     /// One materialized rule for one <see cref="Block"/> type: how to read the value it checks, and
@@ -55,9 +69,41 @@ public sealed class ValidationCatalogue
         }
     }
 
+    /// <summary>
+    /// Projects <paramref name="subject"/> through every <see cref="Observable"/> declared for its
+    /// runtime type.
+    /// </summary>
+    /// <param name="subject">The block to observe.</param>
+    /// <returns>Each matching observable's ID paired with a value it yielded.</returns>
+    public IEnumerable<(string ObservableId, object Value)> Observe(Block subject)
+    {
+        if (!_observablesByType.TryGetValue(subject.GetType(), out var observables)) yield break;
+
+        var source = new BlockObservationSource(subject);
+        foreach (var observable in observables)
+            foreach (var value in observable.Select(source))
+                yield return (observable.Id, value);
+    }
+
+    /// <summary>
+    /// Produces a digest of <paramref name="observableId"/>'s declaration, so a fingerprint built
+    /// from it changes exactly when the declaration does.
+    /// </summary>
+    /// <param name="observableId">The identifier of the observable to digest.</param>
+    /// <returns>The digest, as a lowercase hex string.</returns>
+    public string DigestOf(string observableId)
+    {
+        if (!_observablesById.TryGetValue(observableId, out var observable))
+            throw new ArgumentException($"'{observableId}' is not a known observable.", nameof(observableId));
+
+        string material = $"{observable.Id}|{observable.Scope}|{observable.Cardinality}|{observable.Presentation}";
+        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(material)));
+    }
+
     private static ValidationCatalogue Build()
     {
         var entriesByType = new Dictionary<Type, IReadOnlyList<Entry>>();
+        var observablesByType = new Dictionary<Type, IReadOnlyList<Observable>>();
 
         var blockTypes = typeof(Block).Assembly.GetTypes()
             .Where(type => typeof(Block).IsAssignableFrom(type) && !type.IsAbstract);
@@ -66,22 +112,77 @@ public sealed class ValidationCatalogue
         {
             string tag = ReadTag(type);
             var entries = new List<Entry>();
+            var observables = new List<Observable>();
 
             foreach (var attribute in type.GetCustomAttributes<NoChildrenAttribute>())
                 entries.Add(BuildNoChildrenEntry(tag, attribute));
 
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
+            {
+                var attributes = property.GetCustomAttributes<ValidationAttribute>().ToList();
+
+                foreach (var attribute in attributes)
                 {
                     var entry = BuildPropertyEntry(tag, property, attribute);
                     if (entry is { } value) entries.Add(value);
                 }
 
+                if (BuildObservable(tag, property, attributes) is { } observable) observables.Add(observable);
+            }
+
             if (entries.Count > 0) entriesByType[type] = entries;
+            if (observables.Count > 0) observablesByType[type] = observables;
         }
 
-        return new ValidationCatalogue(entriesByType);
+        return new ValidationCatalogue(entriesByType, observablesByType);
     }
+
+    private static Observable? BuildObservable(string tag, PropertyInfo property, IReadOnlyList<ValidationAttribute> attributes)
+    {
+        bool isValue = attributes.Any(a =>
+            a is ObservedAttribute or ConstantValueAttribute or AllowedValuesAttribute or ClosedEnumAttribute
+                or DefinedBitsAttribute or RequiredBitsAttribute);
+        if (!isValue) return null;
+
+        var (cardinality, presentation) = InferObservableShape(property.PropertyType);
+        return new Observable(ObservableId(tag, property), ObservableScope.Block, cardinality, presentation, BuildSelector(property));
+    }
+
+    private static Func<ObservationSource, IEnumerable<object>> BuildSelector(PropertyInfo property)
+    {
+        var accessor = CompileAccessor(property);
+        Type declaringType = property.DeclaringType!;
+
+        return source =>
+        {
+            if (source is not BlockObservationSource(var block) || !declaringType.IsInstanceOfType(block))
+                return [];
+
+            object? value = ToPrimitive(accessor(block));
+            return value is null ? [] : [value];
+        };
+    }
+
+    private static object? ToPrimitive(object? value) =>
+        value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
+
+    private static (ObservableCardinality Cardinality, ObservablePresentation Presentation) InferObservableShape(Type propertyType)
+    {
+        Type effectiveType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+        if (effectiveType.IsEnum)
+        {
+            bool isBitmask = effectiveType.IsDefined(typeof(FlagsAttribute), inherit: false);
+            return (isBitmask ? ObservableCardinality.Bitmask : ObservableCardinality.Enumerated, ObservablePresentation.Hex);
+        }
+
+        if (effectiveType == typeof(string)) return (ObservableCardinality.Enumerated, ObservablePresentation.Text);
+
+        return (ObservableCardinality.Enumerated, ObservablePresentation.Number);
+    }
+
+    private static string ObservableId(string tag, PropertyInfo property) =>
+        $"{tag}.{char.ToLowerInvariant(property.Name[0])}{property.Name[1..]}";
 
     private static string ReadTag(Type blockType) =>
         ((Block)Activator.CreateInstance(blockType, nonPublic: true)!).Tag;
@@ -98,7 +199,7 @@ public sealed class ValidationCatalogue
     private static Entry? BuildPropertyEntry(string tag, PropertyInfo property, ValidationAttribute attribute)
     {
         string member = property.Name;
-        string observableId = $"{tag}.{char.ToLowerInvariant(member[0])}{member[1..]}";
+        string observableId = ObservableId(tag, property);
         string idBase = $"{tag.ToLowerInvariant()}.{member.ToLowerInvariant()}";
 
         switch (attribute)

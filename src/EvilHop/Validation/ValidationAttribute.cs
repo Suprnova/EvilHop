@@ -122,5 +122,9 @@ public sealed class RepeatableChildAttribute : ValidationAttribute;
 /// <summary>
 /// Declares that a member should be recorded in the corpus inventory. Carries no rule of its own.
 /// </summary>
+/// <remarks>
+/// Every rule attribute is also an observable declaration, so a member with one never needs this as
+/// well.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class ObservedAttribute : ValidationAttribute;
