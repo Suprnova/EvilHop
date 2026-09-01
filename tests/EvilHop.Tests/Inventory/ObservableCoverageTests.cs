@@ -35,10 +35,8 @@ public class ObservableCoverageTests
     [MemberData(nameof(BlockScopedObservablesByGame))]
     public void Observations_EveryBlockScopedObservable_HasARecordInTheGamesInventory(string observableId, GameVersion game)
     {
-        var observations = InventoryFixture.Instance.BlockFieldsObservations(game);
-
         Assert.True(
-            observations?.ContainsKey(observableId) == true,
+            InventoryFixture.Instance.ValueSet(game, observableId) is not null,
             $"'{observableId}' has no record in {game}'s inventory, and no waiver excuses it.");
     }
 
@@ -48,14 +46,15 @@ public class ObservableCoverageTests
         var knownIds = ValidationCatalogue.Instance.Observables.Select(o => o.Id).ToHashSet();
 
         foreach (var game in InventoryFixture.Instance.Inventories.Keys)
-        {
-            var observations = InventoryFixture.Instance.BlockFieldsObservations(game);
-            if (observations is null) continue;
+            foreach (string observableId in InventoryFixture.Instance.ObservationIds(game))
+            {
+                // Recorded by the corpus tool's structure facet directly from the block tree's shape,
+                // not from a catalogue-declared observable - nothing to check them against here.
+                if (observableId is "archive.rootSequence" or "PACK.children") continue;
 
-            foreach (string observableId in observations.Select(property => property.Key))
                 Assert.True(
                     knownIds.Contains(observableId),
                     $"'{observableId}' is recorded in {game}'s inventory but no longer exists in the catalogue.");
-        }
+            }
     }
 }

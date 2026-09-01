@@ -122,13 +122,15 @@ namespace EvilHop.Validation;
 public enum ObservableScope { Archive, Block, Asset, Layer, Link }
 public enum ObservableCardinality { Enumerated, Summarized, Bitmask }
 public enum ObservablePresentation { Number, Hex, Fourcc, Text, Bytes }
+public enum ObservableKind { FieldValue, Structural }
 
 public sealed record Observable(
     string Id,                                  // "PVER.subVersion", "PLAT.platformId+platformName"
     ObservableScope Scope,
     ObservableCardinality Cardinality,
     ObservablePresentation Presentation,
-    Func<ObservationSource, IEnumerable<object>> Select);
+    Func<ObservationSource, IEnumerable<object>> Select,
+    ObservableKind Kind = ObservableKind.FieldValue);
 ```
 
 Most observables are declared by attribute on the member they read (§5.4); the rest — composites
@@ -163,6 +165,15 @@ and `PFLG.flags+PLAT.platformId+PLAT.region+PLAT.language` (§11).
 `CollisionFlags`, `BaseAssetFlags`, `AssetFlags`, `PackFlags`) into one recorded `uint` per field
 per game — a stronger statement than the wiki's, because it says which bits are *really* used rather
 than which bits are named.
+
+`Kind` is what lets a facet generator claim its own subset of the catalogue without guessing from an
+observable's ID. `[RequiredChild]` and `[NoChildren]` are rule attributes like any other in §5.4, and
+so - per the invariant above - are also observable declarations: `[RequiredChild]` records the child
+count `RequiredChildRule` itself checks, and `[NoChildren]` records the block's own child count, both
+`Kind: Structural`. Every attribute-declared observable is `Kind: FieldValue` by default. `blockFields`
+reads only `FieldValue`; `structure` reads only `Structural` - so a required-child or leaf-childlessness
+rule is replayable offline exactly like any other, without polluting `blockFields` with facts that
+aren't about a field's value.
 
 ---
 
@@ -254,8 +265,8 @@ the `AHDR` count reports its site on `PCNT.AssetCount` and lists the `DICT/ATOC`
 and defaults to empty, so a rule with a single site carries no unused field.
 
 Inventories record `Site.Describe()` as a witness string in violation ledgers. That string is a
-*locator*, not an asserted value: it exists for a human reading a diff, exactly like
-`sources[].path`, and no test ever asserts against it.
+*locator*, not an asserted value: it exists for a human reading a diff, exactly like the archive
+paths a `ValueSet`'s own `witnesses` carry, and no test ever asserts against it.
 
 ### 5.3 `ValidationContext`, and how origin and role get set
 
@@ -654,26 +665,27 @@ gain in a diff is real.
 {
   "schema": 1,
   "game": "BFBB",
-  "sources": [
-    { "path": "bfbb/gc/ntsc/hb01.hip", "sha256": "9f2c1a4", "bytes": 9437184,
-      "build": "bfbb-gc-ntsc-release", "role": "Level" },
-    { "path": "bfbb/gc/pal/hb01_DE.hip", "sha256": "41ba07c", "bytes": 9441280,
-      "build": "bfbb-gc-pal-release", "role": "Localized", "language": "DE",
-      "pairGroup": "bfbb/gc/pal/hb01" }
-  ],
   "facets": {
     "blockFields": {
       "generator": { "revision": 3, "inputs": "14ab5e3" },
-      "coverage": { "archives": 412, "sourceSetHash": "7d0e13a" },
+      "coverage": { "archives": 1230, "sourceSetHash": "7d0e13a" },
+      "observations": { }
+    },
+    "structure": {
+      "generator": { "revision": 1, "inputs": "9a2f108" },
+      "coverage": { "archives": 1230, "sourceSetHash": "7d0e13a" },
       "observations": { }
     }
   }
 }
 ```
 
-`sources` is written once and referenced by every facet through `sourceSetHash`, so 400 paths are
-not repeated nine times. Witnesses carry the path verbatim rather than an index — readability beats
-a few kilobytes.
+There is no `sources` array. Which archives exist, what they're named, and how they're grouped is
+convention and manifest knowledge the tool works out at generation time and never commits — every
+fact worth keeping about an archive shows up as a witness path inside a `ValueSet`, or is folded into
+`coverage.sourceSetHash`, computed directly from the covered set's content hashes rather than from a
+recorded path list. A hash keyed to path/build/role would explode the file for no reader ever asking
+"what does `sources[3]` say" - only "what does this field's `ValueSet` say."
 
 ### 7.2 Record types
 
@@ -935,7 +947,9 @@ Six generic tests carry most of the weight, and they gain coverage automatically
 
 1. **`ValueRuleTests`** — for every `ValueRule` in the catalogue (which is to say, every attribute in
    §5.4), for every game where it applies, for every value in the matching `ValueSet`: assert
-   `Holds`. This one test covers invariant categories 2 and 3 in their entirety, including the
+   `Holds` (or an explicit waiver, for the rare case where the rule's verdict depends on a quirk a
+   per-game replay context can't represent - font2.HIP's `[RequiredChild(ExceptQuirks: ...)]` is the
+   first). This one test covers invariant categories 2 and 3 in their entirety, including the
    `AHDR.type` → `AssetType` case from the requirements.
 2. **`ClosedVocabularyTests`** — every recorded classification tag, round-trip failure tag, and rule
    ID maps to a live library declaration.
@@ -1137,15 +1151,24 @@ Everything else in the invariant list maps onto §3's taxonomy without special h
    it, not after it.
 4. **`EvilHop.Tests.Inventory`** — fixture plus `ValueRuleTests` and `ObservableCoverageTests`. The
    net is live from here on, and every subsequent attribute joins it for free.
-5. **`assetFields`, `structure`, `layers`** — the remaining observation facets.
-6. **`derived` + anchors** — reducible ledgers, `KnownViolations`, `AnchorTests`.
-7. **`verify` verb + `verification` facet** — round-trip, with its failure taxonomy.
-8. **`references`** — rings, target types, and global/cohort inference.
-9. **`[SupportedGames]` on `AssetType`** and its two-directional test; codec per-game filtering and
-   the fallback ladder.
-10. **`links`** — after EvilHop parses links.
+5. **`structure`** — root tag sequence and `PACK` child sets, computed directly from the block tree
+   rather than through an attribute; `ObservableKind.Structural` observables for `[RequiredChild]`
+   and `[NoChildren]`, so their rules join `EvilHop.Tests.Inventory`'s replay net too. Self-contained:
+   needs nothing beyond what step 2 already built.
+6. **`assetFields`** — needs its own prerequisite first: `ValidationCatalogue` doesn't reflect over
+   `Asset` types at all yet, and the fields the facet wants (`Alignment`, `BaseType`, `Flags`) are
+   deliberately behind `IPhysicalAsset`/`IPhysicalBaseAsset`, not public on `Asset`/`BaseAsset`
+   themselves. Extending the attribute family to assets is its own step before the facet is.
+7. **`layers`** — needs per-*build* sequences, not per-*game* ones; the tool's accumulation is
+   per-game only today, so this needs build identity threaded through `Map`/`Reduce` first.
+8. **`derived` + anchors** — reducible ledgers, `KnownViolations`, `AnchorTests`.
+9. **`verify` verb + `verification` facet** — round-trip, with its failure taxonomy.
+10. **`references`** — rings, target types, and global/cohort inference.
+11. **`[SupportedGames]` on `AssetType`** and its two-directional test; codec per-game filtering and
+    the fallback ladder.
+12. **`links`** — after EvilHop parses links.
 
-Steps 1–4 are the minimum that makes the whole thing real; each later step adds a facet without
+Steps 1–5 are the minimum that makes the whole thing real; each later step adds a facet without
 disturbing the ones before it, which is the same property that makes regeneration piecemeal.
 
 ---

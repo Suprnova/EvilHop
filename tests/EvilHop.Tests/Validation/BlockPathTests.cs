@@ -7,12 +7,12 @@ public class BlockPathTests
 {
     private sealed class RootTestBlock : Block
     {
-        protected internal override string Tag => "ROOT";
+        public override string Tag => "ROOT";
     }
 
     private sealed class ChildTestBlock : Block
     {
-        protected internal override string Tag => "CHLD";
+        public override string Tag => "CHLD";
     }
 
     [Fact]

@@ -13,7 +13,7 @@ namespace EvilHop.Blocks;
 public class Dictionary : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "DICT";
+    public override string Tag => "DICT";
 
     /// <summary>
     /// The child <see cref="AssetTable"/> of the <see cref="Dictionary"/>.
@@ -48,7 +48,7 @@ public class Dictionary : Block
 public class AssetTable : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "ATOC";
+    public override string Tag => "ATOC";
 
     /// <summary>
     /// The child <see cref="AssetInf"/> of the <see cref="AssetTable"/>.
@@ -90,7 +90,7 @@ public class AssetTable : Block
 public class AssetInf : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "AINF";
+    public override string Tag => "AINF";
 
     /// <summary>
     /// Unknown. Always 0.
@@ -111,7 +111,7 @@ public class AssetInf : Block
 public class AssetHeader : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "AHDR";
+    public override string Tag => "AHDR";
 
     /// <summary>
     /// The child <see cref="AssetDebug"/> of the <see cref="AssetHeader"/>.
@@ -208,7 +208,7 @@ public class AssetHeader : Block
 public class AssetDebug : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "ADBG";
+    public override string Tag => "ADBG";
 
     /// <summary>
     /// The multiple of bytes this <c>Asset</c>'s own data <see cref="AssetHeader.Offset"/> aligns
@@ -270,7 +270,7 @@ public class AssetDebug : Block
 public class LayerTable : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "LTOC";
+    public override string Tag => "LTOC";
 
     /// <summary>
     /// The child <see cref="LayerInf"/> of the <see cref="LayerTable"/>.
@@ -312,7 +312,7 @@ public class LayerTable : Block
 public class LayerInf : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "LINF";
+    public override string Tag => "LINF";
 
     /// <summary>
     /// Unknown. Always 0.
@@ -333,7 +333,7 @@ public class LayerInf : Block
 public class LayerHeader : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "LHDR";
+    public override string Tag => "LHDR";
 
     /// <summary>
     /// The child <see cref="LayerDebug"/> of the <see cref="LayerHeader"/>.
@@ -389,7 +389,7 @@ public class LayerHeader : Block
 public class LayerDebug : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "LDBG";
+    public override string Tag => "LDBG";
 
     /// <summary>
     /// Unknown. Always 0xFFFFFFFF besides in N100F Prototype.

@@ -12,7 +12,7 @@ namespace EvilHop.Blocks;
 public class AssetStream : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "STRM";
+    public override string Tag => "STRM";
 
     /// <summary>
     /// The child <see cref="StreamHeader"/> of the <see cref="AssetStream"/>.
@@ -47,7 +47,7 @@ public class AssetStream : Block
 public class StreamHeader : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "DHDR";
+    public override string Tag => "DHDR";
 
     /// <summary>
     /// Unknown. Always 0xFFFFFFFF.
@@ -74,7 +74,7 @@ public class StreamHeader : Block
 public class StreamData : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "DPAK";
+    public override string Tag => "DPAK";
 
     /// <summary>
     /// The amount of padding in bytes.

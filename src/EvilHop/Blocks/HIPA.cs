@@ -12,7 +12,7 @@ namespace EvilHop.Blocks;
 public class HIPA : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "HIPA";
+    public override string Tag => "HIPA";
 
     internal HIPA() { }
 }

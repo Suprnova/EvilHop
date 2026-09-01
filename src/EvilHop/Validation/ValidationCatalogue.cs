@@ -102,7 +102,7 @@ public sealed class ValidationCatalogue
         if (!_observablesById.TryGetValue(observableId, out var observable))
             throw new ArgumentException($"'{observableId}' is not a known observable.", nameof(observableId));
 
-        string material = $"{observable.Id}|{observable.Scope}|{observable.Cardinality}|{observable.Presentation}";
+        string material = $"{observable.Id}|{observable.Scope}|{observable.Cardinality}|{observable.Presentation}|{observable.Kind}";
         return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(material)));
     }
 
@@ -120,8 +120,10 @@ public sealed class ValidationCatalogue
             var entries = new List<Entry>();
             var observables = new List<Observable>();
 
-            foreach (var attribute in type.GetCustomAttributes<NoChildrenAttribute>())
+            var noChildren = type.GetCustomAttributes<NoChildrenAttribute>().ToList();
+            foreach (var attribute in noChildren)
                 entries.Add(BuildNoChildrenEntry(tag, attribute));
+            if (noChildren.Count > 0) observables.Add(BuildNoChildrenObservable(tag));
 
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -157,6 +159,10 @@ public sealed class ValidationCatalogue
 
     private static Observable? BuildObservable(string tag, PropertyInfo property, IReadOnlyList<ValidationAttribute> attributes)
     {
+        // special handling for attributes on helpers, since they aren't primitives like others
+        if (attributes.OfType<RequiredChildAttribute>().Any())
+            return BuildRequiredChildObservable(tag, property);
+
         bool isValue = attributes.Any(a =>
             a is ObservedAttribute or ConstantValueAttribute or AllowedValuesAttribute or ClosedEnumAttribute
                 or DefinedBitsAttribute or RequiredBitsAttribute);
@@ -165,6 +171,31 @@ public sealed class ValidationCatalogue
         var (cardinality, presentation) = InferObservableShape(property.PropertyType);
         return new Observable(ObservableId(tag, property), ObservableScope.Block, cardinality, presentation, BuildSelector(property));
     }
+
+    private static Observable BuildRequiredChildObservable(string tag, PropertyInfo property)
+    {
+        Type childType = property.PropertyType;
+        Type declaringType = property.DeclaringType!;
+
+        return new Observable(
+            ObservableId(tag, property), ObservableScope.Block, ObservableCardinality.Enumerated, ObservablePresentation.Number,
+            source => source is BlockObservationSource(var block) && declaringType.IsInstanceOfType(block)
+                ? [block.Children.Count(childType.IsInstanceOfType)]
+                : [],
+            ObservableKind.Structural);
+    }
+
+    /// <summary>
+    /// Every <c>[NoChildren]</c>-attributed type gets one structural observable recording its own
+    /// child count, the same value <see cref="NoChildrenRule"/> checks - built once per type
+    /// regardless of how many scoped <c>[NoChildren]</c> attributes it carries, since they all check
+    /// the same fact.
+    /// </summary>
+    private static Observable BuildNoChildrenObservable(string tag) =>
+        new(
+            $"{tag}.childCount", ObservableScope.Block, ObservableCardinality.Enumerated, ObservablePresentation.Number,
+            source => source is BlockObservationSource(var block) ? [block.Children.Count] : [],
+            ObservableKind.Structural);
 
     private static Func<ObservationSource, IEnumerable<object>> BuildSelector(PropertyInfo property)
     {

@@ -10,7 +10,7 @@ public class ValidationCatalogueTests
 
     private sealed class UndecoratedTestBlock : Block
     {
-        protected internal override string Tag => "TEST";
+        public override string Tag => "TEST";
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class ValidationCatalogueTests
     [Fact]
     public void Observables_ContainsOneEntry_PerRuleAttributedProperty()
     {
-        var observables = ValidationCatalogue.Instance.Observables.Where(o => o.Id.StartsWith("PVER."));
+        var observables = ValidationCatalogue.Instance.Observables.Where(o => o.Id.StartsWith("PVER.") && o.Kind == ObservableKind.FieldValue);
 
         Assert.Equal(["PVER.clientVersion", "PVER.compatVersion", "PVER.subVersion"], observables.Select(o => o.Id).Order());
     }
@@ -107,11 +107,19 @@ public class ValidationCatalogueTests
     }
 
     [Fact]
-    public void Observables_StructuralAttributeOnly_YieldsNoObservable()
+    public void Observables_RequiredChildAttribute_YieldsAStructuralObservable()
     {
-        bool hasPlatformObservable = ValidationCatalogue.Instance.Observables.Any(o => o.Id == "PACK.platform");
+        var observable = ValidationCatalogue.Instance.Observables.Single(o => o.Id == "PACK.platform");
 
-        Assert.False(hasPlatformObservable);
+        Assert.Equal(ObservableKind.Structural, observable.Kind);
+    }
+
+    [Fact]
+    public void Observables_NoChildrenAttribute_YieldsAStructuralObservable()
+    {
+        var observable = ValidationCatalogue.Instance.Observables.Single(o => o.Id == "PVER.childCount");
+
+        Assert.Equal(ObservableKind.Structural, observable.Kind);
     }
 
     [Fact]

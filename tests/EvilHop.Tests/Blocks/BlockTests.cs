@@ -22,7 +22,7 @@ public class BlockTests
 
     internal class TestBlock : Block
     {
-        protected internal override string Tag => "TEST";
+        public override string Tag => "TEST";
 
         public int ManagedField
         {
@@ -33,12 +33,12 @@ public class BlockTests
 
     internal class OtherTestBlock : Block
     {
-        protected internal override string Tag => "OTHR";
+        public override string Tag => "OTHR";
     }
 
     private sealed class RecordingBlock : Block
     {
-        protected internal override string Tag => "RECD";
+        public override string Tag => "RECD";
 
         public List<ValidationIssue> OwnIssues { get; } = [];
         public ValidationContext? ReceivedContext { get; private set; }

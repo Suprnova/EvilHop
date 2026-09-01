@@ -41,7 +41,7 @@ public static class FacetPipeline
             ["coverage"] = new JsonObject
             {
                 ["archives"] = archives.Count,
-                ["sourceSetHash"] = SourceSetHash(archives)
+                ["sourceSetHash"] = SourceSetHash(archives.Select(a => a.Sha256).ToList())
             },
             ["observations"] = generator.Reduce(records)
         };
@@ -58,9 +58,15 @@ public static class FacetPipeline
         return record;
     }
 
-    private static string SourceSetHash(IReadOnlyList<CoveredArchive> archives)
+    /// <summary>
+    /// Computes a covered set's identity from its members' content hashes alone, independent of
+    /// discovery order - the same set of archives always hashes the same way.
+    /// </summary>
+    /// <param name="sha256s">Every covered archive's content hash.</param>
+    /// <returns>The hash, as the first 7 hex characters of a SHA-256.</returns>
+    public static string SourceSetHash(IReadOnlyList<string> sha256s)
     {
-        string joined = string.Join('\n', archives.Select(a => a.Sha256).OrderBy(sha => sha, StringComparer.Ordinal));
+        string joined = string.Join('\n', sha256s.OrderBy(sha => sha, StringComparer.Ordinal));
         return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(joined)))[..7];
     }
 }

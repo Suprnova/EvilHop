@@ -124,7 +124,7 @@ internal sealed class RequiredChildRule(
         bool excused = _source.ExceptQuirks != FormatQuirks.None &&
             (context.Profile.Quirks & _source.ExceptQuirks) == _source.ExceptQuirks;
         bool required = _source.Matches(context) && !excused;
-        return (int)value == (required ? 1 : 0);
+        return Convert.ToInt32(value) == (required ? 1 : 0);
     }
 }
 
@@ -133,5 +133,5 @@ internal sealed class NoChildrenRule(
     string id, Severity severity, string description, string observableId, ValidationAttribute source)
     : AttributeValueRule(id, severity, description, observableId, source)
 {
-    public override bool Holds(object value, ValidationContext context) => (int)value == 0;
+    public override bool Holds(object value, ValidationContext context) => Convert.ToInt32(value) == 0;
 }

@@ -13,7 +13,7 @@ public abstract class Block : IValidatable
     /// <summary>
     /// The 4-byte ASCII identifier for this block type.
     /// </summary>
-    protected internal abstract string Tag { get; }
+    public abstract string Tag { get; }
 
     /// <summary>
     /// The parent block of this block, if any. This property is null for top-level blocks.

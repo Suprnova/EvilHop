@@ -60,6 +60,18 @@ public enum ObservablePresentation
 }
 
 /// <summary>
+/// What kind of fact an <see cref="Observable"/> records.
+/// </summary>
+public enum ObservableKind
+{
+    /// <summary>A field's own value - what <c>blockFields</c> records.</summary>
+    FieldValue,
+
+    /// <summary>A fact about the block tree's shape rather than a field's value - what <c>structure</c> records.</summary>
+    Structural
+}
+
+/// <summary>
 /// Declares that an enum's underlying values are four-character codes, so an observable inferred
 /// from a property of this type renders as <see cref="ObservablePresentation.Fourcc"/> rather than
 /// <see cref="ObservablePresentation.Hex"/>.
@@ -97,9 +109,14 @@ public sealed record BlockObservationSource(Block Block) : ObservationSource;
 /// <see cref="int"/>, <see cref="string"/>, <see cref="bool"/>, <c>byte[]</c>, or a tuple of those -
 /// never a library enum or record.
 /// </param>
+/// <param name="Kind">
+/// What kind of fact this observable records. Defaults to <see cref="ObservableKind.FieldValue"/>,
+/// which every attribute-declared observable is.
+/// </param>
 public sealed record Observable(
     string Id,
     ObservableScope Scope,
     ObservableCardinality Cardinality,
     ObservablePresentation Presentation,
-    Func<ObservationSource, IEnumerable<object>> Select);
+    Func<ObservationSource, IEnumerable<object>> Select,
+    ObservableKind Kind = ObservableKind.FieldValue);

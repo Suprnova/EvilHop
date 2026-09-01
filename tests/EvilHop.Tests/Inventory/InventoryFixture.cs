@@ -36,13 +36,31 @@ public sealed class InventoryFixture
     }
 
     /// <summary>
-    /// The <c>blockFields</c> facet's recorded <c>ValueSet</c>s for <paramref name="game"/>, if that
-    /// game has an inventory.
+    /// Every facet's recorded <c>observations</c> for <paramref name="game"/>, keyed by facet ID, if
+    /// that game has an inventory.
     /// </summary>
     /// <param name="game">The game to look up.</param>
-    /// <returns>The observation object, keyed by observable ID, or <see langword="null"/> if none.</returns>
-    public JsonObject? BlockFieldsObservations(GameVersion game) =>
-        Inventories.TryGetValue(game, out var inventory)
-            ? inventory["facets"]?["blockFields"]?["observations"] as JsonObject
-            : null;
+    /// <returns>The facets object, or <see langword="null"/> if none.</returns>
+    public JsonObject? Facets(GameVersion game) =>
+        Inventories.TryGetValue(game, out var inventory) ? inventory["facets"] as JsonObject : null;
+
+    /// <summary>
+    /// The recorded <c>ValueSet</c> for <paramref name="observableId"/> in <paramref name="game"/>'s
+    /// inventory, searching every facet - a caller has no reason to know which facet an observable
+    /// landed in, only its ID.
+    /// </summary>
+    /// <param name="game">The game to look up.</param>
+    /// <param name="observableId">The observable's identifier.</param>
+    /// <returns>The recorded <c>ValueSet</c>, or <see langword="null"/> if none was recorded.</returns>
+    public JsonObject? ValueSet(GameVersion game, string observableId) =>
+        Facets(game)?
+            .Select(facet => facet.Value?["observations"]?[observableId] as JsonObject)
+            .FirstOrDefault(valueSet => valueSet is not null);
+
+    /// <summary>Every observation ID recorded in any facet of <paramref name="game"/>'s inventory.</summary>
+    /// <param name="game">The game to look up.</param>
+    /// <returns>Every recorded observation ID.</returns>
+    public IEnumerable<string> ObservationIds(GameVersion game) =>
+        Facets(game)?.SelectMany(facet => (facet.Value?["observations"] as JsonObject)?.Select(o => o.Key) ?? [])
+            ?? [];
 }

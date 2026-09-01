@@ -11,7 +11,7 @@ public class ArchiveTests
 
     private sealed class RecordingBlock : Block
     {
-        protected internal override string Tag => "RECD";
+        public override string Tag => "RECD";
 
         public List<ValidationIssue> OwnIssues { get; } = [];
         public ValidationContext? ReceivedContext { get; private set; }

@@ -14,7 +14,7 @@ namespace EvilHop.Blocks;
 public class Package : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PACK";
+    public override string Tag => "PACK";
 
     /// <summary>
     /// The child <see cref="PackageVersion"/> of the <see cref="Package"/>.
@@ -94,7 +94,7 @@ public class Package : Block
 public class PackageVersion : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PVER";
+    public override string Tag => "PVER";
 
     /// <summary>
     /// Unknown. Always 2.
@@ -135,7 +135,7 @@ public class PackageVersion : Block
 public class PackageFlags : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PFLG";
+    public override string Tag => "PFLG";
 
     /// <summary>
     /// Flag settings for the <see cref="Archive"/>. 
@@ -158,7 +158,7 @@ public class PackageFlags : Block
 public class PackageCount : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PCNT";
+    public override string Tag => "PCNT";
 
     /// <summary>
     /// The number of <c>assets</c> present in the archive.
@@ -206,7 +206,7 @@ public class PackageCount : Block
 public class PackageCreated : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PCRT";
+    public override string Tag => "PCRT";
 
     private readonly string _dateTimeFormat = "ddd MMM dd HH:mm:ss yyyy";
 
@@ -257,7 +257,7 @@ public class PackageCreated : Block
 public class PackageModified : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PMOD";
+    public override string Tag => "PMOD";
 
     /// <summary>
     /// The timestamp at which the archive was last modified.
@@ -282,7 +282,7 @@ public class PackageModified : Block
 public class PackagePlatform : Block
 {
     /// <inheritdoc/>
-    protected internal override string Tag => "PLAT";
+    public override string Tag => "PLAT";
 
     /// <summary>
     /// The platform the archive was built for.
