@@ -8,7 +8,7 @@ namespace EvilHop.Tests.Validation;
 /// <summary>
 /// Exercises <see cref="ValueRule.Holds"/> for every attribute-declared rule kind, through the real
 /// attribute placements on the block classes rather than synthetic types - these tests double-check
-/// §7's conversions, not just the rule mechanics.
+/// the values those attributes actually carry, not just the rule mechanics.
 /// </summary>
 public class ValueRuleTests
 {
@@ -160,6 +160,24 @@ public class ValueRuleTests
         var package = new Package { Platform = new PackagePlatform() };
 
         Assert.True(Violates(package, N100F, "pack.platform-required"));
+    }
+
+    [Fact]
+    public void RequiredChild_InScopeButExcusedByQuirk_ChildAbsent_Holds()
+    {
+        var context = new ValidationContext(BFBBSerializer.DefaultProfile with { Quirks = FormatQuirks.OmitsPlatformBlock });
+        var package = new Package();
+
+        Assert.False(Violates(package, context, "pack.platform-required"));
+    }
+
+    [Fact]
+    public void RequiredChild_InScopeButExcusedByQuirk_ChildPresent_DoesNotHold()
+    {
+        var context = new ValidationContext(BFBBSerializer.DefaultProfile with { Quirks = FormatQuirks.OmitsPlatformBlock });
+        var package = new Package { Platform = new PackagePlatform() };
+
+        Assert.True(Violates(package, context, "pack.platform-required"));
     }
 
     // NoChildren

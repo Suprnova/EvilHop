@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Serialization;
 using EvilHop.Validation;
 using System.Globalization;
 
@@ -69,9 +70,10 @@ public class Package : Block
     /// The child <see cref="PackagePlatform"/> of the <see cref="Package"/>.
     /// </summary>
     /// <remarks>
-    /// Only present from BFBB onwards.
+    /// Only present from BFBB onwards, except a build carrying <see cref="FormatQuirks.OmitsPlatformBlock"/>
+    /// - real evidence being BFBB's <c>font2.HIP</c>, which otherwise reads as an ordinary BFBB archive.
     /// </remarks>
-    [RequiredChild(From = GameVersion.BFBB)]
+    [RequiredChild(From = GameVersion.BFBB, ExceptQuirks = FormatQuirks.OmitsPlatformBlock)]
     public PackagePlatform? Platform
     {
         get => GetChild<PackagePlatform>();
@@ -287,6 +289,7 @@ public class PackagePlatform : Block
     /// The platform the archive was built for.
     /// </summary>
     /// Validation TODO: Maps to one of the expected values.
+    [Observed]
     public string PlatformId { get; set; } = "";
 
     /// <summary>
@@ -295,6 +298,7 @@ public class PackagePlatform : Block
     /// <remarks>
     /// Only present in Battle. Dropped from all subsequent games.
     /// </remarks>
+    [Observed]
     public string? PlatformName { get; set; }
 
     /// <summary>
@@ -307,11 +311,13 @@ public class PackagePlatform : Block
     /// The archive's target language.
     /// </summary>
     /// Validation TODO: Maps to a language observed in the documentation.
+    [Observed]
     public string Language { get; set; } = "";
 
     /// <summary>
     /// The archive's target game.
     /// </summary>
+    [Observed]
     public string GameName { get; set; } = "";
 
     internal PackagePlatform() { }

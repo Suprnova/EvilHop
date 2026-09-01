@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Corpus.Generation;
 using EvilHop.Serialization;
 using System.Text.Json.Nodes;
@@ -107,6 +108,39 @@ public class BlockFieldsFacetGeneratorTests
         var entry = SoleValueOf(generator.Reduce([record]), "PVER.subVersion");
 
         Assert.Null(entry["display"]);
+    }
+
+    [Fact]
+    public void Reduce_DisplayPresent_IsOrderedBeforeValue()
+    {
+        var record = new MappedArchive("a.hip", generator.Map(ArchiveOf(VersionBlock())));
+
+        var entry = SoleValueOf(generator.Reduce([record]), "PVER.clientVersion");
+
+        Assert.Equal(["display", "value", "count", "witnesses"], entry.Select(property => property.Key));
+    }
+
+    [Fact]
+    public void Reduce_FourccPresentedObservable_IncludesAsciiDisplay()
+    {
+        var record = new MappedArchive("a.hip", generator.Map(ArchiveOf(new AssetHeader { Type = AssetType.Animation })));
+
+        var observations = generator.Reduce([record]);
+        var valueSet = Assert.IsType<JsonObject>(observations["AHDR.type"]);
+
+        Assert.Equal("fourcc", valueSet["presentation"]!.GetValue<string>());
+        Assert.Equal("ANIM", SoleValueOf(observations, "AHDR.type")["display"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Reduce_ObservationKeys_AreSortedOrdinally()
+    {
+        var record = new MappedArchive("a.hip", generator.Map(ArchiveOf(VersionBlock(), new PackageFlags { Flags = PackFlags.NTSC })));
+
+        var observations = generator.Reduce([record]);
+
+        var keys = observations.Select(property => property.Key).ToList();
+        Assert.Equal(keys.OrderBy(key => key, StringComparer.Ordinal), keys);
     }
 
     private static JsonArray ValuesOf(JsonObject observations, string observableId) =>

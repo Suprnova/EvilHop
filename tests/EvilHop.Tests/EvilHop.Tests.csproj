@@ -35,4 +35,10 @@
     <None Include="TestData\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\corpus\*.json" Exclude="..\..\corpus\manifest.json" CopyToOutputDirectory="PreserveNewest">
+      <Link>Corpus\%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -9,7 +9,7 @@ The library is in alpha and is not used in any production applications. Breaking
 | Path | What it is |
 |---|---|
 | `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`, `Validation/`. |
-| `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. |
+| `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. `Inventory/` asserts today's library against yesterday's `corpus/*.json` instead. |
 | `tools/EvilHop.Corpus/` | The corpus tool. Turns `artifacts/` into the committed `corpus/*.json` inventories. Carries no format knowledge of its own - only what `EvilHop.Validation` declares. |
 | `tools/EvilHop.Corpus.Tests/` | The tool's own tests: map/reduce, caching, and JSON determinism. |
 | `artifacts/` | Local, gitignored corpus of real game archives. |

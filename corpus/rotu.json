@@ -1,0 +1,923 @@
+{
+  "schema": 1,
+  "game": "ROTU",
+  "facets": {
+    "blockFields": {
+      "generator": {
+        "revision": 3,
+        "inputs": "d92a889"
+      },
+      "coverage": {
+        "archives": 1367,
+        "sourceSetHash": "58d3e3f"
+      },
+      "observations": {
+        "AHDR.type": {
+          "kind": "enumerated",
+          "presentation": "fourcc",
+          "values": [
+            {
+              "display": "ALST",
+              "value": 1095521108,
+              "count": 570,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HIP"
+              ]
+            },
+            {
+              "display": "ANIM",
+              "value": 1095649613,
+              "count": 50760,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "ATBL",
+              "value": 1096041036,
+              "count": 1290,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "BINK",
+              "value": 1112100427,
+              "count": 585,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnus.HOP"
+              ]
+            },
+            {
+              "display": "BOUL",
+              "value": 1112495436,
+              "count": 1320,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/B1/b101.HIP"
+              ]
+            },
+            {
+              "display": "CAM ",
+              "value": 1128353056,
+              "count": 2220,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "CCRV",
+              "value": 1128485462,
+              "count": 3930,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "CNTR",
+              "value": 1129206866,
+              "count": 7410,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "COLL",
+              "value": 1129270348,
+              "count": 103,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "COND",
+              "value": 1129270852,
+              "count": 5535,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "CRDT",
+              "value": 1129464916,
+              "count": 54,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui_JP.hip",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/MN/mnui_FR.hip"
+              ]
+            },
+            {
+              "display": "DEST",
+              "value": 1145394004,
+              "count": 2685,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "DPAT",
+              "value": 1146110292,
+              "count": 1395,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "DYNA",
+              "value": 1146703425,
+              "count": 67086,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "ENV ",
+              "value": 1162761760,
+              "count": 315,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "FOG ",
+              "value": 1179600672,
+              "count": 1050,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "GRUP",
+              "value": 1196578128,
+              "count": 13860,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "HANG",
+              "value": 1212239431,
+              "count": 15,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MT/mt01.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/MT/mt01.HIP"
+              ]
+            },
+            {
+              "display": "JAW ",
+              "value": 1245796128,
+              "count": 330,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "JSP ",
+              "value": 1246973984,
+              "count": 2327,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "LKIT",
+              "value": 1280002388,
+              "count": 600,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "LODT",
+              "value": 1280263252,
+              "count": 225,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "MAPR",
+              "value": 1296126034,
+              "count": 315,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "MINF",
+              "value": 1296649798,
+              "count": 3975,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "MODL",
+              "value": 1297040460,
+              "count": 44743,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "MRKR",
+              "value": 1297238866,
+              "count": 1200,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/A201.HIP"
+              ]
+            },
+            {
+              "display": "MVPT",
+              "value": 1297502292,
+              "count": 12945,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "NGMS",
+              "value": 1313295699,
+              "count": 390,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "NPCS",
+              "value": 1313882963,
+              "count": 330,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a202.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HIP"
+              ]
+            },
+            {
+              "display": "PARE",
+              "value": 1346458181,
+              "count": 195,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HIP"
+              ]
+            },
+            {
+              "display": "PARP",
+              "value": 1346458192,
+              "count": 195,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HIP"
+              ]
+            },
+            {
+              "display": "PARS",
+              "value": 1346458195,
+              "count": 195,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A2/a203.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/CC/cc01.HIP"
+              ]
+            },
+            {
+              "display": "PGRS",
+              "value": 1346851411,
+              "count": 150,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a103.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MT/mt01.HIP"
+              ]
+            },
+            {
+              "display": "PICK",
+              "value": 1346978635,
+              "count": 15,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "PIPT",
+              "value": 1346981972,
+              "count": 345,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "PLAT",
+              "value": 1347174740,
+              "count": 28770,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "PLYR",
+              "value": 1347180882,
+              "count": 630,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "PORT",
+              "value": 1347375700,
+              "count": 1170,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "RAW ",
+              "value": 1380013856,
+              "count": 69,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/font_JP.hip",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/plat.HIP"
+              ]
+            },
+            {
+              "display": "RWTX",
+              "value": 1381454936,
+              "count": 31621,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "SCRP",
+              "value": 1396920912,
+              "count": 28704,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "SDFX",
+              "value": 1396983384,
+              "count": 21742,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "SGRP",
+              "value": 1397183056,
+              "count": 43666,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "SHRP",
+              "value": 1397248592,
+              "count": 11760,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "SIMP",
+              "value": 1397312848,
+              "count": 109023,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "SND ",
+              "value": 1397638176,
+              "count": 30296,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HOP"
+              ]
+            },
+            {
+              "display": "SNDI",
+              "value": 1397638217,
+              "count": 954,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+              ]
+            },
+            {
+              "display": "SNDS",
+              "value": 1397638227,
+              "count": 46010,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip"
+              ]
+            },
+            {
+              "display": "SPLN",
+              "value": 1397771342,
+              "count": 10275,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "SUBT",
+              "value": 1398096468,
+              "count": 108,
+              "witnesses": [
+                "rotu/release/GC/NTSC-U/US/MN/mnui_US.hip",
+                "rotu/release/PS2/NTSC-U/US/MN/MNUI_US.HIP"
+              ]
+            },
+            {
+              "display": "SURF",
+              "value": 1398100550,
+              "count": 2325,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "TEXS",
+              "value": 1413830739,
+              "count": 2612,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/MN/mnui.HIP"
+              ]
+            },
+            {
+              "display": "TEXT",
+              "value": 1413830740,
+              "count": 22443,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102_JP.hip"
+              ]
+            },
+            {
+              "display": "TIMR",
+              "value": 1414090066,
+              "count": 390,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a301.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a302.HIP"
+              ]
+            },
+            {
+              "display": "TPIK",
+              "value": 1414547787,
+              "count": 15,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/boot.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "TRIG",
+              "value": 1414678855,
+              "count": 32166,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "TRWT",
+              "value": 1414682452,
+              "count": 240,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "display": "UIM ",
+              "value": 1430867232,
+              "count": 2025,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A3/a303.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP"
+              ]
+            },
+            {
+              "display": "VOLU",
+              "value": 1448037461,
+              "count": 15,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/DD/dd01.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/DD/dd01.HIP"
+              ]
+            },
+            {
+              "display": "WIRE",
+              "value": 1464422981,
+              "count": 15,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/MN/mnui.HIP",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/MN/mnui.HIP"
+              ]
+            }
+          ]
+        },
+        "AINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "DHDR.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "LDBG.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 30083,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "LHDR.type": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000000",
+              "value": 0,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 4101,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000002",
+              "value": 2,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000003",
+              "value": 3,
+              "count": 9234,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000004",
+              "value": 4,
+              "count": 4101,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000005",
+              "value": 5,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000007",
+              "value": 7,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000008",
+              "value": 8,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x00000009",
+              "value": 9,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000A",
+              "value": 10,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000B",
+              "value": 11,
+              "count": 3078,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "LINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "PFLG.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 46,
+          "display": "0x0000002E"
+        },
+        "PLAT.gameName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "Incredibles",
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.language": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "DE",
+              "count": 72,
+              "witnesses": [
+                "rotu/release/GC/PAL/DE-FR/A1/a101_DE.hip",
+                "rotu/release/GC/PAL/DE-FR/A1/a102_DE.hip"
+              ]
+            },
+            {
+              "value": "ES",
+              "count": 48,
+              "witnesses": [
+                "rotu/release/PS2/PAL/ES-IT-UK/A1/A101_ES.HIP",
+                "rotu/release/PS2/PAL/ES-IT-UK/A1/A102_ES.HIP"
+              ]
+            },
+            {
+              "value": "FR",
+              "count": 120,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_FR.hip",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a102_FR.hip"
+              ]
+            },
+            {
+              "value": "IT",
+              "count": 48,
+              "witnesses": [
+                "rotu/release/PS2/PAL/ES-IT-UK/A1/A101_IT.HIP",
+                "rotu/release/PS2/PAL/ES-IT-UK/A1/A102_IT.HIP"
+              ]
+            },
+            {
+              "value": "JP",
+              "count": 187,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101_JP.hip",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a102.HIP"
+              ]
+            },
+            {
+              "value": "KR",
+              "count": 24,
+              "witnesses": [
+                "rotu/release/PS2/NTSC-K/KR/A1/A101_KR.HIP",
+                "rotu/release/PS2/NTSC-K/KR/A1/A102_KR.HIP"
+              ]
+            },
+            {
+              "value": "RU",
+              "count": 109,
+              "witnesses": [
+                "rotu/release/PS2/NTSC-J/JP/A1/A102.HIP",
+                "rotu/release/PS2/NTSC-J/JP/A1/A102.HOP"
+              ]
+            },
+            {
+              "value": "UK",
+              "count": 153,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_UK.hip",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a102_UK.hip"
+              ]
+            },
+            {
+              "value": "US",
+              "count": 606,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformId": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "BX",
+              "count": 264,
+              "witnesses": [
+                "rotu/release/XBOX/NTSC-U/US/A1/a101.HIP",
+                "rotu/release/XBOX/NTSC-U/US/A1/a101.HOP"
+              ]
+            },
+            {
+              "value": "GC",
+              "count": 576,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "value": "PS2",
+              "count": 527,
+              "witnesses": [
+                "rotu/release/PS2/NTSC-J/JP/A1/A101.HIP",
+                "rotu/release/PS2/NTSC-J/JP/A1/A101.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.region": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "NTSC",
+              "count": 817,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            },
+            {
+              "value": "PAL",
+              "count": 550,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_FR.hip",
+                "rotu/prototype_2005-09-15/GC/PAL/FR-UK/A1/a101_UK.hip"
+              ]
+            }
+          ]
+        },
+        "PVER.clientVersion": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x000A000F",
+              "value": 655375,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.compatVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.subVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 2,
+              "count": 1367,
+              "witnesses": [
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HIP",
+                "rotu/prototype_2005-09-15/GC/NTSC-J/JP/A1/a101.HOP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

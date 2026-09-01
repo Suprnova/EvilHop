@@ -1,0 +1,726 @@
+{
+  "schema": 1,
+  "game": "N100F",
+  "facets": {
+    "blockFields": {
+      "generator": {
+        "revision": 3,
+        "inputs": "d92a889"
+      },
+      "coverage": {
+        "archives": 1038,
+        "sourceSetHash": "2623518"
+      },
+      "observations": {
+        "AHDR.type": {
+          "kind": "enumerated",
+          "presentation": "fourcc",
+          "values": [
+            {
+              "display": "ALST",
+              "value": 1095521108,
+              "count": 1455,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "ANIM",
+              "value": 1095649613,
+              "count": 42521,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "ATBL",
+              "value": 1096041036,
+              "count": 3838,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "BSP ",
+              "value": 1112756256,
+              "count": 2897,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "BUTN",
+              "value": 1112888398,
+              "count": 1089,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "CAM ",
+              "value": 1128353056,
+              "count": 11656,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "CNTR",
+              "value": 1129206866,
+              "count": 1645,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "COND",
+              "value": 1129270852,
+              "count": 5809,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c001.HIP"
+              ]
+            },
+            {
+              "display": "CSN ",
+              "value": 1129532960,
+              "count": 80,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/g0/g009.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/h0/h001.HIP"
+              ]
+            },
+            {
+              "display": "CSNM",
+              "value": 1129533005,
+              "count": 147,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/g0/g009.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/h0/h001.HIP"
+              ]
+            },
+            {
+              "display": "CTOC",
+              "value": 1129598787,
+              "count": 70,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/g0/g009.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/h0/h001.HIP"
+              ]
+            },
+            {
+              "display": "DPAT",
+              "value": 1146110292,
+              "count": 2942,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "DSTR",
+              "value": 1146311762,
+              "count": 2827,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "EGEN",
+              "value": 1162298702,
+              "count": 517,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/g0/g009.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/o0/o005.HIP"
+              ]
+            },
+            {
+              "display": "ENV ",
+              "value": 1162761760,
+              "count": 969,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "FOG ",
+              "value": 1179600672,
+              "count": 928,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "GRUP",
+              "value": 1196578128,
+              "count": 6317,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "GUST",
+              "value": 1196774228,
+              "count": 660,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c002.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c003.HIP"
+              ]
+            },
+            {
+              "display": "HANG",
+              "value": 1212239431,
+              "count": 1056,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "LITE",
+              "value": 1279874117,
+              "count": 4477,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c002.HIP"
+              ]
+            },
+            {
+              "display": "LOBM",
+              "value": 1280262733,
+              "count": 3663,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "MAPR",
+              "value": 1296126034,
+              "count": 2892,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "MINF",
+              "value": 1296649798,
+              "count": 4806,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "MODL",
+              "value": 1297040460,
+              "count": 34640,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "MPHT",
+              "value": 1297107028,
+              "count": 132,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/boot.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c007.HIP"
+              ]
+            },
+            {
+              "display": "MRKR",
+              "value": 1297238866,
+              "count": 15390,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "MVPT",
+              "value": 1297502292,
+              "count": 31357,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "NPC ",
+              "value": 1313882912,
+              "count": 8382,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "PARE",
+              "value": 1346458181,
+              "count": 6358,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "PARS",
+              "value": 1346458195,
+              "count": 3496,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "PEND",
+              "value": 1346719300,
+              "count": 242,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/e0/e007.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/f0/f003.HIP"
+              ]
+            },
+            {
+              "display": "PICK",
+              "value": 1346978635,
+              "count": 16,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "PKUP",
+              "value": 1347114320,
+              "count": 65082,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "PLAT",
+              "value": 1347174740,
+              "count": 16123,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "PLYR",
+              "value": 1347180882,
+              "count": 980,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "PORT",
+              "value": 1347375700,
+              "count": 3230,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "PRJT",
+              "value": 1347570260,
+              "count": 4631,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "RWTX",
+              "value": 1381454936,
+              "count": 71691,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "SFX ",
+              "value": 1397119008,
+              "count": 17037,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "SIMP",
+              "value": 1397312848,
+              "count": 15705,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "SND ",
+              "value": 1397638176,
+              "count": 55980,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "SNDI",
+              "value": 1397638217,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "SNDS",
+              "value": 1397638227,
+              "count": 3251,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/boot.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/e0/e002.HIP"
+              ]
+            },
+            {
+              "display": "SURF",
+              "value": 1398100550,
+              "count": 4520,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "TEXT",
+              "value": 1413830740,
+              "count": 5682,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b003.HIP"
+              ]
+            },
+            {
+              "display": "TIMR",
+              "value": 1414090066,
+              "count": 6662,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "TRIG",
+              "value": 1414678855,
+              "count": 22911,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "UI  ",
+              "value": 1430855712,
+              "count": 5508,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/h0/h003.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/mn/mnu3.HIP"
+              ]
+            },
+            {
+              "display": "UIFT",
+              "value": 1430865492,
+              "count": 6296,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "VOLU",
+              "value": 1448037461,
+              "count": 1798,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/c0/c002.HIP"
+              ]
+            }
+          ]
+        },
+        "AINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            }
+          ]
+        },
+        "DHDR.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            }
+          ]
+        },
+        "LDBG.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1796330558,
+              "count": 1,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO3.HIP"
+              ]
+            },
+            {
+              "value": 2590096337,
+              "count": 1,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP"
+              ]
+            },
+            {
+              "value": 2625170467,
+              "count": 1,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "value": 3494838776,
+              "count": 1,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/TECH.HIP"
+              ]
+            },
+            {
+              "value": 3966101456,
+              "count": 1,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO4.HIP"
+              ]
+            },
+            {
+              "value": 4294967295,
+              "count": 8264,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            }
+          ]
+        },
+        "LHDR.type": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000000",
+              "value": 0,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000003",
+              "value": 3,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000004",
+              "value": 4,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000005",
+              "value": 5,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000007",
+              "value": 7,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000008",
+              "value": 8,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            },
+            {
+              "display": "0x00000009",
+              "value": 9,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            }
+          ]
+        },
+        "LINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            }
+          ]
+        },
+        "PFLG.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 46,
+          "display": "0x0000002E"
+        },
+        "PLAT.gameName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.language": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.platformId": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.platformName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.region": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PVER.clientVersion": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 5,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            },
+            {
+              "display": "0x00040006",
+              "value": 262150,
+              "count": 1033,
+              "witnesses": [
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP",
+                "n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b002.HIP"
+              ]
+            }
+          ]
+        },
+        "PVER.compatVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            }
+          ]
+        },
+        "PVER.subVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 2,
+              "count": 1038,
+              "witnesses": [
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP",
+                "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO2.HIP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

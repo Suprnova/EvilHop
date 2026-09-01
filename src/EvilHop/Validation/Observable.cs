@@ -60,6 +60,14 @@ public enum ObservablePresentation
 }
 
 /// <summary>
+/// Declares that an enum's underlying values are four-character codes, so an observable inferred
+/// from a property of this type renders as <see cref="ObservablePresentation.Fourcc"/> rather than
+/// <see cref="ObservablePresentation.Hex"/>.
+/// </summary>
+[AttributeUsage(AttributeTargets.Enum)]
+public sealed class FourccAttribute : Attribute;
+
+/// <summary>
 /// The subject an <see cref="Observable"/> reads its value from. A closed hierarchy, one case per
 /// <see cref="ObservableScope"/> the mapping stage currently knows how to read.
 /// </summary>

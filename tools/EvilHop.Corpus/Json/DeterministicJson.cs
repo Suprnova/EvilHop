@@ -4,10 +4,19 @@ using System.Text.Json.Nodes;
 namespace EvilHop.Corpus.Json;
 
 /// <summary>
-/// Serializes a <see cref="JsonNode"/> tree the way every committed inventory file must be written:
-/// object keys sorted ordinally, two-space indent, LF line endings, and a trailing newline, so
-/// regenerating an unchanged tree produces byte-identical output.
+/// Renders a <see cref="JsonNode"/> tree the way every committed inventory file must be written:
+/// two-space indent, LF line endings, and a trailing newline, so regenerating an unchanged tree
+/// produces byte-identical output.
 /// </summary>
+/// <remarks>
+/// This renders the tree exactly as given - it does not reorder object keys. A tree's key order has
+/// to already be deterministic before it gets here: fixed, code-declared keys (an inventory's own
+/// envelope, a facet's <c>generator</c>/<c>coverage</c>/<c>observations</c>) are deterministic by
+/// construction, and the one place a key set is genuinely data-driven -
+/// <see cref="Generation.BlockFieldsFacetGenerator"/>'s per-observable <c>observations</c> - sorts it
+/// explicitly at the source, rather than leaving it to a blanket re-sort here that would also flatten
+/// the deliberate, human-readable order of everything else.
+/// </remarks>
 public static class DeterministicJson
 {
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
@@ -19,29 +28,7 @@ public static class DeterministicJson
     /// <returns>The serialized JSON, LF-terminated.</returns>
     public static string Serialize(JsonNode? node)
     {
-        string json = Sort(node)?.ToJsonString(Options) ?? "null";
+        string json = node?.ToJsonString(Options) ?? "null";
         return json.Replace("\r\n", "\n").TrimEnd('\n') + "\n";
-    }
-
-    private static JsonNode? Sort(JsonNode? node) => node switch
-    {
-        JsonObject obj => SortObject(obj),
-        JsonArray array => SortArray(array),
-        _ => node?.DeepClone()
-    };
-
-    private static JsonObject SortObject(JsonObject obj)
-    {
-        var sorted = new JsonObject();
-        foreach (string key in obj.Select(property => property.Key).OrderBy(key => key, StringComparer.Ordinal))
-            sorted[key] = Sort(obj[key]);
-        return sorted;
-    }
-
-    private static JsonArray SortArray(JsonArray array)
-    {
-        var sorted = new JsonArray();
-        foreach (var item in array) sorted.Add(Sort(item));
-        return sorted;
     }
 }

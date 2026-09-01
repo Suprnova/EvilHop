@@ -25,6 +25,9 @@ public sealed class ValidationCatalogue
     /// <summary>Every <see cref="Observable"/> declared in the assembly, the union every consumer reads.</summary>
     public IReadOnlyList<Observable> Observables { get; }
 
+    /// <summary>Every <see cref="ValueRule"/> materialized from a declarative attribute in the assembly.</summary>
+    public IReadOnlyList<ValueRule> Rules { get; }
+
     private ValidationCatalogue(
         IReadOnlyDictionary<Type, IReadOnlyList<Entry>> entriesByType,
         IReadOnlyDictionary<Type, IReadOnlyList<Observable>> observablesByType)
@@ -33,6 +36,7 @@ public sealed class ValidationCatalogue
         _observablesByType = observablesByType;
         _observablesById = observablesByType.Values.SelectMany(o => o).ToDictionary(o => o.Id);
         Observables = [.. _observablesById.Values];
+        Rules = [.. entriesByType.Values.SelectMany(entries => entries).Select(entry => entry.Rule)];
     }
 
     /// <summary>
@@ -172,8 +176,11 @@ public sealed class ValidationCatalogue
 
         if (effectiveType.IsEnum)
         {
-            bool isBitmask = effectiveType.IsDefined(typeof(FlagsAttribute), inherit: false);
-            return (isBitmask ? ObservableCardinality.Bitmask : ObservableCardinality.Enumerated, ObservablePresentation.Hex);
+            if (effectiveType.IsDefined(typeof(FlagsAttribute), inherit: false))
+                return (ObservableCardinality.Bitmask, ObservablePresentation.Hex);
+
+            bool isFourcc = effectiveType.IsDefined(typeof(FourccAttribute), inherit: false);
+            return (ObservableCardinality.Enumerated, isFourcc ? ObservablePresentation.Fourcc : ObservablePresentation.Hex);
         }
 
         if (effectiveType == typeof(string)) return (ObservableCardinality.Enumerated, ObservablePresentation.Text);
@@ -243,13 +250,13 @@ public sealed class ValidationCatalogue
                         required.RequiredBits),
                     member, CompileAccessor(property));
 
-            case RequiredChildAttribute:
+            case RequiredChildAttribute requiredChild:
                 Type childType = property.PropertyType;
                 return new Entry(
                     new RequiredChildRule(
                         $"{idBase}-required", attribute.Severity,
                         $"{observableId} must have exactly one {childType.Name} child while in scope, and none outside it.",
-                        observableId, attribute),
+                        observableId, requiredChild),
                     member, block => block.Children.Count(childType.IsInstanceOfType));
 
             default:

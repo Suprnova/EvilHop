@@ -1,0 +1,898 @@
+{
+  "schema": 1,
+  "game": "TSSM",
+  "facets": {
+    "blockFields": {
+      "generator": {
+        "revision": 3,
+        "inputs": "d92a889"
+      },
+      "coverage": {
+        "archives": 2492,
+        "sourceSetHash": "cfc9c77"
+      },
+      "observations": {
+        "AHDR.type": {
+          "kind": "enumerated",
+          "presentation": "fourcc",
+          "values": [
+            {
+              "display": "ALST",
+              "value": 1095521108,
+              "count": 2269,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "ANIM",
+              "value": 1095649613,
+              "count": 58373,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "ATBL",
+              "value": 1096041036,
+              "count": 3482,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "BOUL",
+              "value": 1112495436,
+              "count": 2544,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP"
+              ]
+            },
+            {
+              "display": "BUTN",
+              "value": 1112888398,
+              "count": 1600,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb03.HIP"
+              ]
+            },
+            {
+              "display": "CAM ",
+              "value": 1128353056,
+              "count": 3760,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "CNTR",
+              "value": 1129206866,
+              "count": 5024,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "COLL",
+              "value": 1129270348,
+              "count": 256,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HOP"
+              ]
+            },
+            {
+              "display": "COND",
+              "value": 1129270852,
+              "count": 7248,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B4/b401.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+              ]
+            },
+            {
+              "display": "CRDT",
+              "value": 1129464916,
+              "count": 63,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B4/b401_US.hip",
+                "tssm/release/GC/NTSC-U/US-r1/B4/b402_US.hip"
+              ]
+            },
+            {
+              "display": "CSN ",
+              "value": 1129532960,
+              "count": 588,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HOP"
+              ]
+            },
+            {
+              "display": "CSNM",
+              "value": 1129533005,
+              "count": 432,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HIP"
+              ]
+            },
+            {
+              "display": "CSSS",
+              "value": 1129534291,
+              "count": 750,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HOP"
+              ]
+            },
+            {
+              "display": "CTOC",
+              "value": 1129598787,
+              "count": 294,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HOP"
+              ]
+            },
+            {
+              "display": "DEST",
+              "value": 1145394004,
+              "count": 1328,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am03.HOP"
+              ]
+            },
+            {
+              "display": "DPAT",
+              "value": 1146110292,
+              "count": 6832,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "DSCO",
+              "value": 1146307407,
+              "count": 96,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/TT/tt01.HIP",
+                "tssm/release/GC/NTSC-U/US/TT/tt01.HIP"
+              ]
+            },
+            {
+              "display": "DYNA",
+              "value": 1146703425,
+              "count": 87686,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "EGEN",
+              "value": 1162298702,
+              "count": 544,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/PT/pt01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/PT/pt03.HIP"
+              ]
+            },
+            {
+              "display": "ENV ",
+              "value": 1162761760,
+              "count": 544,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "FLY ",
+              "value": 1179408672,
+              "count": 208,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B4/b401.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+              ]
+            },
+            {
+              "display": "FOG ",
+              "value": 1179600672,
+              "count": 384,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "GRUP",
+              "value": 1196578128,
+              "count": 13164,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "JAW ",
+              "value": 1245796128,
+              "count": 590,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HOP"
+              ]
+            },
+            {
+              "display": "JSP ",
+              "value": 1246973984,
+              "count": 4152,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "LKIT",
+              "value": 1280002388,
+              "count": 1072,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "LODT",
+              "value": 1280263252,
+              "count": 464,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "MAPR",
+              "value": 1296126034,
+              "count": 544,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "MINF",
+              "value": 1296649798,
+              "count": 5802,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "MODL",
+              "value": 1297040460,
+              "count": 48525,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "MRKR",
+              "value": 1297238866,
+              "count": 960,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B4/b402.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP"
+              ]
+            },
+            {
+              "display": "MVPT",
+              "value": 1297502292,
+              "count": 33360,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "PARE",
+              "value": 1346458181,
+              "count": 4720,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP"
+              ]
+            },
+            {
+              "display": "PARP",
+              "value": 1346458192,
+              "count": 3152,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP"
+              ]
+            },
+            {
+              "display": "PARS",
+              "value": 1346458195,
+              "count": 2800,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/BB/bb02.HIP"
+              ]
+            },
+            {
+              "display": "PICK",
+              "value": 1346978635,
+              "count": 16,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/boot.HIP",
+                "tssm/release/GC/NTSC-U/US/boot.HIP"
+              ]
+            },
+            {
+              "display": "PIPT",
+              "value": 1346981972,
+              "count": 784,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "PKUP",
+              "value": 1347114320,
+              "count": 37472,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "PLAT",
+              "value": 1347174740,
+              "count": 40964,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "PLYR",
+              "value": 1347180882,
+              "count": 544,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "PORT",
+              "value": 1347375700,
+              "count": 2048,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "RANM",
+              "value": 1380011597,
+              "count": 336,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "RAW ",
+              "value": 1380013856,
+              "count": 74,
+              "witnesses": [
+                "tssm/release/PS2/NTSC-U/US/PLAT.HIP",
+                "tssm/release/PS2/PAL/DE/PLAT.HIP"
+              ]
+            },
+            {
+              "display": "RWTX",
+              "value": 1381454936,
+              "count": 47174,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "SCRP",
+              "value": 1396920912,
+              "count": 17338,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "SDFX",
+              "value": 1396983384,
+              "count": 32224,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "SGRP",
+              "value": 1397183056,
+              "count": 42810,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "SHRP",
+              "value": 1397248592,
+              "count": 5456,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "SIMP",
+              "value": 1397312848,
+              "count": 292630,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "SND ",
+              "value": 1397638176,
+              "count": 26787,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "SNDI",
+              "value": 1397638217,
+              "count": 1401,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HOP"
+              ]
+            },
+            {
+              "display": "SNDS",
+              "value": 1397638227,
+              "count": 34504,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HOP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HOP"
+              ]
+            },
+            {
+              "display": "SPLN",
+              "value": 1397771342,
+              "count": 16,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/GG/gg02.HOP",
+                "tssm/release/GC/NTSC-U/US/GG/gg02.HOP"
+              ]
+            },
+            {
+              "display": "SURF",
+              "value": 1398100550,
+              "count": 3472,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/B1/b101.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/B2/b201.HIP"
+              ]
+            },
+            {
+              "display": "TEXS",
+              "value": 1413830739,
+              "count": 1088,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/MN/mnui.HIP",
+                "tssm/release/GC/NTSC-U/US/MN/mnui.HIP"
+              ]
+            },
+            {
+              "display": "TEXT",
+              "value": 1413830740,
+              "count": 32916,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01_US.hip",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02_US.hip"
+              ]
+            },
+            {
+              "display": "TIMR",
+              "value": 1414090066,
+              "count": 4106,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "TRIG",
+              "value": 1414678855,
+              "count": 29322,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am02.HIP"
+              ]
+            },
+            {
+              "display": "UIM ",
+              "value": 1430867232,
+              "count": 1408,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/MN/mnuc.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/MN/mnui.HIP"
+              ]
+            }
+          ]
+        },
+        "AINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "DHDR.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "LDBG.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 53288,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "LHDR.type": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000000",
+              "value": 0,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 7476,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000002",
+              "value": 2,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000003",
+              "value": 3,
+              "count": 15669,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000004",
+              "value": 4,
+              "count": 7476,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000005",
+              "value": 5,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000007",
+              "value": 7,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000008",
+              "value": 8,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000009",
+              "value": 9,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000A",
+              "value": 10,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000B",
+              "value": 11,
+              "count": 5223,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "LINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "PFLG.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 46,
+          "display": "0x0000002E"
+        },
+        "PLAT.gameName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "Incredibles",
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.language": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "DE",
+              "count": 133,
+              "witnesses": [
+                "tssm/release/GC/PAL/DE/AM/am01_DE.hip",
+                "tssm/release/GC/PAL/DE/AM/am02_DE.hip"
+              ]
+            },
+            {
+              "value": "ES",
+              "count": 88,
+              "witnesses": [
+                "tssm/release/PS2/PAL/ES/AM/AM01_ES.HIP",
+                "tssm/release/PS2/PAL/ES/AM/AM02_ES.HIP"
+              ]
+            },
+            {
+              "value": "FR",
+              "count": 135,
+              "witnesses": [
+                "tssm/release/GC/PAL/FR-NL/AM/am01_FR.hip",
+                "tssm/release/GC/PAL/FR-NL/AM/am02_FR.hip"
+              ]
+            },
+            {
+              "value": "IT",
+              "count": 106,
+              "witnesses": [
+                "tssm/release/PS2/PAL/ES/AM/AM02.HIP",
+                "tssm/release/PS2/PAL/ES/AM/AM02.HOP"
+              ]
+            },
+            {
+              "value": "NL",
+              "count": 138,
+              "witnesses": [
+                "tssm/release/GC/PAL/FR-NL/AM/am01_NL.hip",
+                "tssm/release/GC/PAL/FR-NL/AM/am02_NL.hip"
+              ]
+            },
+            {
+              "value": "UK",
+              "count": 158,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/DE/de01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/DE/de01.HOP"
+              ]
+            },
+            {
+              "value": "US",
+              "count": 1734,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformId": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "BX",
+              "count": 696,
+              "witnesses": [
+                "tssm/release/XBOX/NTSC-U/US/AM/am01.HIP",
+                "tssm/release/XBOX/NTSC-U/US/AM/am01.HOP"
+              ]
+            },
+            {
+              "value": "GC",
+              "count": 892,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "value": "PS2",
+              "count": 904,
+              "witnesses": [
+                "tssm/release/PS2/NTSC-U/US/AM/AM01.HIP",
+                "tssm/release/PS2/NTSC-U/US/AM/AM01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.region": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "NTSC",
+              "count": 1734,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            },
+            {
+              "value": "PAL",
+              "count": 758,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/DE/de01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/DE/de01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.clientVersion": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x000A000F",
+              "value": 655375,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.compatVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.subVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 2,
+              "count": 2492,
+              "witnesses": [
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HIP",
+                "tssm/release/GC/NTSC-U/US-r1/AM/am01.HOP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

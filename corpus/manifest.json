@@ -1,0 +1,357 @@
+{
+  "schema": 1,
+  "defaultGlobals": [
+    "boot.HIP",
+    "font.HIP",
+    "plat.HIP"
+  ],
+  "builds": [
+    {
+      "id": "bfbb-prototype_2003-10-01-gc-ntsc-u-us",
+      "directory": "bfbb/prototype_2003-10-01/GC/NTSC-U/US"
+    },
+    {
+      "id": "bfbb-release-gc-ntsc-u-us",
+      "directory": "bfbb/release/GC/NTSC-U/US"
+    },
+    {
+      "id": "bfbb-release-gc-pal-de",
+      "directory": "bfbb/release/GC/PAL/DE"
+    },
+    {
+      "id": "bfbb-release-gc-pal-uk",
+      "directory": "bfbb/release/GC/PAL/UK"
+    },
+    {
+      "id": "bfbb-release-ps2-ntsc-u-us",
+      "directory": "bfbb/release/PS2/NTSC-U/US"
+    },
+    {
+      "id": "bfbb-release-ps2-pal-de",
+      "directory": "bfbb/release/PS2/PAL/DE"
+    },
+    {
+      "id": "bfbb-release-ps2-pal-fr",
+      "directory": "bfbb/release/PS2/PAL/FR"
+    },
+    {
+      "id": "bfbb-release-ps2-pal-uk",
+      "directory": "bfbb/release/PS2/PAL/UK"
+    },
+    {
+      "id": "bfbb-release-ps2-pal-uk-r1",
+      "directory": "bfbb/release/PS2/PAL/UK-r1"
+    },
+    {
+      "id": "bfbb-release-xbox-ntsc-u-us",
+      "directory": "bfbb/release/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "incredibles-prototype_2004-07-19-gc-ntsc-u-us",
+      "directory": "incredibles/prototype_2004-07-19/GC/NTSC-U/US"
+    },
+    {
+      "id": "incredibles-prototype_2004-09-20-gc-ntsc-j-jp",
+      "directory": "incredibles/prototype_2004-09-20/GC/NTSC-J/JP"
+    },
+    {
+      "id": "incredibles-release-gc-ntsc-j-jp",
+      "directory": "incredibles/release/GC/NTSC-J/JP"
+    },
+    {
+      "id": "incredibles-release-gc-ntsc-u-us",
+      "directory": "incredibles/release/GC/NTSC-U/US"
+    },
+    {
+      "id": "incredibles-release-gc-pal-de",
+      "directory": "incredibles/release/GC/PAL/DE"
+    },
+    {
+      "id": "incredibles-release-gc-pal-fr",
+      "directory": "incredibles/release/GC/PAL/FR"
+    },
+    {
+      "id": "incredibles-release-gc-pal-nl",
+      "directory": "incredibles/release/GC/PAL/NL"
+    },
+    {
+      "id": "incredibles-release-gc-pal-uk",
+      "directory": "incredibles/release/GC/PAL/UK"
+    },
+    {
+      "id": "incredibles-release-ps2-ntsc-j-jp",
+      "directory": "incredibles/release/PS2/NTSC-J/JP"
+    },
+    {
+      "id": "incredibles-release-ps2-ntsc-k-kr",
+      "directory": "incredibles/release/PS2/NTSC-K/KR"
+    },
+    {
+      "id": "incredibles-release-ps2-ntsc-u-us",
+      "directory": "incredibles/release/PS2/NTSC-U/US"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-de",
+      "directory": "incredibles/release/PS2/PAL/DE"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-dk-fi-no-se",
+      "directory": "incredibles/release/PS2/PAL/DK-FI-NO-SE"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-es",
+      "directory": "incredibles/release/PS2/PAL/ES"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-fr-nl",
+      "directory": "incredibles/release/PS2/PAL/FR-NL"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-it",
+      "directory": "incredibles/release/PS2/PAL/IT"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-pt",
+      "directory": "incredibles/release/PS2/PAL/PT"
+    },
+    {
+      "id": "incredibles-release-ps2-pal-uk",
+      "directory": "incredibles/release/PS2/PAL/UK"
+    },
+    {
+      "id": "incredibles-release-xbox-ntsc-j-jp",
+      "directory": "incredibles/release/XBOX/NTSC-J/JP"
+    },
+    {
+      "id": "incredibles-release-xbox-ntsc-u-us",
+      "directory": "incredibles/release/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-de",
+      "directory": "incredibles/release/XBOX/PAL/DE"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-dk-fi-no-se",
+      "directory": "incredibles/release/XBOX/PAL/DK-FI-NO-SE"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-es",
+      "directory": "incredibles/release/XBOX/PAL/ES"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-fr-nl",
+      "directory": "incredibles/release/XBOX/PAL/FR-NL"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-it",
+      "directory": "incredibles/release/XBOX/PAL/IT"
+    },
+    {
+      "id": "incredibles-release-xbox-pal-uk",
+      "directory": "incredibles/release/XBOX/PAL/UK"
+    },
+    {
+      "id": "n100f-prototype_2001-01-31-ps2-ntsc-u-us",
+      "directory": "n100f/prototype_2001-01-31/PS2/NTSC-U/US"
+    },
+    {
+      "id": "n100f-prototype_2001-06-11-ps2-ntsc-u-us",
+      "directory": "n100f/prototype_2001-06-11/PS2/NTSC-U/US"
+    },
+    {
+      "id": "n100f-prototype_2003-07-08-xbox-ntsc-u-us",
+      "directory": "n100f/prototype_2003-07-08/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "n100f-release-gc-ntsc-u-us",
+      "directory": "n100f/release/GC/NTSC-U/US"
+    },
+    {
+      "id": "n100f-release-gc-ntsc-u-us-r1",
+      "directory": "n100f/release/GC/NTSC-U/US-r1"
+    },
+    {
+      "id": "n100f-release-gc-pal-de",
+      "directory": "n100f/release/GC/PAL/DE"
+    },
+    {
+      "id": "n100f-release-gc-pal-fr",
+      "directory": "n100f/release/GC/PAL/FR"
+    },
+    {
+      "id": "n100f-release-gc-pal-uk",
+      "directory": "n100f/release/GC/PAL/UK"
+    },
+    {
+      "id": "n100f-release-ps2-ntsc-u-us",
+      "directory": "n100f/release/PS2/NTSC-U/US"
+    },
+    {
+      "id": "n100f-release-ps2-pal-de",
+      "directory": "n100f/release/PS2/PAL/DE"
+    },
+    {
+      "id": "n100f-release-ps2-pal-fr",
+      "directory": "n100f/release/PS2/PAL/FR"
+    },
+    {
+      "id": "n100f-release-ps2-pal-uk",
+      "directory": "n100f/release/PS2/PAL/UK"
+    },
+    {
+      "id": "n100f-release-xbox-ntsc-u-us",
+      "directory": "n100f/release/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "rat-prototype_2006-01-18-gc-ntsc-u-us",
+      "directory": "rat/prototype_2006-01-18/GC/NTSC-U/US"
+    },
+    {
+      "id": "rotu-prototype_2005-09-15-gc-ntsc-j-jp",
+      "directory": "rotu/prototype_2005-09-15/GC/NTSC-J/JP"
+    },
+    {
+      "id": "rotu-prototype_2005-09-15-gc-pal-fr-uk",
+      "directory": "rotu/prototype_2005-09-15/GC/PAL/FR-UK"
+    },
+    {
+      "id": "rotu-prototype_2005-10-31-gc-ntsc-j-jp",
+      "directory": "rotu/prototype_2005-10-31/GC/NTSC-J/JP"
+    },
+    {
+      "id": "rotu-release-gc-ntsc-j-jp",
+      "directory": "rotu/release/GC/NTSC-J/JP"
+    },
+    {
+      "id": "rotu-release-gc-ntsc-u-us",
+      "directory": "rotu/release/GC/NTSC-U/US"
+    },
+    {
+      "id": "rotu-release-gc-pal-de-fr",
+      "directory": "rotu/release/GC/PAL/DE-FR"
+    },
+    {
+      "id": "rotu-release-gc-pal-fr-uk",
+      "directory": "rotu/release/GC/PAL/FR-UK"
+    },
+    {
+      "id": "rotu-release-ps2-ntsc-j-jp",
+      "directory": "rotu/release/PS2/NTSC-J/JP"
+    },
+    {
+      "id": "rotu-release-ps2-ntsc-k-kr",
+      "directory": "rotu/release/PS2/NTSC-K/KR"
+    },
+    {
+      "id": "rotu-release-ps2-ntsc-u-us",
+      "directory": "rotu/release/PS2/NTSC-U/US"
+    },
+    {
+      "id": "rotu-release-ps2-pal-de-fr-uk",
+      "directory": "rotu/release/PS2/PAL/DE-FR-UK"
+    },
+    {
+      "id": "rotu-release-ps2-pal-es-it-uk",
+      "directory": "rotu/release/PS2/PAL/ES-IT-UK"
+    },
+    {
+      "id": "rotu-release-ps2-pal-ru",
+      "directory": "rotu/release/PS2/PAL/RU"
+    },
+    {
+      "id": "rotu-release-xbox-ntsc-u-us",
+      "directory": "rotu/release/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "rotu-release-xbox-pal-de-es-fr-it-uk",
+      "directory": "rotu/release/XBOX/PAL/DE-ES-FR-IT-UK"
+    },
+    {
+      "id": "tssm-release-gc-ntsc-u-us",
+      "directory": "tssm/release/GC/NTSC-U/US"
+    },
+    {
+      "id": "tssm-release-gc-ntsc-u-us-r1",
+      "directory": "tssm/release/GC/NTSC-U/US-r1"
+    },
+    {
+      "id": "tssm-release-gc-pal-de",
+      "directory": "tssm/release/GC/PAL/DE"
+    },
+    {
+      "id": "tssm-release-gc-pal-fr-nl",
+      "directory": "tssm/release/GC/PAL/FR-NL"
+    },
+    {
+      "id": "tssm-release-gc-pal-fr-uk",
+      "directory": "tssm/release/GC/PAL/FR-UK"
+    },
+    {
+      "id": "tssm-release-gc-pal-uk",
+      "directory": "tssm/release/GC/PAL/UK"
+    },
+    {
+      "id": "tssm-release-ps2-ntsc-u-us",
+      "directory": "tssm/release/PS2/NTSC-U/US"
+    },
+    {
+      "id": "tssm-release-ps2-pal-de",
+      "directory": "tssm/release/PS2/PAL/DE"
+    },
+    {
+      "id": "tssm-release-ps2-pal-es",
+      "directory": "tssm/release/PS2/PAL/ES"
+    },
+    {
+      "id": "tssm-release-ps2-pal-fr-nl",
+      "directory": "tssm/release/PS2/PAL/FR-NL"
+    },
+    {
+      "id": "tssm-release-ps2-pal-it",
+      "directory": "tssm/release/PS2/PAL/IT"
+    },
+    {
+      "id": "tssm-release-ps2-pal-uk",
+      "directory": "tssm/release/PS2/PAL/UK"
+    },
+    {
+      "id": "tssm-release-xbox-ntsc-u-us",
+      "directory": "tssm/release/XBOX/NTSC-U/US"
+    },
+    {
+      "id": "tssm-release-xbox-pal-de",
+      "directory": "tssm/release/XBOX/PAL/DE"
+    },
+    {
+      "id": "tssm-release-xbox-pal-es-fr-it-nl",
+      "directory": "tssm/release/XBOX/PAL/ES-FR-IT-NL"
+    },
+    {
+      "id": "tssm-release-xbox-pal-uk",
+      "directory": "tssm/release/XBOX/PAL/UK"
+    }
+  ],
+  "cohorts": [],
+  "overrides": [
+    {
+      "path": "bfbb/prototype_2003-10-01/GC/NTSC-U/US/font2.HIP",
+      "quirks": "OmitsPlatformBlock",
+      "note": "lacks a Platform block; otherwise an ordinary BFBB archive"
+    },
+    {
+      "path": "bfbb/release/GC/NTSC-U/US/font2.HIP",
+      "quirks": "OmitsPlatformBlock",
+      "note": "lacks a Platform block; otherwise an ordinary BFBB archive"
+    },
+    {
+      "path": "bfbb/release/GC/PAL/DE/font2.HIP",
+      "quirks": "OmitsPlatformBlock",
+      "note": "lacks a Platform block; otherwise an ordinary BFBB archive"
+    },
+    {
+      "path": "bfbb/release/GC/PAL/UK/font2.HIP",
+      "quirks": "OmitsPlatformBlock",
+      "note": "lacks a Platform block; otherwise an ordinary BFBB archive"
+    }
+  ]
+}

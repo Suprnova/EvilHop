@@ -105,7 +105,15 @@ public sealed class RequiredBitsAttribute(object requiredBits) : ValidationAttri
 /// this attribute's scope applies, and none while it doesn't.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public sealed class RequiredChildAttribute : ValidationAttribute;
+public sealed class RequiredChildAttribute : ValidationAttribute
+{
+    /// <summary>
+    /// A quirk that drops the requirement to none, for a build that otherwise matches this
+    /// attribute's scope but is real evidence the child isn't always there. Defaults to
+    /// <see cref="FormatQuirks.None"/>, which never excuses it.
+    /// </summary>
+    public FormatQuirks ExceptQuirks { get; init; } = FormatQuirks.None;
+}
 
 /// <summary>
 /// Declares that a block never has any children.

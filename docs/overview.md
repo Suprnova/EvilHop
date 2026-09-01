@@ -109,6 +109,12 @@ of whether the rule holds. Rules conditional on more than one member stay hand-w
 its dependencies on that declaration - such as a corpus tool reducing observed values into a
 committed inventory - can tell exactly when it goes stale.
 
+[`tests/EvilHop.Tests/Inventory/`](../tests/EvilHop.Tests/Inventory/) closes the loop: it reads the
+committed `corpus/*.json` inventories and replays every `ValueRule` in the catalogue against the
+values recorded for it, entirely offline. A rule that changed definition, or a value a real archive
+exposed that no rule accounts for, shows up as a test failure with no archive required to reproduce
+it.
+
 ## Planned Documents
 
 This overview will be supplemented by dedicated documents for the asset layer and serialization as

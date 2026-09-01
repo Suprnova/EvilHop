@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Serialization;
 using EvilHop.Validation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,15 +13,25 @@ namespace EvilHop.Corpus;
 /// itself.
 /// </summary>
 /// <param name="Schema">The manifest format's schema version.</param>
+/// <param name="DefaultGlobals">
+/// The archives hypothesized to be loaded by every other archive in every build, matched by filename
+/// case-insensitively. A build's own <see cref="ManifestBuild.Globals"/> adds to this rather than
+/// replacing it, so the common case - every build sharing the same handful of shared archives - never
+/// needs repeating per build.
+/// </param>
 /// <param name="Builds">The declared builds, each a directory of archives sharing one profile.</param>
 /// <param name="Cohorts">Archives loaded together by a subset of levels, but not universally.</param>
 /// <param name="Overrides">Per-archive pins that convention and sniffing can't (yet) supply.</param>
 public sealed record Manifest(
     int Schema,
+    IReadOnlyList<string>? DefaultGlobals = null,
     IReadOnlyList<ManifestBuild>? Builds = null,
     IReadOnlyList<ManifestCohort>? Cohorts = null,
     IReadOnlyList<ManifestOverride>? Overrides = null)
 {
+    /// <inheritdoc cref="DefaultGlobals" />
+    public IReadOnlyList<string> DefaultGlobals { get; init; } = DefaultGlobals ?? [];
+
     /// <inheritdoc cref="Builds" />
     public IReadOnlyList<ManifestBuild> Builds { get; init; } = Builds ?? [];
 
@@ -52,14 +63,15 @@ public sealed record Manifest(
 }
 
 /// <summary>
-/// One build: a directory of archives sharing a single profile, plus the always-loaded hypothesis
-/// for it.
+/// One build: a directory of archives sharing a single profile, plus any always-loaded archives
+/// beyond <see cref="Manifest.DefaultGlobals"/>.
 /// </summary>
 /// <param name="Id">The build's identifier, such as <c>"bfbb-gc-ntsc-release"</c>.</param>
 /// <param name="Directory">The build's directory, relative to the artifact root.</param>
 /// <param name="Globals">
-/// The archives hypothesized to be loaded by every other archive in this build. One-way: these can't
-/// see each other's assets, only their own.
+/// Archives hypothesized to be loaded by every other archive in this build, on top of
+/// <see cref="Manifest.DefaultGlobals"/> - for a build that genuinely carries something beyond the
+/// common set. One-way: these can't see each other's assets, only their own.
 /// </param>
 public sealed record ManifestBuild(string Id, string Directory, IReadOnlyList<string>? Globals = null)
 {
@@ -86,7 +98,16 @@ public sealed record ManifestCohort(string Id, string Archive, IReadOnlyList<str
 /// A pin on a specific archive that convention and format sniffing can't yet supply.
 /// </summary>
 /// <param name="Path">The path to the archive being overridden, relative to the artifact root.</param>
-/// <param name="Game">The game to read the archive as, if not what its directory implies.</param>
+/// <param name="Game">
+/// The game to read the archive's serializer for, if not what its directory implies. Affects only
+/// how the archive is parsed - which inventory it's grouped into is always the directory-implied
+/// game, so a format-compatible oddity like BFBB's <c>font2.HIP</c> doesn't leak into another game's
+/// corpus.
+/// </param>
 /// <param name="Role">The archive's role, if not what its filename implies.</param>
+/// <param name="Quirks">
+/// <see cref="FormatQuirks"/> this archive's build carries beyond what its game and platform imply.
+/// </param>
 /// <param name="Note">Why this override exists.</param>
-public sealed record ManifestOverride(string Path, GameVersion? Game = null, ArchiveRole? Role = null, string? Note = null);
+public sealed record ManifestOverride(
+    string Path, GameVersion? Game = null, ArchiveRole? Role = null, FormatQuirks? Quirks = null, string? Note = null);

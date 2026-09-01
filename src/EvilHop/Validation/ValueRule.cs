@@ -1,3 +1,5 @@
+using EvilHop.Serialization;
+
 namespace EvilHop.Validation;
 
 /// <summary>
@@ -40,6 +42,14 @@ internal abstract class AttributeValueRule(
     public override string Description { get; } = description;
     public override string ObservableId { get; } = observableId;
     public override bool AppliesTo(ValidationContext context) => _source.Matches(context);
+
+    /// <summary>
+    /// Reduces an enum to the primitive <see cref="Observable.Select"/> would have yielded for it, so
+    /// <see cref="ValueRule.Holds"/> compares equally whether it's called with a live property value
+    /// (still enum-typed) or a recorded observation (always primitive).
+    /// </summary>
+    protected static object Normalize(object value) =>
+        value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
 }
 
 /// <summary>Materialized from <see cref="ConstantValueAttribute"/>.</summary>
@@ -48,7 +58,9 @@ internal sealed class ConstantValueRule(
     object expected)
     : AttributeValueRule(id, severity, description, observableId, source)
 {
-    public override bool Holds(object value, ValidationContext context) => Equals(expected, value);
+    private readonly object _expected = Normalize(expected);
+
+    public override bool Holds(object value, ValidationContext context) => Equals(_expected, Normalize(value));
 }
 
 /// <summary>Materialized from <see cref="AllowedValuesAttribute"/>.</summary>
@@ -57,7 +69,9 @@ internal sealed class AllowedValuesRule(
     IReadOnlyList<object> values)
     : AttributeValueRule(id, severity, description, observableId, source)
 {
-    public override bool Holds(object value, ValidationContext context) => values.Contains(value);
+    private readonly IReadOnlyList<object> _values = [.. values.Select(Normalize)];
+
+    public override bool Holds(object value, ValidationContext context) => _values.Contains(Normalize(value));
 }
 
 /// <summary>Materialized from <see cref="ClosedEnumAttribute"/>.</summary>
@@ -98,15 +112,20 @@ internal sealed class RequiredBitsRule(
 /// too, not just one missing within it.
 /// </summary>
 internal sealed class RequiredChildRule(
-    string id, Severity severity, string description, string observableId, ValidationAttribute source)
+    string id, Severity severity, string description, string observableId, RequiredChildAttribute source)
     : AttributeValueRule(id, severity, description, observableId, source)
 {
-    private readonly ValidationAttribute _source = source;
+    private readonly RequiredChildAttribute _source = source;
 
     public override bool AppliesTo(ValidationContext context) => true;
 
-    public override bool Holds(object value, ValidationContext context) =>
-        (int)value == (_source.Matches(context) ? 1 : 0);
+    public override bool Holds(object value, ValidationContext context)
+    {
+        bool excused = _source.ExceptQuirks != FormatQuirks.None &&
+            (context.Profile.Quirks & _source.ExceptQuirks) == _source.ExceptQuirks;
+        bool required = _source.Matches(context) && !excused;
+        return (int)value == (required ? 1 : 0);
+    }
 }
 
 /// <summary>Materialized from <see cref="NoChildrenAttribute"/>.</summary>

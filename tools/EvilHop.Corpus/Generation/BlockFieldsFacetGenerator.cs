@@ -1,5 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Validation;
+using System.Buffers.Binary;
+using System.Text;
 using System.Text.Json.Nodes;
 
 namespace EvilHop.Corpus.Generation;
@@ -22,7 +24,7 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
     public string Id => "blockFields";
 
     /// <inheritdoc/>
-    public int Revision => 1;
+    public int Revision => 3;
 
     /// <inheritdoc/>
     public IEnumerable<string> Dependencies => BlockObservables.Select(o => o.Id);
@@ -48,8 +50,12 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
     /// <inheritdoc/>
     public JsonObject Reduce(IReadOnlyList<MappedArchive> records)
     {
+        // Ordered explicitly rather than relying on the catalogue's own (reflection-driven, not
+        // otherwise stable) enumeration order - this is what keeps regenerating an unchanged facet
+        // byte-identical.
         var observations = new JsonObject();
-        foreach (var observable in BlockObservables) observations[observable.Id] = ReduceObservable(observable, records);
+        foreach (var observable in BlockObservables.OrderBy(o => o.Id, StringComparer.Ordinal))
+            observations[observable.Id] = ReduceObservable(observable, records);
         return observations;
     }
 
@@ -102,13 +108,11 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
             foreach (string path in group.Select(o => o.Path).Distinct().OrderBy(p => p, StringComparer.Ordinal).Take(2))
                 witnesses.Add(path);
 
-            var entry = new JsonObject
-            {
-                ["value"] = ToJsonValue(group.Key),
-                ["count"] = group.Count(),
-                ["witnesses"] = witnesses
-            };
+            var entry = new JsonObject();
             if (DisplayFor(group.Key, observable.Presentation) is { } display) entry["display"] = display;
+            entry["value"] = ToJsonValue(group.Key);
+            entry["count"] = group.Count();
+            entry["witnesses"] = witnesses;
 
             values.Add(entry);
         }
@@ -124,8 +128,16 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
     private static string? DisplayFor(object value, ObservablePresentation presentation) => (presentation, value) switch
     {
         (ObservablePresentation.Hex, uint hex) => $"0x{hex:X8}",
+        (ObservablePresentation.Fourcc, uint fourcc) => FourccDisplay(fourcc),
         _ => null
     };
+
+    private static string FourccDisplay(uint value)
+    {
+        Span<byte> bytes = stackalloc byte[4];
+        BinaryPrimitives.WriteUInt32BigEndian(bytes, value);
+        return Encoding.ASCII.GetString(bytes);
+    }
 
     private static JsonValue ToJsonValue(object value) => value switch
     {

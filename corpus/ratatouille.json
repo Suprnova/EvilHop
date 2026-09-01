@@ -1,0 +1,732 @@
+{
+  "schema": 1,
+  "game": "Ratatouille",
+  "facets": {
+    "blockFields": {
+      "generator": {
+        "revision": 3,
+        "inputs": "d92a889"
+      },
+      "coverage": {
+        "archives": 26,
+        "sourceSetHash": "9ad577c"
+      },
+      "observations": {
+        "AHDR.type": {
+          "kind": "enumerated",
+          "presentation": "fourcc",
+          "values": [
+            {
+              "display": "ALST",
+              "value": 1095521108,
+              "count": 5,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "ANIM",
+              "value": 1095649613,
+              "count": 252,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "ATBL",
+              "value": 1096041036,
+              "count": 45,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "BINK",
+              "value": 1112100427,
+              "count": 2,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+              ]
+            },
+            {
+              "display": "CAM ",
+              "value": 1128353056,
+              "count": 17,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "CCRV",
+              "value": 1128485462,
+              "count": 6,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "CNTR",
+              "value": 1129206866,
+              "count": 92,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "COLL",
+              "value": 1129270348,
+              "count": 1,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "COND",
+              "value": 1129270852,
+              "count": 115,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+              ]
+            },
+            {
+              "display": "CRDT",
+              "value": 1129464916,
+              "count": 1,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui_US.hip"
+              ]
+            },
+            {
+              "display": "DEST",
+              "value": 1145394004,
+              "count": 11,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "DPAT",
+              "value": 1146110292,
+              "count": 31,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "DYNA",
+              "value": 1146703425,
+              "count": 1118,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "ENV ",
+              "value": 1162761760,
+              "count": 3,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "FLY ",
+              "value": 1179408672,
+              "count": 1,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "FOG ",
+              "value": 1179600672,
+              "count": 2,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "GRUP",
+              "value": 1196578128,
+              "count": 153,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "JSP ",
+              "value": 1246973984,
+              "count": 8,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "LKIT",
+              "value": 1280002388,
+              "count": 6,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "MAPR",
+              "value": 1296126034,
+              "count": 3,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "MINF",
+              "value": 1296649798,
+              "count": 56,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "MODL",
+              "value": 1297040460,
+              "count": 376,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "MVPT",
+              "value": 1297502292,
+              "count": 335,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "NGMS",
+              "value": 1313295699,
+              "count": 1,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnus.HOP"
+              ]
+            },
+            {
+              "display": "PARE",
+              "value": 1346458181,
+              "count": 7,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "PARP",
+              "value": 1346458192,
+              "count": 6,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "PARS",
+              "value": 1346458195,
+              "count": 6,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "PICK",
+              "value": 1346978635,
+              "count": 1,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/boot.HIP"
+              ]
+            },
+            {
+              "display": "PIPT",
+              "value": 1346981972,
+              "count": 5,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "PLAT",
+              "value": 1347174740,
+              "count": 260,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "PLYR",
+              "value": 1347180882,
+              "count": 4,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "PORT",
+              "value": 1347375700,
+              "count": 2,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "RAW ",
+              "value": 1380013856,
+              "count": 17,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/plat.HIP"
+              ]
+            },
+            {
+              "display": "RWTX",
+              "value": 1381454936,
+              "count": 539,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "SCRP",
+              "value": 1396920912,
+              "count": 187,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "SDFX",
+              "value": 1396983384,
+              "count": 110,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "SGRP",
+              "value": 1397183056,
+              "count": 127,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "SHRP",
+              "value": 1397248592,
+              "count": 22,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "SIMP",
+              "value": 1397312848,
+              "count": 1035,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "SND ",
+              "value": 1397638176,
+              "count": 170,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "SNDI",
+              "value": 1397638217,
+              "count": 8,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "SNDS",
+              "value": 1397638227,
+              "count": 45,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HOP"
+              ]
+            },
+            {
+              "display": "SPLN",
+              "value": 1397771342,
+              "count": 14,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP"
+              ]
+            },
+            {
+              "display": "SURF",
+              "value": 1398100550,
+              "count": 20,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "TEXS",
+              "value": 1413830739,
+              "count": 2,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+              ]
+            },
+            {
+              "display": "TEXT",
+              "value": 1413830740,
+              "count": 872,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01_US.hip",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02_US.hip"
+              ]
+            },
+            {
+              "display": "TIMR",
+              "value": 1414090066,
+              "count": 17,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "TPIK",
+              "value": 1414547787,
+              "count": 2,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "TRIG",
+              "value": 1414678855,
+              "count": 75,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP"
+              ]
+            },
+            {
+              "display": "UIM ",
+              "value": 1430867232,
+              "count": 131,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp02.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/MN/mnui.HIP"
+              ]
+            }
+          ]
+        },
+        "AINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "DHDR.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "LDBG.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 386,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "LHDR.type": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000000",
+              "value": 0,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 78,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000002",
+              "value": 2,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000003",
+              "value": 3,
+              "count": 36,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000004",
+              "value": 4,
+              "count": 78,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000005",
+              "value": 5,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000007",
+              "value": 7,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000008",
+              "value": 8,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000009",
+              "value": 9,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000A",
+              "value": 10,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000B",
+              "value": 11,
+              "count": 12,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "LINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PFLG.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 46,
+          "display": "0x0000002E"
+        },
+        "PLAT.gameName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "Incredibles",
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.language": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "US",
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformId": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "GC",
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.region": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "NTSC",
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.clientVersion": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x000A000F",
+              "value": 655375,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.compatVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.subVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 2,
+              "count": 26,
+              "witnesses": [
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HIP",
+                "rat/prototype_2006-01-18/GC/NTSC-U/US/FP/fp01.HOP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

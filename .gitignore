@@ -88,6 +88,9 @@ project.fragment.lock.json
 artifacts/
 .artifacts/
 
+# EvilHop.Corpus's map-stage cache
+.corpus-cache/
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 

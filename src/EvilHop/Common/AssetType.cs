@@ -1,3 +1,5 @@
+using EvilHop.Validation;
+
 namespace EvilHop.Common;
 
 #pragma warning disable CS1591 // Missing XML comment
@@ -8,6 +10,7 @@ namespace EvilHop.Common;
 /// <remarks>
 /// Backed by a uint field that maps to <see cref="Blocks.AssetHeader.Type"/>.
 /// </remarks>
+[Fourcc]
 public enum AssetType : uint
 {
     Animation = 0x414E494D,

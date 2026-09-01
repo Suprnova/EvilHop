@@ -1,0 +1,1044 @@
+{
+  "schema": 1,
+  "game": "Incredibles",
+  "facets": {
+    "blockFields": {
+      "generator": {
+        "revision": 3,
+        "inputs": "d92a889"
+      },
+      "coverage": {
+        "archives": 2712,
+        "sourceSetHash": "0c4956d"
+      },
+      "observations": {
+        "AHDR.type": {
+          "kind": "enumerated",
+          "presentation": "fourcc",
+          "values": [
+            {
+              "display": "ALST",
+              "value": 1095521108,
+              "count": 1174,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft02.HIP"
+              ]
+            },
+            {
+              "display": "ANIM",
+              "value": 1095649613,
+              "count": 73685,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP"
+              ]
+            },
+            {
+              "display": "ATBL",
+              "value": 1096041036,
+              "count": 3172,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "ATKT",
+              "value": 1096043348,
+              "count": 826,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "BINK",
+              "value": 1112100427,
+              "count": 1703,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnui.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnus.HOP"
+              ]
+            },
+            {
+              "display": "BOUL",
+              "value": 1112495436,
+              "count": 669,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/LD/ld04.HIP"
+              ]
+            },
+            {
+              "display": "BUTN",
+              "value": 1112888398,
+              "count": 190,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft02.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/RS/rs01.HIP"
+              ]
+            },
+            {
+              "display": "CAM ",
+              "value": 1128353056,
+              "count": 5847,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "CNTR",
+              "value": 1129206866,
+              "count": 7460,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "COLL",
+              "value": 1129270348,
+              "count": 332,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "COND",
+              "value": 1129270852,
+              "count": 8281,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP"
+              ]
+            },
+            {
+              "display": "CRDT",
+              "value": 1129464916,
+              "count": 90,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/HS/hs01_US.hip",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnus_US.hip"
+              ]
+            },
+            {
+              "display": "CSN ",
+              "value": 1129532960,
+              "count": 1319,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "CSNM",
+              "value": 1129533005,
+              "count": 1166,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP"
+              ]
+            },
+            {
+              "display": "CSSS",
+              "value": 1129534291,
+              "count": 2071,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft02.HOP"
+              ]
+            },
+            {
+              "display": "CTOC",
+              "value": 1129598787,
+              "count": 722,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "DEST",
+              "value": 1145394004,
+              "count": 4781,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "DPAT",
+              "value": 1146110292,
+              "count": 6970,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "DTRK",
+              "value": 1146376779,
+              "count": 52,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/LD/ld04.HOP"
+              ]
+            },
+            {
+              "display": "DUPC",
+              "value": 1146441795,
+              "count": 19068,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "DYNA",
+              "value": 1146703425,
+              "count": 88740,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "ENV ",
+              "value": 1162761760,
+              "count": 530,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "FOG ",
+              "value": 1179600672,
+              "count": 537,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "GRSM",
+              "value": 1196577613,
+              "count": 697,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "GRUP",
+              "value": 1196578128,
+              "count": 18710,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "JSP ",
+              "value": 1246973984,
+              "count": 4502,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP"
+              ]
+            },
+            {
+              "display": "LKIT",
+              "value": 1280002388,
+              "count": 1045,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "LODT",
+              "value": 1280263252,
+              "count": 486,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "MAPR",
+              "value": 1296126034,
+              "count": 530,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP"
+              ]
+            },
+            {
+              "display": "MINF",
+              "value": 1296649798,
+              "count": 8126,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "MODL",
+              "value": 1297040460,
+              "count": 64309,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "MRKR",
+              "value": 1297238866,
+              "count": 5034,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP"
+              ]
+            },
+            {
+              "display": "MVPT",
+              "value": 1297502292,
+              "count": 68531,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "NGMS",
+              "value": 1313295699,
+              "count": 3649,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP"
+              ]
+            },
+            {
+              "display": "NPCS",
+              "value": 1313882963,
+              "count": 9226,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "ONEL",
+              "value": 1330529612,
+              "count": 534,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "PGRS",
+              "value": 1346851411,
+              "count": 2008,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/HS/hs01.HIP"
+              ]
+            },
+            {
+              "display": "PICK",
+              "value": 1346978635,
+              "count": 26,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "PIPT",
+              "value": 1346981972,
+              "count": 798,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "PLAT",
+              "value": 1347174740,
+              "count": 32281,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "PLYR",
+              "value": 1347180882,
+              "count": 533,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "PORT",
+              "value": 1347375700,
+              "count": 909,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "RANM",
+              "value": 1380011597,
+              "count": 155,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft04.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/NI/ni01.HIP"
+              ]
+            },
+            {
+              "display": "RAW ",
+              "value": 1380013856,
+              "count": 158,
+              "witnesses": [
+                "incredibles/release/PS2/NTSC-J/JP/PLAT.HIP",
+                "incredibles/release/PS2/NTSC-K/KR/PLAT.HIP"
+              ]
+            },
+            {
+              "display": "RWTX",
+              "value": 1381454936,
+              "count": 67679,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "SCRP",
+              "value": 1396920912,
+              "count": 40571,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "SDFX",
+              "value": 1396983384,
+              "count": 36306,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "SGRP",
+              "value": 1397183056,
+              "count": 65992,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "SHRP",
+              "value": 1397248592,
+              "count": 8627,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP"
+              ]
+            },
+            {
+              "display": "SIMP",
+              "value": 1397312848,
+              "count": 564224,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "SLID",
+              "value": 1397508420,
+              "count": 52,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/LD/ld04.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/NJ/nj01.HIP"
+              ]
+            },
+            {
+              "display": "SND ",
+              "value": 1397638176,
+              "count": 62897,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01_US.hip"
+              ]
+            },
+            {
+              "display": "SNDI",
+              "value": 1397638217,
+              "count": 1807,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP"
+              ]
+            },
+            {
+              "display": "SNDS",
+              "value": 1397638227,
+              "count": 47995,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01_US.hip"
+              ]
+            },
+            {
+              "display": "SPLN",
+              "value": 1397771342,
+              "count": 11469,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HOP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HOP"
+              ]
+            },
+            {
+              "display": "SPLP",
+              "value": 1397771344,
+              "count": 3381,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft03.HIP"
+              ]
+            },
+            {
+              "display": "SSET",
+              "value": 1397966164,
+              "count": 226,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "SUBT",
+              "value": 1398096468,
+              "count": 1435,
+              "witnesses": [
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/MNUD_JP.hip",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/mnui_JP.hip"
+              ]
+            },
+            {
+              "display": "SURF",
+              "value": 1398100550,
+              "count": 4717,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "TEXS",
+              "value": 1413830739,
+              "count": 4759,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnui.HIP",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/MNUD.HIP"
+              ]
+            },
+            {
+              "display": "TEXT",
+              "value": 1413830740,
+              "count": 42518,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01_US.hip",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03_US.hip"
+              ]
+            },
+            {
+              "display": "TIMR",
+              "value": 1414090066,
+              "count": 1106,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/LD/ld04.HIP"
+              ]
+            },
+            {
+              "display": "TPIK",
+              "value": 1414547787,
+              "count": 52,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/RS/rs01.HIP"
+              ]
+            },
+            {
+              "display": "TRIG",
+              "value": 1414678855,
+              "count": 31482,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP"
+              ]
+            },
+            {
+              "display": "TRWT",
+              "value": 1414682452,
+              "count": 208,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/HS/hs01.HIP"
+              ]
+            },
+            {
+              "display": "UIM ",
+              "value": 1430867232,
+              "count": 999,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnui.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnus.HIP"
+              ]
+            },
+            {
+              "display": "VIL ",
+              "value": 1447644192,
+              "count": 6625,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/CI/ci03.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/FT/ft01.HIP"
+              ]
+            },
+            {
+              "display": "WIRE",
+              "value": 1464422981,
+              "count": 1409,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/MN/mnui.HIP",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/MNUD.HIP"
+              ]
+            },
+            {
+              "display": "ZLIN",
+              "value": 1514948942,
+              "count": 1434,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/NJ/nj01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/NJ/nj03.HIP"
+              ]
+            }
+          ]
+        },
+        "AINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "DHDR.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "LDBG.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 4294967295,
+              "count": 59136,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "LHDR.type": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x00000000",
+              "value": 0,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000001",
+              "value": 1,
+              "count": 8136,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000002",
+              "value": 2,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000003",
+              "value": 3,
+              "count": 17910,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000004",
+              "value": 4,
+              "count": 8136,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000005",
+              "value": 5,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000007",
+              "value": 7,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000008",
+              "value": 8,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x00000009",
+              "value": 9,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000A",
+              "value": 10,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "display": "0x0000000B",
+              "value": 11,
+              "count": 5970,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "LINF.value": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 0,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "PFLG.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 46,
+          "display": "0x0000002E"
+        },
+        "PLAT.gameName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "Incredibles",
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.language": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "DE",
+              "count": 105,
+              "witnesses": [
+                "incredibles/release/GC/PAL/DE/BM/bm01_DE.hip",
+                "incredibles/release/GC/PAL/DE/CI/ci03_DE.hip"
+              ]
+            },
+            {
+              "value": "DK",
+              "count": 68,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/BM/BM01_DK.HIP",
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/CI/CI03_DK.HIP"
+              ]
+            },
+            {
+              "value": "ES",
+              "count": 68,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/ES/BM/BM01_ES.HIP",
+                "incredibles/release/PS2/PAL/ES/CI/CI03_ES.HIP"
+              ]
+            },
+            {
+              "value": "FI",
+              "count": 68,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/BM/BM01_FI.HIP",
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/CI/CI03_FI.HIP"
+              ]
+            },
+            {
+              "value": "FR",
+              "count": 105,
+              "witnesses": [
+                "incredibles/release/GC/PAL/FR/BM/bm01_FR.hip",
+                "incredibles/release/GC/PAL/FR/CI/ci03_FR.hip"
+              ]
+            },
+            {
+              "value": "IT",
+              "count": 69,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/IT/BACKUP/FONT_IT.HIP",
+                "incredibles/release/PS2/PAL/IT/BM/BM01_IT.HIP"
+              ]
+            },
+            {
+              "value": "JP",
+              "count": 143,
+              "witnesses": [
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/BM/bm01_JP.hip",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/CI/ci03_JP.hip"
+              ]
+            },
+            {
+              "value": "KR",
+              "count": 36,
+              "witnesses": [
+                "incredibles/release/PS2/NTSC-K/KR/BM/BM01_KR.HIP",
+                "incredibles/release/PS2/NTSC-K/KR/CI/CI03_KR.HIP"
+              ]
+            },
+            {
+              "value": "NL",
+              "count": 105,
+              "witnesses": [
+                "incredibles/release/GC/PAL/NL/BM/bm01_NL.hip",
+                "incredibles/release/GC/PAL/NL/CI/ci03_NL.hip"
+              ]
+            },
+            {
+              "value": "NO",
+              "count": 68,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/BM/BM01_NO.HIP",
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/CI/CI03_NO.HIP"
+              ]
+            },
+            {
+              "value": "PT",
+              "count": 36,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/PT/BM/BM01_PT.HIP",
+                "incredibles/release/PS2/PAL/PT/CI/CI03_PT.HIP"
+              ]
+            },
+            {
+              "value": "SE",
+              "count": 68,
+              "witnesses": [
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/BM/BM01_SE.HIP",
+                "incredibles/release/PS2/PAL/DK-FI-NO-SE/CI/CI03_SE.HIP"
+              ]
+            },
+            {
+              "value": "UK",
+              "count": 286,
+              "witnesses": [
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/mnui.HIP",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/mnus.HIP"
+              ]
+            },
+            {
+              "value": "US",
+              "count": 1487,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformId": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "BX",
+              "count": 823,
+              "witnesses": [
+                "incredibles/release/XBOX/NTSC-J/JP/BOOT.HIP",
+                "incredibles/release/XBOX/NTSC-J/JP/CI/ci03.HIP"
+              ]
+            },
+            {
+              "value": "GC",
+              "count": 768,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "value": "PS2",
+              "count": 1121,
+              "witnesses": [
+                "incredibles/release/PS2/NTSC-J/JP/BM/BM01.HIP",
+                "incredibles/release/PS2/NTSC-J/JP/BM/BM01.HOP"
+              ]
+            }
+          ]
+        },
+        "PLAT.platformName": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": []
+        },
+        "PLAT.region": {
+          "kind": "enumerated",
+          "presentation": "text",
+          "values": [
+            {
+              "value": "NTSC",
+              "count": 1666,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            },
+            {
+              "value": "PAL",
+              "count": 1046,
+              "witnesses": [
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/mnui.HIP",
+                "incredibles/prototype_2004-09-20/GC/NTSC-J/JP/MN/mnus.HIP"
+              ]
+            }
+          ]
+        },
+        "PVER.clientVersion": {
+          "kind": "enumerated",
+          "presentation": "hex",
+          "values": [
+            {
+              "display": "0x000A000F",
+              "value": 655375,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.compatVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 1,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        },
+        "PVER.subVersion": {
+          "kind": "enumerated",
+          "presentation": "number",
+          "values": [
+            {
+              "value": 2,
+              "count": 2712,
+              "witnesses": [
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HIP",
+                "incredibles/prototype_2004-07-19/GC/NTSC-U/US/BM/bm01.HOP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

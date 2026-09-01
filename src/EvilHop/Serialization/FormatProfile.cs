@@ -61,7 +61,14 @@ public sealed record FormatProfile(
 public enum FormatQuirks
 {
     /// <summary>No divergence from the rest of the game's builds.</summary>
-    None = 0
+    None = 0,
+
+    /// <summary>
+    /// The archive carries no <see cref="Blocks.PackagePlatform"/> child, despite targeting a game
+    /// that otherwise always has one. Real evidence: BFBB's <c>font2.HIP</c>, which is otherwise a
+    /// perfectly ordinary BFBB-format archive.
+    /// </summary>
+    OmitsPlatformBlock = 1 << 0
 }
 
 /// <summary>
