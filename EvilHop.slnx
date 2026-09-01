@@ -4,5 +4,7 @@
     <File Path="Directory.Build.props" />
   </Folder>
   <Project Path="src/EvilHop/EvilHop.csproj" />
+  <Project Path="tools/EvilHop.Corpus/EvilHop.Corpus.csproj" />
   <Project Path="tests/EvilHop.Tests/EvilHop.Tests.csproj" Id="23df79ad-fc4f-45cb-bd8c-deeb725b0e41" />
+<Project Path="tests/EvilHop.Corpus.Tests/EvilHop.Corpus.Tests.csproj" />
 </Solution>

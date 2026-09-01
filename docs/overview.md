@@ -82,8 +82,32 @@ by both layers: [`GameVersion`](../src/EvilHop/Common/GameVersion.cs),
 
 ## Validation
 
-[`src/EvilHop/Validation/`](../src/EvilHop/Validation/) is reserved for the `Validate()` surface
-described in the project glossary but not yet implemented - the directory currently holds no code.
+[`src/EvilHop/Validation/`](../src/EvilHop/Validation/) implements the `Validate()` surface described
+in the project glossary. `Archive`, `Block`, and `Asset` implement
+[`IValidatable`](../src/EvilHop/Validation/ValidationContext.cs), taking a
+[`ValidationContext`](../src/EvilHop/Validation/ValidationContext.cs) (the archive's `FormatProfile`
+plus its `Origin`/`Role`, which only a caller can supply) and yielding
+[`ValidationIssue`](../src/EvilHop/Validation/ValidationIssue.cs)s: a rule ID, a
+[`Severity`](../src/EvilHop/Validation/Severity.cs), an
+[`IssueSite`](../src/EvilHop/Validation/IssueSite.cs) locating the violation (built from
+[`BlockPath`](../src/EvilHop/Validation/BlockPath.cs) for block-rooted sites), a message, and an
+optional known-violation classification.
+
+Most rules are declared next to the field they constrain, via the attribute family in
+[`ValidationAttribute.cs`](../src/EvilHop/Validation/ValidationAttribute.cs) (`ConstantValue`,
+`AllowedValues`, `ClosedEnum`, `DefinedBits`, `RequiredBits`, `RequiredChild`, `RepeatableChild`,
+`NoChildren`, `Observed`). [`ValidationCatalogue`](../src/EvilHop/Validation/ValidationCatalogue.cs)
+reflects over these once, materializing each into a
+[`ValueRule`](../src/EvilHop/Validation/ValueRule.cs) - a
+[`ValidationRule`](../src/EvilHop/Validation/ValidationRule.cs) whose `Holds` is a predicate over one
+field's value - and into an [`Observable`](../src/EvilHop/Validation/Observable.cs): a named,
+primitive-valued projection over the same field, read by `ValidationCatalogue.Observe` independently
+of whether the rule holds. Rules conditional on more than one member stay hand-written
+`ValidationRule<T>` subclasses instead of attributes.
+
+`ValidationCatalogue.DigestOf` hashes one observable's declaration, so a consumer that fingerprints
+its dependencies on that declaration - such as a corpus tool reducing observed values into a
+committed inventory - can tell exactly when it goes stale.
 
 ## Planned Documents
 

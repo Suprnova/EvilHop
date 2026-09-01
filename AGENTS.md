@@ -10,7 +10,10 @@ The library is in alpha and is not used in any production applications. Breaking
 |---|---|
 | `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`, `Validation/`. |
 | `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. |
+| `tools/EvilHop.Corpus/` | The corpus tool. Turns `artifacts/` into the committed `corpus/*.json` inventories. Carries no format knowledge of its own - only what `EvilHop.Validation` declares. |
+| `tools/EvilHop.Corpus.Tests/` | The tool's own tests: map/reduce, caching, and JSON determinism. |
 | `artifacts/` | Local, gitignored corpus of real game archives. |
+| `corpus/` | Committed inventories generated from `artifacts/`, plus the hand-authored `manifest.json`. |
 | `docs/` | Living architecture documents. See below. |
 
 Build and test with `dotnet build` / `dotnet test` from the repository root.
@@ -100,6 +103,18 @@ An asset type's codec support is one of three states, not a binary "done or not"
 - **Typed**: Fields are modelled. Read and write fields.
 - **Payload**: A file embedded in the archive, native fields not modelled yet. Import/export as a file today; fields may follow.
 - **Untyped**: Structured, but not modelled yet. Fields may appear in a future version.
+
+### Hand-Bump Revisions When You Change Imperative Logic
+
+`EvilHop.Corpus` decides whether a cached observation is stale by fingerprinting a
+`ValidationRule`'s or `IFacetGenerator`'s declared dependencies - observable IDs, rule IDs, enum
+members - and hashing their digests. That fingerprint is automatic for anything declared through a
+`ValidationAttribute`, because the digest comes straight from the attribute's own arguments.
+
+It **cannot** see inside a hand-written `Check` or `Map`/`Reduce` method. If you change what one of
+those does without changing anything the fingerprint reads, bump `RuleRevision` on the
+`ValidationRule` or `Revision` on the `IFacetGenerator` you touched. Skipping this leaves stale
+cached output silently uncorrected, with nothing else to catch it.
 
 ### Put The Developer First
 

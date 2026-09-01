@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="EvilHop.Tests" />
+    <InternalsVisibleTo Include="EvilHop.Corpus.Tests" />
   </ItemGroup>
 
   <ItemGroup>
