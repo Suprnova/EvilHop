@@ -10,6 +10,7 @@ public class ManifestTests : IDisposable
     public void Dispose()
     {
         if (File.Exists(path)) File.Delete(path);
+        GC.SuppressFinalize(this);
     }
 
     private Manifest LoadJson(string json)

@@ -13,6 +13,7 @@ public class FacetPipelineTests : IDisposable
     public void Dispose()
     {
         if (Directory.Exists(cacheDirectory)) Directory.Delete(cacheDirectory, recursive: true);
+        GC.SuppressFinalize(this);
     }
 
     private static CoveredArchive LoadFixture(string game, string fileName = "minimal.hip")

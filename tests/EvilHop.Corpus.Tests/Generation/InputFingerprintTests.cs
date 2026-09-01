@@ -10,8 +10,8 @@ public class InputFingerprintTests
         public string Id => "fake";
         public int Revision => 1;
         public IEnumerable<string> Dependencies => dependencies;
-        public JsonObject Map(Archive archive) => new();
-        public JsonObject Reduce(IReadOnlyList<MappedArchive> records) => new();
+        public JsonObject Map(Archive archive) => [];
+        public JsonObject Reduce(IReadOnlyList<MappedArchive> records) => [];
     }
 
     [Fact]

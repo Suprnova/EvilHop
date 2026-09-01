@@ -8,6 +8,7 @@ namespace EvilHop.Corpus.Tests.Generation;
 public class BlockFieldsFacetGeneratorTests
 {
     private readonly BlockFieldsFacetGenerator generator = new();
+    private static readonly string[] sourceArray = ["c.hip", "a.hip", "b.hip"];
 
     private static Archive ArchiveOf(params Block[] roots) => new(new N100FSerializer(), roots);
 
@@ -66,8 +67,7 @@ public class BlockFieldsFacetGeneratorTests
     [Fact]
     public void Reduce_MoreThanTwoWitnesses_KeepsOnlyTheLexicographicallyFirstTwo()
     {
-        var records = new[] { "c.hip", "a.hip", "b.hip" }
-            .Select(path => new MappedArchive(path, generator.Map(ArchiveOf(VersionBlock()))))
+        var records = sourceArray.Select(path => new MappedArchive(path, generator.Map(ArchiveOf(VersionBlock()))))
             .ToList();
 
         var observations = generator.Reduce(records);

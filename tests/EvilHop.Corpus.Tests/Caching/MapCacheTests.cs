@@ -12,6 +12,7 @@ public class MapCacheTests : IDisposable
     public void Dispose()
     {
         if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
