@@ -138,7 +138,7 @@ public class PackageFlags : Block
     protected internal override string Tag => "PFLG";
 
     /// <summary>
-    /// Unknown.
+    /// Flag settings for the <see cref="Archive"/>. 
     /// </summary>
     [RequiredBits(PackFlags.Default)]
     [DefinedBits]
@@ -265,7 +265,6 @@ public class PackageModified : Block
     /// <remarks>
     /// Within the archive file, this field is stored as a UTC Unix timestamp.
     /// </remarks>
-    /// Validation TODO: Can convert to a valid Unix time.
     public DateTimeOffset ModifiedDate { get; set; }
 
     internal PackageModified() { }
@@ -288,8 +287,8 @@ public class PackagePlatform : Block
     /// <summary>
     /// The platform the archive was built for.
     /// </summary>
-    /// Validation TODO: Maps to one of the expected values.
-    [Observed]
+    [AllowedValues("GC", "P2", "XB", Games = [GameVersion.BFBB])]
+    [AllowedValues("BX", "GC", "PS2", From = GameVersion.Incredibles)]
     public string PlatformId { get; set; } = "";
 
     /// <summary>
@@ -298,7 +297,7 @@ public class PackagePlatform : Block
     /// <remarks>
     /// Only present in Battle. Dropped from all subsequent games.
     /// </remarks>
-    [Observed]
+    [AllowedValues("GameCube", "PlayStation 2", "Xbox", Games = [GameVersion.BFBB])]
     public string? PlatformName { get; set; }
 
     /// <summary>
@@ -310,14 +309,15 @@ public class PackagePlatform : Block
     /// <summary>
     /// The archive's target language.
     /// </summary>
-    /// Validation TODO: Maps to a language observed in the documentation.
-    [Observed]
+    [AllowedValues("French", "German", "US Common", "United Kingdom", Games = [GameVersion.BFBB])]
+    [AllowedValues("DE", "DK", "ES", "FI", "FR", "IT", "JP", "KR", "NL", "NO", "PT", "RU", "SE", "UK", "US", From = GameVersion.Incredibles)]
     public string Language { get; set; } = "";
 
     /// <summary>
     /// The archive's target game.
     /// </summary>
-    [Observed]
+    [ConstantValue("Sponge Bob", Games = [GameVersion.BFBB])]
+    [ConstantValue("Incredibles", From = GameVersion.Incredibles)]
     public string GameName { get; set; } = "";
 
     internal PackagePlatform() { }

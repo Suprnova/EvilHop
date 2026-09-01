@@ -1,4 +1,6 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Serialization;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -124,15 +126,27 @@ public sealed class ValidationCatalogue
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 var attributes = property.GetCustomAttributes<ValidationAttribute>().ToList();
+                var countByType = attributes.GroupBy(a => a.GetType()).ToDictionary(g => g.Key, g => g.Count());
 
                 foreach (var attribute in attributes)
                 {
-                    var entry = BuildPropertyEntry(tag, property, attribute);
+                    // A property can legally carry more than one attribute of the same kind - disjoint
+                    // per-game allowed-value sets, for instance - so only attributes that actually
+                    // collide with a sibling get a scope suffix. A single attribute of its kind keeps
+                    // the plain id every existing rule reference and recorded corpus id assumes.
+                    string? scopeSuffix = countByType[attribute.GetType()] > 1 ? ScopeSuffix(attribute) : null;
+                    var entry = BuildPropertyEntry(tag, property, attribute, scopeSuffix);
                     if (entry is { } value) entries.Add(value);
                 }
 
                 if (BuildObservable(tag, property, attributes) is { } observable) observables.Add(observable);
             }
+
+            var collidingIds = entries.GroupBy(entry => entry.Rule.Id).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+            if (collidingIds.Count > 0)
+                throw new InvalidOperationException(
+                    $"{type.Name} declares rules with colliding IDs: {string.Join(", ", collidingIds)}. " +
+                    "Scope each attribute (Games, From/To, Quirks, or Platforms) so they don't overlap.");
 
             if (entries.Count > 0) entriesByType[type] = entries;
             if (observables.Count > 0) observablesByType[type] = observables;
@@ -203,11 +217,11 @@ public sealed class ValidationCatalogue
         return new Entry(rule, Member: null, Accessor: block => block.Children.Count);
     }
 
-    private static Entry? BuildPropertyEntry(string tag, PropertyInfo property, ValidationAttribute attribute)
+    private static Entry? BuildPropertyEntry(string tag, PropertyInfo property, ValidationAttribute attribute, string? scopeSuffix)
     {
         string member = property.Name;
         string observableId = ObservableId(tag, property);
-        string idBase = $"{tag.ToLowerInvariant()}.{member.ToLowerInvariant()}";
+        string idBase = $"{tag.ToLowerInvariant()}.{member.ToLowerInvariant()}{(scopeSuffix is null ? "" : $"@{scopeSuffix}")}";
 
         switch (attribute)
         {
@@ -276,4 +290,33 @@ public sealed class ValidationCatalogue
 
     private static ulong KnownBits(Type enumType) =>
         Enum.GetValues(enumType).Cast<object>().Aggregate(0UL, (bits, member) => bits | Convert.ToUInt64(member));
+
+    /// <summary>
+    /// Renders <paramref name="attribute"/>'s scoping axes into a short, deterministic id suffix, so
+    /// two same-kind attributes stacked on one property - disjoint per-game allowed-value sets, for
+    /// instance - get distinct rule IDs instead of silently colliding.
+    /// </summary>
+    private static string? ScopeSuffix(ValidationAttribute attribute)
+    {
+        var parts = new List<string>();
+
+        if (attribute.Games.Length > 0)
+            parts.Add(string.Join("+", attribute.Games.OrderBy(g => g).Select(g => g.ToString().ToLowerInvariant())));
+        else if (attribute.From != GameVersion.N100F || attribute.To != GameVersion.Ratatouille)
+        {
+            string from = attribute.From.ToString().ToLowerInvariant();
+            string to = attribute.To.ToString().ToLowerInvariant();
+            parts.Add(
+                attribute.From != GameVersion.N100F && attribute.To != GameVersion.Ratatouille ? $"{from}-{to}" :
+                attribute.From != GameVersion.N100F ? $"{from}+" : $"-{to}");
+        }
+
+        if (attribute.Quirks != FormatQuirks.None)
+            parts.Add(attribute.Quirks.ToString().ToLowerInvariant());
+
+        if (attribute.Platforms.Length > 0)
+            parts.Add(string.Join("+", attribute.Platforms.OrderBy(p => p).Select(p => p.ToString().ToLowerInvariant())));
+
+        return parts.Count > 0 ? string.Join("-", parts) : null;
+    }
 }

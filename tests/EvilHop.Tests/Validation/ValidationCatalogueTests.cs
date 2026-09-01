@@ -67,7 +67,7 @@ public class ValidationCatalogueTests
             ValidationCatalogue.Instance.Validate(version, BFBB),
             i => i.RuleId == "pver.subversion-constant");
 
-        Assert.Equal(Severity.Error, issue.Severity);
+        Assert.Equal(Severity.Info, issue.Severity);
     }
 
     [Fact]

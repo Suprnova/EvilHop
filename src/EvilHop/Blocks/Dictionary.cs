@@ -138,7 +138,7 @@ public class AssetHeader : Block
     /// <summary>
     /// The <c>Asset</c>'s type.
     /// </summary>
-    [ClosedEnum]
+    [ClosedEnum(Severity = Severity.Warning)]
     public AssetType Type
     {
         get => GetManagedBlockField(ref field);
@@ -187,6 +187,7 @@ public class AssetHeader : Block
     /// Information about the <c>Asset</c>'s data and how it should be handled in game.
     /// </summary>
     /// Validation TODO: SourceFile and SourceVirtual are not set simultaneously.
+    [DefinedBits]
     public AssetFlags Flags
     {
         get => GetManagedBlockField(ref field);
@@ -347,7 +348,7 @@ public class LayerHeader : Block
     /// <summary>
     /// The <c>Layer</c>'s type.
     /// </summary>
-    [ClosedEnum]
+    [ClosedEnum(Severity = Severity.Warning)]
     public LayerType Type
     {
         get => GetManagedBlockField(ref field);

@@ -65,7 +65,7 @@ public enum ObservablePresentation
 /// <see cref="ObservablePresentation.Hex"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Enum)]
-public sealed class FourccAttribute : Attribute;
+internal sealed class FourccAttribute : Attribute;
 
 /// <summary>
 /// The subject an <see cref="Observable"/> reads its value from. A closed hierarchy, one case per

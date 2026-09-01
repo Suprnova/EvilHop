@@ -30,7 +30,7 @@ public abstract class ValidationAttribute : Attribute
     public Platform[] Platforms { get; init; } = [];
 
     /// <summary>How consequential a violation of this attribute's rule is to the game.</summary>
-    public Severity Severity { get; init; } = Severity.Error;
+    public virtual Severity Severity { get; init; } = Severity.Warning;
 
     /// <summary>
     /// Determines whether this attribute applies given the provided <paramref name="context"/>,
@@ -61,6 +61,9 @@ public abstract class ValidationAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class ConstantValueAttribute(object value) : ValidationAttribute
 {
+    /// <inheritdoc/>
+    public override Severity Severity { get; init; } = Severity.Info;
+
     /// <summary>The member's expected value.</summary>
     public object Value { get; } = value;
 }
@@ -80,14 +83,22 @@ public sealed class AllowedValuesAttribute(params object[] values) : ValidationA
 /// Declares that a member's raw value always maps to a defined member of its own enum type.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public sealed class ClosedEnumAttribute : ValidationAttribute;
+public sealed class ClosedEnumAttribute : ValidationAttribute
+{
+    /// <inheritdoc/>
+    public override Severity Severity { get; init; } = Severity.Info;
+}
 
 /// <summary>
 /// Declares that a <c>[Flags]</c>-enum-typed member never sets a bit outside its enum type's declared
 /// members.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public sealed class DefinedBitsAttribute : ValidationAttribute;
+public sealed class DefinedBitsAttribute : ValidationAttribute
+{
+    /// <inheritdoc/>
+    public override Severity Severity { get; init; } = Severity.Info;
+}
 
 /// <summary>
 /// Declares that a <c>[Flags]</c>-enum-typed member always has <see cref="RequiredBits"/> set.
@@ -96,6 +107,9 @@ public sealed class DefinedBitsAttribute : ValidationAttribute;
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class RequiredBitsAttribute(object requiredBits) : ValidationAttribute
 {
+    /// <inheritdoc/>
+    public override Severity Severity { get; init; } = Severity.Info;
+
     /// <summary>The bits that must always be set.</summary>
     public object RequiredBits { get; } = requiredBits;
 }
@@ -107,6 +121,9 @@ public sealed class RequiredBitsAttribute(object requiredBits) : ValidationAttri
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class RequiredChildAttribute : ValidationAttribute
 {
+    /// <inheritdoc/>
+    public override Severity Severity { get; init; } = Severity.Error;
+
     /// <summary>
     /// A quirk that drops the requirement to none, for a build that otherwise matches this
     /// attribute's scope but is real evidence the child isn't always there. Defaults to
@@ -135,4 +152,4 @@ public sealed class RepeatableChildAttribute : ValidationAttribute;
 /// well.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public sealed class ObservedAttribute : ValidationAttribute;
+internal sealed class ObservedAttribute : ValidationAttribute;

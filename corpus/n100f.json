@@ -5,13 +5,19 @@
     "blockFields": {
       "generator": {
         "revision": 3,
-        "inputs": "d92a889"
+        "inputs": "e862eff"
       },
       "coverage": {
         "archives": 1038,
         "sourceSetHash": "2623518"
       },
       "observations": {
+        "AHDR.flags": {
+          "kind": "bitmask",
+          "presentation": "hex",
+          "union": 2147483663,
+          "display": "0x8000000F"
+        },
         "AHDR.type": {
           "kind": "enumerated",
           "presentation": "fourcc",

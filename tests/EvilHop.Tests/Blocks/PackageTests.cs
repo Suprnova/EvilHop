@@ -250,7 +250,14 @@ public class PackageTests
         Counts = new PackageCount(),
         Created = new PackageCreated(),
         Modified = new PackageModified(),
-        Platform = new PackagePlatform { Region = "NTSC" }
+        Platform = new PackagePlatform
+        {
+            PlatformId = "GC",
+            PlatformName = "GameCube",
+            Region = "NTSC",
+            Language = "US Common",
+            GameName = "Sponge Bob"
+        }
     };
 
     [Fact]
