@@ -2,7 +2,7 @@
 
 EvilHop is a C# .NET library for reading, writing, and manipulating **HIP archive files**, the binary asset container format used in several games developed by Heavy Iron Studios.
 
-> **Status: alpha.** The block layer is complete and round-trips every archive tested byte-for-byte. The asset layer is under construction - the object model exists, but the session and codecs that populate it do not yet. Breaking changes are expected, and there is no NuGet package yet.
+> **Status: alpha.** Both layers are functional: the block layer round-trips every archive tested byte-for-byte, and the asset layer opens archives as assets through a session, rebuilding the archive on commit. Every known asset type is read through a generic codec for its shape - per-type field modelling is in progress. Validation flags known-invalid states, and committed observations of real archives guard against regressions. Breaking changes are expected, and there is no NuGet package yet.
 
 ## Supported Games
 
@@ -51,7 +51,7 @@ archive.Save(output);
 
 ## Planned
 
-- Asset sessions and per-type codecs - the asset layer's read/write path.
+- Per-type codecs that model each asset type's fields; today every type reads through a generic codec for its shape, with unparsed bytes preserved.
 - Cross-version conversion, upgrading and downgrading archives between the supported games.
 - Native field definitions for embedded payload formats (RenderWare streams, Bink video, audio), which today import and export as whole files.
 
