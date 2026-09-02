@@ -22,4 +22,28 @@ public class ArchiveTests
 
         Assert.Equal(originalBytes, rewritten.ToArray());
     }
+
+    [Fact]
+    public void Load_Sniffed_ThenSave_MinimalFixture_ProducesIdenticalBytes()
+    {
+        using var fixture = OpenMinimalFixture();
+        using var fixtureCopy = new MemoryStream();
+        fixture.CopyTo(fixtureCopy);
+        byte[] originalBytes = fixtureCopy.ToArray();
+
+        var archive = Archive.Load(new MemoryStream(originalBytes));
+
+        using var rewritten = new MemoryStream();
+        archive.Save(rewritten);
+
+        Assert.Equal(originalBytes, rewritten.ToArray());
+    }
+
+    [Fact]
+    public void Load_Sniffed_NonHipStream_ThrowsFormatException()
+    {
+        byte[] garbage = [1, 2, 3, 4, 5, 6, 7, 8];
+
+        Assert.Throws<FormatException>(() => Archive.Load(new MemoryStream(garbage)));
+    }
 }

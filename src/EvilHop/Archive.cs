@@ -35,6 +35,37 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
         new(serializer, serializer.Read(stream));
 
     /// <summary>
+    /// Loads a HIP archive from <paramref name="stream"/>, inferring its <see cref="Serialization.Serializer"/>
+    /// via <see cref="Serialization.Serializer.Sniff"/> rather than requiring the caller to already know it.
+    /// </summary>
+    /// <param name="stream">
+    /// The stream to load from. When non-seekable, it is buffered into memory in full before
+    /// sniffing, since <see cref="Serialization.Serializer.Sniff"/> cannot rewind it on its own.
+    /// Closes <paramref name="stream"/> before returning, matching <see cref="Load(Stream, Serializer)"/>.
+    /// </param>
+    /// <returns>An <see cref="Archive"/> constructed from the sniffed stream.</returns>
+    /// <exception cref="FormatException">Thrown when the stream can't be recognized as a HIP archive.</exception>
+    public static Archive Load(Stream stream)
+    {
+        Stream source = stream.CanSeek ? stream : Buffer(stream);
+        var sniff = Serializer.Sniff(source);
+        if (sniff.Profile is null)
+            throw new FormatException("Could not recognize this stream as a HIP archive.");
+
+        var serializer = Serializer.Create(sniff.Profile);
+        return new Archive(serializer, serializer.Read(source));
+    }
+
+    private static MemoryStream Buffer(Stream stream)
+    {
+        var buffer = new MemoryStream();
+        stream.CopyTo(buffer);
+        stream.Dispose();
+        buffer.Position = 0;
+        return buffer;
+    }
+
+    /// <summary>
     /// Saves a HIP archive to the provided <paramref name="stream"/> using <see cref="Serializer"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to save to.</param>

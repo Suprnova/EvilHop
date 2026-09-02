@@ -12,6 +12,7 @@ try
     {
         CorpusVerb.Verify => RunVerify(options),
         CorpusVerb.Inventory => RunInventory(options),
+        CorpusVerb.SniffVerify => RunSniffVerify(options),
         _ => throw new UnreachableException()
     };
 }
@@ -91,6 +92,35 @@ static int RunInventory(CorpusOptions options)
     InventoryWriter.Write(options.OutputPath!, builder);
     Console.WriteLine($"Wrote inventory to {options.OutputPath}");
     return 0;
+}
+
+static int RunSniffVerify(CorpusOptions options)
+{
+    int total = 0, failed = 0;
+    foreach (var discovered in ArchiveWalker.Discover(options.Roots))
+    {
+        total++;
+        try
+        {
+            using var stream = File.OpenRead(discovered.FullPath);
+            var sniff = Serializer.Sniff(stream);
+
+            if (sniff.Profile is null || sniff.Profile.Game != options.Game)
+            {
+                failed++;
+                string guess = sniff.Profile is null ? "Unrecognized" : sniff.Profile.Game.ToString();
+                Console.Error.WriteLine($"FAIL {discovered.RelativePath}: sniffed as {guess}, expected {options.Game}.");
+            }
+        }
+        catch (Exception ex)
+        {
+            failed++;
+            Console.Error.WriteLine($"FAIL {discovered.RelativePath}: {ex.Message}");
+        }
+    }
+
+    Console.WriteLine($"{total - failed}/{total} archives correctly sniffed as {options.Game}.");
+    return failed == 0 ? 0 : 1;
 }
 
 static ArchiveContext Read(Serializer serializer, DiscoveredArchive discovered)
