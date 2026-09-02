@@ -1,3 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -20,4 +25,31 @@ public sealed class CounterAsset : BaseAsset
     /// The counter's value when the level loads.
     /// </summary>
     public short InitialValue { get; set; }
+
+    // Not publicly constructible yet - building a new asset from scratch, rather than reading one
+    // from an archive, doesn't have a settled API (defaults will likely need to depend on the
+    // target game), so this stays internal until that exists.
+    internal CounterAsset() { }
+
+    internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new CounterAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+        asset.InitialValue = reader.ReadInt16();
+        reader.ReadInt16(); // 2 bytes of padding, always zero
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        asset.Physical.LinkCount = (byte)asset.Links.Count; // now agrees - lets it derive
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(CounterAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+        writer.Write(asset.InitialValue);
+        writer.Write((short)0); // padding
+        LinkSerialization.Write(asset, writer);
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
