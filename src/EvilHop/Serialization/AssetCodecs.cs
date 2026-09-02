@@ -54,28 +54,14 @@ internal static class AssetCodecs
         RegisterConcreteCodecs();
     }
 
+    /// <summary>
+    /// Registers every asset type with a real, hand-written codec. Each entry just points at its
+    /// type's own <c>Read</c>/<c>Write</c> pair - the logic, including any per-game branching,
+    /// lives with the asset class itself, not here.
+    /// </summary>
     private static void RegisterConcreteCodecs()
     {
-        Register<CounterAsset>(
-            AssetType.Counter,
-            (reader, header, debug, profile) =>
-            {
-                var asset = PopulateBase(new CounterAsset(), header, debug, reader);
-                asset.InitialValue = reader.ReadInt16();
-                reader.ReadInt16(); // 2 bytes of padding, always zero
-                LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
-                asset.Physical.LinkCount = (byte)asset.Links.Count; // now agrees - lets it derive
-                asset.SetUnparsedTail(reader.ReadRemainingBytes());
-                return asset;
-            },
-            (asset, writer, profile) =>
-            {
-                BaseAssetPrefix.Write(asset, writer);
-                writer.Write(asset.InitialValue);
-                writer.Write((short)0); // padding
-                LinkSerialization.Write(asset, writer);
-                writer.Write(asset.GetUnparsedTail());
-            });
+        Register<CounterAsset>(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
     }
 
     /// <summary>
