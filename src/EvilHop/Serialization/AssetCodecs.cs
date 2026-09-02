@@ -48,7 +48,35 @@ internal static class AssetCodecs
     /// </summary>
     private static readonly CodecHandler Fallback = new(ReadPlain, WritePlain);
 
-    static AssetCodecs() => RegisterGenericShapes();
+    static AssetCodecs()
+    {
+        RegisterGenericShapes();
+        RegisterConcreteCodecs();
+    }
+
+    private static void RegisterConcreteCodecs()
+    {
+        Register<CounterAsset>(
+            AssetType.Counter,
+            (reader, header, debug, profile) =>
+            {
+                var asset = PopulateBase(new CounterAsset(), header, debug, reader);
+                asset.InitialValue = reader.ReadInt16();
+                reader.ReadInt16(); // 2 bytes of padding, always zero
+                LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+                asset.Physical.LinkCount = (byte)asset.Links.Count; // now agrees - lets it derive
+                asset.SetUnparsedTail(reader.ReadRemainingBytes());
+                return asset;
+            },
+            (asset, writer, profile) =>
+            {
+                BaseAssetPrefix.Write(asset, writer);
+                writer.Write(asset.InitialValue);
+                writer.Write((short)0); // padding
+                LinkSerialization.Write(asset, writer);
+                writer.Write(asset.GetUnparsedTail());
+            });
+    }
 
     /// <summary>
     /// Registers <typeparamref name="T"/>'s codec for <paramref name="type"/>, replacing whatever
