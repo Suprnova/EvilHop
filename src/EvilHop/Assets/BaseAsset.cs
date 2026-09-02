@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Validation;
 
 namespace EvilHop.Assets;
 
@@ -68,6 +69,14 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
     /// <summary>
     /// The <see cref="BaseAsset"/>'s base type.
     /// </summary>
+    /// <remarks>
+    /// Recorded both across the whole corpus and per asset type. Unlike
+    /// <see cref="IPhysicalAsset.Alignment"/> and <see cref="IPhysicalAsset.Flags"/>, this is read
+    /// from the asset's own data rather than copied from a block, so neither breakdown duplicates
+    /// anything already recorded.
+    /// </remarks>
+    [Observed(Cardinality = ObservableCardinality.Enumerated)]
+    [Observed(Cardinality = ObservableCardinality.Enumerated, By = ObservableGrouping.AssetType)]
     byte BaseType { get; set; }
     /// <summary>
     /// The number of links stored for this <see cref="BaseAsset"/>, read directly from its fixed

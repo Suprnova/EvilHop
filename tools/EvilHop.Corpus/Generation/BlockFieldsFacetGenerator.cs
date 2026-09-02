@@ -30,12 +30,9 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
         var fieldValueIds = FieldValueObservables.Select(o => o.Id).ToHashSet();
 
         foreach (var block in Descendants(archive))
-            foreach (var (observableId, value) in ValidationCatalogue.Instance.Observe(block))
-            {
-                if (!fieldValueIds.Contains(observableId)) continue;
-                if (record[observableId] is not JsonArray values) record[observableId] = values = [];
-                values.Add(ObservationValueSets.ToJsonValue(value));
-            }
+            foreach (var observation in ValidationCatalogue.Instance.Observe(block))
+                if (fieldValueIds.Contains(observation.ObservableId))
+                    ObservationValueSets.Append(record, observation);
 
         return record;
     }
@@ -48,7 +45,7 @@ public sealed class BlockFieldsFacetGenerator : IFacetGenerator
         // byte-identical.
         var observations = new JsonObject();
         foreach (var observable in FieldValueObservables.OrderBy(o => o.Id, StringComparer.Ordinal))
-            observations[observable.Id] = ObservationValueSets.Reduce(observable.Id, observable.Cardinality, observable.Presentation, records);
+            observations[observable.Id] = ObservationValueSets.Reduce(observable, records);
         return observations;
     }
 

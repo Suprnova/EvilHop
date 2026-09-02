@@ -148,8 +148,46 @@ public sealed class RepeatableChildAttribute : ValidationAttribute;
 /// Declares that a member should be recorded in the corpus inventory. Carries no rule of its own.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every rule attribute is also an observable declaration, so a member with one never needs this as
-/// well.
+/// well - except to add a second granularity, since one attribute declares one <see cref="By"/>.
+/// A member recorded both cumulatively and per asset type carries two.
+/// </para>
+/// <para>
+/// <see cref="Cardinality"/> is inferred from the member's type when left unset, but only for
+/// block-scoped members, where the value space is bounded by a handful of blocks per archive. An
+/// asset-scoped member must state it: there are hundreds of thousands of assets behind one
+/// declaration, and the difference between enumerating their values and summarizing them is the
+/// difference between a reviewable file and an unreviewable one.
+/// </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-internal sealed class ObservedAttribute : ValidationAttribute;
+internal sealed class ObservedAttribute : ValidationAttribute
+{
+    /// <summary>
+    /// How this member's distinct values are recorded. Required for an asset-scoped member,
+    /// inferred from the member's type for a block-scoped one.
+    /// </summary>
+    public ObservableCardinality Cardinality
+    {
+        get;
+        init
+        {
+            field = value;
+            IsCardinalityDeclared = true;
+        }
+    }
+
+    /// <summary>
+    /// Whether <see cref="Cardinality"/> was declared rather than left to be inferred. A nullable
+    /// enum is not a legal attribute argument type, so the fact that a value was supplied is
+    /// recorded on assignment instead.
+    /// </summary>
+    internal bool IsCardinalityDeclared { get; private set; }
+
+    /// <summary>
+    /// The axis this member's occurrences are partitioned along before being recorded. Defaults to
+    /// <see cref="ObservableGrouping.None"/>, which records one set for the whole corpus.
+    /// </summary>
+    public ObservableGrouping By { get; init; } = ObservableGrouping.None;
+}

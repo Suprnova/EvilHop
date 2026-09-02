@@ -123,14 +123,17 @@ public enum ObservableScope { Archive, Block, Asset, Layer, Link }
 public enum ObservableCardinality { Enumerated, Summarized, Bitmask }
 public enum ObservablePresentation { Number, Hex, Fourcc, Text, Bytes }
 public enum ObservableKind { FieldValue, Structural }
+public enum ObservableGrouping { None, AssetType }
 
 public sealed record Observable(
-    string Id,                                  // "PVER.subVersion", "PLAT.platformId+platformName"
+    string Id,                                  // "PVER.subVersion", "asset.physical.alignment@assetType"
     ObservableScope Scope,
     ObservableCardinality Cardinality,
     ObservablePresentation Presentation,
     Func<ObservationSource, IEnumerable<object>> Select,
-    ObservableKind Kind = ObservableKind.FieldValue);
+    ObservableKind Kind = ObservableKind.FieldValue,
+    ObservableGrouping Grouping = ObservableGrouping.None,
+    ObservablePresentation? KeyPresentation = null);
 ```
 
 Most observables are declared by attribute on the member they read (§5.4); the rest — composites
@@ -140,17 +143,24 @@ of both and the single list every consumer reads.
 Four constraints make this work, and each is enforced by a test in `EvilHop.Corpus.Tests` over the
 catalogue via reflection:
 
-1. **Primitives only.** `Select` may yield `uint`, `int`, `string`, `bool`, `byte[]`, or a tuple of
+1. **Primitives only.** `Select` may yield a whole number, `string`, `bool`, `byte[]`, or a tuple of
    those. Never a library enum, never a record, never an `AssetId`. `AHDR.type` yields the raw
-   `uint`, never `AssetType`. This is the mechanical enforcement of the governing rule.
+   type code, never `AssetType`. This is the mechanical enforcement of the governing rule.
+   Every whole number is widened to one canonical type, `long`: wide enough for every field the
+   format has, signed because some are (`ADBG.alignment` stores -1 to mean "use this type's
+   default"), and single so that a value read fresh from an archive and the same value read back
+   from the map cache are the same CLR type and compare equal.
 2. **Cardinality is declared, not discovered.** `Enumerated` writes a value list;
    `Summarized` writes `{min, max, count, distinct}` and no values; `Bitmask` writes the OR of every
-   observed value.
-3. **Asset-scoped observables default to `Summarized`.** `Enumerated` is opt-in and only for a
-   provably closed value space — a type code, a flag word, an enum, a fixed-vocabulary string.
-   `AHDR.id`, `AHDR.size`, `AHDR.offset`, `AHDR.plus` are `Summarized`; `ADBG.name` is projected.
-   The writer additionally **caps** an `Enumerated` list at 512 distinct values and *fails
-   generation* past it, so a mis-declared cardinality is a loud error rather than a 40 MB commit.
+   observed value. A block-scoped member may leave it to be inferred from its own type; an
+   asset-scoped member **must state it**, and the catalogue refuses to build if one doesn't —
+   hundreds of thousands of assets sit behind one declaration, which is too many for a default.
+3. **Asset-scoped observables are bounded by the cap, not by the type.** `Enumerated` is for a
+   closed value space — a type code, a flag word, an enum, a fixed-vocabulary string — but few of
+   those are closed by their CLR type, so the bound that actually holds is the writer's: it **caps**
+   an `Enumerated` list at 512 distinct values and *fails generation* past it, so a mis-declared
+   cardinality is a loud error rather than a 40 MB commit. `AHDR.id`, `AHDR.size`, `AHDR.offset`,
+   `AHDR.plus` are `Summarized`; `ADBG.name` is projected.
 4. **High-cardinality fields are projected, not recorded.** `PCRT.createdDateString` has hundreds of
    distinct values and zero signal in any of them; its observable yields a *shape*
    (`"Www Mmm dd hh:mm:ss yyyy"`, `"…\n"`, `"other"`). `ADBG.name` yields `(length, charsetClass)`.
@@ -158,8 +168,38 @@ catalogue via reflection:
 
 Composite observables handle every correspondence rule in the invariant list without new machinery:
 `PLAT.platformId+platformName` yields a tuple, and the recorded value set *is* the correspondence
-table. Same for `game+PVER.clientVersion`, `AHDR.type+ADBG.alignment`, `AHDR.type+BASE.baseType`,
-and `PFLG.flags+PLAT.platformId+PLAT.region+PLAT.language` (§11).
+table. Same for `game+PVER.clientVersion` and
+`PFLG.flags+PLAT.platformId+PLAT.region+PLAT.language` (§11).
+
+### Grouping: the same field, broken down by asset type
+
+A composite is the wrong tool for one recurring question, though — "what does this field hold *for
+each asset type*". `Grouping` is that axis, and it is deliberately orthogonal to `Cardinality`:
+cardinality says how one set of distinct values is recorded, grouping says how many such sets there
+are and what separates them. A grouped observable records one ordinary value set per key, so
+`Enumerated`, `Summarized`, and `Bitmask` all work under it unchanged.
+
+The key is a **raw `uint`** read from `Asset.Type` — the type the archive's own `AHDR` reported, not
+the CLR type of the parsed object. That distinction is load-bearing: a `TRIG` asset with no concrete
+codec parses into `GenericEntityAsset`, and one that fails to parse at all into `GenericAsset`, so
+CLR-type granularity would be both unavailable and wrong. The key is extracted in the library, where
+constraint 1 is enforced, and never becomes an `AssetType`.
+
+A composite `AHDR.type+ADBG.alignment` was the obvious alternative and is worse on four counts. It
+forces every grouped record into `Enumerated`, so a `Bitmask` field stops being a union. It needs
+tuple encoding, ordering, and rendering that nothing else needs. Its cap applies to the product of
+types and values, so it trips sooner and says less about why. And it fuses the two granularities:
+the whole-corpus set can only be recovered by projecting the tuple set, leaving a rule on that field
+with no value set of its own to replay against (§9).
+
+**The two granularities are independent, and a field takes only the ones that add something.** An
+asset-scoped field copied verbatim from a block by `AssetFields.Populate` — `Type`, `Alignment`,
+`Flags` — already has its whole-corpus set recorded at the block layer, so it declares the per-type
+breakdown only; recording the cumulative one again would duplicate `ADBG.alignment` and `AHDR.flags`
+exactly. A field read from the asset's own payload — `BaseType`, `Subtype` — declares both, since
+neither is recorded anywhere else. This is a judgement made at the declaration site, where the
+member is visible, and it is a review obligation rather than a mechanical check: whether one field
+is a copy of another is only readable from the body of `Populate`.
 
 `Bitmask` cardinality collapses every "unused bits are never used" rule (`EntityFlags`,
 `CollisionFlags`, `BaseAssetFlags`, `AssetFlags`, `PackFlags`) into one recorded `uint` per field
@@ -418,7 +458,7 @@ The starter set, deliberately small:
 
 | Attribute | Declares |
 |---|---|
-| `[Observed]` | Record this member in inventories. No rule. Carries `Cardinality`, `Presentation`, and an optional named projection. |
+| `[Observed]` | Record this member in inventories. No rule. Carries `Cardinality` and `By` (the grouping axis). Stacks: a member recorded both cumulatively and per asset type carries two, one per granularity. |
 | `[ConstantValue(v)]` | Always exactly `v` in scope. Multiple instances with disjoint game scopes give the per-game table. |
 | `[AllowedValues(...)]` | Member is one of a closed set. |
 | `[ClosedEnum]` | Raw value maps to a defined member of the property's enum type. |
@@ -442,6 +482,29 @@ Every rule attribute is also an observable declaration, so a value that has a ru
 separate `[Observed]`. This is the payoff of putting them in the same place: the inventory records
 `PVER.subVersion` *because* something asserts about it, and the observable ID is derived from the
 declaring block's tag and the member name, so the two can never disagree about which field they mean.
+
+#### Observable IDs
+
+Every ID is derived from the member it reads, never written by hand. A block-scoped one is
+`<TAG>.<member>`. An asset-scoped one is
+`<assetClass>[.physical].<member>[@<grouping>]`, built from three mechanical parts:
+
+- **`<assetClass>`** — the declaring type's asset class, camelCased. A logical property declares on
+  the class (`BaseAsset` → `baseAsset`); a physical member declares on an interface, whose name
+  minus its `IPhysical` prefix is the same class (`IPhysicalBaseAsset` → `baseAsset`). Both roads
+  reach one namespace, which is right: they are the same level of the hierarchy.
+- **`.physical`** — present iff the member is declared on an `IPhysical*` interface. Not decoration:
+  `Asset.Type` and `IPhysicalAsset.Type` are two members that can legitimately disagree, and without
+  the segment both would claim `asset.type`. It mirrors the `asset.Physical.Alignment` path a reader
+  would type.
+- **`@<grouping>`** — the grouping axis, camelCased, present iff it isn't `None`. `@` cannot appear
+  in a C# identifier, so a grouped ID is provably distinct from every ungrouped one.
+
+So `asset.physical.alignment@assetType`, `baseAsset.physical.baseType`, and
+`entityAsset.physical.subtype@assetType`. A block tag is always four uppercase characters and an
+asset class never is, so the two namespaces cannot collide — `AHDR.type` and `asset.physical.type`
+stay distinct. The catalogue additionally rejects a duplicate ID outright at build time, since the
+flat catalogue is what `DigestOf` and every inventory record are keyed on.
 
 **Restraint is a design constraint, not a style note.** An attribute is right when the rule is a
 constant predicate over one member. Anything conditional on another block, another field, or the
@@ -508,8 +571,12 @@ concrete asset type puts attributes on its fields and registers `ValidationRule<
 for anything conditional; inherited rules on `BaseAsset` / `EntityAsset` apply by subject-type
 matching. The per-type claims from the invariant list — `Stackable` on `SIMP`, `NoShadow` VIL-only,
 `AnimateCollision` requires `PreciseCollision`, per-type `Subtype` sets, per-type expected
-`baseType` — are `ValidationRule<EntityAsset>` with an `AppliesTo` on `Asset.Type`, and their corpus
-counterpart is a composite observable (`AHDR.type+ENT.entityFlags` as a `Bitmask`).
+`baseType` — are `ValidationRule<EntityAsset>` with an `AppliesTo` on `Asset.Type`, because
+`ValueRule`'s `AppliesTo` scopes on the archive rather than on the subject. Their corpus counterpart
+is the same field observed with `Grouping = AssetType` (§4), which records one value set per type
+and preserves the field's own cardinality — `entityAsset.physical.entityFlags@assetType` stays a
+`Bitmask` union per type rather than collapsing into a list of pairs. What it would take to replay
+such a rule offline is in §9.
 
 ### 5.7 Asset support, and what happens to an unsupported type
 
@@ -689,7 +756,7 @@ recorded path list. A hash keyed to path/build/role would explode the file for n
 
 ### 7.2 Record types
 
-Five shapes, and the whole file is built from them.
+Six shapes, and the whole file is built from them.
 
 **`ValueSet`** — an observable's distinct values. Covers invariant categories 2 and 3 entirely.
 
@@ -715,6 +782,47 @@ a quantity.
 `Summarized` observables carry `{min, max, count, distinct}` instead of `values`; `Bitmask`
 observables carry a single `union`.
 
+**`Grouped`** — a container of one `ValueSet` per group key, for a grouped observable (§4). Not a
+new kind of value set and not a `Coverage`: `Coverage` records presence by build and role, this
+records a value distribution by asset type.
+
+```json
+"asset.physical.alignment@assetType": {
+  "kind": "grouped", "groupedBy": "assetType", "keyPresentation": "fourcc",
+  "valueKind": "enumerated", "presentation": "number",
+  "groups": [
+    { "key": 1414678855, "keyDisplay": "TRIG",
+      "values": [ { "value": 16, "count": 20518, "witnesses": ["…"] } ] }
+  ]
+},
+"asset.physical.flags@assetType": {
+  "kind": "grouped", "groupedBy": "assetType", "keyPresentation": "fourcc",
+  "valueKind": "bitmask", "presentation": "hex",
+  "groups": [ { "key": 1414678855, "keyDisplay": "TRIG", "union": 3, "display": "0x00000003" } ]
+}
+```
+
+`kind` and `presentation` are hoisted to the container rather than repeated on each of ~60 groups,
+since they come from one observable and are identical throughout. `groups` is an array sorted by
+numeric `key`, not an object, for the same reason `value` is authoritative and numeric — keys sort
+and compare without parsing, and a sorted array cannot silently lose its order the way an object's
+keys could. A group with a single `values` entry *is* the "constant among that type" statement, said
+as an observation with a count rather than as a verdict.
+
+A group is only recorded for a type whose assets actually carry the member. A payload-shaped type has
+no base type, and an asset that failed to parse has none either — the bytes were never read, so
+there is genuinely no value rather than a missing one. That makes the gap between a header-sourced
+field's group counts and a payload-sourced field's a measure of how much the codec ladder currently
+reaches.
+
+**Three caps bound a grouped record, all of them failures rather than degradations:** 512 distinct
+values per group (each group is a `ValueSet`), 128 groups, and 1024 value rows across all groups.
+The per-group cap alone doesn't bound the file — a hundred groups of five hundred values each is
+exactly the commit it exists to prevent — so the total is the one that holds. None of them degrades
+to a summary on overflow, because that would make a record's committed shape depend on the data
+crossing a threshold, so adding one archive could silently rewrite it. The failure names the
+observable, the totals, and the three widest groups.
+
 **`Relation`** — a reducible rule's ledger. Covers invariant categories 1 and 4.
 
 ```json
@@ -733,7 +841,11 @@ unclassified violation is a finding and its whole value is being readable.
 **`Coverage`** — presence facts keyed by build and role: which type uints appear where, which layer
 type uints appear where, which `(type, role)` pairs exist, and which values of a within-game-varying
 field appear in which build. Feeds `[SupportedGames]`, the `.HIP`/`.HOP`/localized question, and the
-quirk-promotion evidence of §5.4.
+quirk-promotion evidence of §5.4. A `Grouped` record's key set overlaps it — the types a game's
+assets were partitioned into is "which type uints appear" for that game — but the two answer
+different questions and stay separate. When build identity is threaded through map/reduce (step 7),
+the build dimension belongs on `Coverage`, not nested a second level deep inside `Grouped`, which at
+~60 types times ~10 builds would stop being readable.
 
 **`Reference`** — cross-archive resolution, by ring and by resolved target type (§10.2).
 
@@ -748,7 +860,7 @@ and coverage:
 |---|---|
 | `structure` | Root tag sequence, `PACK` child sets, required-child multiplicity, leaf-childlessness. |
 | `blockFields` | `ValueSet`s for every archive- and block-scoped observable. |
-| `assetFields` | `ValueSet`s and bitmask unions for asset-scoped observables, including `type+alignment`, `type+baseType`, `type+subtype`. |
+| `assetFields` | `ValueSet`s and bitmask unions for asset-scoped observables, and a `Grouped` record per asset type for each one that declares the breakdown - alignment, flags, base type, subtype. |
 | `derived` | `Relation` ledgers for every reducible reconciliation, plus the `AHDR.id` classification distribution. |
 | `layout` | Padding fill bytes, gap-byte uniformity, per-layer trailing alignment, data-start alignment. |
 | `layers` | Per-build ordered layer-type sequences and per-game layer-type sets. |
@@ -759,9 +871,12 @@ and coverage:
 ### 7.4 Determinism
 
 Every facet is a pure function of its covered archives and its generator. Concretely: object keys
-sorted, value lists sorted by value ascending, witnesses chosen as the lexicographically first two
-paths, anchors chosen as the lexicographically first N by `(path, subject)`, two-space indent, LF
-endings, trailing newline, no timestamps anywhere except `verification`. Regenerating an unchanged
+sorted, value lists sorted by value ascending, a `Grouped` record's groups sorted by numeric key
+ascending with each group's values sorted like any other value set, witnesses chosen as the
+lexicographically first two paths - per value *within its group*, so a group's witnesses point at
+archives that actually exhibit that type-and-value pair - anchors chosen as the lexicographically
+first N by `(path, subject)`, two-space indent, LF endings, trailing newline, no timestamps anywhere
+except `verification`. Regenerating an unchanged
 facet must produce byte-identical output — this is what makes over-regeneration free of consequence,
 and it is tested directly in `EvilHop.Corpus.Tests`.
 
@@ -802,6 +917,13 @@ The tool is a two-stage pipeline, and this is what makes piecemeal generation ac
 
 Incrementality lives entirely in the cache. Correctness lives entirely in the reduce.
 
+**Map runs in two stages against one loaded archive.** Every generator mapping an archive shares the
+`Archive` object, and entering the asset layer detaches the blocks that describe assets and rewrites
+them on commit. So each generator declares a `MapStage` — `Blocks` or `Assets` — and the pipeline
+runs the block stage first. Without the ordering, a block-scoped facet's output would depend on
+which facets happened to miss the cache on a given run, which is the one way determinism could break
+without anything looking wrong.
+
 ### 8.2 Staleness, and how `InputFingerprint` is computed
 
 Each facet declares what it depends on:
@@ -821,10 +943,23 @@ lines, one per dependency, where the digest is produced by `ValidationCatalogue.
 
 | Dependency | Digest is built from |
 |---|---|
-| Observable | `id`, scope, cardinality, presentation, projection name, projection revision |
+| Observable | `id`, scope, cardinality, presentation, kind, and grouping where it has one |
 | Attribute-declared rule | `id`, observable ID, attribute type name, severity, game scope, and the attribute's constant arguments |
 | Imperative rule | `id`, rule type name, severity, evidence kind, `RuleRevision` |
 | Enum | sorted `name=value` pairs |
+| Codec registry (`AssetCodecs.shapes`) | sorted `type=shape[\|codec]` lines |
+
+Grouping is appended to an observable's digest material only when it isn't `None`, so introducing
+the axis left every existing observable's digest — and therefore every existing facet's cached map
+output and committed `inputs` hash — untouched. That is the same "only disambiguate when you have
+to" rule the rule-ID scope suffix already follows.
+
+The codec registry is a dependency rather than a hand-bumped revision because which groups a
+per-asset-type record has, and what values they hold, follow from what an asset parses into.
+Registering a concrete codec or moving a type's shape changes that without changing any observable's
+declaration, so `assetFields` names the registry and goes stale mechanically. `AssetType` itself is
+deliberately *not* a dependency: group keys are raw uints, so naming a new member changes nothing
+that was recorded (§8.3's last row).
 
 The point is that **the declarative half is fingerprinted from its declaration**, with no
 hand-maintained version number: change `[ConstantValue(2u)]` to `[ConstantValue(3u)]`, and the
@@ -856,13 +991,22 @@ This is the requirement stated concretely.
 
 | Change | Map re-runs | Facets rewritten |
 |---|---|---|
-| New `Asset` class / codec | Asset-scoped map only | `assetFields`, `derived`, `links` |
+| New `Asset` class / codec | Asset-scoped map only, automatically - the codec registry is a declared dependency (§8.2) | `assetFields`, `derived`, `links` |
 | New build added to `artifacts/` | The new archives only | That game's facets |
 | New invariant added (replayable, on an already-observed field) | **Nothing** | **Nothing** — only test-side code changes |
 | Corrected definition of a replayable invariant | **Nothing** | **Nothing** |
 | New invariant added (reducible) | That facet's map | `derived` (or `layout`/`structure`) |
 | New observable added | That observable's scope | Its facet |
 | `AssetType` enum gains a member | Nothing | Nothing — raw uints were already recorded |
+| A new asset type appears in a new archive | The new archives only | That game's facets, including a new group in every per-type record |
+
+The last row needs no mechanism and cannot be missed. A type can only appear via a new or changed
+archive; either way its content hash is new, so the map cache misses and it is re-mapped. Reduce
+then rebuilds the group set from scratch over the full covered set, and the change shows up in the
+committed diff as `coverage.sourceSetHash`. The observed type set must never enter
+`InputFingerprint` — it is an observation, and folding observations into a declaration fingerprint
+would invalidate the whole cache every time an archive is added, which is the same reason §8.2
+rejects the assembly MVID.
 
 The two "nothing" rows are the payoff of pushing rules to the replayable side, and the strongest
 argument for §3.1 being the default. They hold because the attribute that declares the rule declares
@@ -950,7 +1094,10 @@ Six generic tests carry most of the weight, and they gain coverage automatically
    `Holds` (or an explicit waiver, for the rare case where the rule's verdict depends on a quirk a
    per-game replay context can't represent - font2.HIP's `[RequiredChild(ExceptQuirks: ...)]` is the
    first). This one test covers invariant categories 2 and 3 in their entirety, including the
-   `AHDR.type` → `AssetType` case from the requirements.
+   `AHDR.type` → `AssetType` case from the requirements. A rule over a *grouped* observable is
+   skipped rather than replayed: a grouped record has one value set per key and no overall one, so
+   comparing a rule to the container would compare it to nothing. See below for what would replay
+   one.
 2. **`ClosedVocabularyTests`** — every recorded classification tag, round-trip failure tag, and rule
    ID maps to a live library declaration.
 3. **`ObservableCoverageTests`** — every observable in the catalogue has a record in every game's
@@ -965,7 +1112,22 @@ Six generic tests carry most of the weight, and they gain coverage automatically
    half-landed.
 
 Hand-written tests fill in where the generic machinery doesn't reach: per-game layer-type sets,
-reference-ring expectations, and the structural facts in `structure`.
+reference-ring expectations, the structural facts in `structure`, and `AssetTypeGroupTests`, which
+checks one observation against another — every group key in a per-type record appears in that game's
+`AHDR.type` value set, and the complete-by-construction record (alignment, which every asset carries)
+has a group for every type. That is the canary for two facets generated against different archives,
+the one way a new type could show up in one place and not the other.
+
+**Per-type claims are observations today, not rules.** "`TRIG.baseType` is always 5" is a library
+rule, and it cannot be a `ValueRule` as things stand for a structural reason: `AppliesTo` scopes on a
+`ValidationContext`, which describes the *archive*, while per-type applicability scopes on the
+*subject*. §5.6 therefore routes such claims to imperative `ValidationRule<TAsset>`, which
+`ValueRuleTests` can't replay. Making them replayable is a small, well-shaped change — an
+`AssetTypes` scope on the attribute, materializing into a `ValueRule` that carries the raw key, and a
+`PerTypeValueRuleTests` that finds the matching group and asserts `Holds` over it, treating an absent
+group as a skip. It should land with the first real per-type claim rather than ahead of one, not
+least because `Asset.Validate` returns nothing today: an asset rule has no runtime path yet, so
+building only the replay half would put the test before the thing tested.
 
 `EvilHop.Corpus.Tests` (the tool's own project) covers the plumbing: map/reduce correctness,
 byte-identical determinism, cache-hit output equals cache-miss output, `InputFingerprint` stability
@@ -1125,8 +1287,11 @@ Not everything in the invariant list earns its keep.
 **Reframed:**
 
 - **Per-type `ADBG.Alignment` default table.** The library explicitly doesn't model it. Recorded as
-  the composite observable `AHDR.type+ADBG.alignment`, which reconstructs the table empirically. It
-  graduates into the library once the observation is stable.
+  `asset.physical.alignment@assetType`, an observable grouped by asset type (§4), which reconstructs
+  the table empirically — including the prototype's `Alignment == 0` and the `-1` that means "use
+  this type's default", as extra rows rather than as footnotes. The whole-corpus set of alignments
+  is `ADBG.alignment` at the block layer; only the per-type breakdown is new, so only it is
+  declared. It graduates into the library once the observation is stable.
 - **N100F prototype quirks** (0x00 fill, plus-to-2048, `Alignment == 0`, `ClientVersion`
   `0x00000001`). Recorded in `layout` and `Coverage` per build, so `FormatQuirks` gains the right
   flags *because* the corpus showed the divergence, rather than gaining speculative flags now.
@@ -1155,10 +1320,13 @@ Everything else in the invariant list maps onto §3's taxonomy without special h
    rather than through an attribute; `ObservableKind.Structural` observables for `[RequiredChild]`
    and `[NoChildren]`, so their rules join `EvilHop.Tests.Inventory`'s replay net too. Self-contained:
    needs nothing beyond what step 2 already built.
-6. **`assetFields`** — needs its own prerequisite first: `ValidationCatalogue` doesn't reflect over
-   `Asset` types at all yet, and the fields the facet wants (`Alignment`, `BaseType`, `Flags`) are
-   deliberately behind `IPhysicalAsset`/`IPhysicalBaseAsset`, not public on `Asset`/`BaseAsset`
-   themselves. Extending the attribute family to assets is its own step before the facet is.
+6. **`assetFields`** — asset-scoped observables, at two granularities: across the corpus, and per
+   asset type (§4). Landed as: `[Observed]` on `AssetDebug.Alignment` first, so the block layer
+   carries the whole-corpus alignment set the per-type breakdown is *not* a duplicate of;
+   `ObservableGrouping` on `Observable` and `[Observed]`; catalogue reflection over `Asset` types
+   and the `IPhysical*` surfaces, by assignability rather than exact runtime type; the
+   `AssetCodecs.shapes` dependency key; and the `MapStage` ordering in the pipeline. Per-type
+   *rules* are not part of it (§9).
 7. **`layers`** — needs per-*build* sequences, not per-*game* ones; the tool's accumulation is
    per-game only today, so this needs build identity threaded through `Map`/`Reduce` first.
 8. **`derived` + anchors** — reducible ledgers, `KnownViolations`, `AnchorTests`.

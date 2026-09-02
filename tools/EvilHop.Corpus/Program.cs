@@ -30,7 +30,15 @@ if (manifest.Builds.Count == 0)
 var cache = new MapCache(cacheDirectory);
 var fileHashes = new FileHashCache(Path.Combine(cacheDirectory, "file-hashes.json"));
 
-IReadOnlyList<IFacetGenerator> generators = [new BlockFieldsFacetGenerator(), new StructureFacetGenerator()];
+// Ordered by stage, not declaration: every generator mapping one archive shares the loaded Archive,
+// and an asset-scoped generator's session rebuilds the blocks the block-scoped ones read. Mapping
+// the block stage first is what keeps their output independent of which facets happened to miss the
+// cache on a given run.
+IReadOnlyList<IFacetGenerator> generators =
+[
+    .. new IFacetGenerator[] { new BlockFieldsFacetGenerator(), new StructureFacetGenerator(), new AssetFieldsFacetGenerator() }
+        .OrderBy(generator => generator.Stage)
+];
 var fingerprints = generators.ToDictionary(g => g.Id, g => g.InputFingerprint());
 
 // Grouped by directory-implied game only - an override can change how an archive is read, but never

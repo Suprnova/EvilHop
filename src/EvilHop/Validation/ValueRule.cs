@@ -44,12 +44,22 @@ internal abstract class AttributeValueRule(
     public override bool AppliesTo(ValidationContext context) => _source.Matches(context);
 
     /// <summary>
-    /// Reduces an enum to the primitive <see cref="Observable.Select"/> would have yielded for it, so
+    /// Reduces a value to the primitive <see cref="Observable.Select"/> would have yielded for it -
+    /// enums to their underlying value, every whole number to <see cref="long"/> - so
     /// <see cref="ValueRule.Holds"/> compares equally whether it's called with a live property value
-    /// (still enum-typed) or a recorded observation (always primitive).
+    /// (still enum-typed, or any width of integer) or a recorded observation.
     /// </summary>
-    protected static object Normalize(object value) =>
-        value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
+    protected static object Normalize(object value)
+    {
+        object underlying = value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
+
+        return underlying switch
+        {
+            sbyte or byte or short or ushort or int or uint or long => Convert.ToInt64(underlying),
+            ulong u => checked((long)u),
+            _ => underlying
+        };
+    }
 }
 
 /// <summary>Materialized from <see cref="ConstantValueAttribute"/>.</summary>
@@ -80,7 +90,17 @@ internal sealed class ClosedEnumRule(
     Type enumType)
     : AttributeValueRule(id, severity, description, observableId, source)
 {
-    public override bool Holds(object value, ValidationContext context) => Enum.IsDefined(enumType, value);
+    // Enum.IsDefined only accepts the enum's own underlying type, so a normalized value is converted
+    // back into one before asking - which is also what keeps a raw value too wide for the enum from
+    // being silently truncated into a defined member.
+    public override bool Holds(object value, ValidationContext context)
+    {
+        long raw = Convert.ToInt64(Normalize(value));
+        object candidate = Enum.ToObject(enumType, raw);
+
+        return Convert.ToInt64(Convert.ChangeType(candidate, Enum.GetUnderlyingType(enumType))) == raw &&
+            Enum.IsDefined(enumType, candidate);
+    }
 }
 
 /// <summary>Materialized from <see cref="DefinedBitsAttribute"/>.</summary>

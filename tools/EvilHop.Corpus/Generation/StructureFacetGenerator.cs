@@ -50,12 +50,9 @@ public sealed class StructureFacetGenerator : IFacetGenerator
 
         var structuralIds = StructuralObservables.Select(o => o.Id).ToHashSet();
         foreach (var block in Descendants(archive))
-            foreach (var (observableId, value) in ValidationCatalogue.Instance.Observe(block))
-            {
-                if (!structuralIds.Contains(observableId)) continue;
-                if (record[observableId] is not JsonArray values) record[observableId] = values = [];
-                values.Add(ObservationValueSets.ToJsonValue(value));
-            }
+            foreach (var observation in ValidationCatalogue.Instance.Observe(block))
+                if (structuralIds.Contains(observation.ObservableId))
+                    ObservationValueSets.Append(record, observation);
 
         return record;
     }

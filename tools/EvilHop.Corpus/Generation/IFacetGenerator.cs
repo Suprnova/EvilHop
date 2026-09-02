@@ -14,6 +14,23 @@ namespace EvilHop.Corpus.Generation;
 public readonly record struct MappedArchive(string Path, JsonObject Record);
 
 /// <summary>
+/// Which half of an archive's map pass a facet reads, and therefore when it runs.
+/// </summary>
+/// <remarks>
+/// One loaded <see cref="Archive"/> is shared by every generator mapping it, and entering the asset
+/// layer rebuilds the very blocks the block layer reads. Ordering the stages is what keeps a
+/// block-scoped facet's output independent of whether an asset-scoped one ran first.
+/// </remarks>
+public enum MapStage
+{
+    /// <summary>Reads the block tree as loaded.</summary>
+    Blocks,
+
+    /// <summary>Reads the archive's assets, which requires - and on commit rewrites - the blocks that describe them.</summary>
+    Assets
+}
+
+/// <summary>
 /// A two-stage generator for one facet of the corpus inventory: <see cref="Map"/> reduces a single
 /// archive to its contribution, and <see cref="Reduce"/> aggregates every covered archive's
 /// contribution into the facet's committed shape. Map is the expensive, cacheable half; reduce is
@@ -35,6 +52,11 @@ public interface IFacetGenerator
     /// facet's output depends on.
     /// </summary>
     IEnumerable<string> Dependencies { get; }
+
+    /// <summary>
+    /// Which half of an archive's map pass this facet reads. Defaults to <see cref="MapStage.Blocks"/>.
+    /// </summary>
+    MapStage Stage => MapStage.Blocks;
 
     /// <summary>
     /// Produces one archive's contribution to this facet.

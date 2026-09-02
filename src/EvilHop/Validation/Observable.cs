@@ -1,3 +1,4 @@
+using EvilHop.Assets;
 using EvilHop.Blocks;
 
 namespace EvilHop.Validation;
@@ -72,6 +73,26 @@ public enum ObservableKind
 }
 
 /// <summary>
+/// The axis an <see cref="Observable"/>'s occurrences are partitioned along before being recorded.
+/// </summary>
+/// <remarks>
+/// Orthogonal to <see cref="ObservableCardinality"/>: cardinality says how one set of distinct
+/// values is recorded, grouping says how many such sets there are and what separates them.
+/// </remarks>
+public enum ObservableGrouping
+{
+    /// <summary>Every occurrence is recorded in one set, whatever subject produced it.</summary>
+    None,
+
+    /// <summary>
+    /// Occurrences are partitioned by the raw <see cref="uint"/> of the observed asset's
+    /// <see cref="Assets.Asset.Type"/>, so the record answers "what does this field hold for assets
+    /// of each type" rather than "what does this field hold anywhere."
+    /// </summary>
+    AssetType
+}
+
+/// <summary>
 /// Declares that an enum's underlying values are four-character codes, so an observable inferred
 /// from a property of this type renders as <see cref="ObservablePresentation.Fourcc"/> rather than
 /// <see cref="ObservablePresentation.Hex"/>.
@@ -91,6 +112,25 @@ public abstract record ObservationSource;
 /// </summary>
 /// <param name="Block">The block being observed.</param>
 public sealed record BlockObservationSource(Block Block) : ObservationSource;
+
+/// <summary>
+/// An <see cref="ObservationSource"/> wrapping the <see cref="Assets.Asset"/> an
+/// <see cref="ObservableScope.Asset"/> observable reads from.
+/// </summary>
+/// <param name="Asset">The asset being observed.</param>
+public sealed record AssetObservationSource(Asset Asset) : ObservationSource;
+
+/// <summary>
+/// One value an <see cref="Observable"/> yielded for one subject, with the key it is partitioned
+/// under.
+/// </summary>
+/// <param name="ObservableId">The identifier of the observable that yielded the value.</param>
+/// <param name="Value">The yielded value, always a primitive.</param>
+/// <param name="GroupKey">
+/// The raw key this occurrence is partitioned under, or <see langword="null"/> when the observable's
+/// <see cref="Observable.Grouping"/> is <see cref="ObservableGrouping.None"/>.
+/// </param>
+public readonly record struct Observation(string ObservableId, object Value, uint? GroupKey);
 
 /// <summary>
 /// A named, primitive-valued projection over an archive. The single place that declares where a
@@ -113,10 +153,20 @@ public sealed record BlockObservationSource(Block Block) : ObservationSource;
 /// What kind of fact this observable records. Defaults to <see cref="ObservableKind.FieldValue"/>,
 /// which every attribute-declared observable is.
 /// </param>
+/// <param name="Grouping">
+/// The axis this observable's occurrences are partitioned along. Defaults to
+/// <see cref="ObservableGrouping.None"/>, which records one set for the whole corpus.
+/// </param>
+/// <param name="KeyPresentation">
+/// How a group's key should be rendered, derived from <paramref name="Grouping"/>. Non-null exactly
+/// when <paramref name="Grouping"/> isn't <see cref="ObservableGrouping.None"/>.
+/// </param>
 public sealed record Observable(
     string Id,
     ObservableScope Scope,
     ObservableCardinality Cardinality,
     ObservablePresentation Presentation,
     Func<ObservationSource, IEnumerable<object>> Select,
-    ObservableKind Kind = ObservableKind.FieldValue);
+    ObservableKind Kind = ObservableKind.FieldValue,
+    ObservableGrouping Grouping = ObservableGrouping.None,
+    ObservablePresentation? KeyPresentation = null);

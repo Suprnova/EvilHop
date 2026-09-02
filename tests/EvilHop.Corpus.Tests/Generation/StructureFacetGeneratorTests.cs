@@ -45,7 +45,7 @@ public class StructureFacetGeneratorTests
         var record = generator.Map(ArchiveOf(new Package { Version = new PackageVersion() }));
 
         var values = Assert.IsType<JsonArray>(record["PACK.version"]);
-        Assert.Equal(1u, Assert.Single(values)!.GetValue<uint>());
+        Assert.Equal(1L, Assert.Single(values)!.GetValue<long>());
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class StructureFacetGeneratorTests
         var record = generator.Map(ArchiveOf(new Package()));
 
         var values = Assert.IsType<JsonArray>(record["PACK.version"]);
-        Assert.Equal(0u, Assert.Single(values)!.GetValue<uint>());
+        Assert.Equal(0L, Assert.Single(values)!.GetValue<long>());
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class StructureFacetGeneratorTests
         var record = generator.Map(ArchiveOf(new Package { Version = new PackageVersion() }));
 
         var values = Assert.IsType<JsonArray>(record["PVER.childCount"]);
-        Assert.Equal(0u, Assert.Single(values)!.GetValue<uint>());
+        Assert.Equal(0L, Assert.Single(values)!.GetValue<long>());
     }
 
     [Fact]

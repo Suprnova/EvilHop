@@ -98,6 +98,12 @@ opt into them through trait interfaces (`IHasModel`, `IGrabbable`, ...) in
 [`Traits.cs`](../src/EvilHop/Assets/Traits.cs). A trait projects onto the physical storage; it never
 stores a copy.
 
+The `IPhysical*` interface is also where a field's validation and observation attributes go, since
+that is the declaration every stored value has. An asset whose type has no concrete codec still
+implements the interface for its shape, so a field is observed the same way whether or not anything
+models the type - and an asset that failed to parse simply doesn't implement the surfaces its bytes
+were never read into, which is the honest record rather than a gap.
+
 ## Support Is Three States, Not Two
 
 An asset type's codec support is one of three states, not a binary "done or not":

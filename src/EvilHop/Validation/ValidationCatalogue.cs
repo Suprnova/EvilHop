@@ -1,6 +1,8 @@
+using EvilHop.Assets;
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Serialization;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -11,10 +13,16 @@ namespace EvilHop.Validation;
 /// <summary>
 /// Reflects once over every declarative validation attribute in the assembly and materializes them
 /// into runnable <see cref="ValueRule"/>s and <see cref="Observable"/>s, so that neither validating
-/// nor observing a <see cref="Block"/> ever itself touches reflection.
+/// nor observing a <see cref="Block"/> or an <see cref="Asset"/> ever itself touches reflection.
 /// </summary>
 public sealed class ValidationCatalogue
 {
+    /// <summary>
+    /// The dependency key naming the asset codec registry, for a consumer whose output depends on
+    /// what an asset parses into rather than on any one observable's declaration.
+    /// </summary>
+    public const string AssetCodecsKey = "AssetCodecs.shapes";
+
     /// <summary>The catalogue, built and cached on first use.</summary>
     public static ValidationCatalogue Instance => Lazy.Value;
 
@@ -22,7 +30,9 @@ public sealed class ValidationCatalogue
 
     private readonly IReadOnlyDictionary<Type, IReadOnlyList<Entry>> _entriesByType;
     private readonly IReadOnlyDictionary<Type, IReadOnlyList<Observable>> _observablesByType;
+    private readonly IReadOnlyDictionary<Type, IReadOnlyList<Observable>> _assetObservablesByType;
     private readonly IReadOnlyDictionary<string, Observable> _observablesById;
+    private readonly string _assetCodecsMaterial;
 
     /// <summary>Every <see cref="Observable"/> declared in the assembly, the union every consumer reads.</summary>
     public IReadOnlyList<Observable> Observables { get; }
@@ -32,13 +42,34 @@ public sealed class ValidationCatalogue
 
     private ValidationCatalogue(
         IReadOnlyDictionary<Type, IReadOnlyList<Entry>> entriesByType,
-        IReadOnlyDictionary<Type, IReadOnlyList<Observable>> observablesByType)
+        IReadOnlyDictionary<Type, IReadOnlyList<Observable>> observablesByType,
+        IReadOnlyDictionary<Type, IReadOnlyList<Observable>> assetObservablesByType,
+        IReadOnlyList<Observable> observables,
+        string assetCodecsMaterial)
     {
         _entriesByType = entriesByType;
         _observablesByType = observablesByType;
-        _observablesById = observablesByType.Values.SelectMany(o => o).ToDictionary(o => o.Id);
-        Observables = [.. _observablesById.Values];
+        _assetObservablesByType = assetObservablesByType;
+        _observablesById = ById(observables);
+        _assetCodecsMaterial = assetCodecsMaterial;
+        Observables = observables;
         Rules = [.. entriesByType.Values.SelectMany(entries => entries).Select(entry => entry.Rule)];
+    }
+
+    /// <summary>
+    /// Indexes every observable by ID, rejecting a collision outright: the flat catalogue is what
+    /// <see cref="DigestOf"/> and every inventory record are keyed on, so two observables sharing an
+    /// ID would silently record one over the other.
+    /// </summary>
+    private static Dictionary<string, Observable> ById(IReadOnlyList<Observable> observables)
+    {
+        var byId = new Dictionary<string, Observable>();
+        foreach (var observable in observables)
+            if (!byId.TryAdd(observable.Id, observable))
+                throw new InvalidOperationException(
+                    $"Two observables share the id '{observable.Id}'. Observable IDs must be unique across the catalogue.");
+
+        return byId;
     }
 
     /// <summary>
@@ -80,30 +111,88 @@ public sealed class ValidationCatalogue
     /// runtime type.
     /// </summary>
     /// <param name="subject">The block to observe.</param>
-    /// <returns>Each matching observable's ID paired with a value it yielded.</returns>
-    public IEnumerable<(string ObservableId, object Value)> Observe(Block subject)
+    /// <returns>Every value the matching observables yielded.</returns>
+    public IEnumerable<Observation> Observe(Block subject)
     {
         if (!_observablesByType.TryGetValue(subject.GetType(), out var observables)) yield break;
 
         var source = new BlockObservationSource(subject);
         foreach (var observable in observables)
             foreach (var value in observable.Select(source))
-                yield return (observable.Id, value);
+                yield return new Observation(observable.Id, value, GroupKey: null);
     }
 
     /// <summary>
-    /// Produces a digest of <paramref name="observableId"/>'s declaration, so a fingerprint built
-    /// from it changes exactly when the declaration does.
+    /// Projects <paramref name="subject"/> through every <see cref="Observable"/> declared for its
+    /// runtime type, on either surface.
     /// </summary>
-    /// <param name="observableId">The identifier of the observable to digest.</param>
-    /// <returns>The digest, as a lowercase hex string.</returns>
-    public string DigestOf(string observableId)
+    /// <remarks>
+    /// An observable declared on a member the subject doesn't carry - a base type on an asset that
+    /// failed to parse and degraded past <see cref="BaseAsset"/> - yields nothing, which is the
+    /// faithful record: the bytes were never read, so there is no value to record.
+    /// </remarks>
+    /// <param name="subject">The asset to observe.</param>
+    /// <returns>Every value the matching observables yielded, with the key each is grouped under.</returns>
+    public IEnumerable<Observation> Observe(Asset subject)
     {
-        if (!_observablesById.TryGetValue(observableId, out var observable))
-            throw new ArgumentException($"'{observableId}' is not a known observable.", nameof(observableId));
+        if (!_assetObservablesByType.TryGetValue(subject.GetType(), out var observables)) yield break;
+
+        var source = new AssetObservationSource(subject);
+        foreach (var observable in observables)
+        {
+            uint? key = GroupKeyFor(observable.Grouping, subject);
+            foreach (var value in observable.Select(source))
+                yield return new Observation(observable.Id, value, key);
+        }
+    }
+
+    /// <summary>
+    /// Reads the raw key <paramref name="asset"/>'s occurrences are partitioned under for
+    /// <paramref name="grouping"/>. Always a primitive - never an <see cref="AssetType"/> - so a
+    /// recorded key stays independent of what the library currently names.
+    /// </summary>
+    private static uint? GroupKeyFor(ObservableGrouping grouping, Asset asset) => grouping switch
+    {
+        ObservableGrouping.AssetType => (uint)asset.Type,
+        _ => null
+    };
+
+    /// <summary>
+    /// Looks up a declared <see cref="Observable"/> by its identifier.
+    /// </summary>
+    /// <param name="observableId">The observable's identifier.</param>
+    /// <param name="observable">The observable, if one is declared under that identifier.</param>
+    /// <returns><see langword="true"/> if one was found; otherwise <see langword="false"/>.</returns>
+    public bool TryGetObservable(string observableId, [NotNullWhen(true)] out Observable? observable) =>
+        _observablesById.TryGetValue(observableId, out observable);
+
+    /// <summary>
+    /// Produces a digest of what <paramref name="key"/> names, so a fingerprint built from it
+    /// changes exactly when that declaration does.
+    /// </summary>
+    /// <param name="key">
+    /// An observable's identifier, or <see cref="AssetCodecsKey"/> for the codec registry.
+    /// </param>
+    /// <returns>The digest, as a lowercase hex string.</returns>
+    public string DigestOf(string key)
+    {
+        string material = key == AssetCodecsKey ? _assetCodecsMaterial : ObservableMaterial(key);
+        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(material)));
+    }
+
+    /// <summary>
+    /// Renders one observable's declaration to the string its digest is taken over. Grouping is
+    /// appended only when it isn't <see cref="ObservableGrouping.None"/>, so introducing the axis
+    /// leaves every existing observable's digest - and therefore every existing facet's cached map
+    /// output - untouched.
+    /// </summary>
+    private string ObservableMaterial(string key)
+    {
+        if (!_observablesById.TryGetValue(key, out var observable))
+            throw new ArgumentException($"'{key}' is not a known observable.", nameof(key));
 
         string material = $"{observable.Id}|{observable.Scope}|{observable.Cardinality}|{observable.Presentation}|{observable.Kind}";
-        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(material)));
+        return observable.Grouping is ObservableGrouping.None ? material : $"{material}|{observable.Grouping}";
     }
 
     private static ValidationCatalogue Build()
@@ -154,8 +243,150 @@ public sealed class ValidationCatalogue
             if (observables.Count > 0) observablesByType[type] = observables;
         }
 
-        return new ValidationCatalogue(entriesByType, observablesByType);
+        var assetObservables = BuildAssetObservables();
+        var assetObservablesByType = typeof(Asset).Assembly.GetTypes()
+            .Where(type => typeof(Asset).IsAssignableFrom(type) && !type.IsAbstract)
+            .Select(type => (Type: type, Observables: MatchingObservables(assetObservables, type)))
+            .Where(match => match.Observables.Count > 0)
+            .ToDictionary(match => match.Type, match => match.Observables);
+
+        IReadOnlyList<Observable> allObservables =
+        [
+            .. observablesByType.Values.SelectMany(o => o),
+            .. assetObservables.Select(declaration => declaration.Observable)
+        ];
+
+        return new ValidationCatalogue(
+            entriesByType, observablesByType, assetObservablesByType, allObservables,
+            string.Join('\n', AssetCodecs.Registrations));
     }
+
+    /// <summary>
+    /// One asset-scoped observable and the type that declared it - an <see cref="Asset"/> subclass
+    /// for a logical member, an <c>IPhysical*</c> interface for a physical one.
+    /// </summary>
+    private readonly record struct AssetObservableDeclaration(Type DeclaringType, Observable Observable);
+
+    /// <summary>
+    /// Every observable a concrete asset type carries. Unlike a block, whose observables are looked
+    /// up by its exact runtime type, an asset inherits declarations from every level of its
+    /// hierarchy and every physical surface it implements - and the type that carries them is
+    /// usually a <c>Generic*</c> shape class rather than one named for the asset type.
+    /// </summary>
+    private static IReadOnlyList<Observable> MatchingObservables(
+        IReadOnlyList<AssetObservableDeclaration> declarations, Type assetType) =>
+        [.. declarations.Where(d => d.DeclaringType.IsAssignableFrom(assetType)).Select(d => d.Observable)];
+
+    /// <summary>
+    /// Reflects over every asset-scoped declaration site - the <see cref="Asset"/> hierarchy for
+    /// logical members, the <see cref="IPhysicalAsset"/> interfaces for physical ones - and builds
+    /// one <see cref="Observable"/> per member per declared granularity.
+    /// </summary>
+    private static IReadOnlyList<AssetObservableDeclaration> BuildAssetObservables()
+    {
+        var declarationSites = typeof(Asset).Assembly.GetTypes()
+            .Where(type => typeof(Asset).IsAssignableFrom(type) ||
+                           (type.IsInterface && typeof(IPhysicalAsset).IsAssignableFrom(type)))
+            .OrderBy(type => type.FullName, StringComparer.Ordinal);
+
+        var declarations = new List<AssetObservableDeclaration>();
+
+        foreach (var site in declarationSites)
+            foreach (var property in site.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            {
+                var observed = property.GetCustomAttributes<ObservedAttribute>().ToList();
+                if (observed.Count == 0) continue;
+
+                foreach (var grouping in observed.Select(o => o.By).Distinct())
+                    declarations.Add(new AssetObservableDeclaration(site, BuildAssetObservable(site, property, observed, grouping)));
+            }
+
+        return declarations;
+    }
+
+    private static Observable BuildAssetObservable(
+        Type declaringType, PropertyInfo property, IReadOnlyList<ObservedAttribute> observed, ObservableGrouping grouping)
+    {
+        var declared = observed.FirstOrDefault(o => o.By == grouping && o.IsCardinalityDeclared);
+        if (declared is null)
+            throw new InvalidOperationException(
+                $"{declaringType.Name}.{property.Name} is asset-scoped, so its [Observed] must state a Cardinality. " +
+                "Hundreds of thousands of assets sit behind one declaration; inferring it from the member's type " +
+                "is how a value set becomes unreviewable.");
+
+        var (_, presentation) = InferObservableShape(property.PropertyType);
+
+        return new Observable(
+            AssetObservableId(declaringType, property, grouping), ObservableScope.Asset, declared.Cardinality,
+            presentation, BuildAssetSelector(declaringType, property), ObservableKind.FieldValue, grouping,
+            KeyPresentationFor(grouping));
+    }
+
+    /// <summary>
+    /// How a group's key renders, read from the key's own type rather than declared, so it can't
+    /// disagree with how the same value renders anywhere else.
+    /// </summary>
+    private static ObservablePresentation? KeyPresentationFor(ObservableGrouping grouping) => grouping switch
+    {
+        ObservableGrouping.AssetType => InferObservableShape(typeof(AssetType)).Presentation,
+        _ => null
+    };
+
+    /// <summary>
+    /// Builds an asset-scoped observable's identifier from the member it reads, so the two can never
+    /// disagree about which field they mean.
+    /// </summary>
+    /// <remarks>
+    /// The shape is <c>&lt;assetClass&gt;[.physical].&lt;member&gt;[@&lt;grouping&gt;]</c>. The
+    /// <c>physical</c> segment is what keeps <see cref="Asset.Type"/> and
+    /// <see cref="IPhysicalAsset.Type"/> - two members that can legitimately disagree - from claiming
+    /// one identifier, and it mirrors the <c>asset.Physical.Alignment</c> path a reader would type.
+    /// The <c>@</c> separator cannot appear in a C# identifier, so a grouped identifier is provably
+    /// distinct from every ungrouped one.
+    /// </remarks>
+    private static string AssetObservableId(Type declaringType, PropertyInfo property, ObservableGrouping grouping)
+    {
+        const string physicalPrefix = "IPhysical";
+
+        bool isPhysical = declaringType.IsInterface && declaringType.Name.StartsWith(physicalPrefix, StringComparison.Ordinal);
+        string assetClass = isPhysical ? declaringType.Name[physicalPrefix.Length..] : declaringType.Name;
+        string surface = isPhysical ? ".physical" : "";
+        string suffix = grouping is ObservableGrouping.None ? "" : $"@{CamelCase(grouping.ToString())}";
+
+        return $"{CamelCase(assetClass)}{surface}.{CamelCase(property.Name)}{suffix}";
+    }
+
+    /// <summary>
+    /// Reads an asset-scoped member, routing a physical one through <see cref="Asset.Physical"/>
+    /// rather than casting the asset directly, so an asset whose physical surface is a separate
+    /// object is still read correctly.
+    /// </summary>
+    private static Func<ObservationSource, IEnumerable<object>> BuildAssetSelector(Type declaringType, PropertyInfo property)
+    {
+        var accessor = CompileAssetAccessor(declaringType, property);
+
+        return source =>
+        {
+            if (source is not AssetObservationSource(var asset) || !declaringType.IsInstanceOfType(asset))
+                return [];
+
+            object? value = ToPrimitive(accessor(asset));
+            return value is null ? [] : [value];
+        };
+    }
+
+    private static Func<Asset, object?> CompileAssetAccessor(Type declaringType, PropertyInfo property)
+    {
+        var parameter = Expression.Parameter(typeof(Asset), "asset");
+        Expression subject = declaringType.IsInterface
+            ? Expression.Convert(Expression.Property(parameter, nameof(Asset.Physical)), declaringType)
+            : Expression.Convert(parameter, declaringType);
+
+        var boxed = Expression.Convert(Expression.Property(subject, property), typeof(object));
+        return Expression.Lambda<Func<Asset, object?>>(boxed, parameter).Compile();
+    }
+
+    private static string CamelCase(string name) => $"{char.ToLowerInvariant(name[0])}{name[1..]}";
 
     private static Observable? BuildObservable(string tag, PropertyInfo property, IReadOnlyList<ValidationAttribute> attributes)
     {
@@ -168,8 +399,12 @@ public sealed class ValidationCatalogue
                 or DefinedBitsAttribute or RequiredBitsAttribute);
         if (!isValue) return null;
 
-        var (cardinality, presentation) = InferObservableShape(property.PropertyType);
-        return new Observable(ObservableId(tag, property), ObservableScope.Block, cardinality, presentation, BuildSelector(property));
+        var (inferred, presentation) = InferObservableShape(property.PropertyType);
+        var declared = attributes.OfType<ObservedAttribute>().FirstOrDefault(o => o.IsCardinalityDeclared);
+
+        return new Observable(
+            ObservableId(tag, property), ObservableScope.Block, declared?.Cardinality ?? inferred, presentation,
+            BuildSelector(property));
     }
 
     private static Observable BuildRequiredChildObservable(string tag, PropertyInfo property)
@@ -180,7 +415,7 @@ public sealed class ValidationCatalogue
         return new Observable(
             ObservableId(tag, property), ObservableScope.Block, ObservableCardinality.Enumerated, ObservablePresentation.Number,
             source => source is BlockObservationSource(var block) && declaringType.IsInstanceOfType(block)
-                ? [block.Children.Count(childType.IsInstanceOfType)]
+                ? [(long)block.Children.Count(childType.IsInstanceOfType)]
                 : [],
             ObservableKind.Structural);
     }
@@ -194,7 +429,7 @@ public sealed class ValidationCatalogue
     private static Observable BuildNoChildrenObservable(string tag) =>
         new(
             $"{tag}.childCount", ObservableScope.Block, ObservableCardinality.Enumerated, ObservablePresentation.Number,
-            source => source is BlockObservationSource(var block) ? [block.Children.Count] : [],
+            source => source is BlockObservationSource(var block) ? [(long)block.Children.Count] : [],
             ObservableKind.Structural);
 
     private static Func<ObservationSource, IEnumerable<object>> BuildSelector(PropertyInfo property)
@@ -212,8 +447,28 @@ public sealed class ValidationCatalogue
         };
     }
 
-    private static object? ToPrimitive(object? value) =>
-        value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
+    /// <summary>
+    /// Reduces a member's value to the primitive an observable yields: a whole number, a string, a
+    /// bool, or bytes.
+    /// </summary>
+    /// <remarks>
+    /// Every whole number widens to <see cref="long"/>, one canonical type, for two reasons. It is
+    /// wide enough to hold every field the format has without losing the sign of one that is
+    /// meaningfully negative - <see cref="AssetDebug.Alignment"/> stores -1 to mean "use this type's
+    /// default". And it means a value read fresh from an archive and the same value read back from a
+    /// recorder's cache are always the same CLR type, so they compare equal.
+    /// </remarks>
+    private static object? ToPrimitive(object? value)
+    {
+        object? underlying = value is Enum e ? Convert.ChangeType(e, Enum.GetUnderlyingType(e.GetType())) : value;
+
+        return underlying switch
+        {
+            sbyte or byte or short or ushort or int or uint or long => Convert.ToInt64(underlying),
+            ulong u => checked((long)u),
+            _ => underlying
+        };
+    }
 
     private static (ObservableCardinality Cardinality, ObservablePresentation Presentation) InferObservableShape(Type propertyType)
     {
@@ -233,8 +488,7 @@ public sealed class ValidationCatalogue
         return (ObservableCardinality.Enumerated, ObservablePresentation.Number);
     }
 
-    private static string ObservableId(string tag, PropertyInfo property) =>
-        $"{tag}.{char.ToLowerInvariant(property.Name[0])}{property.Name[1..]}";
+    private static string ObservableId(string tag, PropertyInfo property) => $"{tag}.{CamelCase(property.Name)}";
 
     private static string ReadTag(Type blockType) =>
         ((Block)Activator.CreateInstance(blockType, nonPublic: true)!).Tag;

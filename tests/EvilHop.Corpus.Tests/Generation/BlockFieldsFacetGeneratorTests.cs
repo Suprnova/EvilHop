@@ -29,7 +29,7 @@ public class BlockFieldsFacetGeneratorTests
         var record = generator.Map(ArchiveOf(VersionBlock(subVersion: 2)));
 
         var values = Assert.IsType<JsonArray>(record["PVER.subVersion"]);
-        Assert.Equal(2u, Assert.Single(values)!.GetValue<uint>());
+        Assert.Equal(2L, Assert.Single(values)!.GetValue<long>());
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class BlockFieldsFacetGeneratorTests
         var observations = generator.Reduce([first, second]);
 
         var entry = SoleValueOf(observations, "PVER.subVersion");
-        Assert.Equal(2u, entry["value"]!.GetValue<uint>());
+        Assert.Equal(2L, entry["value"]!.GetValue<long>());
         Assert.Equal(2, entry["count"]!.GetValue<int>());
     }
 
@@ -62,7 +62,7 @@ public class BlockFieldsFacetGeneratorTests
         var observations = generator.Reduce([high, low]);
 
         var values = ValuesOf(observations, "PVER.subVersion");
-        Assert.Equal([1u, 5u], values.Select(v => v!["value"]!.GetValue<uint>()));
+        Assert.Equal([1L, 5L], values.Select(v => v!["value"]!.GetValue<long>()));
     }
 
     [Fact]

@@ -24,9 +24,19 @@ public class ObservationValueSetsTests
     }
 
     [Fact]
-    public void Reduce_NegativeInt_ThrowsRatherThanRecordingItSilently()
+    public void Reduce_NegativeValue_RecordsItRatherThanFailing()
     {
-        Assert.Throws<OverflowException>(() => ObservationValueSets.ToJsonValue(-1));
+        // ADBG.alignment stores -1 to mean "use this type's default", so a whole number the recorder
+        // carries has to be signed - narrowing to uint would fail generation on real archives.
+        var records = new List<MappedArchive>
+        {
+            new("a.hip", new JsonObject { ["x"] = new JsonArray { ObservationValueSets.ToJsonValue(-1) } })
+        };
+
+        var valueSet = ObservationValueSets.Reduce("x", ObservableCardinality.Enumerated, ObservablePresentation.Number, records);
+
+        var entry = Assert.Single(Assert.IsType<JsonArray>(valueSet["values"]))!.AsObject();
+        Assert.Equal(-1L, entry["value"]!.GetValue<long>());
     }
 
     [Fact]

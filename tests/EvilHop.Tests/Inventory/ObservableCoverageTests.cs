@@ -17,11 +17,12 @@ public class ObservableCoverageTests
     private static readonly IReadOnlySet<(string ObservableId, GameVersion Game)> Waivers =
         new HashSet<(string ObservableId, GameVersion Game)>();
 
-    public static TheoryData<string, GameVersion> BlockScopedObservablesByGame()
+    public static TheoryData<string, GameVersion> RecordedObservablesByGame()
     {
         var cases = new TheoryData<string, GameVersion>();
 
-        foreach (var observable in ValidationCatalogue.Instance.Observables.Where(o => o.Scope == ObservableScope.Block))
+        foreach (var observable in ValidationCatalogue.Instance.Observables
+            .Where(o => o.Scope is ObservableScope.Block or ObservableScope.Asset))
             foreach (GameVersion game in Enum.GetValues<GameVersion>())
             {
                 if (Waivers.Contains((observable.Id, game))) continue;
@@ -32,8 +33,8 @@ public class ObservableCoverageTests
     }
 
     [Theory]
-    [MemberData(nameof(BlockScopedObservablesByGame))]
-    public void Observations_EveryBlockScopedObservable_HasARecordInTheGamesInventory(string observableId, GameVersion game)
+    [MemberData(nameof(RecordedObservablesByGame))]
+    public void Observations_EveryRecordedScopeObservable_HasARecordInTheGamesInventory(string observableId, GameVersion game)
     {
         Assert.True(
             InventoryFixture.Instance.ValueSet(game, observableId) is not null,

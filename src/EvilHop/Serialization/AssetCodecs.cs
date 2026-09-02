@@ -44,6 +44,12 @@ internal static class AssetCodecs
     private static readonly Dictionary<AssetType, CodecHandler> Handlers = [];
 
     /// <summary>
+    /// The <see cref="Asset"/> class each concrete codec produces, by type. Seeded shapes aren't
+    /// listed - <see cref="ShapesByType"/> already says what those produce.
+    /// </summary>
+    private static readonly Dictionary<AssetType, string> ConcreteCodecs = [];
+
+    /// <summary>
     /// Used for any <see cref="AssetType"/> with no entry at all.
     /// </summary>
     private static readonly CodecHandler Fallback = new(ReadPlain, WritePlain);
@@ -61,10 +67,38 @@ internal static class AssetCodecs
     /// TODO: per-game filtering - a codec declaring which <see cref="GameVersion"/>s it supports -
     /// arrives with the first concrete codec, where its semantics can be settled against a real
     /// case rather than guessed at.
-    public static void Register<T>(AssetType type, ReadFunc<T> read, WriteFunc<T> write) where T : Asset =>
+    public static void Register<T>(AssetType type, ReadFunc<T> read, WriteFunc<T> write) where T : Asset
+    {
+        ConcreteCodecs[type] = typeof(T).FullName!;
         Handlers[type] = new CodecHandler(
             (data, header, debug, profile) => read(data, header, debug, profile),
             Guarded(write));
+    }
+
+    /// <summary>
+    /// What every known type parses into, one sorted <c>type=shape[|codec]</c> line each.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is the registry read that lets a corpus facet recording per-asset-type fields be
+    /// fingerprinted: which types have a group, and what their fields hold, follow from what an
+    /// asset parses into, so registering a codec or moving a type's shape has to invalidate that
+    /// facet's cached output even though no observable's declaration changed.
+    /// </para>
+    /// <para>
+    /// Every part of a line is a value rather than an identifier, so renaming something in this file
+    /// can't shift a fingerprint that nothing meaningful changed for.
+    /// </para>
+    /// </remarks>
+    internal static IEnumerable<string> Registrations =>
+        ShapesByType.Keys.Union(ConcreteCodecs.Keys)
+            .Select(type =>
+            {
+                string shape = ShapesByType.TryGetValue(type, out var known) ? known.ToString() : "none";
+                string codec = ConcreteCodecs.TryGetValue(type, out string? registered) ? $"|{registered}" : "";
+                return $"{(uint)type}={shape}{codec}";
+            })
+            .Order(StringComparer.Ordinal);
 
     /// <summary>
     /// Reads one asset, dispatching based on <see cref="AssetHeader.Type"/>.

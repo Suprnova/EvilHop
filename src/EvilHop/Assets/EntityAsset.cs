@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Validation;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -89,7 +90,13 @@ public interface IPhysicalEntityAsset : IPhysicalBaseAsset
     /// <item><see cref="AssetType.Platform"/></item>
     /// <item><see cref="AssetType.Trigger"/></item>
     /// </list>
+    /// <para>
+    /// Recorded per asset type as well as across the corpus, since "which subtypes does this type
+    /// use" is the question the list above answers by hand today.
+    /// </para>
     /// </remarks>
+    [Observed(Cardinality = ObservableCardinality.Enumerated)]
+    [Observed(Cardinality = ObservableCardinality.Enumerated, By = ObservableGrouping.AssetType)]
     byte Subtype { get; set; }
     /// <summary>
     /// Unknown. Always 0.

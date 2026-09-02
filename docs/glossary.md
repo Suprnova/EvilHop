@@ -69,6 +69,14 @@ These are the twenty registered by every game.
 - **Trait** - an interface (`IHasModel`, `IGrabbable`, ...) a concrete asset type implements to
   expose a field its whole family reserves but only some types use. See
   [`Traits.cs`](../src/EvilHop/Assets/Traits.cs).
+- **Observable** - a named, primitive-valued projection over one field, declared beside the field it
+  reads and used by both the runtime validator and anything recording what real archives contain.
+  Its identifier is derived from the member, so the two cannot drift apart. See
+  [`Observable`](../src/EvilHop/Validation/Observable.cs).
+- **Grouping** - the axis an observable's occurrences are partitioned along before being recorded,
+  so one field can be summarised across everything or broken down per asset type. The key is the raw
+  type code the archive reported, never an `AssetType`. See
+  [`ObservableGrouping`](../src/EvilHop/Validation/Observable.cs).
 - **Logical surface** - an asset's ordinary public properties, one per fact, named for what it means
   to the game. See [`Asset`](../src/EvilHop/Assets/Asset.cs).
 - **Physical surface** - an asset's `IPhysical*` interface, reached through `asset.Physical`,

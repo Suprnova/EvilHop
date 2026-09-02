@@ -222,6 +222,7 @@ public class AssetDebug : Block
     /// EvilHop does not model this table; it exposes the raw stored value.
     /// </remarks>
     /// Valid calculation of the *previous* Asset's AHDR.plus using this.
+    [Observed(Cardinality = ObservableCardinality.Enumerated)]
     public int Alignment
     {
         get => GetManagedBlockField(ref field);

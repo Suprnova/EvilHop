@@ -25,7 +25,7 @@ public class ValueRuleTests
         // font2.HIP carries FormatQuirks.OmitsPlatformBlock - a real BFBB archive with no PLAT
         // child - so its recorded "Platform absent" occurrence fails the rule's default-profile
         // (unquirked) replay even though EvilHop excuses it correctly for the archive it came from.
-        ("pack.platform-required", GameVersion.BFBB, 0u)
+        ("pack.platform-required", GameVersion.BFBB, 0L)
     };
 
     public static TheoryData<string, GameVersion, object> Cases()
@@ -36,6 +36,14 @@ public class ValueRuleTests
             foreach (GameVersion game in Enum.GetValues<GameVersion>())
             {
                 if (!rule.AppliesTo(new ValidationContext(GameProfiles.For(game)))) continue;
+
+                // A grouped observable records one value set per key rather than one overall, and a
+                // rule scoped to a single key is a different claim from this one. Replaying a rule
+                // against the container would compare it to nothing at all, so it is skipped here
+                // rather than silently passing.
+                if (!ValidationCatalogue.Instance.TryGetObservable(rule.ObservableId, out var observable) ||
+                    observable.Grouping is not ObservableGrouping.None)
+                    continue;
 
                 if (InventoryFixture.Instance.ValueSet(game, rule.ObservableId) is not { } valueSet)
                     continue;
@@ -69,7 +77,7 @@ public class ValueRuleTests
 
     private static object FromJsonValue(JsonValue value)
     {
-        if (value.TryGetValue(out uint u)) return u;
+        if (value.TryGetValue(out long l)) return l;
         if (value.TryGetValue(out bool b)) return b;
         if (value.TryGetValue(out string? s)) return s!;
         throw new NotSupportedException($"Unsupported recorded observation: {value}");

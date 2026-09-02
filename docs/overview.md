@@ -106,9 +106,19 @@ primitive-valued projection over the same field, read by `ValidationCatalogue.Ob
 of whether the rule holds. Rules conditional on more than one member stay hand-written
 `ValidationRule<T>` subclasses instead of attributes.
 
+Observables cover both layers. A block-scoped one is looked up by the block's exact runtime type and
+identified as `<TAG>.<member>`; an asset-scoped one is collected from every level of an
+[`Asset`](../src/EvilHop/Assets/Asset.cs)'s hierarchy and every `IPhysical*` surface it implements,
+and identified as `<assetClass>[.physical].<member>`. An observable may also declare an
+`ObservableGrouping`, which partitions its occurrences by the raw type code of the asset they came
+from, so `Observe(Asset)` yields each value alongside the key it belongs under.
+
 `ValidationCatalogue.DigestOf` hashes one observable's declaration, so a consumer that fingerprints
 its dependencies on that declaration - such as a corpus tool reducing observed values into a
-committed inventory - can tell exactly when it goes stale.
+committed inventory - can tell exactly when it goes stale. It also answers for
+`ValidationCatalogue.AssetCodecsKey`, digesting
+[`AssetCodecs`](../src/EvilHop/Serialization/AssetCodecs.cs)' registry, so a consumer whose output
+depends on what an asset parses into rather than on any one declaration can depend on that too.
 
 [`tests/EvilHop.Tests/Inventory/`](../tests/EvilHop.Tests/Inventory/) closes the loop: it reads the
 committed `corpus/*.json` inventories and replays every `ValueRule` in the catalogue against the

@@ -116,9 +116,20 @@ public interface IPhysicalAsset
     /// <summary>
     /// The <see cref="Asset"/>'s alignment, retrieved from <see cref="AssetDebug.Alignment"/>.
     /// </summary>
+    /// <remarks>
+    /// Recorded per asset type only. The whole-corpus set of alignments is
+    /// <see cref="AssetDebug.Alignment"/>'s own, and this field is copied from it verbatim; what the
+    /// per-type breakdown adds is which type aligns to what, which nothing else records.
+    /// </remarks>
+    [Observed(Cardinality = ObservableCardinality.Enumerated, By = ObservableGrouping.AssetType)]
     int Alignment { get; set; }
     /// <summary>
     /// The <see cref="Asset"/>'s <see cref="AssetFlags"/>, retrieved from <see cref="AssetHeader.Flags"/>.
     /// </summary>
+    /// <remarks>
+    /// Recorded per asset type only, for the same reason as <see cref="Alignment"/>: this field is
+    /// copied verbatim from <see cref="AssetHeader.Flags"/>, whose union is already recorded.
+    /// </remarks>
+    [Observed(Cardinality = ObservableCardinality.Bitmask, By = ObservableGrouping.AssetType)]
     AssetFlags Flags { get; set; }
 }
