@@ -28,6 +28,21 @@ public class BaseAssetTests
     }
 
     [Fact]
+    public void LinkCount_SetToMatchLinksCount_KeepsDerivingAfterwards()
+    {
+        // A codec that parses links into Links reassigns the on-disk count once they're populated,
+        // agreeing with Links.Count - that reassignment must hand LinkCount back to deriving, or a
+        // caller mutating Links afterward would silently serialize a stale count.
+        var asset = new TestBaseAsset();
+        asset.Links.Add(new Link());
+        asset.Physical.LinkCount = 1;
+
+        asset.Links.Add(new Link());
+
+        Assert.Equal(2, asset.Physical.LinkCount);
+    }
+
+    [Fact]
     public void BaseId_WhenNotOverridden_FollowsId()
     {
         var asset = new TestBaseAsset { Id = new AssetId(0x1234) };

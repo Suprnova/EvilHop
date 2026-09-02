@@ -42,12 +42,13 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     byte IPhysicalBaseAsset.LinkCount
     {
         get => _overriddenLinkCount ?? (byte)Links.Count;
-        // Unlike BaseId and Type, this cannot self-normalize: a codec reads the count from the
-        // fixed header before it has located the links themselves, so comparing against
-        // Links.Count at that moment would always see 0. The rule is instead a codec-side one - a
-        // codec that parses links into Links leaves this alone and lets it derive; one that cannot
-        // locate them sets it, and Links stays empty. See the interface's own remarks.
-        set => _overriddenLinkCount = value;
+        // A codec reads the count from the fixed header before it has located the links
+        // themselves, so it cannot self-normalize at that moment the way BaseId/Type do - Links is
+        // still empty. Once a codec finishes parsing links into Links, reassigning the same count
+        // here agrees with Links.Count and clears the override, hooking this back into deriving.
+        // A codec that cannot locate them sets it once and leaves Links empty, so the two
+        // disagreeing is the signal that links exist on disk but nothing has parsed them.
+        set => _overriddenLinkCount = value == (byte)Links.Count ? null : value;
     }
 }
 
@@ -74,11 +75,12 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
     /// header.
     /// </summary>
     /// <remarks>
-    /// Derives from <see cref="BaseAsset.Links"/>'s count until explicitly set, after which it
-    /// keeps whatever it was given. A codec that parses links into <see cref="BaseAsset.Links"/>
-    /// must leave this alone; a codec that cannot locate them sets it here and leaves
-    /// <see cref="BaseAsset.Links"/> empty, so the two disagreeing is the signal that links exist
-    /// on disk but nothing has parsed them.
+    /// Derives from <see cref="BaseAsset.Links"/>'s count until set to a disagreeing value, after
+    /// which it keeps that value instead. A codec that parses links into
+    /// <see cref="BaseAsset.Links"/> reassigns the on-disk count once they're populated, which
+    /// agrees with <see cref="BaseAsset.Links"/>'s count and clears the override; a codec that
+    /// cannot locate them sets it once and leaves <see cref="BaseAsset.Links"/> empty, so the two
+    /// disagreeing is the signal that links exist on disk but nothing has parsed them.
     /// </remarks>
     byte LinkCount { get; set; }
 }
