@@ -220,4 +220,28 @@ public class PackageTests
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }
+
+    [Fact]
+    public void WriteBlock_Plat_NullPlatformName_WritesEmptyString()
+    {
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile with
+        {
+            PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage
+        });
+        var block = serializer.CreateBlock<PackagePlatform>();
+        block.PlatformId = "GC";
+        block.Region = "NTSC";
+        block.Language = "US Common";
+        block.GameName = "Sponge Bob";
+
+        var expected = BlockBytes.Build("PLAT", BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
+        }));
+        Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
+    }
 }
