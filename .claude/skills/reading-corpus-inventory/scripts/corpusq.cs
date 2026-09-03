@@ -1,3 +1,4 @@
+#pragma warning disable
 // corpusq.cs — query a committed EvilHop corpus inventory. See SKILL.md for usage and examples.
 //
 // Every subcommand prints a compact, line-oriented digest instead of raw JSON, so answering a

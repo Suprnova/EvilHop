@@ -1,3 +1,4 @@
+#pragma warning disable
 // hipbytes.cs — raw byte reader for .HIP/.HOP archives. See SKILL.md for usage and examples.
 //
 // This script knows nothing about the HIP block format. It reads bytes, and the common
