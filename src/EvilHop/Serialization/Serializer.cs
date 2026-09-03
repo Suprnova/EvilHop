@@ -1,5 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Primitives;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 
@@ -103,11 +105,11 @@ public abstract partial class Serializer
     /// Thrown when a block has an unrecognized tag, or a block's content doesn't consume exactly
     /// the number of bytes its Size field declares.
     /// </exception>
-    public List<Block> Read(Stream stream)
+    public Collection<Block> Read(Stream stream)
     {
         using var reader = new EndianReader(stream, Endianness.Big);
 
-        var roots = new List<Block>();
+        var roots = new Collection<Block>();
         while (reader.BaseStream.Position < reader.BaseStream.Length)
             roots.Add(ReadBlock(reader));
 
@@ -123,6 +125,7 @@ public abstract partial class Serializer
     /// Thrown when the block's tag has no registered handler, or its content doesn't consume
     /// exactly the number of bytes its Size field declares.
     /// </exception>
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Dispatch internal; only ever called by Read/Write with values they just built.")]
     protected Block ReadBlock(EndianReader reader)
     {
         string tag = ReadTag(reader);
@@ -150,6 +153,7 @@ public abstract partial class Serializer
     /// </summary>
     /// <param name="reader">The reader to read the tag from.</param>
     /// <returns>The 4-character tag.</returns>
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Dispatch internal; only ever called by Read/Write with values they just built.")]
     protected static string ReadTag(BinaryReader reader) => Encoding.ASCII.GetString(reader.ReadBytes(4));
 
     /// <summary>
@@ -165,6 +169,9 @@ public abstract partial class Serializer
     /// <exception cref="FormatException">Thrown when a block has no registered handler.</exception>
     public void Write(Stream stream, IEnumerable<Block> roots)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(roots);
+
         if (!stream.CanSeek)
             throw new ArgumentException(
                 "The destination stream must support seeking, to backpatch each block's Size field.", nameof(stream));
@@ -180,6 +187,7 @@ public abstract partial class Serializer
     /// <param name="writer">The writer to write the block to.</param>
     /// <param name="block">The <see cref="Block"/> to write, including its children.</param>
     /// <exception cref="FormatException">Thrown when the block's tag has no registered handler.</exception>
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Dispatch internal; only ever called by Read/Write with values they just built.")]
     protected void WriteBlock(EndianWriter writer, Block block)
     {
         if (!_handlers.TryGetValue(block.Tag, out var handler))

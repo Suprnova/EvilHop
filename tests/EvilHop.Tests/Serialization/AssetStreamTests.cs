@@ -1,5 +1,4 @@
 using EvilHop.Blocks;
-using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
@@ -10,7 +9,7 @@ public class AssetStreamTests
     public void ReadBlock_Dhdr_ReadsExpectedFields()
     {
         var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
-        var reader = BlockBytes.Reader("DHDR", content);
+        using var reader = BlockBytes.Reader("DHDR", content);
 
         var block = (StreamHeader)new TestSerializer().ReadBlockPublic(reader);
 
@@ -37,7 +36,7 @@ public class AssetStreamTests
             w.Write([0x33, 0x33]);
             w.Write([0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02, 0x03, 0x04]);
         });
-        var reader = BlockBytes.Reader("DPAK", content);
+        using var reader = BlockBytes.Reader("DPAK", content);
 
         var block = (StreamData)new TestSerializer().ReadBlockPublic(reader);
 
@@ -49,7 +48,7 @@ public class AssetStreamTests
     [Fact]
     public void ReadBlock_Dpak_NoAssets_PaddingAmountStaysNull()
     {
-        var reader = BlockBytes.Reader("DPAK", []);
+        using var reader = BlockBytes.Reader("DPAK", []);
 
         var block = (StreamData)new TestSerializer().ReadBlockPublic(reader);
 
@@ -62,7 +61,7 @@ public class AssetStreamTests
     public void ReadBlock_Dpak_SizeTooSmallForPaddingField_ReadsAllContentAsDataWithoutThrowing()
     {
         var content = BlockBytes.Content(w => w.Write([0xAA, 0xBB, 0xCC]));
-        var reader = BlockBytes.Reader("DPAK", content);
+        using var reader = BlockBytes.Reader("DPAK", content);
 
         var block = (StreamData)new TestSerializer().ReadBlockPublic(reader);
 

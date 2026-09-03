@@ -12,7 +12,11 @@ public abstract class PayloadAsset : Asset
     /// Writes this <see cref="PayloadAsset"/>'s embedded file to <paramref name="stream"/>.
     /// </summary>
     /// <param name="stream">The stream to write to.</param>
-    public void SaveTo(Stream stream) => stream.Write(Data);
+    public void SaveTo(Stream stream)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        stream.Write(Data);
+    }
 
     /// <summary>
     /// Replaces this <see cref="PayloadAsset"/>'s embedded file with the contents of
@@ -21,6 +25,7 @@ public abstract class PayloadAsset : Asset
     /// <param name="stream">The stream to read from.</param>
     public void LoadFrom(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
         using var buffer = new MemoryStream();
         stream.CopyTo(buffer);
         Data = buffer.ToArray();

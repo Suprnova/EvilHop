@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using System.Collections.Immutable;
 
 namespace EvilHop.Assets;
 
@@ -26,10 +27,20 @@ public sealed class RawParameter(byte[] bytes) : Parameter
     /// <summary>
     /// The parameter's raw bytes. Always exactly 4 bytes.
     /// </summary>
-    public byte[] Bytes { get; set; } = bytes;
+    /// <exception cref="ArgumentException">The assigned value's length isn't 4.</exception>
+    public ImmutableArray<byte> Bytes
+    {
+        get;
+        set => field = Validate(value);
+    } = Validate([.. bytes]);
+
+    private static ImmutableArray<byte> Validate(ImmutableArray<byte> value) =>
+        value.Length == 4
+            ? value
+            : throw new ArgumentException($"{nameof(Bytes)} must contain exactly 4 elements.", nameof(value));
 
     /// <inheritdoc/>
-    internal override void WriteTo(EndianWriter writer) => writer.Write(Bytes);
+    internal override void WriteTo(EndianWriter writer) => writer.Write(Bytes.AsSpan());
 }
 
 /// <summary>

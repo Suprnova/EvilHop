@@ -1,6 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -77,6 +78,7 @@ public abstract class Asset : IPhysicalAsset
     /// slice of <see cref="StreamData"/>.
     /// </summary>
     /// <returns>The unparsed bytes for this <see cref="Asset"/>.</returns>
+    [SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Span<byte> is deliberate and can't be a field.")]
     public Span<byte> GetUnparsedTail() => UnparsedTail;
 
     /// <summary>

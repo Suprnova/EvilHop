@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace EvilHop.Corpus.Tests.Output;
 
-public class InventoryWriterTests : IDisposable
+public sealed class InventoryWriterTests : IDisposable
 {
     private readonly string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
 

@@ -15,7 +15,7 @@ public class PackageTests
             w.Write(0x00040006);
             w.Write(1);
         });
-        var reader = BlockBytes.Reader("PVER", content);
+        using var reader = BlockBytes.Reader("PVER", content);
 
         var block = (PackageVersion)new TestSerializer().ReadBlockPublic(reader);
 
@@ -46,7 +46,7 @@ public class PackageTests
     public void ReadBlock_Pflg_ReadsExpectedFields()
     {
         var content = BlockBytes.Content(w => w.Write(0x2E));
-        var reader = BlockBytes.Reader("PFLG", content);
+        using var reader = BlockBytes.Reader("PFLG", content);
 
         var block = (PackageFlags)new TestSerializer().ReadBlockPublic(reader);
 
@@ -57,7 +57,7 @@ public class PackageTests
     public void ReadBlock_Pflg_NonStandardValue_ReadsAsIs()
     {
         var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
-        var reader = BlockBytes.Reader("PFLG", content);
+        using var reader = BlockBytes.Reader("PFLG", content);
 
         var block = (PackageFlags)new TestSerializer().ReadBlockPublic(reader);
 
@@ -86,7 +86,7 @@ public class PackageTests
             w.Write(4);
             w.Write(5);
         });
-        var reader = BlockBytes.Reader("PCNT", content);
+        using var reader = BlockBytes.Reader("PCNT", content);
 
         var block = (PackageCount)new TestSerializer().ReadBlockPublic(reader);
 
@@ -127,7 +127,7 @@ public class PackageTests
             w.Write(1028661674);
             w.WriteEvilString("Tue Aug 06 12:21:14 2002\n");
         });
-        var reader = BlockBytes.Reader("PCRT", content);
+        using var reader = BlockBytes.Reader("PCRT", content);
 
         var block = (PackageCreated)new TestSerializer().ReadBlockPublic(reader);
 
@@ -155,7 +155,7 @@ public class PackageTests
     public void ReadBlock_Pmod_ReadsRawUnixTimeAsUtc()
     {
         var content = BlockBytes.Content(w => w.Write(1029000000));
-        var reader = BlockBytes.Reader("PMOD", content);
+        using var reader = BlockBytes.Reader("PMOD", content);
 
         var block = (PackageModified)new TestSerializer().ReadBlockPublic(reader);
 
@@ -217,6 +217,30 @@ public class PackageTests
             w.WriteEvilString("US");
             w.WriteEvilString("NTSC");
             w.WriteEvilString("Incredibles");
+        }));
+        Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
+    }
+
+    [Fact]
+    public void WriteBlock_Plat_NullPlatformName_WritesEmptyString()
+    {
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile with
+        {
+            PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage
+        });
+        var block = serializer.CreateBlock<PackagePlatform>();
+        block.PlatformId = "GC";
+        block.Region = "NTSC";
+        block.Language = "US Common";
+        block.GameName = "Sponge Bob";
+
+        var expected = BlockBytes.Build("PLAT", BlockBytes.Content(w =>
+        {
+            w.WriteEvilString("GC");
+            w.WriteEvilString("");
+            w.WriteEvilString("NTSC");
+            w.WriteEvilString("US Common");
+            w.WriteEvilString("Sponge Bob");
         }));
         Assert.Equal(expected, BlockBytes.WriteBlock(serializer, block));
     }

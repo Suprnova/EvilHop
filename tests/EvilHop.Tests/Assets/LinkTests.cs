@@ -1,5 +1,6 @@
 using EvilHop.Assets;
 using EvilHop.Primitives;
+using System.Collections.Immutable;
 
 namespace EvilHop.Tests.Assets;
 
@@ -21,7 +22,7 @@ public class LinkTests
     public void Params_SetToWrongLength_ThrowsArgumentException(int length)
     {
         var link = new Link();
-        var wrongLength = new Parameter[length];
+        var wrongLength = new Parameter[length].ToImmutableArray();
 
         Assert.Throws<ArgumentException>(() => link.Params = wrongLength);
     }
