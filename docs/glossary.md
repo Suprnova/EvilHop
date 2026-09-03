@@ -62,7 +62,9 @@ These are the twenty registered by every game.
   parse and is degraded to its generic form instead of throwing. See
   [`AssetDiagnostic`](../src/EvilHop/Assets/AssetSession.cs).
 - **Codec** - the reader/writer pair for one `AssetType`, registered with
-  [`AssetCodecs`](../src/EvilHop/Serialization/AssetCodecs.cs).
+  [`AssetCodecs`](../src/EvilHop/Serialization/AssetCodecs.cs). A codec can declare which
+  `GameVersion`s its reader applies to; reading under an unlisted game degrades to the type's
+  shape-generic handler instead.
 - **Shape** - which level of the asset hierarchy (`BaseAsset`, `EntityAsset`, `DynaAsset`, or
   `Payload`) a type's bytes are known to follow before a real codec is written for it. See
   `AssetShape` in [`AssetCodecs`](../src/EvilHop/Serialization/AssetCodecs.cs).
