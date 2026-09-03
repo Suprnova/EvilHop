@@ -52,4 +52,8 @@ public class AssetIdTests
     [Fact]
     public void FromName_UnrecognizedType_PassesNameThroughUnchanged() =>
         Assert.Equal(AssetId.FromName("foo"), AssetId.FromName("foo", AssetType.Trigger));
+
+    [Fact]
+    public void None_HasZeroValue() =>
+        Assert.Equal(0u, AssetId.None.Value);
 }
