@@ -37,6 +37,7 @@ public class BlockChildren(Block parent) : IReadOnlyList<Block>
     /// <param name="child">The <see cref="Block"/> to add.</param>
     public void Add(Block child)
     {
+        ArgumentNullException.ThrowIfNull(child);
         ThrowIfAncestorOf(child, parent);
         child.Parent = parent;
         children.Add(child);
@@ -49,6 +50,7 @@ public class BlockChildren(Block parent) : IReadOnlyList<Block>
     /// <param name="child">The <see cref="Block"/> to insert.</param>
     public void Insert(int index, Block child)
     {
+        ArgumentNullException.ThrowIfNull(child);
         ThrowIfAncestorOf(child, parent);
         child.Parent = parent;
         children.Insert(index, child);
@@ -61,6 +63,7 @@ public class BlockChildren(Block parent) : IReadOnlyList<Block>
     /// <returns><see langword="true"/> if <paramref name="child"/> was found and removed; otherwise <see langword="false"/>.</returns>
     public bool Remove(Block child)
     {
+        ArgumentNullException.ThrowIfNull(child);
         bool removed = children.Remove(child);
         if (removed) child.Parent = null;
         return removed;

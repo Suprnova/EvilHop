@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -197,6 +198,7 @@ public sealed class AssetSession : IDisposable
         }
     }
 
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Each asset is parsed independently; a malformed one must not abort the rest of the archive.")]
     private Asset ParseOne(AssetHeader header, long dataStart)
     {
         var debug = header.Debug;
@@ -212,7 +214,7 @@ public sealed class AssetSession : IDisposable
         {
             var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);
             using var stream = new MemoryStream(_streamData.Data, offset, length, writable: false);
-            var reader = new EndianReader(stream, _archive.Serializer.Profile.Endianness);
+            using var reader = new EndianReader(stream, _archive.Serializer.Profile.Endianness);
             return AssetCodecs.Read(reader, header, debug, _archive.Serializer.Profile);
         }
         catch (Exception ex)

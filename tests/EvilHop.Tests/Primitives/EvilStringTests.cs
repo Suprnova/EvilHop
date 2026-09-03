@@ -27,7 +27,7 @@ public class EvilStringTests
     [MemberData(nameof(EvilStringData))]
     public void EvilString_ReadEvilString_ExpectedValue(byte[] data, string expected)
     {
-        BinaryReader reader = new(new MemoryStream(data));
+        using BinaryReader reader = new(new MemoryStream(data));
 
         string value = reader.ReadEvilString();
 
@@ -37,7 +37,7 @@ public class EvilStringTests
     [Fact]
     public void EvilString_ReadEvilString_NonZeroPaddingByte_ThrowsInvalidDataException()
     {
-        BinaryReader reader = new(new MemoryStream([0x41, 0x42, 0x00, 0x01]));
+        using BinaryReader reader = new(new MemoryStream([0x41, 0x42, 0x00, 0x01]));
 
         var ex = Assert.Throws<InvalidDataException>(() => reader.ReadEvilString());
 

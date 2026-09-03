@@ -1,7 +1,7 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
+using System.Globalization;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 
 namespace EvilHop.Tests.Corpus;
@@ -20,7 +20,7 @@ public class InventoryTests
 {
     private static readonly IReadOnlyDictionary<string, JsonElement> Inventories = LoadInventories();
 
-    private static IReadOnlyDictionary<string, JsonElement> LoadInventories()
+    private static Dictionary<string, JsonElement> LoadInventories()
     {
         string corpusDirectory = Path.Combine(FindRepositoryRoot(), "corpus");
         return Directory.GetFiles(corpusDirectory, "*.json").ToDictionary(
@@ -94,7 +94,7 @@ public class InventoryTests
 
         bool isFlags = property.PropertyType.GetCustomAttribute<FlagsAttribute>() is not null;
         ulong knownBits = isFlags
-            ? Enum.GetValues(property.PropertyType).Cast<object>().Aggregate(0UL, (bits, member) => bits | Convert.ToUInt64(member))
+            ? Enum.GetValues(property.PropertyType).Cast<object>().Aggregate(0UL, (bits, member) => bits | Convert.ToUInt64(member, CultureInfo.InvariantCulture))
             : 0;
 
         // Collect every offending value before asserting, rather than stopping at the first - a

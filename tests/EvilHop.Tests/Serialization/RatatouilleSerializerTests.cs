@@ -3,8 +3,13 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class RatatouilleSerializerTests
+public class RatatouilleSerializerTests : SerializerContractTests
 {
+    protected override Serializer CreateSerializer() => new RatatouilleSerializer();
+
+    protected override FileStream OpenMinimalFixture() =>
+        File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "ratatouille", "minimal.hip"));
+
     [Fact]
     public void DefaultProfile_IsRatatouilleWithLanguageRegionPlatformOrder()
     {

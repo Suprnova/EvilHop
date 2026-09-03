@@ -81,7 +81,7 @@ public abstract class Block
     /// blocks (AHDR, ADBG, LHDR, DPAK) when set to <c>Asset Mode</c>. Has no effect on
     /// unmanaged blocks or unmanaged fields for managed blocks.
     /// </summary>
-    internal bool AreBlockFieldsLocked { get; set; } = false;
+    internal bool AreBlockFieldsLocked { get; set; }
 
     /// <summary>
     /// Locks this <see cref="Block"/>'s own fields and recurses into every current child, locking
