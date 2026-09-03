@@ -14,16 +14,11 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/HANG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class HangableAsset : EntityAsset, IHasModel
+public sealed class HangableAsset : EntityAsset, IHasModel, IPhysicalHangableAsset
 {
     /// <summary>
-    /// Behavior flags for this <see cref="HangableAsset"/>.
-    /// </summary>
-    public HangableFlags Flags { get; set; }
-
-    /// <summary>
-    /// The vertical offset from <see cref="EntityAsset.Position"/> up to the pivot
-    /// the object swings from.
+    /// The vertical offset from <see cref="EntityAsset.Position"/> up to the pivot the object swings
+    /// from.
     /// </summary>
     public float PivotOffset { get; set; }
 
@@ -58,6 +53,12 @@ public sealed class HangableAsset : EntityAsset, IHasModel
     /// </summary>
     public float StopDecel { get; set; }
 
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalHangableAsset Physical => this;
+
+    private uint _hangFlags;
+    uint IPhysicalHangableAsset.HangFlags { get => _hangFlags; set => _hangFlags = value; }
+
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
 
     /// <summary>
@@ -78,7 +79,7 @@ public sealed class HangableAsset : EntityAsset, IHasModel
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
 
-        asset.Flags = (HangableFlags)reader.ReadUInt32();
+        asset.Physical.HangFlags = reader.ReadUInt32();
         asset.PivotOffset = reader.ReadSingle();
         asset.LeverArm = reader.ReadSingle();
         asset.Gravity = reader.ReadSingle();
@@ -98,7 +99,7 @@ public sealed class HangableAsset : EntityAsset, IHasModel
         BaseAssetPrefix.Write(asset, writer);
         EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
 
-        writer.Write((uint)asset.Flags);
+        writer.Write(asset.Physical.HangFlags);
         writer.Write(asset.PivotOffset);
         writer.Write(asset.LeverArm);
         writer.Write(asset.Gravity);
@@ -113,13 +114,12 @@ public sealed class HangableAsset : EntityAsset, IHasModel
 }
 
 /// <summary>
-/// Represents all known values for <see cref="HangableAsset.Flags"/>.
+/// An explicit interface used to interact with <see cref="HangableAsset"/>'s underlying values.
 /// </summary>
-[Flags]
-public enum HangableFlags : uint
+public interface IPhysicalHangableAsset : IPhysicalEntityAsset
 {
     /// <summary>
-    /// No flags are set.
+    /// Unknown. Always 0.
     /// </summary>
-    None = 0,
+    uint HangFlags { get; set; }
 }

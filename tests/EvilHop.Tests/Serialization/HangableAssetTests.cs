@@ -94,7 +94,7 @@ public class HangableAssetTests
     {
         var asset = (HangableAsset)Read(Data());
 
-        Assert.Equal(HangableFlags.LeverArmAdjusted, asset.Flags);
+        Assert.Equal(0x80000000u, asset.Physical.HangFlags);
         Assert.Equal(3.0f, asset.PivotOffset);
         Assert.Equal(5.0f, asset.LeverArm);
         Assert.Equal(50.0f, asset.Gravity);
@@ -152,5 +152,15 @@ public class HangableAssetTests
         ((IHasModel)asset).ModelId = new AssetId(0xDEADBEEF);
 
         Assert.Equal(new AssetId(0xDEADBEEF), asset.Physical.ModelId);
+    }
+
+    [Fact]
+    public void Flags_SetThroughPhysical_IsStoredIndependently()
+    {
+        var asset = new HangableAsset();
+
+        asset.Physical.HangFlags = 0x80000000;
+
+        Assert.Equal(0x80000000u, asset.Physical.HangFlags);
     }
 }
