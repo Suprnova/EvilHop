@@ -26,7 +26,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     private AssetId? _overriddenBaseId;
     AssetId IPhysicalBaseAsset.BaseId
     {
-        get => _overriddenBaseId ?? this.Id;
+        get => _overriddenBaseId ?? Id;
         // prevents equivalent id assignments from being interpretted as an "override"
         set => _overriddenBaseId = value == Id ? null : value;
     }
@@ -42,12 +42,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     byte IPhysicalBaseAsset.LinkCount
     {
         get => _overriddenLinkCount ?? (byte)Links.Count;
-        // Unlike BaseId and Type, this cannot self-normalize: a codec reads the count from the
-        // fixed header before it has located the links themselves, so comparing against
-        // Links.Count at that moment would always see 0. The rule is instead a codec-side one - a
-        // codec that parses links into Links leaves this alone and lets it derive; one that cannot
-        // locate them sets it, and Links stays empty. See the interface's own remarks.
-        set => _overriddenLinkCount = value;
+        set => _overriddenLinkCount = value == (byte)Links.Count ? null : value;
     }
 }
 
@@ -74,11 +69,8 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
     /// header.
     /// </summary>
     /// <remarks>
-    /// Derives from <see cref="BaseAsset.Links"/>'s count until explicitly set, after which it
-    /// keeps whatever it was given. A codec that parses links into <see cref="BaseAsset.Links"/>
-    /// must leave this alone; a codec that cannot locate them sets it here and leaves
-    /// <see cref="BaseAsset.Links"/> empty, so the two disagreeing is the signal that links exist
-    /// on disk but nothing has parsed them.
+    /// When disagreements with <see cref="BaseAsset.Links"/>.Count exist, this field wins during
+    /// serialization. 
     /// </remarks>
     byte LinkCount { get; set; }
 }

@@ -48,7 +48,21 @@ internal static class AssetCodecs
     /// </summary>
     private static readonly CodecHandler Fallback = new(ReadPlain, WritePlain);
 
-    static AssetCodecs() => RegisterGenericShapes();
+    static AssetCodecs()
+    {
+        RegisterGenericShapes();
+        RegisterConcreteCodecs();
+    }
+
+    /// <summary>
+    /// Registers every asset type with a real, hand-written codec. Each entry just points at its
+    /// type's own <c>Read</c>/<c>Write</c> pair - the logic, including any per-game branching,
+    /// lives with the asset class itself, not here.
+    /// </summary>
+    private static void RegisterConcreteCodecs()
+    {
+        Register<CounterAsset>(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
+    }
 
     /// <summary>
     /// Registers <typeparamref name="T"/>'s codec for <paramref name="type"/>, replacing whatever
