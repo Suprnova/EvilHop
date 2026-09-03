@@ -5,7 +5,7 @@ namespace EvilHop.Common;
 /// <summary>
 /// A helper class used for calculating an <c>Asset</c>'s BKDR hash.
 /// </summary>
-public class BKDRHash
+public static class BKDRHash
 {
     /// <summary>
     /// Calculates the BKDR (modified) hash of the provided <paramref name="str"/>.

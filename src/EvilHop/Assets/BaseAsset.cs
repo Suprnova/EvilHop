@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
 
@@ -18,7 +19,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     /// <summary>
     /// The <see cref="Link"/>s this <see cref="BaseAsset"/> owns.
     /// </summary>
-    public List<Link> Links { get; } = [];
+    public Collection<Link> Links { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalBaseAsset Physical => this;

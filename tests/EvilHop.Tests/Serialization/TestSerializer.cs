@@ -12,7 +12,7 @@ namespace EvilHop.Tests.Serialization;
 /// per-block-type tests, which need to read or write a single block (envelope + fields) without
 /// going through the full <see cref="Serializer.Read"/>/<see cref="Serializer.Write"/> entry points.
 /// </summary>
-internal class TestSerializer : Serializer
+internal sealed class TestSerializer : Serializer
 {
     public TestSerializer() : base(N100FSerializer.DefaultProfile) { }
 

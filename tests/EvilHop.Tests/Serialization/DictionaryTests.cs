@@ -11,7 +11,7 @@ public class DictionaryTests
     public void ReadBlock_Ainf_ReadsExpectedFields()
     {
         var content = BlockBytes.Content(w => w.Write(0));
-        var reader = BlockBytes.Reader("AINF", content);
+        using var reader = BlockBytes.Reader("AINF", content);
 
         var block = (AssetInf)new TestSerializer().ReadBlockPublic(reader);
 
@@ -49,7 +49,7 @@ public class DictionaryTests
             w.Write((uint)AssetFlags.None);
             w.Write(BlockBytes.Build("ADBG", adbg));
         });
-        var reader = BlockBytes.Reader("AHDR", content);
+        using var reader = BlockBytes.Reader("AHDR", content);
 
         var block = (AssetHeader)new TestSerializer().ReadBlockPublic(reader);
 
@@ -122,7 +122,7 @@ public class DictionaryTests
             w.Write(0);
             w.Write(BlockBytes.Build("ADBG", adbg));
         });
-        var reader = BlockBytes.Reader("AHDR", content);
+        using var reader = BlockBytes.Reader("AHDR", content);
 
         var block = (AssetHeader)new TestSerializer().ReadBlockPublic(reader);
 
@@ -139,7 +139,7 @@ public class DictionaryTests
             w.WriteEvilString("source.txt");
             w.Write(0x12345678);
         });
-        var reader = BlockBytes.Reader("ADBG", content);
+        using var reader = BlockBytes.Reader("ADBG", content);
 
         var block = (AssetDebug)new TestSerializer().ReadBlockPublic(reader);
 
@@ -196,7 +196,7 @@ public class DictionaryTests
             w.WriteEvilString("");
             w.Write(0);
         });
-        var reader = BlockBytes.Reader("ADBG", content);
+        using var reader = BlockBytes.Reader("ADBG", content);
 
         var block = (AssetDebug)new TestSerializer().ReadBlockPublic(reader);
 
@@ -207,7 +207,7 @@ public class DictionaryTests
     public void ReadBlock_Linf_ReadsExpectedFields()
     {
         var content = BlockBytes.Content(w => w.Write(0));
-        var reader = BlockBytes.Reader("LINF", content);
+        using var reader = BlockBytes.Reader("LINF", content);
 
         var block = (LayerInf)new TestSerializer().ReadBlockPublic(reader);
 
@@ -238,7 +238,7 @@ public class DictionaryTests
             w.Write(103);
             w.Write(BlockBytes.Build("LDBG", ldbg));
         });
-        var reader = BlockBytes.Reader("LHDR", content);
+        using var reader = BlockBytes.Reader("LHDR", content);
 
         var block = (LayerHeader)new TestSerializer().ReadBlockPublic(reader);
 
@@ -286,7 +286,7 @@ public class DictionaryTests
             w.Write(0);
             w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
         });
-        var reader = BlockBytes.Reader("LHDR", content);
+        using var reader = BlockBytes.Reader("LHDR", content);
 
         var block = (LayerHeader)serializer.ReadBlockPublic(reader);
 
@@ -303,7 +303,7 @@ public class DictionaryTests
             w.Write(0);
             w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
         });
-        var reader = BlockBytes.Reader("LHDR", content);
+        using var reader = BlockBytes.Reader("LHDR", content);
 
         var block = (LayerHeader)serializer.ReadBlockPublic(reader);
 
@@ -320,7 +320,7 @@ public class DictionaryTests
             w.Write(0);
             w.Write(BlockBytes.Build("LDBG", BlockBytes.Content(w => w.Write(0))));
         });
-        var reader = BlockBytes.Reader("LHDR", content);
+        using var reader = BlockBytes.Reader("LHDR", content);
 
         var block = (LayerHeader)serializer.ReadBlockPublic(reader);
 
@@ -338,7 +338,7 @@ public class DictionaryTests
         block.Debug = debug;
 
         var written = BlockBytes.WriteBlock(serializer, block);
-        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        using var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
         reader.BaseStream.Position = 8; // skip tag + size
 
         Assert.Equal(2u, reader.ReadUInt32());
@@ -355,7 +355,7 @@ public class DictionaryTests
         block.Debug = debug;
 
         var written = BlockBytes.WriteBlock(serializer, block);
-        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        using var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
         reader.BaseStream.Position = 8; // skip tag + size
 
         Assert.Equal(10u, reader.ReadUInt32());
@@ -372,7 +372,7 @@ public class DictionaryTests
         block.Debug = debug;
 
         var written = BlockBytes.WriteBlock(serializer, block);
-        var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
+        using var reader = new EndianReader(new MemoryStream(written), Endianness.Big);
         reader.BaseStream.Position = 8; // skip tag + size
 
         Assert.Equal((uint)LayerType.TextureStream, reader.ReadUInt32());
@@ -382,7 +382,7 @@ public class DictionaryTests
     public void ReadBlock_Ldbg_ReadsExpectedFields()
     {
         var content = BlockBytes.Content(w => w.Write(0xFFFFFFFF));
-        var reader = BlockBytes.Reader("LDBG", content);
+        using var reader = BlockBytes.Reader("LDBG", content);
 
         var block = (LayerDebug)new TestSerializer().ReadBlockPublic(reader);
 

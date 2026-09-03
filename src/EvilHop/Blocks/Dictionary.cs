@@ -67,6 +67,7 @@ public class AssetTable : Block
         get => GetChildren<AssetHeader>();
         set
         {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             EnsureFieldsUnlocked();
 
             foreach (var header in GetChildren<AssetHeader>().ToList()) Children.Remove(header);
@@ -287,6 +288,7 @@ public class LayerTable : Block
         get => GetChildren<LayerHeader>();
         set
         {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             EnsureFieldsUnlocked();
 
             foreach (var header in GetChildren<LayerHeader>().ToList()) Children.Remove(header);

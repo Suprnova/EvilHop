@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace EvilHop.Primitives;
@@ -5,6 +6,8 @@ namespace EvilHop.Primitives;
 /// <summary>
 /// Provides extension methods for reading and writing EvilEngine-formatted strings.
 /// </summary>
+[SuppressMessage("Naming", "CA1708:Identifiers should differ by more than case", Justification = "Analyzer/extension-members mismatch. https://github.com/dotnet/sdk/issues/51716")]
+[SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Analyzer/extension-members mismatch. https://github.com/dotnet/sdk/issues/51681")]
 public static class EvilString
 {
     extension(BinaryReader reader)

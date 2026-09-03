@@ -55,7 +55,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_ReturnsFourRootsInOrder()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
 
         Assert.Equal(4, roots.Count);
         Assert.Equal(["HIPA", "PACK", "DICT", "STRM"], roots.Select(r => r.Tag));
@@ -64,7 +65,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_PackHasExpectedChildrenAndNoPlat()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var pack = (Package)roots[1];
 
         Assert.Equal(["PVER", "PFLG", "PCNT", "PCRT", "PMOD"], pack.Children.Select(c => c.Tag));
@@ -74,7 +76,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_PackFieldsMatchFixture()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var pack = (Package)roots[1];
 
         Assert.Equal(2u, pack.Version.SubVersion);
@@ -92,7 +95,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_PcrtDateRoundTripsWithDateString()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var pack = (Package)roots[1];
 
         Assert.Equal(1028661674, pack.Created.CreatedDate.ToUnixTimeSeconds());
@@ -102,7 +106,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_DictHasExpectedStructure()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var dict = (Dictionary)roots[2];
 
         Assert.Equal(["ATOC", "LTOC"], dict.Children.Select(c => c.Tag));
@@ -113,7 +118,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_AhdrHasExactlyOneAdbgChild()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var dict = (Dictionary)roots[2];
         var ahdr = dict.AssetTable.Headers.Single();
 
@@ -124,7 +130,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_LhdrHasExactlyOneLdbgChild()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var dict = (Dictionary)roots[2];
         var lhdr = dict.LayerTable.Headers.Single();
 
@@ -135,7 +142,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_StrmHasExpectedChildren()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var strm = (AssetStream)roots[3];
 
         Assert.Equal(["DHDR", "DPAK"], strm.Children.Select(c => c.Tag));
@@ -146,7 +154,8 @@ public abstract class SerializerContractTests
     {
         // Every game serializer's default profile has the padding field. If a future game's default
         // ever sets it false, this test failing is the correct alarm.
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
         var strm = (AssetStream)roots[3];
 
         Assert.Equal(2u, strm.Data.PaddingAmount);
@@ -157,7 +166,8 @@ public abstract class SerializerContractTests
     [Fact]
     public void Read_MinimalFixture_BlockTreeParentChildRelationshipsAreConsistent()
     {
-        var roots = CreateSerializer().Read(OpenMinimalFixture());
+        using var stream = OpenMinimalFixture();
+        var roots = CreateSerializer().Read(stream);
 
         static void AssertParentage(Block block)
         {

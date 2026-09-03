@@ -3,8 +3,10 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class N100FSerializerTests
+public class N100FSerializerTests : SerializerContractTests
 {
+    protected override Serializer CreateSerializer() => new N100FSerializer();
+
     [Fact]
     public void DefaultProfile_IsN100FWithPaddingField()
     {

@@ -31,8 +31,11 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// <param name="stream">The <see cref="Stream"/> to load from.</param>
     /// <param name="serializer">The <see cref="Serialization.Serializer"/> to use for serializing.</param>
     /// <returns>An <see cref="Archive"/> constructed from the provided parameters.</returns>
-    public static Archive Load(Stream stream, Serializer serializer) =>
-        new(serializer, serializer.Read(stream));
+    public static Archive Load(Stream stream, Serializer serializer)
+    {
+        ArgumentNullException.ThrowIfNull(serializer);
+        return new(serializer, serializer.Read(stream));
+    }
 
     /// <summary>
     /// Saves a HIP archive to the provided <paramref name="stream"/> using <see cref="Serializer"/>.

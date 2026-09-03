@@ -15,7 +15,7 @@ public class BlockTests
         };
     }
 
-    internal class TestBlock : Block
+    internal sealed class TestBlock : Block
     {
         protected internal override string Tag => "TEST";
 
@@ -26,7 +26,7 @@ public class BlockTests
         }
     }
 
-    internal class OtherTestBlock : Block
+    internal sealed class OtherTestBlock : Block
     {
         protected internal override string Tag => "OTHR";
     }

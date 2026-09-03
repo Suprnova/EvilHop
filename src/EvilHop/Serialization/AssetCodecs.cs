@@ -157,7 +157,7 @@ internal static class AssetCodecs
         return asset;
     }
 
-    private static Asset ReadPlain(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericAsset ReadPlain(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new GenericAsset();
         AssetFields.Populate(asset, header, debug);
@@ -168,7 +168,7 @@ internal static class AssetCodecs
     private static void WritePlain(Asset asset, EndianWriter writer, FormatProfile profile) =>
         writer.Write(asset.GetUnparsedTail());
 
-    private static Asset ReadBase(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericBaseAsset ReadBase(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = PopulateBase(new GenericBaseAsset(), header, debug, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -181,7 +181,7 @@ internal static class AssetCodecs
         writer.Write(asset.GetUnparsedTail());
     }
 
-    private static Asset ReadEntity(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericEntityAsset ReadEntity(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = PopulateBase(new GenericEntityAsset(), header, debug, reader);
         EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
@@ -196,7 +196,7 @@ internal static class AssetCodecs
         writer.Write(entity.GetUnparsedTail());
     }
 
-    private static Asset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericDynaAsset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = PopulateBase(new GenericDynaAsset(), header, debug, reader);
         DynaAssetPrefix.Read(asset, reader);
@@ -211,7 +211,7 @@ internal static class AssetCodecs
         writer.Write(dyna.GetUnparsedTail());
     }
 
-    private static Asset ReadPayload(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericPayloadAsset ReadPayload(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new GenericPayloadAsset();
         AssetFields.Populate(asset, header, debug);

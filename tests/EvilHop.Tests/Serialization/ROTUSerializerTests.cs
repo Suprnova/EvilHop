@@ -3,8 +3,13 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class ROTUSerializerTests
+public class ROTUSerializerTests : SerializerContractTests
 {
+    protected override Serializer CreateSerializer() => new ROTUSerializer();
+
+    protected override FileStream OpenMinimalFixture() =>
+        File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "rotu", "minimal.hip"));
+
     [Fact]
     public void DefaultProfile_IsROTUWithLanguageRegionPlatformOrder()
     {
