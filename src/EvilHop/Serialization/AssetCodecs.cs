@@ -62,6 +62,7 @@ internal static class AssetCodecs
     private static void RegisterConcreteCodecs()
     {
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
+        Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
     }
 
