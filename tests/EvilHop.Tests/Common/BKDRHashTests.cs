@@ -20,4 +20,12 @@ public class BKDRHashTests
 
         Assert.Equal(expected, hash);
     }
+
+    [Theory]
+    [InlineData("foo", "foo\0")]
+    [InlineData("foo", "\0foo")]
+    [InlineData("foobar", "foo\0bar")]
+    [InlineData("foobar", "foo\0\0bar\0")]
+    public void Calculate_StrayNullTerminators_DoesNotAffectHash(string name, string nameWithNulls) =>
+        Assert.Equal(BKDRHash.Calculate(name), BKDRHash.Calculate(nameWithNulls));
 }
