@@ -26,7 +26,7 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     private AssetId? _overriddenBaseId;
     AssetId IPhysicalBaseAsset.BaseId
     {
-        get => _overriddenBaseId ?? this.Id;
+        get => _overriddenBaseId ?? Id;
         // prevents equivalent id assignments from being interpretted as an "override"
         set => _overriddenBaseId = value == Id ? null : value;
     }
@@ -42,12 +42,6 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     byte IPhysicalBaseAsset.LinkCount
     {
         get => _overriddenLinkCount ?? (byte)Links.Count;
-        // A codec reads the count from the fixed header before it has located the links
-        // themselves, so it cannot self-normalize at that moment the way BaseId/Type do - Links is
-        // still empty. Once a codec finishes parsing links into Links, reassigning the same count
-        // here agrees with Links.Count and clears the override, hooking this back into deriving.
-        // A codec that cannot locate them sets it once and leaves Links empty, so the two
-        // disagreeing is the signal that links exist on disk but nothing has parsed them.
         set => _overriddenLinkCount = value == (byte)Links.Count ? null : value;
     }
 }
@@ -75,12 +69,8 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
     /// header.
     /// </summary>
     /// <remarks>
-    /// Derives from <see cref="BaseAsset.Links"/>'s count until set to a disagreeing value, after
-    /// which it keeps that value instead. A codec that parses links into
-    /// <see cref="BaseAsset.Links"/> reassigns the on-disk count once they're populated, which
-    /// agrees with <see cref="BaseAsset.Links"/>'s count and clears the override; a codec that
-    /// cannot locate them sets it once and leaves <see cref="BaseAsset.Links"/> empty, so the two
-    /// disagreeing is the signal that links exist on disk but nothing has parsed them.
+    /// When disagreements with <see cref="BaseAsset.Links"/>.Count exist, this field wins during
+    /// serialization. 
     /// </remarks>
     byte LinkCount { get; set; }
 }

@@ -13,8 +13,7 @@ namespace EvilHop.Assets;
 /// <para>
 /// A counter can be in a normal or expired state. In the normal state, its value can be freely
 /// changed; if a change ever sets it to 0, it becomes expired, and stays that way - ignoring further
-/// changes - until explicitly reset back to <see cref="InitialValue"/>. None of this runtime state is
-/// stored in the archive.
+/// changes - until explicitly reset back to <see cref="InitialValue"/>.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CNTR">Heavy Iron Modding documentation</seealso>
 /// Validation TODO: Physical.BaseType is always 0x16.
@@ -26,12 +25,9 @@ public sealed class CounterAsset : BaseAsset
     /// </summary>
     public short InitialValue { get; set; }
 
-    // Not publicly constructible yet - building a new asset from scratch, rather than reading one
-    // from an archive, doesn't have a settled API (defaults will likely need to depend on the
-    // target game), so this stays internal until that exists.
     internal CounterAsset() { }
 
-    internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {
         var asset = new CounterAsset();
         AssetFields.Populate(asset, header, debug);
@@ -44,7 +40,7 @@ public sealed class CounterAsset : BaseAsset
         return asset;
     }
 
-    internal static void Write(CounterAsset asset, EndianWriter writer, FormatProfile profile)
+    internal static void Write(CounterAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.InitialValue);
