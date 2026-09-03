@@ -1,4 +1,6 @@
 using EvilHop.Primitives;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -8,6 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Events#Links">Heavy Iron Modding documentation</seealso>
 /// </remarks>
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Nothing compares Links by value; Params holds reference-equality-only Parameters, so a real implementation would be misleading.")]
 public struct Link
 {
     /// <summary>
@@ -28,19 +31,18 @@ public struct Link
     /// </summary>
     public AssetId DestinationAssetId { get; set; }
 
-    private Parameter[] _params = ZeroedParams();
     /// <summary>
     /// The four parameter slots passed alongside <see cref="DestinationEvent"/>. Always exactly 4
     /// elements, in order.
     /// </summary>
-    /// <exception cref="ArgumentException">The assigned array's length isn't 4.</exception>
-    public Parameter[] Params
+    /// <exception cref="ArgumentException">The assigned value's length isn't 4.</exception>
+    public ImmutableArray<Parameter> Params
     {
-        readonly get => _params;
-        set => _params = value.Length == 4
+        readonly get;
+        set => field = value.Length == 4
             ? value
             : throw new ArgumentException($"{nameof(Params)} must contain exactly 4 elements.", nameof(value));
-    }
+    } = ZeroedParams();
 
     /// <summary>
     /// A supplemental <see cref="AssetId"/> parameter for <see cref="DestinationEvent"/>.
@@ -52,6 +54,6 @@ public struct Link
     /// </summary>
     public AssetId CheckAssetId { get; set; }
 
-    private static Parameter[] ZeroedParams() =>
+    private static ImmutableArray<Parameter> ZeroedParams() =>
         [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
 }

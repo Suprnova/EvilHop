@@ -33,6 +33,7 @@ public sealed class Layer
     /// <exception cref="InvalidOperationException">If the provided <paramref name="asset"/> already belongs to a <see cref="Layer"/>.</exception>
     public void Add(Asset asset)
     {
+        ArgumentNullException.ThrowIfNull(asset);
         if (asset.Layer is not null)
             throw new InvalidOperationException("Asset already belongs to a layer.");
         asset.Layer = this;
@@ -46,6 +47,7 @@ public sealed class Layer
     /// <returns><see langword="true"/> if <paramref name="asset"/> was present, otherwise <see langword="false"/>.</returns>
     public bool Remove(Asset asset)
     {
+        ArgumentNullException.ThrowIfNull(asset);
         if (!_assets.Remove(asset)) return false;
         asset.Layer = null;
         return true;

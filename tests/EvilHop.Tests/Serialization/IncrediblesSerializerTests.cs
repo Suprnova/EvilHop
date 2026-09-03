@@ -3,8 +3,13 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class IncrediblesSerializerTests
+public class IncrediblesSerializerTests : SerializerContractTests
 {
+    protected override Serializer CreateSerializer() => new IncrediblesSerializer();
+
+    protected override FileStream OpenMinimalFixture() =>
+        File.OpenRead(Path.Combine(AppContext.BaseDirectory, "TestData", "incredibles", "minimal.hip"));
+
     [Fact]
     public void DefaultProfile_IsIncrediblesWithLanguageRegionPlatformOrder()
     {

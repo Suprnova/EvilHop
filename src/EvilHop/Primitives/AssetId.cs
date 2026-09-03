@@ -44,9 +44,4 @@ public readonly record struct AssetId(uint Value)
 
     /// <inheritdoc/>
     public override string ToString() => $"0x{Value:X8}";
-
-    /// <inheritdoc/>
-    public static explicit operator uint(AssetId id) => id.Value;
-    /// <inheritdoc/>
-    public static explicit operator AssetId(uint value) => new(value);
 }

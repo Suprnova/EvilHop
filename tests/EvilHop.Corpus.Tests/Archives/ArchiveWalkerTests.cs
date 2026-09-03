@@ -2,7 +2,7 @@ using EvilHop.Corpus.Archives;
 
 namespace EvilHop.Corpus.Tests.Archives;
 
-public class ArchiveWalkerTests : IDisposable
+public sealed class ArchiveWalkerTests : IDisposable
 {
     private readonly string root = Directory.CreateTempSubdirectory("EvilHop.Corpus.Tests.").FullName;
 

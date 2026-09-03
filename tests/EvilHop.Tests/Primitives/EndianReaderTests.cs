@@ -16,8 +16,11 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(Int16Data))]
-    public void ReadInt16_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, short expected) =>
-        Assert.Equal(expected, Reader(endianness, bytes).ReadInt16());
+    public void ReadInt16_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, short expected)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(expected, reader.ReadInt16());
+    }
 
     public static IEnumerable<object[]> Int32Data =>
     [
@@ -27,8 +30,11 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(Int32Data))]
-    public void ReadInt32_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, int expected) =>
-        Assert.Equal(expected, Reader(endianness, bytes).ReadInt32());
+    public void ReadInt32_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, int expected)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(expected, reader.ReadInt32());
+    }
 
     public static IEnumerable<object[]> UInt32Data =>
     [
@@ -38,8 +44,11 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(UInt32Data))]
-    public void ReadUInt32_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, uint expected) =>
-        Assert.Equal(expected, Reader(endianness, bytes).ReadUInt32());
+    public void ReadUInt32_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, uint expected)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(expected, reader.ReadUInt32());
+    }
 
     public static IEnumerable<object[]> SingleData =>
     [
@@ -49,8 +58,11 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(SingleData))]
-    public void ReadSingle_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, float expected) =>
-        Assert.Equal(expected, Reader(endianness, bytes).ReadSingle());
+    public void ReadSingle_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, float expected)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(expected, reader.ReadSingle());
+    }
 
     public static IEnumerable<object[]> Vector3Data =>
     [
@@ -70,8 +82,11 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(Vector3Data))]
-    public void ReadVector3_RespectsConstructedEndianness(Endianness endianness, byte[] bytes) =>
-        Assert.Equal(new Vector3(1.5f, -2.5f, 0.5f), Reader(endianness, bytes).ReadVector3());
+    public void ReadVector3_RespectsConstructedEndianness(Endianness endianness, byte[] bytes)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(new Vector3(1.5f, -2.5f, 0.5f), reader.ReadVector3());
+    }
 
     public static IEnumerable<object[]> AssetIdData =>
     [
@@ -81,13 +96,16 @@ public class EndianReaderTests
 
     [Theory]
     [MemberData(nameof(AssetIdData))]
-    public void ReadAssetId_RespectsConstructedEndianness(Endianness endianness, byte[] bytes) =>
-        Assert.Equal(new AssetId(0x12345678), Reader(endianness, bytes).ReadAssetId());
+    public void ReadAssetId_RespectsConstructedEndianness(Endianness endianness, byte[] bytes)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(new AssetId(0x12345678), reader.ReadAssetId());
+    }
 
     [Fact]
     public void ReadRemainingBytes_ReturnsEverythingPastTheCurrentPosition()
     {
-        var reader = Reader(Endianness.Big, [0x01, 0x02, 0x03, 0x04, 0x05]);
+        using var reader = Reader(Endianness.Big, [0x01, 0x02, 0x03, 0x04, 0x05]);
         reader.ReadByte();
         reader.ReadByte();
 

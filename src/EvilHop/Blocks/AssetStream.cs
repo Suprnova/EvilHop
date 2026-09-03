@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EvilHop.Blocks;
 
 /// <summary>
@@ -87,6 +89,7 @@ public class StreamData : Block
     /// The actual padding bytes.
     /// </summary>
     /// Validation TODO: All 0x00 on N100F proto, 0x33 otherwise.
+    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Written and read as a raw byte buffer.")]
     public byte[] Padding { get; set; } = [];
 
     /// <summary>
@@ -95,6 +98,7 @@ public class StreamData : Block
     /// <remarks>
     /// Zeroed while the archive is set to <c>Asset Mode</c>.
     /// </remarks>
+    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Written and read as a raw byte buffer.")]
     public byte[] Data
     {
         get => GetManagedBlockField(ref field);

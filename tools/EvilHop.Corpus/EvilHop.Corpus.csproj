@@ -7,6 +7,11 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- done to reflect EvilHop.Corpus's "frozen" status, unset after resolved -->
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>  
+  </PropertyGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="EvilHop.Corpus.Tests" />
   </ItemGroup>
