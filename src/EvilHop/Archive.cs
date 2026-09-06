@@ -50,6 +50,8 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// <exception cref="FormatException">Thrown when the stream can't be recognized as a HIP archive.</exception>
     public static Archive Load(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         Stream source = stream.CanSeek ? stream : Buffer(stream);
         var sniff = Serializer.Sniff(source);
         if (sniff.Profile is null)
