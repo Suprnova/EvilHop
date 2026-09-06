@@ -11,7 +11,10 @@ internal enum CorpusVerb
     Inventory,
 
     /// <summary>Parse every archive and report failures, without emitting an inventory.</summary>
-    Verify
+    Verify,
+
+    /// <summary>Sniff every archive and report any whose primary guess isn't <see cref="CorpusOptions.Game"/>.</summary>
+    SniffVerify
 }
 
 /// <summary>
@@ -21,6 +24,7 @@ internal enum CorpusVerb
 /// <code>
 /// EvilHop.Corpus inventory --out corpus/n100f.json [--serializer &lt;game&gt;] [--dump &lt;path&gt;] &lt;root&gt;...
 /// EvilHop.Corpus verify [--serializer &lt;game&gt;] [--round-trip] &lt;root&gt;...
+/// EvilHop.Corpus sniff [--serializer &lt;game&gt;] &lt;root&gt;...
 /// </code>
 /// </remarks>
 internal sealed class CorpusOptions
@@ -53,13 +57,14 @@ internal sealed class CorpusOptions
     public static CorpusOptions Parse(string[] args)
     {
         if (args.Length == 0)
-            throw new ArgumentException("Expected a verb: 'inventory' or 'verify'.");
+            throw new ArgumentException("Expected a verb: 'inventory', 'verify', or 'sniff'.");
 
         var verb = args[0] switch
         {
             "inventory" => CorpusVerb.Inventory,
             "verify" => CorpusVerb.Verify,
-            var other => throw new ArgumentException($"Unknown verb '{other}'. Expected 'inventory' or 'verify'.")
+            "sniff" => CorpusVerb.SniffVerify,
+            var other => throw new ArgumentException($"Unknown verb '{other}'. Expected 'inventory', 'verify', or 'sniff'.")
         };
 
         string? output = null;
