@@ -64,6 +64,7 @@ internal static class AssetCodecs
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
+        Register(AssetType.LODTable, LODTableAsset.Read, LODTableAsset.Write, LODTableAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
     }
 
