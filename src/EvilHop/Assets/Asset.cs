@@ -26,12 +26,12 @@ public abstract class Asset : IPhysicalAsset
     /// <summary>
     /// The <see cref="Asset"/>'s name.
     /// </summary>
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The <see cref="Asset"/>'s filename.
     /// </summary>
-    public string FileName { get; set; } = String.Empty;
+    public string FileName { get; set; } = string.Empty;
 
     /// <summary>
     /// The <see cref="Assets.Layer"/> that this <see cref="Asset"/> belongs to.
