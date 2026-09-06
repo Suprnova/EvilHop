@@ -41,7 +41,7 @@ step almost everyone skips, and it is where the wiki's mistakes come out.
 | Generic shape fallbacks | `src/EvilHop/Assets/GenericAssets.cs` |
 | Codec registry | `src/EvilHop/Serialization/AssetCodecs.cs` (incl. `ShapesByType` table) |
 | Type enum | `src/EvilHop/Common/AssetType.cs` |
-| Tests | `tests/EvilHop.Tests/Assets/`, `tests/EvilHop.Tests/Serialization/AssetCodecsTests.cs` |
+| Tests | `tests/EvilHop.Tests/Serialization/<Foo>AssetTests.cs` (one file per type), `tests/EvilHop.Tests/Assets/`, `tests/EvilHop.Tests/Serialization/AssetCodecsTests.cs` |
 
 ## The three-part decision that precedes any code
 
@@ -53,7 +53,10 @@ Before you write a single property, settle three things. The first two are `Docs
 This is not a guess. The wiki's type classifier (`Binary`/`Base`/`Entity`/`RenderWare`) says, and the
 archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layout)):
 
-- **`Asset`** — no known shape, everything is unparsed. Almost never the final state.
+- **`Asset`** — no `BaseAsset` header at all: either no known shape yet (everything unparsed, rarely
+  the final state), or a wiki `Binary` type with its own from-scratch header and an empty `basetype`
+  vardefine (e.g. `CSN`) — that one *is* a legitimate final state, just implement its own
+  `IPhysicalFooAsset` directly instead of `IPhysicalBaseAsset`.
 - **`BaseAsset`** — has the 8-byte header (`BaseId`, `BaseType`, `LinkCount`, `BaseFlags`). E.g. `CAM`,
   `CNTR`.
 - **`EntityAsset : BaseAsset`** — `BaseAsset` header + the 0x54 entity prefix (flags, `Angle`,
@@ -98,8 +101,15 @@ across all games** — per-game differences are one class with nullable/conditio
 **Write the first codec for exactly one game** (prefer BFBB, or the game the wiki page's primary
 struct targets), match that game's `FormatProfile` exactly, and get its byte-exact round trip green.
 Then, if the wiki shows other games differing, add the conditional fields/switches and validate each.
-A round-trip across every game the class claims to support is what actually proves the divergence
-handling — a codec that over-claims games will silently misread on disk.
+A full-corpus sweep across every game the class claims to support (see
+[EvilHop.Corpus validation](#evilhopcorpus-validation) below) is what actually proves the divergence
+handling — a codec that over-claims games will silently misread on disk. Expose the supported set as a
+static `IReadOnlySet<GameVersion> SupportedGames` on the class and pass it to `Register` so an
+unsupported game degrades to the generic shape handler instead of misreading. Some divergences are
+per-*build*, not per-*game* — a prototype can still use an earlier game's layout under a later
+`GameVersion` tag (found: an Incredibles prototype using TSSM's shorter field width) — so where the
+header is self-describing (a size/count field the layout's own math can invert), derive the divergent
+width from that instead of hardcoding it per `GameVersion`.
 
 ## Validate the layout (before writing the class)
 
@@ -159,7 +169,9 @@ exactly as the wiki's "byte 4 usually 0x8F" says.
   padding differs), confirm which offset the game you're writing for actually uses.
 - **"Always" values that aren't.** `EntityAsset`'s entity padding is BFBB-release only; the wiki flags
   it and the profile carries the `EntityHasPadding` switch. Treat a "usually X" in an authoritative
-  tone as a hypothesis.
+  tone as a hypothesis. A fixed-width string field can likewise exactly fill its buffer with no null
+  terminator at all — `strncpy`-style truncation, not corruption (found in a real BFBB PS2 German
+  build) — so a strict "must have a terminator" read is itself an unproven assumption worth checking.
 - **A real layout the wiki models with a guess.** `ATBL` marks its `Effects` count `unknown`; look at
   actual files before modelling the count. `CAM`'s union-of-camera-types region can only be decoded
   from the `Cam Type` byte at `+0x84` — a wiki that lists every possibility ("Follow only"/"Shoulder
@@ -214,33 +226,37 @@ Rules to follow:
 ## Wire up the codec
 
 `AssetCodecs.cs` registers a codec per `AssetType` (a reader + a writer), seeded at static init with a
-generic per-shape handler. Your concrete codec **overwrites the seed** for your type.
+generic per-shape handler. Your concrete codec **overwrites the seed** for your type. The `Read`/`Write`
+logic itself lives as `internal static` methods on the asset class, not inline in `AssetCodecs`:
 
 ```csharp
-static AssetCodecs()
+// FooAsset.cs
+internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion> { GameVersion.BFBB };
+
+internal static FooAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
 {
-    // RegisterGenericShapes();  // (already runs)
-    Register<FooAsset>(
-        AssetType.Foo,                      // your AssetType member
-        (reader, header, debug, profile) =>
-        {
-            var asset = new FooAsset();
-            AssetFields.Populate(asset, header, debug); // header-sourced Id/Type/Name/...
-            BaseAssetPrefix.Read(asset, reader);        // shared 8-byte header
-            EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding); // if entity
-            // ... read FooAsset's own fields with reader, e.g. reader.ReadSingle()
-            // ... call the shared link reader where links appear in THIS type's layout
-            asset.SetUnparsedTail(reader.ReadRemainingBytes()); // anything left over
-            return asset;
-        },
-        (asset, writer, profile) =>
-        {
-            BaseAssetPrefix.Write(asset, writer);
-            EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
-            // ... write FooAsset's own fields
-            writer.Write(asset.GetUnparsedTail()); // byte-exact for unparsed remainder
-        });
+    var asset = new FooAsset();
+    AssetFields.Populate(asset, header, debug); // header-sourced Id/Type/Name/...
+    BaseAssetPrefix.Read(asset, reader);        // shared 8-byte header
+    EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding); // if entity
+    // ... read FooAsset's own fields with reader, e.g. reader.ReadSingle()
+    // ... call the shared link reader where links appear in THIS type's layout
+    asset.SetUnparsedTail(reader.ReadRemainingBytes()); // anything left over
+    return asset;
 }
+
+internal static void Write(FooAsset asset, EndianWriter writer, FormatProfile profile)
+{
+    BaseAssetPrefix.Write(asset, writer);
+    EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+    // ... write FooAsset's own fields
+    writer.Write(asset.GetUnparsedTail()); // byte-exact for unparsed remainder
+}
+```
+
+```csharp
+// AssetCodecs.cs, in RegisterConcreteCodecs()
+Register(AssetType.Foo, FooAsset.Read, FooAsset.Write, FooAsset.SupportedGames);
 ```
 
 Key points:
@@ -256,9 +272,15 @@ Key points:
   offset, that is where to read them. If you can't locate them, leave `Links` empty and set
   `Physical.LinkCount` (the "cannot locate them" half of its contract); if you do parse them, leave
   `LinkCount` alone and let it derive.
-- **Register in the static constructor**, alongside (or just after) `RegisterGenericShapes()`. The
-  `ShapesByType` table still seeds every type; your `Register` call overwrites your type's entry. You
-  do **not** remove it from `ShapesByType` — the table is the default, the codec is the override.
+- **`SupportedGames` gates degradation, not exceptions.** Pass it to `Register`; `AssetCodecs` falls
+  back to the generic shape handler for any other `GameVersion`, and `AssetSession` separately catches
+  any exception your codec still throws and degrades that one asset to `GenericAsset` — so a codec bug
+  on a game you *do* claim to support fails silently at the session layer, not loudly at yours (see
+  [EvilHop.Corpus validation](#evilhopcorpus-validation)).
+- **Register in `RegisterConcreteCodecs()`**, called from the static constructor after
+  `RegisterGenericShapes()`. The `ShapesByType` table still seeds every type; your `Register` call
+  overwrites your type's entry. You do **not** remove it from `ShapesByType` — the table is the
+  default, the codec is the override.
 - **Write what you read, and nothing else.** A codec that reads a field it doesn't write (or writes one
   it doesn't read) breaks the round trip. The round-trip test below is what catches this.
 
@@ -306,36 +328,45 @@ The decision rule that keeps this moving: **promote when you have evidence (byte
 meaning); keep physical when you only have a name.** Don't block on perfection — the design explicitly
 treats physical↔logical promotion as cheap.
 
-## EvilHop.Corpus validation — deferred
+## EvilHop.Corpus validation
 
-The strongest verification — "which types actually use which traits," "is this field always zero for
-this type," "does the minimum observed size match the shared prefix," and the per-type "which
-`CollisionFlags` bits are ever set" — is meant to come from **asset-field extraction in EvilHop.Corpus,
-which does not exist yet.** `Docs/Asset Layer Design.md` §9 lists these explicitly and they all depend
-on that extraction landing.
+Once the class and codec build, use the `generating-corpus-inventory` skill's `verify` verb to sweep
+real archives — `dotnet run --project tools/EvilHop.Corpus -- verify --round-trip --serializer <Game>
+<dir>` — across every game/platform/build directory the type claims to support. This is what actually
+proves the divergence handling (§3 above), not the hand-built unit tests.
 
-Until then, and for the type you just implemented, validate once by hand with `reading-hip-bytes`
-against a real archive (see §[Validate the layout](#validate-the-layout)) to at least confirm:
+**Round-trip success alone is not proof your codec ran.** `AssetSession.ParseOne` catches any exception
+your codec throws and silently degrades that one asset to a byte-preserving `GenericAsset` — which
+trivially round-trips too, since it never interpreted the bytes at all. A sweep that only checks the
+final bytes match cannot tell "my codec parsed this correctly" from "my codec threw and nobody
+noticed." Write a throwaway script (`dotnet run --file check.cs`, delete when done) that opens
+`archive.OpenAssets()`, asserts the produced instances for your `AssetType` are actually your concrete
+type (not `GenericAsset`), and prints `session.Diagnostics` — that's what caught two real bugs in
+`CutsceneAsset` that hand-validation and round-trip both missed (a per-*build* audio-track width
+divergence, and the exact-fill string case above).
+
+**The corpus tool does not infer `Platform` from a file's path.** `SerializerFactory`/`BuildProfiles`
+resolve `FormatProfile` overrides by path prefix but leave `Platform` at the game's default
+(`GameCube`); pointing it at an Xbox/PS2 directory without also passing `profile with { Platform =
+... }` silently mis-scopes every multi-byte field's endianness the same way a caught exception does —
+the block/`AHDR` layer is always big-endian regardless of platform, so the file still opens and can
+still "round-trip," masking the mistake. Detect platform from the path (`\XBOX\`, `\PS2\`, else
+GameCube, per the `artifacts/<game>/<build>/<platform>/...` layout) in your sweep script.
+
+Also confirm by hand with `reading-hip-bytes` on one archive (see
+§[Validate the layout](#validate-the-layout)):
 
 - The `baseType` byte and shape are what you modeled.
 - Each "usually constant" field you relied on (`pflags` = 0, padding, `SeeThroughSpeed` = 255, ...) is
   in fact constant in the files you checked.
 - Which `SurfaceId`/`ModelId`/`AnimListId` are non-zero for your type — this is the evidence that
-  decides whether it earns the corresponding trait, in the absence of the corpus query.
+  decides whether it earns the corresponding trait.
 
-Once asset extraction exists, run these as invariants instead (leave this section as the checklist):
-
-- **`entityFieldIsUnusedForType`** — per `EntityAsset`-shaped type, whether `SurfaceId`/`ModelId`/
-  `AnimListId` are always zero and which `CollisionFlags` bits ever appear. This is what *replaces*
-  the wiki-sourced "Used by" trait lists — the lists you read today are unverified guesses.
-- **Size-floor check** — every `EntityAsset`-shaped type's minimum observed `AHDR.Size` ≥ shared prefix
-  (72 bytes, 76 in BFBB) + `LinkCount × 32` for its smallest `LinkCount`. A violation means a wrong
-  `ShapesByType` entry or a real per-game divergence.
-- **Per-type constant-field check** — the "always 0 / always 255" claims you relied on, asserted as
-  invariants across the whole corpus rather than the handful of files you hand-checked.
-
-Do not treat the hand-check as a substitute for these; the corpus query is the actual proof and it is
-out of scope until extraction lands.
+"Which types actually use which traits," "is this field always zero for this type," and the per-type
+"which `CollisionFlags` bits are ever set" still need asset-field extraction in EvilHop.Corpus, which
+does not exist yet (`Docs/Asset Layer Design.md` §9). Once it lands, promote the sweep script above into
+committed invariants (`entityFieldIsUnusedForType`, a size-floor check, a per-type constant-field
+check) instead of a per-implementation throwaway.
 
 ## Checklist
 
@@ -349,5 +380,6 @@ out of scope until extraction lands.
   correctly, preserving the unparsed tail.
 - [ ] Built and passed `dotnet build` / `dotnet test`; fixed analyzers; added the round-trip + field
   tests.
-- [ ] Checked off or deferred the EvilHop.Corpus invariants above.
+- [ ] Ran an `EvilHop.Corpus` sweep across every claimed game/platform confirming the type actually
+  parses (not just round-trips) with zero diagnostics; checked off or deferred the invariants above.
 - [ ] Made the physical↔logical / ambiguity calls per §[Etiquette](#etiquette-what-to-expose-vs-ask).
