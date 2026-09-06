@@ -289,6 +289,98 @@ public class AssetSessionTests
     }
 
     [Fact]
+    public void Commit_UpdatesPackageCounts_ForSingleAssetArchive()
+    {
+        var archive = LoadRepaired("n100f");
+        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        uint expectedSize = header.Size;
+        var counts = archive.Roots.OfType<Package>().Single().Counts;
+
+        using (archive.OpenAssets()) { }
+
+        Assert.Equal(1u, counts.AssetCount);
+        Assert.Equal(1u, counts.LayerCount);
+        Assert.Equal(expectedSize, counts.MaxAssetSize);
+        Assert.Equal(expectedSize, counts.MaxLayerSize);
+        Assert.Equal(0u, counts.MaxXFormAssetSize);
+    }
+
+    [Fact]
+    public void Commit_MaxXFormAssetSize_ReflectsReadTransformFlag()
+    {
+        var archive = LoadRepaired("n100f");
+        var counts = archive.Roots.OfType<Package>().Single().Counts;
+        var session = archive.OpenAssets();
+        var asset = session.Layers[0].Assets[0];
+        asset.Physical.Flags |= AssetFlags.ReadTransform;
+
+        session.Commit();
+
+        Assert.Equal(counts.MaxAssetSize, counts.MaxXFormAssetSize);
+    }
+
+    /// <summary>
+    /// Adds a second <c>Layer</c> holding a copy of the fixture's only <c>Asset</c>, so committing
+    /// exercises padding between two <c>Layer</c>s rather than just between two <c>Asset</c>s.
+    /// </summary>
+    private static Archive TwoLayerArchive() => LoadRepaired("n100f", SerializerFor("n100f"), dictionary =>
+    {
+        var originalHeader = dictionary.AssetTable.Headers.Single();
+        var originalLayer = dictionary.LayerTable.Headers.Single();
+
+        var secondHeader = new AssetHeader
+        {
+            Id = originalHeader.Id + 1,
+            Type = originalHeader.Type,
+            Size = originalHeader.Size,
+            Flags = originalHeader.Flags,
+            Debug = new AssetDebug { Name = "second" }
+        };
+        dictionary.AssetTable.Headers = [.. dictionary.AssetTable.Headers, secondHeader];
+
+        var secondLayer = new LayerHeader
+        {
+            Type = originalLayer.Type,
+            AssetCount = 1,
+            AssetIds = [secondHeader.Id],
+            Debug = new LayerDebug()
+        };
+        dictionary.LayerTable.Headers = [.. dictionary.LayerTable.Headers, secondLayer];
+    });
+
+    [Fact]
+    public void Commit_LastAssetInLayer_PadsTheLayerToPlatformDataAlignment()
+    {
+        var archive = TwoLayerArchive();
+
+        using (archive.OpenAssets()) { }
+
+        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var firstLayerAsset = headers[0];
+        var secondLayerAsset = headers[1];
+        uint expectedNextOffset = firstLayerAsset.Offset + firstLayerAsset.Size;
+        expectedNextOffset += (32 - expectedNextOffset % 32) % 32;
+
+        Assert.Equal(0u, firstLayerAsset.Plus);
+        Assert.Equal(expectedNextOffset, secondLayerAsset.Offset);
+    }
+
+    [Fact]
+    public void Commit_UpdatesPackageCounts_ForTwoLayerArchive()
+    {
+        var archive = TwoLayerArchive();
+        var counts = archive.Roots.OfType<Package>().Single().Counts;
+
+        using (archive.OpenAssets()) { }
+
+        var firstLayerAsset = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.First();
+
+        Assert.Equal(2u, counts.AssetCount);
+        Assert.Equal(2u, counts.LayerCount);
+        Assert.Equal(firstLayerAsset.Size, counts.MaxLayerSize);
+    }
+
+    [Fact]
     public void Commit_NoEdits_ReportsNothingChanged()
     {
         var archive = LoadRepaired("n100f");

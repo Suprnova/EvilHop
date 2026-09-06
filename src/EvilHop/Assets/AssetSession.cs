@@ -53,6 +53,7 @@ public sealed class AssetSession : IDisposable
     public IReadOnlyList<AssetId> ChangedAssets { get; private set; } = [];
 
     private readonly Archive _archive;
+    private readonly Package _package;
     private readonly Dictionary _dictionary;
     private readonly AssetStream _stream;
     private readonly StreamData _streamData;
@@ -66,7 +67,7 @@ public sealed class AssetSession : IDisposable
     private bool _committed;
 
     /// <summary>The blocks this session was opened against.</summary>
-    private readonly record struct SessionTarget(Archive Archive, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
+    private readonly record struct SessionTarget(Archive Archive, Package Package, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
 
     /// <summary>
     /// Scalars captured while opening, before the blocks that carried them are detached or cleared:
@@ -85,6 +86,7 @@ public sealed class AssetSession : IDisposable
     private AssetSession(SessionTarget target, CapturedValues captured, ChangeTracking changeTracking)
     {
         _archive = target.Archive;
+        _package = target.Package;
         _dictionary = target.Dictionary;
         _stream = target.Stream;
         _streamData = target.StreamData;
@@ -113,6 +115,7 @@ public sealed class AssetSession : IDisposable
 
     internal static AssetSession Open(Archive archive)
     {
+        var package = archive.Roots.OfType<Package>().Single();
         var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var stream = archive.Roots.OfType<AssetStream>().Single();
         var assetTable = dictionary.AssetTable;
@@ -123,7 +126,7 @@ public sealed class AssetSession : IDisposable
         long dataStart = MeasureLength(archive) - streamData.Data.Length;
 
         var session = new AssetSession(
-            new SessionTarget(archive, dictionary, stream, streamData),
+            new SessionTarget(archive, package, dictionary, stream, streamData),
             new CapturedValues(
                 assetTable.Inf.Value,
                 layerTable.Inf.Value,
@@ -277,6 +280,29 @@ public sealed class AssetSession : IDisposable
         dataStart += paddingAmount;
 
         _streamData.Data = BuildData(ordered, serialized, headers, dataStart);
+
+        UpdatePackageCounts(headers);
+    }
+
+    /// <summary>
+    /// Recomputes <see cref="PackageCount"/> from the headers just serialized: how many assets and
+    /// layers there are, and the largest asset, layer, and transform-asset sizes among them.
+    /// </summary>
+    private void UpdatePackageCounts(Dictionary<AssetId, AssetHeader> headers)
+    {
+        var counts = _package.Counts;
+        var values = headers.Values.ToList();
+
+        counts.AssetCount = (uint)values.Count;
+        counts.LayerCount = (uint)_layers.Count;
+        counts.MaxAssetSize = values.Count == 0 ? 0 : values.Max(h => h.Size);
+
+        var transformed = values.Where(h => h.Flags.HasFlag(AssetFlags.ReadTransform)).ToList();
+        counts.MaxXFormAssetSize = transformed.Count == 0 ? 0 : transformed.Max(h => h.Size);
+
+        long calculateHeaderSize(Asset asset) => (long)headers[asset.Id].Size + headers[asset.Id].Plus;
+
+        counts.MaxLayerSize = _layers.Count == 0 ? 0 : (uint)_layers.Max(layer => layer.Assets.Sum(calculateHeaderSize));
     }
 
     private Dictionary<AssetId, AssetHeader> BuildHeaders(
@@ -358,6 +384,12 @@ public sealed class AssetSession : IDisposable
     /// <see cref="AssetHeader.Plus"/> as it goes, and returns the resulting
     /// <see cref="StreamData"/> data.
     /// </summary>
+    /// <remarks>
+    /// Each <c>Layer</c> pads its own end up to the archive's platform-specific data alignment (32
+    /// bytes on GameCube, 2048 otherwise), so that every <c>Layer</c> starts on that boundary. This
+    /// padding belongs to the <c>Layer</c>, not to its last <c>Asset</c> - <see cref="AssetHeader.Plus"/>
+    /// stays 0 there, same as for the last <c>Asset</c> in the whole archive.
+    /// </remarks>
     private byte[] BuildData(
         List<Asset> ordered,
         Dictionary<AssetId, byte[]> serialized,
@@ -368,6 +400,8 @@ public sealed class AssetSession : IDisposable
             .Where(layer => layer.Assets.Count > 0)
             .Select(layer => layer.Assets[^1])
             .ToHashSet();
+
+        uint layerAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
 
         using var data = new MemoryStream();
         long position = dataStart;
@@ -382,13 +416,24 @@ public sealed class AssetSession : IDisposable
             data.Write(bytes);
             position += bytes.Length;
 
-            if (i == ordered.Count - 1 || lastInLayer.Contains(asset))
+            if (i == ordered.Count - 1)
             {
                 header.Plus = 0;
                 continue;
             }
 
             var next = ordered[i + 1];
+
+            if (lastInLayer.Contains(asset))
+            {
+                header.Plus = 0;
+
+                uint layerPadding = (uint)((layerAlignment - position % layerAlignment) % layerAlignment);
+                data.Write(GapBytesFor(asset.Id, next.Id, (int)layerPadding));
+                position += layerPadding;
+                continue;
+            }
+
             int nextAlignment = headers[next.Id].Debug.Alignment;
             uint alignment = nextAlignment > 0 ? (uint)nextAlignment : DefaultAlignment;
             uint plus = (uint)((alignment - position % alignment) % alignment);
