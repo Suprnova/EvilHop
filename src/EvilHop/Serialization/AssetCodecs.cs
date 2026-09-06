@@ -61,10 +61,12 @@ internal static class AssetCodecs
     /// </summary>
     private static void RegisterConcreteCodecs()
     {
+        Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
+        Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
     }
 
     /// <summary>
