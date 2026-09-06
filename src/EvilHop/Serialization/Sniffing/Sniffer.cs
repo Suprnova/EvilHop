@@ -20,6 +20,8 @@ public static class Sniffer
     /// <returns>The inferred <see cref="SniffResult"/>.</returns>
     public static SniffResult Sniff(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         long? originalPosition = stream.CanSeek ? stream.Position : null;
         try
         {

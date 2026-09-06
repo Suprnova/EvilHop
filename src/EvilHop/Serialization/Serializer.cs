@@ -227,16 +227,21 @@ public abstract partial class Serializer
     /// <param name="profile">The profile to construct a serializer for.</param>
     /// <returns>A new serializer reading and writing with <paramref name="profile"/>.</returns>
     /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
-    public static Serializer Create(FormatProfile profile) => profile.Game switch
+    public static Serializer Create(FormatProfile profile)
     {
-        GameVersion.N100F => new N100FSerializer(profile),
-        GameVersion.BFBB => new BFBBSerializer(profile),
-        GameVersion.Incredibles => new IncrediblesSerializer(profile),
-        GameVersion.TSSM => new TSSMSerializer(profile),
-        GameVersion.ROTU => new ROTUSerializer(profile),
-        GameVersion.Ratatouille => new RatatouilleSerializer(profile),
-        _ => throw new NotSupportedException($"No serializer exists for {profile.Game} yet.")
-    };
+        ArgumentNullException.ThrowIfNull(profile);
+
+        return profile.Game switch
+        {
+            GameVersion.N100F => new N100FSerializer(profile),
+            GameVersion.BFBB => new BFBBSerializer(profile),
+            GameVersion.Incredibles => new IncrediblesSerializer(profile),
+            GameVersion.TSSM => new TSSMSerializer(profile),
+            GameVersion.ROTU => new ROTUSerializer(profile),
+            GameVersion.Ratatouille => new RatatouilleSerializer(profile),
+            _ => throw new NotSupportedException($"No serializer exists for {profile.Game} yet.")
+        };
+    }
 
     /// <summary>Returns <paramref name="game"/>'s <c>DefaultProfile</c>.</summary>
     /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>

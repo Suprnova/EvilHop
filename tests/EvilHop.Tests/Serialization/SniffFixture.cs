@@ -59,7 +59,7 @@ internal sealed class SniffFixture
                 yield return b;
     }
 
-    private IEnumerable<byte> BuildAtoc()
+    private byte[] BuildAtoc()
     {
         List<byte> content = [.. BlockBytes.Build("AINF", BlockBytes.Content(w => w.Write(0u)))];
 
@@ -77,7 +77,7 @@ internal sealed class SniffFixture
         return BlockBytes.Build("ATOC", [.. content]);
     }
 
-    private IEnumerable<byte> BuildLtoc()
+    private byte[] BuildLtoc()
     {
         List<byte> content = [.. BlockBytes.Build("LINF", BlockBytes.Content(w => w.Write(0u)))];
 

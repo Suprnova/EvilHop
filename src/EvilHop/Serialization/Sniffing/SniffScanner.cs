@@ -1,5 +1,6 @@
 using EvilHop.Blocks;
 using EvilHop.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Serialization.Sniffing;
 
@@ -20,9 +21,10 @@ internal static class SniffScanner
     /// at all. <see langword="false"/> means the stream isn't recognizable as a HIP archive at all,
     /// and should be treated as <see cref="SniffConfidence.Unrecognized"/> rather than scored.
     /// </returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Sniffing is best-effort over untrusted bytes; any malformed structure must degrade to partial signals rather than throw.")]
     public static (SniffSignals Signals, bool GatePassed) Scan(Stream stream)
     {
-        var counting = new CountingStream(stream);
+        using var counting = new CountingStream(stream);
         using var reader = new EndianReader(counting, Endianness.Big, leaveOpen: true);
 
         bool hasHipaMagic = false;
