@@ -70,6 +70,7 @@ internal static class AssetCodecs
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
+        Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
     }
 
     /// <summary>
