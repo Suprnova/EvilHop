@@ -81,6 +81,22 @@ public class AssetSessionTests
         Assert.Equal(canonical, Save(archive));
     }
 
+    /// <summary>
+    /// The last <c>Layer</c>'s trailing padding is the archive's own: without it the file stops
+    /// wherever the last asset happened to end. Every <c>DefaultProfile</c> is GameCube, so the
+    /// boundary here is 32 bytes.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(Games))]
+    public void Commit_PadsTheArchivesEndToThePlatformsDataAlignment(string game)
+    {
+        var archive = LoadRepaired(game);
+
+        using (archive.OpenAssets()) { }
+
+        Assert.Equal(0, Save(archive).Length % 32);
+    }
+
     [Theory]
     [MemberData(nameof(Games))]
     public void OpenAssets_ReportsNoDiagnostics(string game)

@@ -386,7 +386,8 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     /// <remarks>
     /// Each <c>Layer</c> pads its own end up to the archive's platform-specific data alignment (32
-    /// bytes on GameCube, 2048 otherwise), so that every <c>Layer</c> starts on that boundary. This
+    /// bytes on GameCube, 2048 otherwise), so that every <c>Layer</c> starts on that boundary, and
+    /// the last <c>Layer</c> does the same, bringing the archive itself to that boundary. This
     /// padding belongs to the <c>Layer</c>, not to its last <c>Asset</c> - <see cref="AssetHeader.Plus"/>
     /// stays 0 there, same as for the last <c>Asset</c> in the whole archive.
     /// </remarks>
@@ -419,6 +420,7 @@ public sealed class AssetSession : IDisposable
             if (i == ordered.Count - 1)
             {
                 header.Plus = 0;
+                data.Write(FillBytes((int)((layerAlignment - position % layerAlignment) % layerAlignment)));
                 continue;
             }
 

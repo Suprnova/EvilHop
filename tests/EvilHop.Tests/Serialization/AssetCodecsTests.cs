@@ -243,9 +243,12 @@ public class AssetCodecsTests
     public void Register_OverwritesTheSeededGenericHandler()
     {
         // Chosen for its own sake: this test permanently replaces the entry, and the registry is
-        // static, so it must be a type nothing else asserts on.
-        const AssetType type = AssetType.LODTable;
-        Assert.IsNotType<StubAsset>(Read(type, new byte[4]));
+        // static, so it must be a type nothing else asserts on and nothing has implemented a codec
+        // for. Implementing one for this type will fail the guard below - move this test to another
+        // unimplemented type rather than deleting the guard, or every other test touching this type
+        // starts failing on scheduling order instead.
+        const AssetType type = AssetType.Credits;
+        Assert.IsType<GenericAsset>(Read(type, new byte[4]));
 
         AssetCodecs.Register<StubAsset>(
             type,
