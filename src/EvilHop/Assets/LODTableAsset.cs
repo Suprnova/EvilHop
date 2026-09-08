@@ -29,7 +29,6 @@ public sealed class LODTableAsset : Asset, IPhysicalLODTableAsset
     int IPhysicalLODTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
-        // prevents equivalent count assignments from being interpretted as an "override"
         set => _overriddenCount = value == Entries.Count ? null : value;
     }
 
@@ -51,7 +50,6 @@ public sealed class LODTableAsset : Asset, IPhysicalLODTableAsset
         var asset = new LODTableAsset();
         AssetFields.Populate(asset, header, debug);
 
-        bool hasFlags = profile.Game != GameVersion.BFBB;
         int count = reader.ReadInt32();
         for (int i = 0; i < count; i++)
         {
@@ -59,7 +57,7 @@ public sealed class LODTableAsset : Asset, IPhysicalLODTableAsset
             {
                 BaseModelId = reader.ReadAssetId(),
                 NoRenderDistance = reader.ReadSingle(),
-                Flags = hasFlags ? reader.ReadUInt32() : 0,
+                Flags = profile.Game is not GameVersion.BFBB ? reader.ReadUInt32() : 0,
                 Lod1ModelId = reader.ReadAssetId(),
                 Lod2ModelId = reader.ReadAssetId(),
                 Lod3ModelId = reader.ReadAssetId(),
@@ -70,20 +68,19 @@ public sealed class LODTableAsset : Asset, IPhysicalLODTableAsset
             asset.Entries.Add(entry);
         }
 
-        asset.Physical.Count = asset.Entries.Count; // now agrees - lets it derive
+        asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
     internal static void Write(LODTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        bool hasFlags = profile.Game != GameVersion.BFBB;
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
         {
             writer.Write(entry.BaseModelId);
             writer.Write(entry.NoRenderDistance);
-            if (hasFlags) writer.Write(entry.Flags);
+            if (profile.Game is not GameVersion.BFBB) writer.Write(entry.Flags);
             writer.Write(entry.Lod1ModelId);
             writer.Write(entry.Lod2ModelId);
             writer.Write(entry.Lod3ModelId);
@@ -129,7 +126,7 @@ public sealed class LODTableEntry
     public float NoRenderDistance { get; set; }
 
     /// <summary>
-    /// Unknown. Not present in <see cref="GameVersion.BFBB"/>..
+    /// Unknown. Not present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public uint Flags { get; set; }
 

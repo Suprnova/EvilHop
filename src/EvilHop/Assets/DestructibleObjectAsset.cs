@@ -126,11 +126,11 @@ public sealed class DestructibleObjectAsset : EntityAsset, IHasModel, IHasAnimLi
         asset.HitFlags = (DestructibleHitFlags)reader.ReadUInt32();
         asset.CollisionType = reader.ReadByte();
         asset.FxType = (DestructibleFxType)reader.ReadByte();
-        reader.ReadInt16(); // 2 bytes of padding, always zero
+        reader.ReadInt16(); // padding, always zero
         asset.BlastRadius = reader.ReadSingle();
         asset.BlastStrength = reader.ReadSingle();
 
-        if (profile.Game == GameVersion.BFBB)
+        if (profile.Game is GameVersion.BFBB)
         {
             asset.DestroyShrapnelId = reader.ReadAssetId();
             asset.HitShrapnelId = reader.ReadAssetId();
@@ -162,7 +162,7 @@ public sealed class DestructibleObjectAsset : EntityAsset, IHasModel, IHasAnimLi
         writer.Write(asset.BlastRadius);
         writer.Write(asset.BlastStrength);
 
-        if (profile.Game == GameVersion.BFBB)
+        if (profile.Game is GameVersion.BFBB)
         {
             writer.Write(asset.DestroyShrapnelId);
             writer.Write(asset.HitShrapnelId);

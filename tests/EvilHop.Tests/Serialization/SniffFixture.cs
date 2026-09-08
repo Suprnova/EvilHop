@@ -104,7 +104,7 @@ internal sealed class SniffFixture
         return BlockBytes.Build("DPAK", BlockBytes.Content(w =>
         {
             w.Write(4u); // PaddingAmount
-            w.Write(new[] { DpakFillByte, DpakFillByte, DpakFillByte, DpakFillByte });
+            w.Write([DpakFillByte, DpakFillByte, DpakFillByte, DpakFillByte]);
         }));
     }
 }

@@ -29,7 +29,6 @@ public sealed class PipeInfoTableAsset : Asset, IPhysicalPipeInfoTableAsset
     int IPhysicalPipeInfoTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
-        // prevents equivalent count assignments from being interpretted as an "override"
         set => _overriddenCount = value == Entries.Count ? null : value;
     }
 
@@ -62,24 +61,23 @@ public sealed class PipeInfoTableAsset : Asset, IPhysicalPipeInfoTableAsset
                 Flags = new PipeRenderFlags(reader.ReadUInt32()),
             };
 
-            if (profile.Game != GameVersion.BFBB)
+            if (profile.Game is not GameVersion.BFBB)
             {
                 entry.Layer = (PipeLayer)reader.ReadByte();
                 entry.AlphaDiscard = reader.ReadByte();
-                reader.ReadInt16(); // PipePad, always zero
+                reader.ReadInt16(); // padding, always zero
             }
 
             asset.Entries.Add(entry);
         }
 
-        asset.Physical.Count = asset.Entries.Count; // now agrees - lets it derive
+        asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
     internal static void Write(PipeInfoTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        bool isBfbb = profile.Game == GameVersion.BFBB;
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
         {
@@ -87,7 +85,7 @@ public sealed class PipeInfoTableAsset : Asset, IPhysicalPipeInfoTableAsset
             writer.Write(entry.SubObjectBits);
             writer.Write(entry.Flags.Value);
 
-            if (!isBfbb)
+            if (profile.Game is not GameVersion.BFBB)
             {
                 writer.Write((byte)entry.Layer);
                 writer.Write(entry.AlphaDiscard);

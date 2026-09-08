@@ -9,12 +9,12 @@ namespace EvilHop.Assets;
 
 /// <summary>
 /// Maps models to the meshes used in their place for collision detection by other objects and the
-/// camera, letting a high-detail model use a much simpler mesh for both.
+/// camera.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A model with no entry here uses itself as its own collision mesh against other objects, and has no
-/// collision mesh against the camera - the camera can pass through it.
+/// collision mesh against the camera.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/COLL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
@@ -27,7 +27,6 @@ public sealed class CollisionTableAsset : Asset
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.CollisionTable"/> is known to be read by.
-    /// Absent from <see cref="GameVersion.N100F"/>.
     /// </summary>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
