@@ -66,7 +66,7 @@ public class RoundTripTests
 
         string? failure = RoundTrip.Check(Load(bytes, serializer), [.. bytes, 0]);
 
-        Assert.Equal("block round-trip byte mismatch.", failure);
+        Assert.StartsWith("block round-trip byte mismatch:", failure);
     }
 
     /// <summary>

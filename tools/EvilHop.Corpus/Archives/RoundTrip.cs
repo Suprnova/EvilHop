@@ -30,8 +30,9 @@ internal static class RoundTrip
     {
         ArgumentNullException.ThrowIfNull(archive);
 
-        if (!Rewrite(archive).AsSpan().SequenceEqual(original))
-            return "block round-trip byte mismatch.";
+        byte[] rewritten = Rewrite(archive);
+        if (!rewritten.AsSpan().SequenceEqual(original))
+            return $"block round-trip byte mismatch: {DescribeMismatch(rewritten, original)}";
 
         using var session = archive.OpenAssets();
 
@@ -43,7 +44,24 @@ internal static class RoundTrip
         if (session.ChangedAssets.Count > 0)
             return $"{Count(session.ChangedAssets, "asset")} reserialized differently: {Summarize(Describe(session))}";
 
-        return Rewrite(archive).AsSpan().SequenceEqual(original) ? null : "asset round-trip byte mismatch.";
+        rewritten = Rewrite(archive);
+        return rewritten.AsSpan().SequenceEqual(original)
+            ? null
+            : $"asset round-trip byte mismatch: {DescribeMismatch(rewritten, original)}";
+    }
+
+    /// <summary>
+    /// Locates the first differing byte between <paramref name="rewritten"/> and
+    /// <paramref name="original"/>, so a mismatch names where to start looking instead of just that
+    /// one exists.
+    /// </summary>
+    private static string DescribeMismatch(ReadOnlySpan<byte> rewritten, ReadOnlySpan<byte> original)
+    {
+        if (rewritten.Length != original.Length)
+            return $"wrote {rewritten.Length} bytes, expected {original.Length}.";
+
+        int offset = rewritten.CommonPrefixLength(original);
+        return $"first differing byte at offset {offset} (0x{offset:X}): wrote 0x{rewritten[offset]:X2}, expected 0x{original[offset]:X2}.";
     }
 
     /// <summary>Names the assets whose bytes changed across the session, by type and name.</summary>
