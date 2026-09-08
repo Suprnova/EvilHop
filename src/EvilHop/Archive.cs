@@ -39,11 +39,11 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
 
     /// <summary>
     /// Loads a HIP archive from <paramref name="stream"/>, inferring its <see cref="Serialization.Serializer"/>
-    /// via <see cref="Serialization.Serializer.Sniff"/> rather than requiring the caller to already know it.
+    /// via <see cref="Serializer.Sniff"/> rather than requiring the caller to already know it.
     /// </summary>
     /// <param name="stream">
     /// The stream to load from. When non-seekable, it is buffered into memory in full before
-    /// sniffing, since <see cref="Serialization.Serializer.Sniff"/> cannot rewind it on its own.
+    /// sniffing, since <see cref="Serializer.Sniff"/> cannot rewind it on its own.
     /// Closes <paramref name="stream"/> before returning, matching <see cref="Load(Stream, Serializer)"/>.
     /// </param>
     /// <returns>An <see cref="Archive"/> constructed from the sniffed stream.</returns>
@@ -85,6 +85,6 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// from <see cref="Roots"/> and their fields are locked. Any reference to them taken beforehand
     /// is orphaned for the session's lifetime and is not reused afterward.
     /// </remarks>
-    /// <returns>A new <see cref="Assets.AssetSession"/> over this <see cref="Archive"/>.</returns>
+    /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
     public AssetSession OpenAssets() => AssetSession.Open(this);
 }

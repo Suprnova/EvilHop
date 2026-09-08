@@ -378,6 +378,61 @@ public class AssetSessionTests
         Assert.Equal(0, (saved.Length - streamData.Data.Length) % 2048);
     }
 
+    /// <summary>
+    /// Builds an empty (no assets, no layers) archive on <see cref="Platform.PlayStation2"/>, whose
+    /// 2048-byte data alignment makes an empty <c>DPAK</c>'s fill run far bigger than the 4-byte
+    /// <see cref="StreamData.PaddingAmount"/> field would be - the case that exposed a prior bug
+    /// which wrote the field whenever the fill alone looked large enough to hold it.
+    /// </summary>
+    private static Archive EmptyArchive(bool hadPaddingAmountField)
+    {
+        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+        var archive = LoadRepaired("n100f", new N100FSerializer(profile), dictionary =>
+        {
+            dictionary.AssetTable.Headers = [];
+            dictionary.LayerTable.Headers = [];
+        });
+
+        var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
+        streamData.PaddingAmount = hadPaddingAmountField ? 0u : null;
+        streamData.Padding = [];
+
+        return archive;
+    }
+
+    /// <summary>
+    /// The convention most real archives use: no assets means no <see cref="StreamData.PaddingAmount"/>
+    /// field either, regardless of how much fill <c>DPAK</c> still needs.
+    /// </summary>
+    [Fact]
+    public void Commit_NoAssets_OmitsPaddingAmountWhenTheArchiveHadNone()
+    {
+        var archive = EmptyArchive(hadPaddingAmountField: false);
+        var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
+
+        using (archive.OpenAssets()) { }
+
+        Assert.Null(streamData.PaddingAmount);
+        Assert.Equal(0, Save(archive).Length % 2048);
+    }
+
+    /// <summary>
+    /// A minority of real archives keep <see cref="StreamData.PaddingAmount"/> even with no assets
+    /// to align - a session opened against one preserves that instead of assuming the field is
+    /// always dropped.
+    /// </summary>
+    [Fact]
+    public void Commit_NoAssets_KeepsPaddingAmountWhenTheArchiveHadOne()
+    {
+        var archive = EmptyArchive(hadPaddingAmountField: true);
+        var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
+
+        using (archive.OpenAssets()) { }
+
+        Assert.NotNull(streamData.PaddingAmount);
+        Assert.Equal(0, Save(archive).Length % 2048);
+    }
+
     [Fact]
     public void Commit_UpdatesPackageCounts_ForSingleAssetArchive()
     {
@@ -454,6 +509,174 @@ public class AssetSessionTests
         Assert.Equal(0u, firstLayerAsset.Plus);
         Assert.Equal(expectedNextOffset, secondLayerAsset.Offset);
     }
+
+    /// <summary>
+    /// Adds a second <c>Asset</c> of <paramref name="type"/>, with no declared alignment, to the
+    /// Incredibles fixture's only <c>Layer</c> on <paramref name="platform"/>, so committing exercises
+    /// the gap in front of it rather than the platform data alignment <see cref="TwoLayerArchive"/>
+    /// exercises. Incredibles carries every type <see cref="AssetSession.DefaultAlignmentFor"/>
+    /// special-cases, so one fixture covers all of them.
+    /// </summary>
+    private static Archive IncrediblesArchiveWithSecondAsset(AssetType type, Platform platform) => LoadRepaired(
+        "incredibles", new IncrediblesSerializer(IncrediblesSerializer.DefaultProfile with { Platform = platform }), dictionary =>
+    {
+        var originalHeader = dictionary.AssetTable.Headers.Single();
+        var originalLayer = dictionary.LayerTable.Headers.Single();
+
+        var secondHeader = new AssetHeader
+        {
+            Id = originalHeader.Id + 1,
+            Type = type,
+            Size = originalHeader.Size,
+            Flags = originalHeader.Flags,
+            Debug = new AssetDebug { Name = "second", Alignment = -1 }
+        };
+        dictionary.AssetTable.Headers = [.. dictionary.AssetTable.Headers, secondHeader];
+
+        originalLayer.AssetCount = 2;
+        originalLayer.AssetIds = [.. originalLayer.AssetIds, secondHeader.Id];
+    });
+
+    private static void AssertSecondAssetAligned(Archive archive, uint alignment)
+    {
+        using (archive.OpenAssets()) { }
+
+        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        uint expectedOffset = headers[0].Offset + headers[0].Size;
+        expectedOffset += (alignment - expectedOffset % alignment) % alignment;
+
+        Assert.Equal(expectedOffset, headers[1].Offset);
+    }
+
+    /// <summary>
+    /// Adds a second, zero-size <c>Asset</c> reading <c>Offset</c> <paramref name="originalOffset"/> to
+    /// the Incredibles fixture's only <c>Layer</c>, leaving it there rather than repairing it to the
+    /// data start the way <see cref="LoadRepaired(string, Serializer, Action{EvilHop.Blocks.Dictionary}?)"/>
+    /// otherwise would - so it stands in for whatever arbitrary value a real zero-size asset's
+    /// <c>Offset</c> happens to carry.
+    /// </summary>
+    private static Archive ArchiveWithZeroSizeSecondAsset(uint originalOffset)
+    {
+        byte[] bytes = File.ReadAllBytes(
+            Path.Combine(AppContext.BaseDirectory, "TestData", "incredibles", "minimal.hip"));
+        var serializer = new IncrediblesSerializer();
+
+        var archive = Archive.Load(new MemoryStream(bytes), serializer);
+        var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+
+        var originalHeader = dictionary.AssetTable.Headers.Single();
+        var originalLayer = dictionary.LayerTable.Headers.Single();
+
+        var secondHeader = new AssetHeader
+        {
+            Id = originalHeader.Id + 1,
+            Type = originalHeader.Type,
+            Size = 0,
+            Offset = originalOffset,
+            Flags = originalHeader.Flags,
+            Debug = new AssetDebug { Name = "second", Alignment = -1 }
+        };
+        dictionary.AssetTable.Headers = [.. dictionary.AssetTable.Headers, secondHeader];
+
+        originalLayer.AssetCount = 2;
+        originalLayer.AssetIds = [.. originalLayer.AssetIds, secondHeader.Id];
+
+        originalHeader.Offset = (uint)(Save(archive).Length - streamData.Data.Length);
+
+        return archive;
+    }
+
+    /// <summary>
+    /// A zero-size asset points at nothing, so real archives record all sorts of values there - not
+    /// just 0 (BFBB) but a real, shared, non-cursor address (TSSM) or a value that depends on platform
+    /// for otherwise-identical assets (ROTU) - see <see cref="AssetSession.BuildData"/>'s remarks. An
+    /// unedited session replays whichever one it read rather than assigning a fresh position.
+    /// </summary>
+    [Theory]
+    [InlineData(0u)]
+    [InlineData(0x76A800u)]
+    public void Commit_UnchangedZeroSizeAsset_KeepsItsOriginalOffset(uint originalOffset)
+    {
+        var archive = ArchiveWithZeroSizeSecondAsset(originalOffset);
+
+        using (archive.OpenAssets()) { }
+
+        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        Assert.Equal(originalOffset, headers[1].Offset);
+    }
+
+    /// <summary>
+    /// The counterpart to <see cref="Commit_UnchangedZeroSizeAsset_KeepsItsOriginalOffset"/>: a
+    /// zero-size asset with no original to replay - because it was added during the session - gets a
+    /// real position like any other asset would.
+    /// </summary>
+    [Fact]
+    public void Commit_NewZeroSizeAsset_GetsARealPosition()
+    {
+        var archive = LoadRepaired("incredibles", new IncrediblesSerializer());
+        uint originalId = 0;
+
+        using (var session = archive.OpenAssets())
+        {
+            var original = session.Layers.Single().Assets.Single();
+            originalId = original.Id.Value;
+
+            var added = new GenericPayloadAsset { Id = new AssetId(originalId + 1), Name = "second" };
+            added.Physical.Type = original.Type;
+            added.Physical.Flags = original.Physical.Flags;
+            added.Physical.Alignment = -1;
+            session.Layers.Single().Add(added);
+        }
+
+        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var firstHeader = headers.Single(h => h.Id == originalId);
+        var secondHeader = headers.Single(h => h.Id == originalId + 1);
+        uint expectedOffset = firstHeader.Offset + firstHeader.Size;
+        expectedOffset += (16 - expectedOffset % 16) % 16;
+
+        Assert.Equal(expectedOffset, secondHeader.Offset);
+    }
+
+    /// <summary>
+    /// Confirmed against every non-positive-alignment gap ahead of one of these three, on every
+    /// platform, in the Incredibles corpus: 155 <c>ReactiveAnimation</c>, 52 <c>PickupTypes</c>, and
+    /// 208 <c>ThrowableTable</c> gaps, none fitting the flat 16-byte default every other type gets, all
+    /// fitting 2048.
+    /// </summary>
+    [Theory]
+    [InlineData(AssetType.ReactiveAnimation)]
+    [InlineData(AssetType.PickupTypes)]
+    [InlineData(AssetType.ThrowableTable)]
+    public void Commit_WideAlignmentType_Aligns2048BytesFromThePreviousAsset(AssetType type) =>
+        AssertSecondAssetAligned(IncrediblesArchiveWithSecondAsset(type, Platform.GameCube), 2048);
+
+    /// <summary>
+    /// Confirmed against every same-platform gap ahead of one of these four in the Incredibles corpus:
+    /// 480 <c>Wireframe</c>, 414 <c>BinkVideo</c>, 1 <c>CutsceneTable</c>, and 1348
+    /// <c>StreamingTexture</c> gaps on GameCube all fit 32.
+    /// </summary>
+    [Theory]
+    [InlineData(AssetType.BinkVideo)]
+    [InlineData(AssetType.CutsceneTable)]
+    [InlineData(AssetType.StreamingTexture)]
+    [InlineData(AssetType.Wireframe)]
+    public void Commit_StreamingAlignmentType_Aligns32BytesOnGameCube(AssetType type) =>
+        AssertSecondAssetAligned(IncrediblesArchiveWithSecondAsset(type, Platform.GameCube), 32);
+
+    /// <summary>
+    /// The counterpart to <see cref="Commit_StreamingAlignmentType_Aligns32BytesOnGameCube"/>: off
+    /// GameCube, the matching 660/301/290/2135 gaps on PS2 (269/324/240/1272 on Xbox) all reject every
+    /// value up to 1024 and need 2048 instead - plausibly for optical-disc sector-aligned streaming
+    /// reads, which GameCube discs don't need.
+    /// </summary>
+    [Theory]
+    [InlineData(AssetType.BinkVideo)]
+    [InlineData(AssetType.CutsceneTable)]
+    [InlineData(AssetType.StreamingTexture)]
+    [InlineData(AssetType.Wireframe)]
+    public void Commit_StreamingAlignmentType_Aligns2048BytesOffGameCube(AssetType type) =>
+        AssertSecondAssetAligned(IncrediblesArchiveWithSecondAsset(type, Platform.Xbox), 2048);
 
     [Fact]
     public void Commit_UpdatesPackageCounts_ForTwoLayerArchive()
