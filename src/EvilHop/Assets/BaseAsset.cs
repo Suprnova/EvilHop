@@ -28,7 +28,6 @@ public abstract class BaseAsset : Asset, IPhysicalBaseAsset
     AssetId IPhysicalBaseAsset.BaseId
     {
         get => _overriddenBaseId ?? Id;
-        // prevents equivalent id assignments from being interpretted as an "override"
         set => _overriddenBaseId = value == Id ? null : value;
     }
 

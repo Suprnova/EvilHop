@@ -22,8 +22,7 @@ public sealed class MarkerAsset : Asset
     public Vector3 Position { get; set; }
 
     /// <summary>
-    /// The <see cref="GameVersion"/>s <see cref="AssetType.Marker"/> is known to be read by. Absent
-    /// from <see cref="GameVersion.Ratatouille"/>.
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Marker"/> is known to be read by.
     /// </summary>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {

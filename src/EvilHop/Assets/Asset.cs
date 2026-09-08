@@ -55,7 +55,6 @@ public abstract class Asset : IPhysicalAsset
     AssetType IPhysicalAsset.Type
     {
         get => _overriddenType ?? this.Type;
-        // prevents equivalent type assignments from being interpretted as an "override"
         set => _overriddenType = value == Type ? null : value;
     }
 
@@ -78,9 +77,8 @@ public abstract class Asset : IPhysicalAsset
     /// <see cref="IPhysicalAsset.Checksum"/> reports when nothing overrides it.
     /// </summary>
     /// <remarks>
-    /// Maintained by <see cref="AssetSession"/>, which is the only thing that can produce it: an
-    /// asset's bytes come from its codec under a <see cref="EvilHop.Serialization.FormatProfile"/>, neither
-    /// of which the asset itself holds.
+    /// When overridden with <see cref="IPhysicalAsset.Checksum"/>, that value will have priority,
+    /// even when the <see cref="Asset"/> has been modified.
     /// </remarks>
     internal uint ComputedChecksum { get; set; }
 
@@ -88,7 +86,6 @@ public abstract class Asset : IPhysicalAsset
     uint IPhysicalAsset.Checksum
     {
         get => _overriddenChecksum ?? ComputedChecksum;
-        // prevents equivalent checksum assignments from being interpretted as an "override"
         set => _overriddenChecksum = value == ComputedChecksum ? null : value;
     }
 
@@ -105,7 +102,7 @@ public abstract class Asset : IPhysicalAsset
     /// </summary>
     /// <param name="bytes">The bytes to append at the end of this <see cref="Asset"/>'s data.</param>
     /// <exception cref="NotSupportedException">
-    /// If this <see cref="Asset"/> has no unparsed region for the bytes to go in.
+    /// If this <see cref="Asset"/> has no unparsed region for the bytes to go in, such as <see cref="PayloadAsset"/>.
     /// </exception>
     public virtual void SetUnparsedTail(byte[] bytes) => UnparsedTail = bytes;
 
@@ -114,9 +111,8 @@ public abstract class Asset : IPhysicalAsset
     /// and <see cref="Type"/>.
     /// </summary>
     /// <remarks>
-    /// Only touches <see cref="Id"/>. A <see cref="BaseAsset"/> whose
-    /// <see cref="IPhysicalBaseAsset.BaseId"/> is explicitly overridden keeps that override -
-    /// recalculating the logical ID doesn't resolve a disagreement you created on purpose.
+    /// Does not modify fields under <see cref="Physical"/>, such as
+    /// <see cref="IPhysicalBaseAsset.BaseId"/>.
     /// </remarks>
     public void CalculateId() => Id = AssetId.FromName(Name, Type);
 }
@@ -140,15 +136,11 @@ public interface IPhysicalAsset
     AssetFlags Flags { get; set; }
     /// <summary>
     /// The <see cref="Asset"/>'s CRC-32/MPEG-2 checksum, retrieved from
-    /// <see cref="AssetDebug.Checksum"/>. Derived from the asset's own data unless overridden.
+    /// <see cref="AssetDebug.Checksum"/> and derived from the asset's own data unless overridden.
     /// </summary>
     /// <remarks>
-    /// Assigning the value the data already hashes to is not an override, and the checksum keeps
-    /// tracking the data; assigning anything else is, and that is what serializes from then on.
-    /// Reading an archive whose <see cref="AssetDebug.Checksum"/> disagrees with its own asset data
-    /// therefore arrives here as an override, and a load and save that edited nothing reproduces
-    /// the disagreement rather than quietly correcting it - shipped archives with a wrong checksum
-    /// exist.
+    /// When disagreements with the <see cref="Asset"/>'s data exist, this field wins during
+    /// serialization. 
     /// </remarks>
     uint Checksum { get; set; }
 }

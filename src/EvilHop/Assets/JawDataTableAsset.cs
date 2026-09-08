@@ -30,7 +30,6 @@ public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
     int IPhysicalJawDataTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
-        // prevents equivalent count assignments from being interpretted as an "override"
         set => _overriddenCount = value == Entries.Count ? null : value;
     }
 
@@ -60,10 +59,10 @@ public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
             reader.ReadInt32(); // dataLength, derived from this entry's own jaw data length
         }
 
-        bool hasUnknownField = profile.Game == GameVersion.ROTU;
+        bool hasUnknownField = profile.Game is GameVersion.ROTU;
         foreach (var soundId in soundIds)
         {
-            int length = hasUnknownField ? reader.ReadInt32() : ReadLengthLittleEndian(reader);
+            int length = hasUnknownField ? reader.ReadInt32() : BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));
             uint unknown = hasUnknownField ? reader.ReadUInt32() : 0;
             byte[] jawData = reader.ReadBytes(length);
             SkipPadding(reader, EntrySize(hasUnknownField, length));
@@ -73,14 +72,14 @@ public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
             asset.Entries.Add(entry);
         }
 
-        asset.Physical.Count = asset.Entries.Count; // now agrees - lets it derive
+        asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
     internal static void Write(JawDataTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        bool hasUnknownField = profile.Game == GameVersion.ROTU;
+        bool hasUnknownField = profile.Game is GameVersion.ROTU;
 
         writer.Write(asset.Physical.Count);
         int dataStart = 0;
@@ -127,14 +126,6 @@ public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
         for (int i = 0; i < padding; i++) writer.Write((byte)0);
     }
 
-    /// <summary>
-    /// Reads an entry's leading length field, which - unlike every other integer in a
-    /// <see cref="GameVersion.BFBB"/>/<see cref="GameVersion.TSSM"/> archive - is always
-    /// little-endian, independent of the platform's native byte order.
-    /// </summary>
-    private static int ReadLengthLittleEndian(EndianReader reader) =>
-        BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));
-
     private static void WriteLengthLittleEndian(EndianWriter writer, int value)
     {
         Span<byte> bytes = stackalloc byte[4];
@@ -178,8 +169,7 @@ public sealed class JawDataTableEntry
     public Collection<byte> JawData { get; } = [];
 
     /// <summary>
-    /// Unknown. Present only in <see cref="GameVersion.ROTU"/>; observed values are small integers
-    /// (1-3) in real archives.
+    /// Unknown. Present only in <see cref="GameVersion.ROTU"/>.
     /// </summary>
     public uint Unknown { get; set; }
 }

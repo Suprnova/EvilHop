@@ -117,18 +117,14 @@ public sealed class CutsceneAsset : Asset, IPhysicalCutsceneAsset
         asset.Physical.VisCount = reader.ReadUInt32();
         asset.Physical.VisSize = reader.ReadUInt32();
         asset.Physical.BreakCount = reader.ReadUInt32();
-        reader.ReadUInt32(); // pad, always zero
+        reader.ReadUInt32(); // padding, always zero
 
-        switch (profile.Game)
+        if (profile.Game is GameVersion.TSSM or GameVersion.Incredibles)
+            ReadAudioTracks(asset, reader, AudioTrackSoundLength(asset.Physical));
+        else
         {
-            case GameVersion.TSSM:
-            case GameVersion.Incredibles:
-                ReadAudioTracks(asset, reader, AudioTrackSoundLength(asset.Physical));
-                break;
-            default:
-                asset.SoundLeft = ReadFixedString(reader, 16);
-                asset.SoundRight = ReadFixedString(reader, 16);
-                break;
+            asset.SoundLeft = ReadFixedString(reader, 16);
+            asset.SoundRight = ReadFixedString(reader, 16);
         }
 
         for (int i = 0; i < asset.Physical.NumData; i++)
@@ -160,18 +156,14 @@ public sealed class CutsceneAsset : Asset, IPhysicalCutsceneAsset
         writer.Write(asset.Physical.VisCount);
         writer.Write(asset.Physical.VisSize);
         writer.Write(asset.Physical.BreakCount);
-        writer.Write(0u); // pad
+        writer.Write(0u); // padding
 
-        switch (profile.Game)
+        if (profile.Game is GameVersion.TSSM or GameVersion.Incredibles)
+            WriteAudioTracks(asset, writer, AudioTrackSoundLength(asset.Physical));
+        else
         {
-            case GameVersion.TSSM:
-            case GameVersion.Incredibles:
-                WriteAudioTracks(asset, writer, AudioTrackSoundLength(asset.Physical));
-                break;
-            default:
-                WriteFixedString(writer, asset.SoundLeft, 16);
-                WriteFixedString(writer, asset.SoundRight, 16);
-                break;
+            WriteFixedString(writer, asset.SoundLeft, 16);
+            WriteFixedString(writer, asset.SoundRight, 16);
         }
 
         foreach (var entry in asset.Data)
