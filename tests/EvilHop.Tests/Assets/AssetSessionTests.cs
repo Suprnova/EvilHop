@@ -125,6 +125,80 @@ public class AssetSessionTests
         Assert.Equal(new AssetId(assetId), diagnostic.AssetId);
     }
 
+    /// <summary>
+    /// Real archives exist whose stored checksum disagrees with their own asset data. A session that
+    /// changed nothing must write that disagreement back untouched rather than correcting it.
+    /// </summary>
+    [Fact]
+    public void Commit_UnchangedAssetWithAWrongStoredChecksum_WritesTheStoredOneBack()
+    {
+        const uint wrong = 0xDEADBEEF;
+        var archive = LoadRepaired("n100f", SerializerFor("n100f"), dictionary =>
+            dictionary.AssetTable.Headers.Single().Debug.Checksum = wrong);
+
+        using (archive.OpenAssets()) { }
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        Assert.Equal(wrong, dictionary.AssetTable.Headers.Single().Debug.Checksum);
+    }
+
+    /// <summary>
+    /// The physical surface's promise: a value written there survives commit byte-exactly, even one
+    /// that disagrees with what the model would derive.
+    /// </summary>
+    [Fact]
+    public void Commit_ChecksumWrittenToThePhysicalSurface_SerializesAsWritten()
+    {
+        const uint deliberate = 0x0BADC0DE;
+        var archive = LoadRepaired("n100f");
+
+        using (var session = archive.OpenAssets())
+            session.Layers.Single().Assets.Single().Physical.Checksum = deliberate;
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        Assert.Equal(deliberate, dictionary.AssetTable.Headers.Single().Debug.Checksum);
+    }
+
+    /// <summary>
+    /// With nothing overriding it, the checksum is derived, so editing the asset moves it. The
+    /// fixture ships an arbitrary checksum that disagrees with its own data, so this also covers
+    /// assigning the derived value to clear an override.
+    /// </summary>
+    [Fact]
+    public void Commit_ChangedAssetWithNoOverride_TracksItsNewData()
+    {
+        byte[] replacement = [1, 2, 3, 4];
+        var archive = LoadRepaired("n100f");
+
+        using (var session = archive.OpenAssets())
+        {
+            var asset = (PayloadAsset)session.Layers.Single().Assets.Single();
+            asset.Physical.Checksum = asset.ComputedChecksum;
+            asset.LoadFrom(new MemoryStream(replacement));
+        }
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        Assert.Equal(Crc32Mpeg2.Compute(replacement), dictionary.AssetTable.Headers.Single().Debug.Checksum);
+    }
+
+    /// <summary>
+    /// An override is a deliberate disagreement, not a stale value - editing the asset it sits on
+    /// doesn't quietly discard it.
+    /// </summary>
+    [Fact]
+    public void Commit_ChangedAssetCarryingAnOverride_KeepsWritingTheOverride()
+    {
+        const uint wrong = 0xDEADBEEF;
+        var archive = LoadRepaired("n100f", SerializerFor("n100f"), dictionary =>
+            dictionary.AssetTable.Headers.Single().Debug.Checksum = wrong);
+
+        using (var session = archive.OpenAssets())
+            ((PayloadAsset)session.Layers.Single().Assets.Single()).LoadFrom(new MemoryStream([1, 2, 3, 4]));
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        Assert.Equal(wrong, dictionary.AssetTable.Headers.Single().Debug.Checksum);
+    }
+
     [Fact]
     public void OpenAssets_ProducesOneLayerWithOneAsset()
     {
