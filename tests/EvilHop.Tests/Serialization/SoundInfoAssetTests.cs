@@ -196,7 +196,7 @@ public class SoundInfoAssetTests
             offset += (uint)banks[i].Length;
         }
 
-        int ramSoundCount = soundEntries.Count(entry => entry[6] == 0); // SoundBankIndex byte
+        int ramSoundCount = soundEntries.Count(entry => (entry[4] & (byte)SoundBankEntryFlags.Streaming) == 0); // flags byte
         int streamedSoundCount = soundEntries.Length - ramSoundCount;
 
         return
@@ -259,6 +259,25 @@ public class SoundInfoAssetTests
             [bank0, bank1],
             [SoundBankEntry(0x11111111, (byte)SoundBankEntryFlags.None, 0, 0, 0),
              SoundBankEntry(0x22222222, (byte)SoundBankEntryFlags.Streaming, 0, 1, 0)],
+            []);
+        var profile = TSSMSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    /// <summary>
+    /// Real archives carry a sound in bank 0 flagged <see cref="SoundBankEntryFlags.Streaming"/>
+    /// (TSSM's <c>mnus.HOP</c>) - <c>nSounds</c>/<c>nStreams</c> must classify it by
+    /// <see cref="SoundBankEntry.Flags"/>, not by <see cref="SoundBankEntry.SoundBankIndex"/>, or the
+    /// counts land one off in each direction.
+    /// </summary>
+    [Fact]
+    public void Read_ThenWrite_SoundInfoUnderTSSM_ClassifiesCountsByFlagsNotBankIndex()
+    {
+        byte[] bank0 = [0x01, 0x02, 0x03, 0x04];
+        byte[] data = Fsb3Data(
+            [bank0],
+            [SoundBankEntry(0x11111111, (byte)SoundBankEntryFlags.Streaming, 0, 0, 0)],
             []);
         var profile = TSSMSerializer.DefaultProfile;
 

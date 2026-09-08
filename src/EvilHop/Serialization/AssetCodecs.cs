@@ -135,12 +135,24 @@ internal static class AssetCodecs
 
     private static CodecHandler ShapeHandler(AssetShape shape) => shape switch
     {
-        AssetShape.BaseAsset => new CodecHandler(ReadBase, Guarded<BaseAsset>(WriteBase)),
-        AssetShape.EntityAsset => new CodecHandler(ReadEntity, Guarded<EntityAsset>(WriteEntity)),
-        AssetShape.DynaAsset => new CodecHandler(ReadDyna, Guarded<DynaAsset>(WriteDyna)),
+        AssetShape.BaseAsset => new CodecHandler(ZeroSizeAware(ReadBase), Guarded<BaseAsset>(WriteBase)),
+        AssetShape.EntityAsset => new CodecHandler(ZeroSizeAware(ReadEntity), Guarded<EntityAsset>(WriteEntity)),
+        AssetShape.DynaAsset => new CodecHandler(ZeroSizeAware(ReadDyna), Guarded<DynaAsset>(WriteDyna)),
         AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
         _ => Fallback
     };
+
+    /// <summary>
+    /// Wraps a shape-specific reader so an asset with no bytes at all - not even for the shape's
+    /// fixed-size prefix - reads as an empty <see cref="GenericAsset"/> instead of throwing. Real
+    /// archives ship these.
+    /// </summary>
+    private static ReadFunc ZeroSizeAware(ReadFunc read) => (reader, header, debug, profile) =>
+        // Checked against the reader's own remaining length, not AssetHeader.Size, so this also
+        // covers an asset whose declared range fell outside the DPAK and was bounded to nothing.
+        reader.BaseStream.Length - reader.BaseStream.Position == 0
+            ? ReadPlain(reader, header, debug, profile)
+            : read(reader, header, debug, profile);
 
     /// <summary>
     /// Wraps a shape-specific writer so a shape mismatch degrades to writing by the asset's own
@@ -176,9 +188,8 @@ internal static class AssetCodecs
     /// </summary>
     /// <remarks>
     /// <see cref="BaseAssetPrefix.Read"/> always sets <see cref="IPhysicalBaseAsset.LinkCount"/> as
-    /// an override, matching the "cannot locate them" half of that property's contract - none of
-    /// the shapes below parse links into <see cref="BaseAsset.Links"/>. A future codec that does
-    /// must not treat this helper's LinkCount as final.
+    /// an override, since none of the shapes below parse links into <see cref="BaseAsset.Links"/> - a
+    /// future codec that does must not treat this helper's LinkCount as final.
     /// </remarks>
     private static T PopulateBase<T>(T asset, AssetHeader header, AssetDebug debug, EndianReader reader)
         where T : BaseAsset

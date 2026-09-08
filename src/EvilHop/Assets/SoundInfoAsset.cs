@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// <see cref="GameVersion.BFBB"/>, this asset holds one <see cref="DspSoundHeader"/> per SND/SNDS
 /// asset. On every other GameCube-supported game, sounds are instead stored directly in this asset as
 /// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
-/// <seealso href="https://heavyironmodding.org/wiki/SNDI">Heavy Iron Modding documentation</seealso>
+/// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
 {
@@ -70,7 +70,6 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
     AssetId IPhysicalSoundInfoAsset.SoundInfoId
     {
         get => _overriddenSoundInfoId ?? Id;
-        // prevents equivalent id assignments from being interpretted as an "override"
         set => _overriddenSoundInfoId = value == Id ? null : value;
     }
 
@@ -134,7 +133,7 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
         var asset = new SoundInfoAsset();
         AssetFields.Populate(asset, header, debug);
 
-        if (profile.Platform != Platform.GameCube)
+        if (profile.Platform is not Platform.GameCube)
         {
             asset.SetUnparsedTail(reader.ReadRemainingBytes());
             return asset;
@@ -150,7 +149,7 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
 
     internal static void Write(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        if (profile.Platform != Platform.GameCube)
+        if (profile.Platform is not Platform.GameCube)
         {
             writer.Write(asset.GetUnparsedTail());
             return;
@@ -164,18 +163,16 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
 
     private static void ReadDspTable(SoundInfoAsset asset, EndianReader reader, FormatProfile profile)
     {
-        bool hasCutsceneCount = profile.Game == GameVersion.BFBB;
-
         int effectCount = reader.ReadInt32();
         reader.ReadInt32(); // padding, always 0xCDCDCDCD
         int streamCount = reader.ReadInt32();
-        int cutsceneCount = hasCutsceneCount ? reader.ReadInt32() : 0;
+        int cutsceneCount = profile.Game is GameVersion.BFBB ? reader.ReadInt32() : 0;
 
         for (int i = 0; i < effectCount; i++) asset.Effects.Add(ReadDspSoundHeader(reader));
         for (int i = 0; i < streamCount; i++) asset.Streams.Add(ReadDspSoundHeader(reader));
         for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(ReadDspSoundHeader(reader));
 
-        asset.Physical.EffectCount = asset.Effects.Count; // now agrees - lets it derive
+        asset.Physical.EffectCount = asset.Effects.Count;
         asset.Physical.StreamCount = asset.Streams.Count;
         asset.Physical.CutsceneCount = asset.Cutscenes.Count;
 
@@ -187,7 +184,7 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
         writer.Write(asset.Physical.EffectCount);
         writer.Write(unchecked((int)0xCDCDCDCD)); // padding
         writer.Write(asset.Physical.StreamCount);
-        if (profile.Game == GameVersion.BFBB) writer.Write(asset.Physical.CutsceneCount);
+        if (profile.Game is GameVersion.BFBB) writer.Write(asset.Physical.CutsceneCount);
 
         foreach (var effect in asset.Effects) WriteDspSoundHeader(writer, effect);
         foreach (var stream in asset.Streams) WriteDspSoundHeader(writer, stream);
@@ -250,7 +247,7 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
         uint footerOffset = reader.ReadUInt32(); // relative to the end of this header
         reader.ReadBytes(16); // pFMusicMod/pFSBFileArray/pWavInfoArray/pCutsceneAudioHeaders, always null
         int soundCount = (ushort)reader.ReadInt16();
-        reader.ReadInt16(); // nSounds, a subset count of Sounds recomputed from SoundBankIndex on write
+        reader.ReadInt16(); // nSounds, a subset count of Sounds recomputed from Flags on write
         reader.ReadInt16(); // nStreams, ditto
         int soundBankCount = reader.ReadByte();
         int cutsceneCount = reader.ReadByte();
@@ -288,7 +285,7 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
             asset.SoundBanks.Add(reader.ReadBytes((int)(end - bankOffsets[i])));
         }
 
-        asset.Physical.SoundBankCount = asset.SoundBanks.Count; // now agrees - lets it derive
+        asset.Physical.SoundBankCount = asset.SoundBanks.Count;
         asset.Physical.SoundCount = asset.Sounds.Count;
         asset.Physical.CutsceneCount = asset.Cutscenes.Count;
 
@@ -310,8 +307,8 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
         writer.Write(footerOffset);
         writer.Write(new byte[16]); // pFMusicMod/pFSBFileArray/pWavInfoArray/pCutsceneAudioHeaders, always null
         writer.Write((short)asset.Physical.SoundCount);
-        writer.Write((short)asset.Sounds.Count(sound => sound.SoundBankIndex == 0)); // nSounds
-        writer.Write((short)asset.Sounds.Count(sound => sound.SoundBankIndex != 0)); // nStreams
+        writer.Write((short)asset.Sounds.Count(sound => !sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nSounds
+        writer.Write((short)asset.Sounds.Count(sound => sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nStreams
         writer.Write((byte)asset.Physical.SoundBankCount);
         writer.Write((byte)asset.Physical.CutsceneCount);
 
@@ -429,7 +426,7 @@ public sealed class DspSoundHeader
     public uint InitialOffset { get; set; }
 
     /// <summary>The sound's 16 ADPCM decoder coefficients.</summary>
-    public Collection<short> Coefficients { get; } = new(new List<short>(new short[16]));
+    public Collection<short> Coefficients { get; } = new([.. new short[16]]);
 
     /// <summary>Unknown gain factor. Always 0 in every sample checked so far.</summary>
     public ushort Gain { get; set; }
@@ -462,7 +459,7 @@ public sealed class DspSoundHeader
     public short LoopHistory2 { get; set; }
 
     /// <summary>Unknown values.</summary>
-    public Collection<byte> Unknown { get; } = new(new List<byte>(new byte[22]));
+    public Collection<byte> Unknown { get; } = new([.. new byte[22]]);
 
     /// <summary>
     /// The <see cref="AssetType.Sound"/>, <see cref="AssetType.StreamingSound"/>, or

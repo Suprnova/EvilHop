@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
@@ -60,9 +61,11 @@ public sealed class AssetSession : IDisposable
     private readonly uint _assetInfValue;
     private readonly uint _layerInfValue;
     private readonly byte _fillByte;
+    private readonly bool _hadPaddingAmountField;
     private readonly List<AssetId> _originalAtocOrder;
     private readonly Dictionary<AssetId, uint> _openChecksums;
     private readonly Dictionary<(AssetId Before, AssetId After), byte[]> _capturedGaps;
+    private readonly Dictionary<AssetId, uint> _originalZeroSizeOffsets;
     private HashSet<AssetId> _changedLookup = [];
     private bool _committed;
 
@@ -70,23 +73,19 @@ public sealed class AssetSession : IDisposable
     private readonly record struct SessionTarget(Archive Archive, Package Package, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
 
     /// <summary>
-    /// Scalars captured while opening, before the blocks that carried them are detached or cleared:
-    /// <see cref="AssetTable"/> and <see cref="LayerTable"/> stop being reachable through
-    /// <see cref="Dictionary"/> once a session owns them, so their <c>Inf.Value</c> is copied out
-    /// rather than read back from a block that's no longer there.
+    /// Scalars captured while opening, before the blocks that carried them are detached or cleared.
     /// </summary>
-    private readonly record struct CapturedValues(uint AssetInfValue, uint LayerInfValue, byte FillByte);
+    private readonly record struct CapturedValues(uint AssetInfValue, uint LayerInfValue, byte FillByte, bool HadPaddingAmountField);
 
     /// <summary>
-    /// State accumulated for diffing the session's assets against what they were at open.
-    /// <paramref name="OpenChecksums"/> is what each asset's bytes hashed to when read - what
-    /// "changed" is measured against, and not to be confused with the checksum the archive
-    /// <em>claimed</em> they hashed to, which rides on the asset as <see cref="IPhysicalAsset.Checksum"/>.
+    /// State captured at open: what changed by the time of commit, and values with no computable
+    /// rule that must simply be replayed.
     /// </summary>
     private readonly record struct ChangeTracking(
         List<AssetId> OriginalAtocOrder,
         Dictionary<AssetId, uint> OpenChecksums,
-        Dictionary<(AssetId Before, AssetId After), byte[]> CapturedGaps);
+        Dictionary<(AssetId Before, AssetId After), byte[]> CapturedGaps,
+        Dictionary<AssetId, uint> OriginalZeroSizeOffsets);
 
     private AssetSession(SessionTarget target, CapturedValues captured, ChangeTracking changeTracking)
     {
@@ -98,9 +97,11 @@ public sealed class AssetSession : IDisposable
         _assetInfValue = captured.AssetInfValue;
         _layerInfValue = captured.LayerInfValue;
         _fillByte = captured.FillByte;
+        _hadPaddingAmountField = captured.HadPaddingAmountField;
         _originalAtocOrder = changeTracking.OriginalAtocOrder;
         _openChecksums = changeTracking.OpenChecksums;
         _capturedGaps = changeTracking.CapturedGaps;
+        _originalZeroSizeOffsets = changeTracking.OriginalZeroSizeOffsets;
     }
 
     /// <summary>
@@ -109,9 +110,50 @@ public sealed class AssetSession : IDisposable
     private const byte DefaultFillByte = 0x33;
 
     /// <summary>
-    /// The alignment assumed for an asset that declares a non-positive one.
+    /// The alignment assumed for an asset that declares a non-positive one, except the types in
+    /// <see cref="WideAlignmentTypes"/> and <see cref="StreamingAlignmentTypes"/> - see
+    /// <see cref="DefaultAlignmentFor"/>.
     /// </summary>
     private const uint DefaultAlignment = 16;
+
+    /// <summary>
+    /// The alignment <see cref="WideAlignmentTypes"/> default to on every platform, and
+    /// <see cref="StreamingAlignmentTypes"/> default to off <see cref="Platform.GameCube"/>.
+    /// </summary>
+    private const uint WideDefaultAlignment = 2048;
+
+    /// <summary>
+    /// The alignment <see cref="StreamingAlignmentTypes"/> default to on <see cref="Platform.GameCube"/>.
+    /// </summary>
+    private const uint GameCubeStreamingAlignment = 32;
+
+    /// <summary>
+    /// Types that default to <see cref="WideDefaultAlignment"/> on every platform when their own
+    /// declared alignment is non-positive - the wiki puts them at "at least 128" instead.
+    /// </summary>
+    private static readonly FrozenSet<AssetType> WideAlignmentTypes =
+        [AssetType.ReactiveAnimation, AssetType.PickupTypes, AssetType.ThrowableTable];
+
+    /// <summary>
+    /// Types that default to <see cref="GameCubeStreamingAlignment"/> on GameCube and
+    /// <see cref="WideDefaultAlignment"/> elsewhere when their own declared alignment is non-positive -
+    /// plausibly for optical-disc sector-aligned streaming reads, which GameCube discs don't need. The
+    /// wiki puts them all at 32 regardless of platform.
+    /// </summary>
+    private static readonly FrozenSet<AssetType> StreamingAlignmentTypes =
+        [AssetType.BinkVideo, AssetType.CutsceneTable, AssetType.StreamingTexture, AssetType.Wireframe];
+
+    /// <summary>
+    /// The alignment to use for <paramref name="type"/> when its own declared alignment is
+    /// non-positive, on <paramref name="platform"/>.
+    /// </summary>
+    private static uint DefaultAlignmentFor(AssetType type, Platform platform)
+    {
+        if (WideAlignmentTypes.Contains(type)) return WideDefaultAlignment;
+        if (StreamingAlignmentTypes.Contains(type))
+            return platform == Platform.GameCube ? GameCubeStreamingAlignment : WideDefaultAlignment;
+        return DefaultAlignment;
+    }
 
     /// <summary>
     /// The boundary <see cref="StreamData"/>'s data begins on.
@@ -135,8 +177,12 @@ public sealed class AssetSession : IDisposable
             new CapturedValues(
                 assetTable.Inf.Value,
                 layerTable.Inf.Value,
-                streamData.Padding.Length > 0 ? streamData.Padding[0] : DefaultFillByte),
-            new ChangeTracking([.. headers.Select(h => new AssetId(h.Id))], [], []));
+                streamData.Padding.Length > 0 ? streamData.Padding[0] : DefaultFillByte,
+                // The reader always tries to parse PaddingAmount when 4+ bytes are available, so a
+                // no-field archive's fill bytes get parsed as one anyway. Comparing the parsed value
+                // against the padding actually read is what tells a real field from a false one.
+                streamData.PaddingAmount == (uint?)streamData.Padding.Length),
+            new ChangeTracking([.. headers.Select(h => new AssetId(h.Id))], [], [], CaptureZeroSizeOffsets(headers)));
 
         session.CaptureGaps(headers, dataStart);
         session.ParseLayers(layerTable, headers, dataStart);
@@ -152,6 +198,17 @@ public sealed class AssetSession : IDisposable
         stream.LockFields();
 
         return session;
+    }
+
+    /// <summary>
+    /// Captures every zero-size asset's <c>Offset</c> as read, for <see cref="BuildData"/> to replay.
+    /// </summary>
+    private static Dictionary<AssetId, uint> CaptureZeroSizeOffsets(List<AssetHeader> headers)
+    {
+        var offsets = new Dictionary<AssetId, uint>();
+        foreach (var header in headers.Where(h => h.Size == 0))
+            offsets[new AssetId(header.Id)] = header.Offset;
+        return offsets;
     }
 
     private void CaptureGaps(List<AssetHeader> headers, long dataStart)
@@ -295,19 +352,30 @@ public sealed class AssetSession : IDisposable
         _dictionary.LayerTable = layerTable;
 
         _stream.UnlockFields();
-        _streamData.PaddingAmount = 0;
+        _streamData.PaddingAmount = null;
         _streamData.Padding = [];
         _streamData.Data = [];
 
-        long dataStart = MeasureLength(_archive);
-        long dataAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
-        int paddingAmount = (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment);
-        _streamData.PaddingAmount = (uint)paddingAmount;
-        _streamData.Padding = FillBytes(paddingAmount);
-        dataStart += paddingAmount;
+        // An empty archive usually omits PaddingAmount entirely; a minority keep it anyway, so
+        // replay whichever convention this one was opened with.
+        if (ordered.Count == 0 && !_hadPaddingAmountField)
+        {
+            var (_, emptyPadding) = MeasureDataStart();
+            _streamData.Data = FillBytes(emptyPadding);
+        }
+        else
+        {
+            _streamData.PaddingAmount = 0;
+            var (dataStart, paddingAmount) = MeasureDataStart();
 
-        _streamData.Data = BuildData(ordered, serialized, headers, dataStart);
+            _streamData.PaddingAmount = (uint)paddingAmount;
+            _streamData.Padding = FillBytes(paddingAmount);
+            dataStart += paddingAmount;
 
+            _streamData.Data = BuildData(ordered, serialized, headers, dataStart);
+        }
+
+        // todo: we should be locking this block if we aren't already
         UpdatePackageCounts(headers);
     }
 
@@ -408,11 +476,9 @@ public sealed class AssetSession : IDisposable
     /// <see cref="StreamData"/> data.
     /// </summary>
     /// <remarks>
-    /// Each <c>Layer</c> pads its own end up to the archive's platform-specific data alignment (32
-    /// bytes on GameCube, 2048 otherwise), so that every <c>Layer</c> starts on that boundary, and
-    /// the last <c>Layer</c> does the same, bringing the archive itself to that boundary. This
-    /// padding belongs to the <c>Layer</c>, not to its last <c>Asset</c> - <see cref="AssetHeader.Plus"/>
-    /// stays 0 there, same as for the last <c>Asset</c> in the whole archive.
+    /// Each <c>Layer</c> pads its own end up to the platform's data alignment, so every <c>Layer</c> -
+    /// and the archive itself - starts and ends on that boundary. That padding belongs to the
+    /// <c>Layer</c>, not its last <c>Asset</c>, so <see cref="AssetHeader.Plus"/> stays 0 there.
     /// </remarks>
     private byte[] BuildData(
         List<Asset> ordered,
@@ -436,7 +502,12 @@ public sealed class AssetSession : IDisposable
             byte[] bytes = serialized[asset.Id];
             var header = headers[asset.Id];
 
-            header.Offset = (uint)position;
+            // A zero-size asset points at nothing real, and real archives don't agree on what to put
+            // there (0, a shared address, even something platform-dependent) - so replay whatever an
+            // asset that was already zero-size at open originally had, rather than guessing a rule.
+            header.Offset = bytes.Length == 0 && _originalZeroSizeOffsets.TryGetValue(asset.Id, out uint originalOffset)
+                ? originalOffset
+                : (uint)position;
             data.Write(bytes);
             position += bytes.Length;
 
@@ -459,8 +530,11 @@ public sealed class AssetSession : IDisposable
                 continue;
             }
 
-            int nextAlignment = headers[next.Id].Debug.Alignment;
-            uint alignment = nextAlignment > 0 ? (uint)nextAlignment : DefaultAlignment;
+            var nextHeader = headers[next.Id];
+            int nextAlignment = nextHeader.Debug.Alignment;
+            uint alignment = nextAlignment > 0
+                ? (uint)nextAlignment
+                : DefaultAlignmentFor(nextHeader.Type, _archive.Serializer.Profile.Platform);
             uint plus = (uint)((alignment - position % alignment) % alignment);
 
             header.Plus = plus;
@@ -473,13 +547,8 @@ public sealed class AssetSession : IDisposable
 
     /// <summary>
     /// The bytes filling the gap between two adjacent assets: the originals if both ends are
-    /// unchanged and still adjacent, otherwise flat fill.
+    /// unchanged and still adjacent (real gaps aren't always flat fill), otherwise flat fill.
     /// </summary>
-    /// <remarks>
-    /// Real archives are not reliably homogeneous here - a small but real fraction of gaps in every
-    /// game carry something other than the fill byte - so what was there is replayed wherever it can
-    /// still be trusted.
-    /// </remarks>
     private byte[] GapBytesFor(AssetId before, AssetId after, int expectedLength)
     {
         bool unchanged = !_changedLookup.Contains(before) && !_changedLookup.Contains(after);
@@ -496,6 +565,17 @@ public sealed class AssetSession : IDisposable
         var bytes = new byte[length];
         Array.Fill(bytes, _fillByte);
         return bytes;
+    }
+
+    /// <summary>
+    /// Where <see cref="StreamData.Data"/> would start if serialized right now, and how much fill
+    /// that needs after it to reach the platform's data alignment.
+    /// </summary>
+    private (long DataStart, int PaddingAmount) MeasureDataStart()
+    {
+        long dataStart = MeasureLength(_archive);
+        long dataAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
+        return (dataStart, (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment));
     }
 
     /// <summary>
