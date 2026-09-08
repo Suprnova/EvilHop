@@ -1,3 +1,4 @@
+using EvilHop;
 using EvilHop.Corpus;
 using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Invariants;
@@ -40,17 +41,12 @@ static int RunVerify(CorpusOptions options)
         try
         {
             byte[] originalBytes = File.ReadAllBytes(discovered.FullPath);
-            var roots = serializer.Read(new MemoryStream(originalBytes));
+            var archive = Archive.Load(new MemoryStream(originalBytes), serializer);
 
-            if (options.RoundTrip)
+            if (options.RoundTrip && RoundTrip.Check(archive, originalBytes) is string mismatch)
             {
-                using var rewritten = new MemoryStream();
-                serializer.Write(rewritten, roots);
-                if (!rewritten.ToArray().AsSpan().SequenceEqual(originalBytes))
-                {
-                    failed++;
-                    Console.Error.WriteLine($"FAIL {discovered.RelativePath}: round-trip byte mismatch.");
-                }
+                failed++;
+                Console.Error.WriteLine($"FAIL {discovered.RelativePath}: {mismatch}");
             }
         }
         catch (Exception ex)

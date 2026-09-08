@@ -44,6 +44,19 @@ dotnet run --project tools/EvilHop.Corpus -- verify artifacts/n100f artifacts/bf
   hand-built fixtures. Off by default: it roughly doubles per-archive memory and time, and plain
   `verify` still answers "does everything under this root parse" on its own.
 
+  It checks both layers, in that order (see `Archives/RoundTrip.cs`):
+
+  1. **Block layer** - write the archive as read and diff. This alone can never exercise an asset
+     codec: `DPAK`'s bytes are copied through verbatim, so a codec could be entirely wrong and
+     still pass.
+  2. **Asset layer** - open an `AssetSession`, which parses every asset, and commit it, which
+     reserializes every asset unconditionally, including ones nothing modified. Reported as a
+     failure: any open-time `AssetDiagnostic` (an asset that didn't parse degrades to its generic
+     form, which would otherwise round-trip perfectly and hide the problem), any asset whose bytes
+     changed across the session (named by type and name), and finally a whole-archive byte diff,
+     which additionally covers the layout the session rebuilds - offsets, `Plus`, inter-asset gaps,
+     layer padding, and `PACK`'s counts.
+
 `verify` parses every archive and reports failures with a non-zero exit code, without writing
 anything (unless `--round-trip` is passed, which writes only to an in-memory buffer for comparison).
 It's the fast way to check "does everything under this root still parse" before spending the time on
@@ -54,6 +67,25 @@ partway through.
 Both a missing root and a root with no `.HIP`/`.HOP` files are hard errors, not silent skips - the
 tool never runs unattended under a test suite, so there's no reason to make a bad argument quietly
 succeed.
+
+## Profiling
+
+`profile.ps1` runs `verify --round-trip` under `dotnet-trace` and prints the methods that spent the
+most time, one run per game. It needs `dotnet tool install -g dotnet-trace`.
+
+```
+./tools/EvilHop.Corpus/profile.ps1 -Game ratatouille   # one game
+./tools/EvilHop.Corpus/profile.ps1                     # all six
+```
+
+Traces, reports, and each run's console output land in the gitignored `profiles/`, including a
+`.speedscope.json` to open at https://speedscope.app when the flat top-N isn't enough.
+
+The profile it collects (`dotnet-sampled-thread-time`) samples thread stacks at ~100 Hz to estimate
+**wall clock** time, not CPU time. A corpus run reads tens of gigabytes, so blocking file reads are
+time too, and on a short run an idling background thread can take a deceptively large share. Read
+the split as "parse-bound or disk-bound", and compare library methods against each other rather
+than against the total.
 
 ## Build profile overrides
 
