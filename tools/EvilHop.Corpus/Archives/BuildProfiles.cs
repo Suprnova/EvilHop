@@ -1,16 +1,18 @@
+using EvilHop.Common;
 using EvilHop.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
         StreamDataHasPaddingField = StreamDataHasPaddingField ?? profile.StreamDataHasPaddingField,
         PlatformFieldOrder = PlatformFieldOrder ?? profile.PlatformFieldOrder,
-        EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding
+        EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding,
+        Platform = Platform ?? profile.Platform
     };
 }
 
@@ -67,7 +69,8 @@ internal sealed class BuildProfiles
     /// <summary>
     /// Resolves <paramref name="default"/> against <paramref name="relativePath"/>, applying the
     /// first entry whose <c>pathPrefix</c> matches (plain, case-insensitive <c>StartsWith</c>). Entry
-    /// order is significant. Returns <paramref name="default"/> unchanged when nothing matches.
+    /// order is significant - list the most specific prefix first. Returns <paramref name="default"/>
+    /// unchanged when nothing matches.
     /// </summary>
     public FormatProfile Resolve(FormatProfile @default, string relativePath)
     {
