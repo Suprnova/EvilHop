@@ -1,9 +1,10 @@
+using EvilHop.Assets;
 using EvilHop.Common;
 
 namespace EvilHop.Primitives;
 
 /// <summary>
-/// Represents a reference to an <see cref="Assets.Asset"/>.
+/// Represents a reference to an <see cref="Asset"/>.
 /// </summary>
 /// <param name="Value">The underlying Asset ID uint.</param>
 public readonly record struct AssetId(uint Value)
