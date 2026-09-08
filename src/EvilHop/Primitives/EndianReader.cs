@@ -17,6 +17,19 @@ public sealed class EndianReader(Stream input, Endianness endianness, bool leave
     /// <summary>The byte order this reader was constructed with.</summary>
     public Endianness Endianness { get; } = endianness;
 
+    /// <summary>
+    /// Reads <paramref name="count"/> bytes, throwing <see cref="EndOfStreamException"/> instead of
+    /// silently returning fewer if the stream runs out first - every multi-byte read in this class,
+    /// and every codec that reads a fixed-size field, goes through this.
+    /// </summary>
+    public override byte[] ReadBytes(int count)
+    {
+        byte[] bytes = base.ReadBytes(count);
+        return bytes.Length == count
+            ? bytes
+            : throw new EndOfStreamException($"Expected to read {count} bytes, but only {bytes.Length} remained in the stream.");
+    }
+
     /// <inheritdoc/>
     public override short ReadInt16() => Endianness == Endianness.Big
         ? BinaryPrimitives.ReadInt16BigEndian(ReadBytes(2))
