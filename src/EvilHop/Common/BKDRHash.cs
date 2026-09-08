@@ -1,9 +1,10 @@
+using EvilHop.Assets;
 using System.Text;
 
 namespace EvilHop.Common;
 
 /// <summary>
-/// A helper class used for calculating an <c>Asset</c>'s BKDR hash.
+/// A helper class used for calculating an <see cref="Asset"/>'s BKDR hash.
 /// </summary>
 public static class BKDRHash
 {
@@ -11,8 +12,8 @@ public static class BKDRHash
     /// Calculates the BKDR (modified) hash of the provided <paramref name="str"/>.
     /// </summary>
     /// <remarks>
-    /// This algorithm is modified from the traditional BKDR algorithm in the sense that
-    /// characters between 0x60-0x7F are remapped to 0x40-0x5F.
+    /// This algorithm is modified from the traditional BKDR algorithm in that characters between
+    /// 0x60-0x7F are remapped to 0x40-0x5F.
     /// <para><seealso href="https://discord.com/channels/446321271635050506/469375373067550740/1540563491856064582">Related discussion</seealso></para>
     /// <para><seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets">Heavy Iron Modding documentation</seealso></para>
     /// </remarks>
