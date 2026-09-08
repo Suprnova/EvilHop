@@ -34,12 +34,9 @@ static int RunVerify(CorpusOptions options)
     {
         total++;
 
-        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
-        if (!serializers.TryGetValue(profile, out var serializer))
-            serializers[profile] = serializer = SerializerFactory.Create(profile);
-
         try
         {
+            var serializer = ResolveSerializer(discovered, defaultProfile, buildProfiles, serializers);
             byte[] originalBytes = File.ReadAllBytes(discovered.FullPath);
             var archive = Archive.Load(new MemoryStream(originalBytes), serializer);
 
@@ -71,10 +68,7 @@ static int RunInventory(CorpusOptions options)
     int processed = 0;
     foreach (var discovered in ArchiveWalker.Discover(options.Roots))
     {
-        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
-        if (!serializers.TryGetValue(profile, out var serializer))
-            serializers[profile] = serializer = SerializerFactory.Create(profile);
-
+        var serializer = ResolveSerializer(discovered, defaultProfile, buildProfiles, serializers);
         var context = Read(serializer, discovered);
         builder.Observe(context);
         dump?.Write(context);
@@ -117,6 +111,27 @@ static int RunSniffVerify(CorpusOptions options)
 
     Console.WriteLine($"{total - failed}/{total} archives correctly sniffed as {options.Game}.");
     return failed == 0 ? 0 : 1;
+}
+
+/// <summary>
+/// The serializer <paramref name="discovered"/> should be read with: its game's default profile,
+/// then the platform the archive declares for itself, then any committed per-build override - which
+/// is applied last because it is the curated record, and is what names a platform for the builds
+/// whose archives don't declare one.
+/// </summary>
+static Serializer ResolveSerializer(
+    DiscoveredArchive discovered,
+    FormatProfile defaultProfile,
+    BuildProfiles buildProfiles,
+    Dictionary<FormatProfile, Serializer> cache)
+{
+    var profile = buildProfiles.Resolve(
+        SerializerFactory.WithSniffedPlatform(defaultProfile, discovered.FullPath), discovered.RelativePath);
+
+    if (!cache.TryGetValue(profile, out var serializer))
+        cache[profile] = serializer = SerializerFactory.Create(profile);
+
+    return serializer;
 }
 
 static ArchiveContext Read(Serializer serializer, DiscoveredArchive discovered)

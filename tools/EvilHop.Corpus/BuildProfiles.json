@@ -1,3 +1,7 @@
 [
-  { "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }
+  { "pathPrefix": "n100f/prototype_2001-06-11/PS2", "profile": { "streamDataHasPaddingField": false, "platform": "PlayStation2" } },
+  { "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } },
+  { "pathPrefix": "n100f/prototype_2003-07-08/XBOX", "profile": { "platform": "Xbox" } },
+  { "pathPrefix": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } },
+  { "pathPrefix": "n100f/release/XBOX", "profile": { "platform": "Xbox" } }
 ]
