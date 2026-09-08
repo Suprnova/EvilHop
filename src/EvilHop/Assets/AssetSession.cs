@@ -77,7 +77,12 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     private readonly record struct CapturedValues(uint AssetInfValue, uint LayerInfValue, byte FillByte);
 
-    /// <summary>State accumulated for diffing the session's assets against what they were at open.</summary>
+    /// <summary>
+    /// State accumulated for diffing the session's assets against what they were at open.
+    /// <paramref name="OpenChecksums"/> is what each asset's bytes hashed to when read - what
+    /// "changed" is measured against, and not to be confused with the checksum the archive
+    /// <em>claimed</em> they hashed to, which rides on the asset as <see cref="IPhysicalAsset.Checksum"/>.
+    /// </summary>
     private readonly record struct ChangeTracking(
         List<AssetId> OriginalAtocOrder,
         Dictionary<AssetId, uint> OpenChecksums,
@@ -211,14 +216,15 @@ public sealed class AssetSession : IDisposable
         if (!inRange && header.Size > 0)
             _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) declares bytes outside DPAK. Degraded to empty."));
 
-        _openChecksums[new AssetId(header.Id)] = Crc32Mpeg2.Compute(slice);
+        uint computed = Crc32Mpeg2.Compute(slice);
+        _openChecksums[new AssetId(header.Id)] = computed;
 
         try
         {
             var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);
             using var stream = new MemoryStream(_streamData.Data, offset, length, writable: false);
             using var reader = new EndianReader(stream, _archive.Serializer.Profile.Endianness);
-            return AssetCodecs.Read(reader, header, debug, _archive.Serializer.Profile);
+            return AdoptChecksum(AssetCodecs.Read(reader, header, debug, _archive.Serializer.Profile), computed, debug);
         }
         catch (Exception ex)
         {
@@ -226,8 +232,24 @@ public sealed class AssetSession : IDisposable
             var fallback = new GenericAsset();
             AssetFields.Populate(fallback, header, debug);
             fallback.SetUnparsedTail(slice.ToArray());
-            return fallback;
+            return AdoptChecksum(fallback, computed, debug);
         }
+    }
+
+    /// <summary>
+    /// Gives <paramref name="asset"/> the checksum its <see cref="AssetDebug"/> declared, against a
+    /// baseline of what its data actually hashes to.
+    /// </summary>
+    /// <remarks>
+    /// Setting <see cref="Asset.ComputedChecksum"/> first is what makes the two agreeing the normal
+    /// case and leaves no override behind. They disagree only in archives that shipped a wrong
+    /// checksum, and there the declared value is recorded as an override so it survives back out.
+    /// </remarks>
+    private static Asset AdoptChecksum(Asset asset, uint computed, AssetDebug debug)
+    {
+        asset.ComputedChecksum = computed;
+        asset.Physical.Checksum = debug.Checksum;
+        return asset;
     }
 
     /// <summary>
@@ -259,7 +281,12 @@ public sealed class AssetSession : IDisposable
             .Select(pair => pair.Key)];
         _changedLookup = [.. ChangedAssets];
 
-        var headers = BuildHeaders(ordered, serialized, checksums);
+        // Only the derived baseline moves. An asset carrying an override keeps writing it, which is
+        // how an archive that shipped a wrong checksum reproduces one.
+        foreach (var asset in ordered)
+            asset.ComputedChecksum = checksums[asset.Id];
+
+        var headers = BuildHeaders(ordered, serialized);
         var assetTable = BuildAssetTable(headers);
         var layerTable = BuildLayerTable();
 
@@ -305,10 +332,7 @@ public sealed class AssetSession : IDisposable
         counts.MaxLayerSize = _layers.Count == 0 ? 0 : (uint)_layers.Max(layer => layer.Assets.Sum(calculateHeaderSize));
     }
 
-    private Dictionary<AssetId, AssetHeader> BuildHeaders(
-        List<Asset> ordered,
-        Dictionary<AssetId, byte[]> serialized,
-        Dictionary<AssetId, uint> checksums)
+    private Dictionary<AssetId, AssetHeader> BuildHeaders(List<Asset> ordered, Dictionary<AssetId, byte[]> serialized)
     {
         var headers = new Dictionary<AssetId, AssetHeader>();
 
@@ -319,7 +343,6 @@ public sealed class AssetSession : IDisposable
             AssetFields.Apply(asset, header, debug);
 
             header.Size = (uint)serialized[asset.Id].Length;
-            debug.Checksum = checksums[asset.Id];
             header.Debug = debug;
 
             headers[asset.Id] = header;

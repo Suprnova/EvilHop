@@ -73,6 +73,13 @@ a corrupt offset or a wrong checksum - to reproduce a shipped bug, or to test a 
 the physical surface and it serializes byte-exactly. The logical surface offers no override for
 those, because an override would reintroduce the ambiguity the split removes.
 
+`Physical.Checksum` works the way `Physical.Type` does: derived from the asset's own data until you
+assign something the data doesn't hash to, at which point the assignment is an override and is what
+serializes. Reading an archive whose `ADBG` disagrees with its asset data records that disagreement
+as an override too, so a load and save that edited nothing reproduces it - shipped archives with a
+wrong checksum exist, and correcting one silently would cost byte fidelity. Assign the derived value
+back to drop the override and let the checksum track the data again.
+
 What the asset model cannot express at all - structure, tags, children - is what the block layer is
 for.
 

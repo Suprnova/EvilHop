@@ -157,6 +157,14 @@ padding-amount field) are applied automatically from the committed
 `tools/EvilHop.Corpus/BuildProfiles.json` manifest, matched by path prefix — nothing to pass on the
 command line for a build already listed there.
 
+A profile is built in three steps: the game's `DefaultProfile`, then the `Platform` the archive
+declares via `Serializer.Sniff`, then the manifest, applied last and winning. The platform step
+matters because every `DefaultProfile` is GameCube while `--serializer` names a game, not a build.
+N100F is the case sniffing can't cover — no `PLAT` block, `PFLG` platform bits zero — so its
+non-GameCube builds carry an explicit `platform` override in the manifest. Adding N100F builds to
+the corpus on a platform not already listed there means adding an entry, or every asset in them is
+read big-endian and fails to parse.
+
 ### `--dump`
 
 ```

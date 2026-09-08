@@ -74,6 +74,25 @@ public abstract class Asset : IPhysicalAsset
     }
 
     /// <summary>
+    /// The CRC-32/MPEG-2 of this <see cref="Asset"/>'s data as last read or serialized - the value
+    /// <see cref="IPhysicalAsset.Checksum"/> reports when nothing overrides it.
+    /// </summary>
+    /// <remarks>
+    /// Maintained by <see cref="AssetSession"/>, which is the only thing that can produce it: an
+    /// asset's bytes come from its codec under a <see cref="EvilHop.Serialization.FormatProfile"/>, neither
+    /// of which the asset itself holds.
+    /// </remarks>
+    internal uint ComputedChecksum { get; set; }
+
+    private uint? _overriddenChecksum;
+    uint IPhysicalAsset.Checksum
+    {
+        get => _overriddenChecksum ?? ComputedChecksum;
+        // prevents equivalent checksum assignments from being interpretted as an "override"
+        set => _overriddenChecksum = value == ComputedChecksum ? null : value;
+    }
+
+    /// <summary>
     /// Returns the bytes that this <see cref="Asset"/> was unable to parse from its
     /// slice of <see cref="StreamData"/>.
     /// </summary>
@@ -119,4 +138,17 @@ public interface IPhysicalAsset
     /// The <see cref="Asset"/>'s <see cref="AssetFlags"/>, retrieved from <see cref="AssetHeader.Flags"/>.
     /// </summary>
     AssetFlags Flags { get; set; }
+    /// <summary>
+    /// The <see cref="Asset"/>'s CRC-32/MPEG-2 checksum, retrieved from
+    /// <see cref="AssetDebug.Checksum"/>. Derived from the asset's own data unless overridden.
+    /// </summary>
+    /// <remarks>
+    /// Assigning the value the data already hashes to is not an override, and the checksum keeps
+    /// tracking the data; assigning anything else is, and that is what serializes from then on.
+    /// Reading an archive whose <see cref="AssetDebug.Checksum"/> disagrees with its own asset data
+    /// therefore arrives here as an override, and a load and save that edited nothing reproduces
+    /// the disagreement rather than quietly correcting it - shipped archives with a wrong checksum
+    /// exist.
+    /// </remarks>
+    uint Checksum { get; set; }
 }
