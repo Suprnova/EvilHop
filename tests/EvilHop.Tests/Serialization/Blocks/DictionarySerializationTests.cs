@@ -5,7 +5,7 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class DictionaryTests
+public class DictionarySerializationTests
 {
     [Fact]
     public void ReadBlock_Ainf_ReadsExpectedFields()

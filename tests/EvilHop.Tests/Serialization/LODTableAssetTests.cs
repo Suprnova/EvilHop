@@ -1,4 +1,5 @@
 using EvilHop.Assets;
+using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;

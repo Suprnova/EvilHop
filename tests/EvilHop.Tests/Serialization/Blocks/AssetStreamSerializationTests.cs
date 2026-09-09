@@ -3,7 +3,7 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class AssetStreamTests
+public class AssetStreamSerializationTests
 {
     [Fact]
     public void ReadBlock_Dhdr_ReadsExpectedFields()

@@ -4,7 +4,7 @@ using EvilHop.Serialization;
 
 namespace EvilHop.Tests.Serialization;
 
-public class PackageTests
+public class PackageSerializationTests
 {
     [Fact]
     public void ReadBlock_Pver_ReadsExpectedFields()
