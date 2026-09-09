@@ -1,5 +1,7 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization.Sniffing;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -154,7 +156,7 @@ public abstract partial class Serializer
     /// <param name="reader">The reader to read the tag from.</param>
     /// <returns>The 4-character tag.</returns>
     [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Dispatch internal; only ever called by Read/Write with values they just built.")]
-    protected static string ReadTag(BinaryReader reader) => Encoding.ASCII.GetString(reader.ReadBytes(4));
+    protected internal static string ReadTag(BinaryReader reader) => Encoding.ASCII.GetString(reader.ReadBytes(4));
 
     /// <summary>
     /// Writes an ordered list of root blocks to <paramref name="stream"/> as a HIP archive. Closes
@@ -217,4 +219,53 @@ public abstract partial class Serializer
     /// </summary>
     internal IReadOnlyDictionary<string, (MethodInfo? Read, MethodInfo? Write)> HandlerFingerprint() =>
         _handlers.ToDictionary(kv => kv.Key, kv => (kv.Value.ReadFields?.Method, kv.Value.WriteFields?.Method));
+
+    /// <summary>
+    /// Creates the concrete <see cref="Serializer"/> subclass for <paramref name="profile"/>'s
+    /// <see cref="FormatProfile.Game"/>.
+    /// </summary>
+    /// <param name="profile">The profile to construct a serializer for.</param>
+    /// <returns>A new serializer reading and writing with <paramref name="profile"/>.</returns>
+    /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
+    public static Serializer Create(FormatProfile profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+
+        return profile.Game switch
+        {
+            GameVersion.N100F => new N100FSerializer(profile),
+            GameVersion.BFBB => new BFBBSerializer(profile),
+            GameVersion.Incredibles => new IncrediblesSerializer(profile),
+            GameVersion.TSSM => new TSSMSerializer(profile),
+            GameVersion.ROTU => new ROTUSerializer(profile),
+            GameVersion.Ratatouille => new RatatouilleSerializer(profile),
+            _ => throw new NotSupportedException($"No serializer exists for {profile.Game} yet.")
+        };
+    }
+
+    /// <summary>Returns <paramref name="game"/>'s <c>DefaultProfile</c>.</summary>
+    /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
+    internal static FormatProfile DefaultProfileFor(GameVersion game) => game switch
+    {
+        GameVersion.N100F => N100FSerializer.DefaultProfile,
+        GameVersion.BFBB => BFBBSerializer.DefaultProfile,
+        GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
+        GameVersion.TSSM => TSSMSerializer.DefaultProfile,
+        GameVersion.ROTU => ROTUSerializer.DefaultProfile,
+        GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
+        _ => throw new NotSupportedException($"No serializer exists for {game} yet.")
+    };
+
+    /// <summary>
+    /// Best-effort inference of the <see cref="GameVersion"/>/<see cref="FormatProfile"/> a HIP/HOP
+    /// stream needs, from its bytes alone - no serializer required up front. See
+    /// <see cref="Sniffing.Sniffer.Sniff"/> for the full scanning/scoring behavior.
+    /// </summary>
+    /// <param name="stream">
+    /// The stream to sniff. Its <see cref="Stream.Position"/> is restored afterward when
+    /// <see cref="Stream.CanSeek"/> is <see langword="true"/>; a non-seekable stream is left
+    /// consumed, since those bytes can't be un-read from the real source.
+    /// </param>
+    /// <returns>The inferred <see cref="SniffResult"/>.</returns>
+    public static SniffResult Sniff(Stream stream) => Sniffer.Sniff(stream);
 }

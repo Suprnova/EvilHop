@@ -64,7 +64,7 @@ slower for no benefit.
 | `--out <path>` | Inventory output path. **Required** for `inventory`. |
 | `--serializer <game>` | Which game reads the archives, a case-insensitive `GameVersion` key (`n100f`, `bfbb`, `incredibles`, `tssm`, `rotu`, `ratatouille`). Defaults to `n100f`. Every `GameVersion` is implemented today. |
 | `--dump <path>` | Also write full-fidelity JSONL, one record per archive. Gitignored. |
-| `--round-trip` | `verify`-only. Also writes each parsed archive back out (to an in-memory buffer, nothing touches disk) and diffs it against the original file's bytes. Off by default — it roughly doubles per-archive memory and time. |
+| `--round-trip` | `verify`-only. Also writes each parsed archive back out (to an in-memory buffer, nothing touches disk) and diffs it against the original file's bytes, at the block layer and then again through an `AssetSession`. Off by default — it roughly doubles per-archive memory and time. |
 
 A missing root, and a root containing no archives, are both hard errors rather than silent skips —
 the tool is always run deliberately by a human, so a bad argument should fail loudly.
@@ -95,19 +95,33 @@ against the original file's bytes — nothing is written to disk. It's the real-
 claim against one hand-built fixture per serializer, this proves it against every real archive under
 a root.
 
+It checks **both layers**, in `Archives/RoundTrip.cs`. First the block layer, as read. Then it opens
+an `AssetSession` and commits it, which parses every asset and reserializes every asset — `Commit`
+rebuilds unconditionally, so an asset nothing touched is still driven through its reader and writer.
+That second pass is the only thing in the tool that runs an asset codec at all; the block pass copies
+`DPAK` through verbatim and would happily pass a completely wrong codec.
+
+Three distinct asset-layer failures, reported in this order:
+
+- `N asset diagnostics: …` — an asset didn't parse. It degrades to its generic form, which preserves
+  its bytes exactly, so without this check it would round-trip perfectly and look fine.
+- `N assets reserialized differently: <Type> '<Name>' (<id>)` — the asset's writer disagrees with its
+  reader. This names the culprit directly and is the check to reach for after implementing a type.
+- `asset round-trip byte mismatch.` — every asset survived, but the archive didn't: the layout the
+  session rebuilds (offsets, `Plus`, inter-asset gaps, layer padding, `PACK`'s counts) came out
+  differently.
+
 ```
 dotnet run --project tools/EvilHop.Corpus -c Release -- verify --round-trip artifacts/n100f
-  → 1038/1038 archives parsed successfully.
 dotnet run --project tools/EvilHop.Corpus -c Release -- verify --serializer bfbb --round-trip artifacts/bfbb
-  → 264/264 archives parsed successfully.
 ```
 
-A round-trip mismatch reports as a normal `FAIL <path>: round-trip byte mismatch.` line alongside any
-parse failures — the summary count and exit code don't distinguish "didn't parse" from "parsed but
-didn't round-trip," so check the failure lines themselves to tell which happened. A round-trip failure
-is never "we forgot to preserve original bytes" — there's no byte capture to have forgotten — it's
-always either a bug (a field the model doesn't have a home for, or a writer that encodes something
-differently than its reader decoded it) or a genuine modeling gap worth recording.
+Every failure reports as a normal `FAIL <path>: <reason>` line, and the summary count and exit code
+don't distinguish "didn't parse" from "parsed but didn't round-trip" — read the failure lines to tell
+which happened. A round-trip failure is never "we forgot to preserve original bytes" — there's no byte
+capture to have forgotten — it's always either a bug (a field the model doesn't have a home for, or a
+writer that encodes something differently than its reader decoded it) or a genuine modeling gap worth
+recording.
 
 Off by default because it roughly doubles per-archive memory and time; plain `verify` still answers
 "does everything under this root parse" on its own, and `--round-trip` only makes sense once you're
@@ -142,6 +156,14 @@ Per-archive quirks (e.g. N100F's `prototype_2001-06-11` build, which omits `Stre
 padding-amount field) are applied automatically from the committed
 `tools/EvilHop.Corpus/BuildProfiles.json` manifest, matched by path prefix — nothing to pass on the
 command line for a build already listed there.
+
+A profile is built in three steps: the game's `DefaultProfile`, then the `Platform` the archive
+declares via `Serializer.Sniff`, then the manifest, applied last and winning. The platform step
+matters because every `DefaultProfile` is GameCube while `--serializer` names a game, not a build.
+N100F is the case sniffing can't cover — no `PLAT` block, `PFLG` platform bits zero — so its
+non-GameCube builds carry an explicit `platform` override in the manifest. Adding N100F builds to
+the corpus on a platform not already listed there means adding an entry, or every asset in them is
+read big-endian and fails to parse.
 
 ### `--dump`
 
@@ -191,7 +213,7 @@ does not make it self-evident.
 | Path | Holds |
 | --- | --- |
 | `Program.cs`, `CorpusOptions.cs` | CLI entry and argument parsing. |
-| `ArchiveWalker.cs` | Discovery and build-key derivation. |
+| `Archives/` | Discovery and build-key derivation, serializer/profile resolution, and the two-layer `--round-trip` check. |
 | `Extraction/` | Reflection over public block properties, and the cardinality policy. |
 | `Invariants/` | One file per invariant family, plus the registry that lists them all. |
 | `Output/` | Deterministic inventory JSON and the JSONL dump. |

@@ -1,7 +1,9 @@
+using EvilHop.Common;
+
 namespace EvilHop.Assets;
 
 /// <summary>
-/// A <see cref="BaseAsset"/> representing a <see cref="Common.AssetType.Dynamic"/> asset
+/// A <see cref="BaseAsset"/> representing a <see cref="AssetType.Dynamic"/> asset
 /// a dynamically-typed object whose concrete shape is determined by
 /// <see cref="IPhysicalDynaAsset.DynaType"/>.
 /// </summary>

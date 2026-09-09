@@ -1,7 +1,9 @@
+using EvilHop.Blocks;
+
 namespace EvilHop.Common;
 
 /// <summary>
-/// Computes the CRC-32/MPEG-2 checksum <see cref="Blocks.AssetDebug.Checksum"/> is calculated
+/// Computes the CRC-32/MPEG-2 checksum <see cref="AssetDebug.Checksum"/> is calculated
 /// with.
 /// </summary>
 public static class Crc32Mpeg2

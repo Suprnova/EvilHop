@@ -1,4 +1,6 @@
+using EvilHop.Common;
 using EvilHop.Corpus.Archives;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 
 namespace EvilHop.Corpus.Tests.Archives;
@@ -56,6 +58,22 @@ public class BuildProfilesTests
 
         Assert.Equal(DefaultProfile.PlatformFieldOrder, resolved.PlatformFieldOrder);
         Assert.Equal(DefaultProfile.Game, resolved.Game);
+    }
+
+    /// <summary>
+    /// The manifest is the only thing that can name a platform for N100F, whose archives carry no
+    /// <c>PLAT</c> block and leave <c>PFLG</c>'s platform bits zero.
+    /// </summary>
+    [Fact]
+    public void Resolve_PlatformOverride_ChangesPlatformAndTheEndiannessDerivedFromIt()
+    {
+        var manifest = BuildProfiles.Load(
+            """[{ "pathPrefix": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } }]""");
+
+        var resolved = manifest.Resolve(DefaultProfile, "n100f/release/PS2/NTSC-U/US/B0/B001.HIP");
+
+        Assert.Equal(Platform.PlayStation2, resolved.Platform);
+        Assert.Equal(Endianness.Little, resolved.Endianness);
     }
 
     [Fact]

@@ -39,7 +39,7 @@ internal static class AssetCodecs
     internal delegate void WriteFunc<in T>(T asset, EndianWriter writer, FormatProfile profile)
         where T : Asset;
 
-    private readonly record struct CodecHandler(ReadFunc Read, WriteFunc Write);
+    private readonly record struct CodecHandler(ReadFunc Read, WriteFunc Write, IReadOnlySet<GameVersion>? Games = null);
 
     private static readonly Dictionary<AssetType, CodecHandler> Handlers = [];
 
@@ -61,7 +61,17 @@ internal static class AssetCodecs
     /// </summary>
     private static void RegisterConcreteCodecs()
     {
-        Register<CounterAsset>(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
+        Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
+        Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
+        Register(AssetType.Cutscene, CutsceneAsset.Read, CutsceneAsset.Write, CutsceneAsset.SupportedGames);
+        Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
+        Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
+        Register(AssetType.JawDataTable, JawDataTableAsset.Read, JawDataTableAsset.Write, JawDataTableAsset.SupportedGames);
+        Register(AssetType.LODTable, LODTableAsset.Read, LODTableAsset.Write, LODTableAsset.SupportedGames);
+        Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
+        Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
+        Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
+        Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
     }
 
     /// <summary>
@@ -72,19 +82,22 @@ internal static class AssetCodecs
     /// <param name="type">The <see cref="AssetType"/> to register against.</param>
     /// <param name="read">Reads an asset of this type.</param>
     /// <param name="write">Writes an asset of this type.</param>
-    /// TODO: per-game filtering - a codec declaring which <see cref="GameVersion"/>s it supports -
-    /// arrives with the first concrete codec, where its semantics can be settled against a real
-    /// case rather than guessed at.
-    public static void Register<T>(AssetType type, ReadFunc<T> read, WriteFunc<T> write) where T : Asset =>
+    /// <param name="games">
+    /// Which <see cref="GameVersion"/>s <paramref name="read"/> applies to, or <see langword="null"/>
+    /// if every game does.
+    /// </param>
+    public static void Register<T>(AssetType type, ReadFunc<T> read, WriteFunc<T> write, IReadOnlySet<GameVersion>? games = null) where T : Asset =>
         Handlers[type] = new CodecHandler(
             (data, header, debug, profile) => read(data, header, debug, profile),
-            Guarded(write));
+            Guarded(write),
+            games);
 
     /// <summary>
-    /// Reads one asset, dispatching based on <see cref="AssetHeader.Type"/>.
+    /// Reads one asset, dispatching based on <see cref="AssetHeader.Type"/> and
+    /// <see cref="FormatProfile.Game"/>.
     /// </summary>
     public static Asset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile) =>
-        Resolve(header.Type).Read(reader, header, debug, profile);
+        ResolveRead(header.Type, profile.Game)(reader, header, debug, profile);
 
     /// <summary>
     /// Writes one asset's data, dispatching based on its <see cref="Asset.Type"/>.
@@ -98,18 +111,48 @@ internal static class AssetCodecs
     private static CodecHandler Resolve(AssetType type) =>
         Handlers.TryGetValue(type, out var handler) ? handler : Fallback;
 
+    /// <summary>
+    /// Resolves the read function for <paramref name="type"/> under <paramref name="game"/>, falling
+    /// back to <paramref name="type"/>'s shape-generic reader - or <see cref="Fallback"/> - when its
+    /// registered codec declares <paramref name="game"/> unsupported.
+    /// </summary>
+    private static ReadFunc ResolveRead(AssetType type, GameVersion game)
+    {
+        var handler = Resolve(type);
+        return handler.Games is null || handler.Games.Contains(game)
+            ? handler.Read
+            : ShapeHandlerFor(type).Read;
+    }
+
     private static void RegisterGenericShapes()
     {
         foreach (var (type, shape) in ShapesByType)
-            Handlers[type] = shape switch
-            {
-                AssetShape.BaseAsset => new CodecHandler(ReadBase, Guarded<BaseAsset>(WriteBase)),
-                AssetShape.EntityAsset => new CodecHandler(ReadEntity, Guarded<EntityAsset>(WriteEntity)),
-                AssetShape.DynaAsset => new CodecHandler(ReadDyna, Guarded<DynaAsset>(WriteDyna)),
-                AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
-                _ => Fallback
-            };
+            Handlers[type] = ShapeHandler(shape);
     }
+
+    private static CodecHandler ShapeHandlerFor(AssetType type) =>
+        ShapesByType.TryGetValue(type, out var shape) ? ShapeHandler(shape) : Fallback;
+
+    private static CodecHandler ShapeHandler(AssetShape shape) => shape switch
+    {
+        AssetShape.BaseAsset => new CodecHandler(ZeroSizeAware(ReadBase), Guarded<BaseAsset>(WriteBase)),
+        AssetShape.EntityAsset => new CodecHandler(ZeroSizeAware(ReadEntity), Guarded<EntityAsset>(WriteEntity)),
+        AssetShape.DynaAsset => new CodecHandler(ZeroSizeAware(ReadDyna), Guarded<DynaAsset>(WriteDyna)),
+        AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
+        _ => Fallback
+    };
+
+    /// <summary>
+    /// Wraps a shape-specific reader so an asset with no bytes at all - not even for the shape's
+    /// fixed-size prefix - reads as an empty <see cref="GenericAsset"/> instead of throwing. Real
+    /// archives ship these.
+    /// </summary>
+    private static ReadFunc ZeroSizeAware(ReadFunc read) => (reader, header, debug, profile) =>
+        // Checked against the reader's own remaining length, not AssetHeader.Size, so this also
+        // covers an asset whose declared range fell outside the DPAK and was bounded to nothing.
+        reader.BaseStream.Length - reader.BaseStream.Position == 0
+            ? ReadPlain(reader, header, debug, profile)
+            : read(reader, header, debug, profile);
 
     /// <summary>
     /// Wraps a shape-specific writer so a shape mismatch degrades to writing by the asset's own
@@ -145,9 +188,8 @@ internal static class AssetCodecs
     /// </summary>
     /// <remarks>
     /// <see cref="BaseAssetPrefix.Read"/> always sets <see cref="IPhysicalBaseAsset.LinkCount"/> as
-    /// an override, matching the "cannot locate them" half of that property's contract - none of
-    /// the shapes below parse links into <see cref="BaseAsset.Links"/>. A future codec that does
-    /// must not treat this helper's LinkCount as final.
+    /// an override, since none of the shapes below parse links into <see cref="BaseAsset.Links"/> - a
+    /// future codec that does must not treat this helper's LinkCount as final.
     /// </remarks>
     private static T PopulateBase<T>(T asset, AssetHeader header, AssetDebug debug, EndianReader reader)
         where T : BaseAsset

@@ -17,6 +17,11 @@ internal static class AssetFields
     /// Populates <paramref name="asset"/>'s header-sourced fields from <paramref name="header"/>
     /// and <paramref name="debug"/>.
     /// </summary>
+    /// <remarks>
+    /// <see cref="AssetDebug.Checksum"/> is the one field left out, because whether it is an
+    /// override depends on what the asset's own data hashes to - which a codec, mid-read, doesn't
+    /// know yet. <see cref="AssetSession"/> applies it once the asset is built.
+    /// </remarks>
     /// <param name="asset">The <see cref="Asset"/> to populate.</param>
     /// <param name="header">The <see cref="AssetHeader"/> the asset was declared by.</param>
     /// <param name="debug">The <see cref="AssetDebug"/> child of <paramref name="header"/>.</param>
@@ -35,9 +40,9 @@ internal static class AssetFields
     /// <summary>
     /// Writes <paramref name="asset"/>'s header-sourced fields back onto a freshly built
     /// <paramref name="header"/> and <paramref name="debug"/>. The inverse of
-    /// <see cref="Populate"/>, minus the fields commit computes (<see cref="AssetHeader.Offset"/>,
-    /// <see cref="AssetHeader.Size"/>, <see cref="AssetHeader.Plus"/>,
-    /// <see cref="AssetDebug.Checksum"/>).
+    /// <see cref="Populate"/>, minus the fields commit derives from the laid-out result
+    /// (<see cref="AssetHeader.Offset"/>, <see cref="AssetHeader.Size"/>, and
+    /// <see cref="AssetHeader.Plus"/>).
     /// </summary>
     /// <param name="asset">The <see cref="Asset"/> to read from.</param>
     /// <param name="header">The <see cref="AssetHeader"/> to populate.</param>
@@ -49,6 +54,7 @@ internal static class AssetFields
         header.Flags = asset.Physical.Flags;
 
         debug.Alignment = asset.Physical.Alignment;
+        debug.Checksum = asset.Physical.Checksum;
         debug.Name = asset.Name;
         debug.FileName = asset.FileName;
     }

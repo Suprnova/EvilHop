@@ -62,11 +62,10 @@ public class StreamHeader : Block
 /// all <c>Assets</c>.
 /// </summary>
 /// <remarks>
-/// <see cref="Padding"/> exists to start <see cref="Data"/> on a 32-byte boundary, which holds for
-/// every archive observed. In archives without any assets (<see cref="PackageCount.AssetCount"/> = 0)
-/// there is no <see cref="Data"/> to align and no <see cref="PaddingAmount"/> field is written at
-/// all - the block holds only the fill needed to bring the archive itself to a 32-byte boundary,
-/// which is an empty block when it already ends aligned.
+/// <see cref="Padding"/> exists to start <see cref="Data"/> on the platform's data alignment
+/// boundary (32 bytes on GameCube, 2048 on PlayStation 2 and Xbox). A no-assets archive usually
+/// omits <see cref="PaddingAmount"/> entirely - there's no <see cref="Data"/> to align - but a
+/// minority keep the field anyway.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/HIP_(File_Format)#DPAK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 /// Validation TODO: No children.

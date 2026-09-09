@@ -1,3 +1,4 @@
+using EvilHop;
 using EvilHop.Corpus;
 using EvilHop.Corpus.Archives;
 using EvilHop.Corpus.Invariants;
@@ -12,6 +13,7 @@ try
     {
         CorpusVerb.Verify => RunVerify(options),
         CorpusVerb.Inventory => RunInventory(options),
+        CorpusVerb.SniffVerify => RunSniffVerify(options),
         _ => throw new UnreachableException()
     };
 }
@@ -32,24 +34,16 @@ static int RunVerify(CorpusOptions options)
     {
         total++;
 
-        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
-        if (!serializers.TryGetValue(profile, out var serializer))
-            serializers[profile] = serializer = SerializerFactory.Create(profile);
-
         try
         {
+            var serializer = ResolveSerializer(discovered, defaultProfile, buildProfiles, serializers);
             byte[] originalBytes = File.ReadAllBytes(discovered.FullPath);
-            var roots = serializer.Read(new MemoryStream(originalBytes));
+            var archive = Archive.Load(new MemoryStream(originalBytes), serializer);
 
-            if (options.RoundTrip)
+            if (options.RoundTrip && RoundTrip.Check(archive, originalBytes) is string mismatch)
             {
-                using var rewritten = new MemoryStream();
-                serializer.Write(rewritten, roots);
-                if (!rewritten.ToArray().AsSpan().SequenceEqual(originalBytes))
-                {
-                    failed++;
-                    Console.Error.WriteLine($"FAIL {discovered.RelativePath}: round-trip byte mismatch.");
-                }
+                failed++;
+                Console.Error.WriteLine($"FAIL {discovered.RelativePath}: {mismatch}");
             }
         }
         catch (Exception ex)
@@ -74,10 +68,7 @@ static int RunInventory(CorpusOptions options)
     int processed = 0;
     foreach (var discovered in ArchiveWalker.Discover(options.Roots))
     {
-        var profile = buildProfiles.Resolve(defaultProfile, discovered.RelativePath);
-        if (!serializers.TryGetValue(profile, out var serializer))
-            serializers[profile] = serializer = SerializerFactory.Create(profile);
-
+        var serializer = ResolveSerializer(discovered, defaultProfile, buildProfiles, serializers);
         var context = Read(serializer, discovered);
         builder.Observe(context);
         dump?.Write(context);
@@ -91,6 +82,56 @@ static int RunInventory(CorpusOptions options)
     InventoryWriter.Write(options.OutputPath!, builder);
     Console.WriteLine($"Wrote inventory to {options.OutputPath}");
     return 0;
+}
+
+static int RunSniffVerify(CorpusOptions options)
+{
+    int total = 0, failed = 0;
+    foreach (var discovered in ArchiveWalker.Discover(options.Roots))
+    {
+        total++;
+        try
+        {
+            using var stream = File.OpenRead(discovered.FullPath);
+            var sniff = Serializer.Sniff(stream);
+
+            if (sniff.Profile is null || sniff.Profile.Game != options.Game)
+            {
+                failed++;
+                string guess = sniff.Profile is null ? "Unrecognized" : sniff.Profile.Game.ToString();
+                Console.Error.WriteLine($"FAIL {discovered.RelativePath}: sniffed as {guess}, expected {options.Game}.");
+            }
+        }
+        catch (Exception ex)
+        {
+            failed++;
+            Console.Error.WriteLine($"FAIL {discovered.RelativePath}: {ex.Message}");
+        }
+    }
+
+    Console.WriteLine($"{total - failed}/{total} archives correctly sniffed as {options.Game}.");
+    return failed == 0 ? 0 : 1;
+}
+
+/// <summary>
+/// The serializer <paramref name="discovered"/> should be read with: its game's default profile,
+/// then the platform the archive declares for itself, then any committed per-build override - which
+/// is applied last because it is the curated record, and is what names a platform for the builds
+/// whose archives don't declare one.
+/// </summary>
+static Serializer ResolveSerializer(
+    DiscoveredArchive discovered,
+    FormatProfile defaultProfile,
+    BuildProfiles buildProfiles,
+    Dictionary<FormatProfile, Serializer> cache)
+{
+    var profile = buildProfiles.Resolve(
+        SerializerFactory.WithSniffedPlatform(defaultProfile, discovered.FullPath), discovered.RelativePath);
+
+    if (!cache.TryGetValue(profile, out var serializer))
+        cache[profile] = serializer = SerializerFactory.Create(profile);
+
+    return serializer;
 }
 
 static ArchiveContext Read(Serializer serializer, DiscoveredArchive discovered)
