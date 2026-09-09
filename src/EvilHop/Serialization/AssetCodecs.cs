@@ -61,6 +61,9 @@ internal static class AssetCodecs
     /// </summary>
     private static void RegisterConcreteCodecs()
     {
+        Register(AssetType.Animation, AnimationAsset.Read, AnimationAsset.Write, AnimationAsset.SupportedGames);
+        Register(AssetType.AnimationList, AnimationListAsset.Read, AnimationListAsset.Write, AnimationListAsset.SupportedGames);
+        Register(AssetType.AnimationTable, AnimationTableAsset.Read, AnimationTableAsset.Write, AnimationTableAsset.SupportedGames);
         Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
         Register(AssetType.Cutscene, CutsceneAsset.Read, CutsceneAsset.Write, CutsceneAsset.SupportedGames);
@@ -70,6 +73,7 @@ internal static class AssetCodecs
         Register(AssetType.LODTable, LODTableAsset.Read, LODTableAsset.Write, LODTableAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
+        Register(AssetType.ReactiveAnimation, ReactiveAnimationAsset.Read, ReactiveAnimationAsset.Write, ReactiveAnimationAsset.SupportedGames);
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
     }

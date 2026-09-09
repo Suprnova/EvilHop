@@ -72,7 +72,7 @@ public class AssetCodecsTests
         Assert.IsType<PayloadAsset>(Read(type, new byte[16]), exactMatch: false);
 
     [Theory]
-    [InlineData(AssetType.Animation)]
+    [InlineData(AssetType.AttackTable)]
     [InlineData(AssetType.Text)]
     [InlineData(AssetType.Wireframe)]
     public void Read_UnclassifiedType_PreservesEveryByte(AssetType type)
@@ -120,7 +120,7 @@ public class AssetCodecsTests
     [InlineData(AssetType.Trigger, 96)]
     [InlineData(AssetType.Dynamic, 24)]
     [InlineData(AssetType.Texture, 16)]
-    [InlineData(AssetType.Animation, 16)]
+    [InlineData(AssetType.AttackTable, 16)]
     public void Read_ThenWrite_ReproducesTheInputBytes(AssetType type, int length)
     {
         byte[] data = [.. Enumerable.Range(1, length).Select(i => (byte)i)];
