@@ -148,12 +148,15 @@ internal static class AssetCodecs
 
     /// <summary>
     /// Wraps a shape-specific reader so an asset with no bytes at all - not even for the shape's
-    /// fixed-size prefix - reads as an empty <see cref="GenericAsset"/> instead of throwing. Real
-    /// archives ship these.
+    /// fixed-size prefix - reads as an empty <see cref="GenericAsset"/> instead of throwing.
     /// </summary>
+    /// <remarks>
+    /// <c>header.Size</c> itself is never zero here - <see cref="AssetSession"/> degrades that case to
+    /// an <see cref="EmptyAsset"/> before any codec runs. This instead covers a header whose declared
+    /// size falls outside the <c>DPAK</c>'s bounds, which <see cref="AssetSession"/> bounds to an empty
+    /// slice.
+    /// </remarks>
     private static ReadFunc ZeroSizeAware(ReadFunc read) => (reader, header, debug, profile) =>
-        // Checked against the reader's own remaining length, not AssetHeader.Size, so this also
-        // covers an asset whose declared range fell outside the DPAK and was bounded to nothing.
         reader.BaseStream.Length - reader.BaseStream.Position == 0
             ? ReadPlain(reader, header, debug, profile)
             : read(reader, header, debug, profile);

@@ -23,11 +23,12 @@ namespace EvilHop.Assets;
 public sealed class AnimationAsset : Asset, IPhysicalAnimationAsset
 {
     /// <summary>
-    /// A four-character tag identifying this as the SKB format. <see cref="GameVersion.BFBB"/>,
-    /// <see cref="GameVersion.TSSM"/>, and <see cref="GameVersion.Incredibles"/> always write
-    /// <c>0x31424B53</c> ("SKB1" stored reversed); real <see cref="GameVersion.N100F"/> archives carry
-    /// a different value instead, so it is read and written back verbatim rather than assumed.
+    /// A four-character tag identifying this as the SKB format.
     /// </summary>
+    /// <remarks>
+    /// Normally <c>0x31424B53</c> ("SKB1" stored reversed), but not every game agrees, so it's read
+    /// and written back verbatim rather than assumed.
+    /// </remarks>
     public uint Magic { get; set; } = 0x31424B53;
 
     /// <summary>
@@ -87,11 +88,7 @@ public sealed class AnimationAsset : Asset, IPhysicalAnimationAsset
     /// </summary>
     /// <remarks>
     /// <see cref="GameVersion.ROTU"/> and <see cref="GameVersion.Ratatouille"/> use a revised SKB
-    /// layout (a narrower, differently-ordered header and a separate translation pool) not modeled
-    /// here; both degrade to the generic shape. Real archives (any of these games, on any platform)
-    /// also ship <c>ANIM</c>s with no embedded data at all - shorter than the fixed header, presumably
-    /// streamed from elsewhere - which <see cref="Read"/> cannot parse either; <see cref="AssetSession"/>
-    /// degrades those the same way, preserving their bytes.
+    /// layout not modeled here; both degrade to the generic shape.
     /// </remarks>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
@@ -196,17 +193,20 @@ public sealed class AnimationKey
     public ushort TimeIndex { get; set; }
 
     /// <summary>
-    /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W). Each
-    /// component is a raw <see cref="short"/> widened to <see cref="float"/> - exact, since a
-    /// <see cref="float"/>'s mantissa comfortably covers every <see cref="short"/> value - not yet
-    /// decoded to real rotation units; see <see cref="AnimationAsset.Scale"/>.
+    /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W).
     /// </summary>
+    /// <remarks>
+    /// Each component is a raw <see cref="short"/> widened losslessly to <see cref="float"/>, not yet
+    /// decoded to real rotation units; see <see cref="AnimationAsset.Scale"/>.
+    /// </remarks>
     public Vector4 Quat { get; set; }
 
     /// <summary>
     /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
-    /// Each component is a raw <see cref="short"/> widened to <see cref="float"/> - exact, not yet
-    /// decoded to real translation units; see <see cref="AnimationAsset.Scale"/>.
     /// </summary>
+    /// <remarks>
+    /// Each component is a raw <see cref="short"/> widened losslessly to <see cref="float"/>, not yet
+    /// decoded to real translation units; see <see cref="AnimationAsset.Scale"/>.
+    /// </remarks>
     public Vector3 Tran { get; set; }
 }

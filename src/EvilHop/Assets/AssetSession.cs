@@ -276,6 +276,13 @@ public sealed class AssetSession : IDisposable
         uint computed = Crc32Mpeg2.Compute(slice);
         _openChecksums[new AssetId(header.Id)] = computed;
 
+        if (header.Size == 0)
+        {
+            var empty = new EmptyAsset();
+            AssetFields.Populate(empty, header, debug);
+            return AdoptChecksum(empty, computed, debug);
+        }
+
         try
         {
             var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);

@@ -639,6 +639,56 @@ public class AssetSessionTests
     }
 
     /// <summary>
+    /// A zero-size <c>AssetHeader</c> is the archive's own declaration that this entry carries no
+    /// data - not a parse failure - so it reads as an <see cref="EmptyAsset"/> rather than being
+    /// handed to whatever codec its <see cref="AssetType"/> would otherwise use.
+    /// </summary>
+    [Fact]
+    public void OpenAssets_ZeroSizeAsset_ProducesEmptyAsset()
+    {
+        var archive = ArchiveWithZeroSizeSecondAsset(originalOffset: 0);
+        var expectedType = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.First().Type;
+
+        using var session = archive.OpenAssets();
+
+        var second = session.Layers.Single().Assets.Single(a => a.Name == "second");
+        Assert.IsType<EmptyAsset>(second);
+        Assert.Equal(expectedType, second.Type);
+    }
+
+    /// <summary>
+    /// The counterpart to <see cref="OpenAssets_ZeroSizeAsset_ProducesEmptyAsset"/>: since it is
+    /// never handed to a codec at all, there is nothing to fail, so it must not appear in
+    /// <see cref="AssetSession.Diagnostics"/> either.
+    /// </summary>
+    [Fact]
+    public void OpenAssets_ZeroSizeAsset_ReportsNoDiagnostics()
+    {
+        var archive = ArchiveWithZeroSizeSecondAsset(originalOffset: 0);
+
+        using var session = archive.OpenAssets();
+
+        Assert.Empty(session.Diagnostics);
+    }
+
+    /// <summary>
+    /// An unedited <see cref="EmptyAsset"/> must not show up in
+    /// <see cref="AssetSession.ChangedAssets"/> either - both it and its checksum are derived from
+    /// the same zero-byte slice on every pass, so a round-trip check over the whole corpus never
+    /// singles it out as reserialized differently.
+    /// </summary>
+    [Fact]
+    public void Commit_UnchangedZeroSizeAsset_ReportsNothingChanged()
+    {
+        var archive = ArchiveWithZeroSizeSecondAsset(originalOffset: 0);
+        var session = archive.OpenAssets();
+
+        session.Commit();
+
+        Assert.Empty(session.ChangedAssets);
+    }
+
+    /// <summary>
     /// Confirmed against every non-positive-alignment gap ahead of one of these three, on every
     /// platform, in the Incredibles corpus: 155 <c>ReactiveAnimation</c>, 52 <c>PickupTypes</c>, and
     /// 208 <c>ThrowableTable</c> gaps, none fitting the flat 16-byte default every other type gets, all

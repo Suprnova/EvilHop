@@ -70,11 +70,9 @@ public sealed class AnimationTableAsset : Asset, IPhysicalAnimationTableAsset
     /// The <see cref="GameVersion"/>s <see cref="AssetType.AnimationTable"/> is known to be read by.
     /// </summary>
     /// <remarks>
-    /// <see cref="GameVersion.N100F"/> diverges past its first state - real archives read cleanly
-    /// through <see cref="AnimationTableAsset.Raw"/>/<see cref="AnimationTableAsset.Files"/> and even
-    /// their first <see cref="AnimationTableAsset.States"/> entry, then the remaining bytes don't fit
-    /// this type's 28-byte-per-state layout. No N100F source confirms the real shape, so it degrades
-    /// to the generic form entirely rather than risk misreading a state that happens to fit anyway.
+    /// <see cref="GameVersion.N100F"/>'s <see cref="AnimationTableAsset.States"/> layout diverges from
+    /// every other supported game past the first entry, and no source confirms the real shape, so it
+    /// degrades to the generic form entirely.
     /// </remarks>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
