@@ -5,7 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
-namespace EvilHop.Tests.Serialization;
+namespace EvilHop.Tests.Assets.Serialization;
 
 public class AssetCodecsTests
 {

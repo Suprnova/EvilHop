@@ -1,10 +1,9 @@
-using EvilHop.Assets;
-using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
-namespace EvilHop.Serialization;
+namespace EvilHop.Assets.Serialization;
 
 /// <summary>
 /// Maps each <see cref="AssetType"/> to the codec that reads and writes it.

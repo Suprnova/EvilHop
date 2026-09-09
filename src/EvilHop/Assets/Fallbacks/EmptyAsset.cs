@@ -8,4 +8,5 @@ namespace EvilHop.Assets;
 /// in <see cref="AssetSession.Diagnostics"/> or <see cref="AssetSession.ChangedAssets"/>.
 /// <see cref="Asset.Type"/> still reports whatever type the header names.
 /// </remarks>
+/// TODO: should this be internal? or should GenericAssets.cs's classes be public?
 public sealed class EmptyAsset : Asset;
