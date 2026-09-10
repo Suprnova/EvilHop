@@ -1,7 +1,6 @@
 using EvilHop.Common;
-using EvilHop.Primitives;
 
-namespace EvilHop.Tests.Primitives;
+namespace EvilHop.Tests.Common;
 
 public class AssetIdTests
 {

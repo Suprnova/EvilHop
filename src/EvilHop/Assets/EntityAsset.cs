@@ -1,5 +1,4 @@
 using EvilHop.Common;
-using EvilHop.Primitives;
 using System.Numerics;
 
 namespace EvilHop.Assets;

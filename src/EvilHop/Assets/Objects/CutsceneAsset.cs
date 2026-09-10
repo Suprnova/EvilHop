@@ -1,5 +1,4 @@
 using EvilHop.Common;
-using EvilHop.Primitives;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -147,7 +146,7 @@ public record struct CutsceneDataEntry
     /// <summary>Which kind of model this entry is.</summary>
     public CutsceneDataType DataType { get; set; }
 
-    /// <summary>The <see cref="Primitives.AssetId"/> of the referenced model.</summary>
+    /// <summary>The <see cref="Common.AssetId"/> of the referenced model.</summary>
     public AssetId AssetId { get; set; }
 
     /// <summary>The size, in bytes, of this model's data within the cutscene's unparsed chunk data.</summary>

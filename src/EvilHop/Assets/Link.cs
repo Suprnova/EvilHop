@@ -1,4 +1,4 @@
-using EvilHop.Primitives;
+using EvilHop.Common;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 

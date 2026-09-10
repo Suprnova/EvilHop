@@ -1,6 +1,5 @@
 using EvilHop.Blocks;
 using EvilHop.Common;
-using EvilHop.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;

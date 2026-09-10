@@ -1,7 +1,6 @@
 using EvilHop.Assets;
-using EvilHop.Common;
 
-namespace EvilHop.Primitives;
+namespace EvilHop.Common;
 
 /// <summary>
 /// Represents a reference to an <see cref="Asset"/>.
