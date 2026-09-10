@@ -20,7 +20,8 @@ collection enforcing single-parent, no-cycles. Concrete blocks live in
 [`src/EvilHop/Blocks/`](../src/EvilHop/Blocks/): [`Package`](../src/EvilHop/Blocks/Package/Package.cs) (the
 `PACK` header), [`Dictionary`](../src/EvilHop/Blocks/Dictionary/Dictionary.cs) (`DICT`, holding the asset and
 layer tables), and [`AssetStream`](../src/EvilHop/Blocks/AssetStream/AssetStream.cs) (`STRM`, holding the raw
-asset bytes in `DPAK`), plus [`HIPA`](../src/EvilHop/Blocks/HIPA.cs). Blocks that belong to a
+asset bytes in `DPAK`), plus [`HIPA`](../src/EvilHop/Blocks/HIPA.cs) and the unofficial
+[`HIPB`](../src/EvilHop/Blocks/HIPB.cs) compatibility block. Blocks that belong to a
 managed structure (`AHDR`, `ADBG`, `LHDR`, `DPAK`) can have their fields locked by `Archive` while
 an `AssetSession` owns them; `Block.SetManagedBlockField`/`EnsureFieldsUnlocked` enforce this.
 

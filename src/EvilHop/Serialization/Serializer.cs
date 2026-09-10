@@ -33,8 +33,8 @@ public abstract partial class Serializer
     public FormatProfile Profile { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="Serializer"/>, registering all twenty base
-    /// <see cref="Block"/> types.
+    /// Initializes a new instance of <see cref="Serializer"/>, registering all twenty official base
+    /// <see cref="Block"/> types plus the unofficial <see cref="HIPB"/> compatibility block.
     /// </summary>
     /// <param name="profile">The format quirks and game identity this serializer reads with.</param>
     protected Serializer(FormatProfile profile)
@@ -64,6 +64,10 @@ public abstract partial class Serializer
         RegisterBlock<AssetStream>();
         RegisterBlock<StreamHeader>(ReadStreamHeader, WriteStreamHeader);
         RegisterBlock<StreamData>(ReadStreamData, WriteStreamData);
+
+        // Unofficial: appended after every other root block by HipHopFile, a community tool - never
+        // part of the official format, but any game's archive can carry one.
+        RegisterBlock<HIPB>(ReadHIPB, WriteHIPB);
     }
 
     /// <summary>

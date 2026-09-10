@@ -32,6 +32,13 @@ These are the twenty registered by every game.
 | `DHDR` | [`StreamHeader`](../src/EvilHop/Blocks/AssetStream/StreamHeader.cs) | A single unknown scalar on `STRM`. |
 | `DPAK` | [`StreamData`](../src/EvilHop/Blocks/AssetStream/StreamData.cs) | The raw bytes of every asset back to back, plus the padding that aligns them. |
 
+Every game's `Serializer` also registers [`HIPB`](../src/EvilHop/Blocks/HIPB.cs) - a twenty-first,
+unofficial root block appended after every other root block by HipHopFile, one of the community's
+first HIP-parsing libraries. No official archive carries one, and EvilHop never writes one on its
+own initiative; it's supported purely so archives that were edited by a HipHopFile-based tool
+round-trip byte-exactly. Nothing else in an archive depends on it, so a malformed one degrades
+instead of failing the whole archive to load.
+
 ## Concepts
 
 - **Archive** - a single HIP file, represented as an ordered list of root blocks (typically `HIPA`,
