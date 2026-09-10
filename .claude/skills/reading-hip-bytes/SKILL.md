@@ -26,7 +26,8 @@ If the user gave you an explicit path, use it and skip this section.
 
 Otherwise, look for an `artifacts/` folder at the repository root. It holds real game builds used for
 manual testing — several GB, gitignored, and **not guaranteed to exist**: anyone who clones the repo
-without also fetching their own copy simply won't have it. Its layout, in full at `tests/README.md`, is:
+without also fetching their own copy simply won't have it. Its layout, in full in the
+`generating-corpus-inventory` skill (Prerequisites), is:
 
 ```
 artifacts/{game}/{build}/{platform}/{region}/{language}/

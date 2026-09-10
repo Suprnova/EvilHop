@@ -2,7 +2,7 @@
 
 EvilHop is a C# .NET library for reading, writing, and manipulating **HIP archive files**, the binary asset container format used in several games developed by Heavy Iron Studios.
 
-> **Status: alpha.** Both layers are functional: the block layer round-trips every archive tested byte-for-byte, and the asset layer opens archives as assets through a session, rebuilding the archive on commit. Every known asset type is read through a generic codec for its shape - per-type field modelling is in progress. Breaking changes are expected, and there is no NuGet package yet.
+> **Status: alpha.** Both layers are functional: the block layer round-trips every archive tested byte-for-byte, and the asset layer opens archives as assets through a session, rebuilding the archive on commit. Asset codecs are a work in progress: a growing set of types are modelled field-for-field, everything else falls back to a generic codec for its shape, and unparsed bytes are always carried through untouched. Breaking changes are expected, and there is no NuGet package yet.
 
 ## Supported Games
 
@@ -51,9 +51,18 @@ archive.Save(output);
 
 ## Planned
 
-- Per-type codecs that model each asset type's fields; today every type reads through a generic codec for its shape, with unparsed bytes preserved.
+- More per-type asset codecs. A growing subset of the type catalogue has typed field models; the rest currently read through a generic codec for their shape, with unparsed bytes preserved. Types are added one at a time.
 - Cross-version conversion, upgrading and downgrading archives between the supported games.
 - Native field definitions for embedded payload formats (RenderWare streams, Bink video, audio), which today import and export as whole files.
+
+## Documentation
+
+The architecture is documented in living documents that are updated in the same change that moves
+the code they describe:
+
+- [`docs/overview.md`](docs/overview.md) - the whole library, one level deep.
+- [`docs/architecture.md`](docs/architecture.md) - the design decisions behind how it is built.
+- [`docs/glossary.md`](docs/glossary.md) - every block and the asset/serialization jargon.
 
 ## Building
 

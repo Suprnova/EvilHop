@@ -179,21 +179,23 @@ every file containing it; regenerate on demand rather than keeping it around.
 
 1. **Re-run and diff.** Run the same command twice and confirm the output is byte-identical. A diff
    between two identical runs means non-determinism, which is a bug in the tool.
-2. **Run the test suite.** `dotnet test EvilHop.slnx -c Release`. `EvilHop.Tests/Corpus/InventoryTests.cs`
-   asserts the committed inventory against current code, and it is where a newly-recorded enum value
-   with no matching member surfaces.
+2. **Run the test suite.** `dotnet test EvilHop.slnx -c Release`. Nothing asserts `corpus/*.json`
+   against current code today — `EvilHop.Tests/Corpus/InventoryTests.cs` was dropped with the corpus
+   freeze — so the coverage is the tool's own `EvilHop.Corpus.Tests` plus your manual diff.
 3. **Read the diff.** `corpus/*.json` is reviewed like source. A new asset type, a widened range, or a
    newly-nonzero violation count is a finding worth understanding before it lands.
 4. **Don't commit `dump/`.** It's gitignored; keep it that way.
 
 Regenerate when the corpus gains builds, or when extraction/invariant policy changes in the tool.
 Routine library changes do **not** need a refresh — extraction is reflection-based and already reads
-whatever properties exist. What can break is the *assertions* in `EvilHop.Tests`, and that breaking in
-CI is the design working.
+whatever properties exist. `EvilHop.Tests/Corpus/InventoryTests.cs` once asserted the inventory in CI
+and could start failing on a regeneration; it was dropped with the corpus freeze (see AGENTS.md), so
+regeneration is currently a reviewed-diff decision rather than a CI backstop.
 
 ## The governing rule
 
-**The tool records observations. `EvilHop.Tests` asserts those observations against current code.**
+**The tool records observations; assertions of them belong in `EvilHop.Tests`, never in this tool or
+its data.**
 
 The inventory must contain no value whose correctness depends on EvilHop's source. It records the raw
 value `RWTX`, never `"isDefined": true`; the `(name, id)` pair, never `"hashMatches": true`.
@@ -201,7 +203,9 @@ value `RWTX`, never `"isDefined": true`; the `(name, id)` pair, never `"hashMatc
 The reason is *when failures surface*. The tool could trivially call `Enum.IsDefined` — but that
 failure would only appear when someone runs it with the full corpus on hand. Enum definitions are
 mutable code and observed values are frozen data, so the assertion belongs where code changes are
-actually caught: CI. **Do not add `Enum.IsDefined` or similar code-dependent checks to the tool.**
+actually caught: in tests, under CI. `EvilHop.Tests/Corpus/InventoryTests.cs` once filled that role;
+it was dropped with the corpus freeze. **Do not add `Enum.IsDefined` or similar code-dependent
+checks to the tool.**
 
 This is the design decision a newcomer is most likely to unknowingly violate, and the tool's structure
 does not make it self-evident.

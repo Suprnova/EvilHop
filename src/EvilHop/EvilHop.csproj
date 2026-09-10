@@ -14,8 +14,4 @@
     <InternalsVisibleTo Include="EvilHop.Tests" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validation\" />
-  </ItemGroup>
-
 </Project>
