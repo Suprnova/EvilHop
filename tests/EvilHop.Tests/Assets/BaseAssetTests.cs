@@ -1,5 +1,5 @@
 using EvilHop.Assets;
-using EvilHop.Primitives;
+using EvilHop.Common;
 
 namespace EvilHop.Tests.Assets;
 
