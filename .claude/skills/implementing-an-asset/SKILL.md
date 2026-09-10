@@ -41,13 +41,13 @@ mistakes come out.
 | Trait interfaces (`IHasModel`, `IGrabbable`, ...) | `src/EvilHop/Assets/Traits.cs` |
 | Shared header readers/writers | `src/EvilHop/Assets/Serialization/AssetPrefixes.cs` |
 | Header-sourced field copy | `src/EvilHop/Assets/Serialization/AssetFields.cs` |
-| Link read/write | `src/EvilHop/Assets/Serialization/LinkSerialization.cs`, `Link.cs`, `Parameter.cs` |
-| Generic shape fallbacks | `src/EvilHop/Assets/GenericAssets.cs` |
-| Codec registry | `src/EvilHop/Serialization/AssetCodecs.cs` (incl. `ShapesByType` table) |
-| Per-game quirks | `src/EvilHop/Serialization/FormatProfile.cs`, `*Serializer.cs` (one per game) |
-| Raw read/write primitives | `src/EvilHop/Primitives/EndianReader.cs`, `EndianWriter.cs`, `AssetId.cs` |
-| Type enum | `src/EvilHop/Common/AssetType.cs` |
-| Tests | `tests/EvilHop.Tests/Assets/`, `tests/EvilHop.Tests/Serialization/{Foo}AssetTests.cs` |
+| Link read/write | `src/EvilHop/Assets/Serialization/LinkSerialization.cs`, `src/EvilHop/Assets/Link.cs`, `src/EvilHop/Assets/Parameter.cs` |
+| Generic shape fallbacks | `src/EvilHop/Assets/Fallbacks/GenericAssets.cs` |
+| Codec registry | `src/EvilHop/Assets/Serialization/AssetCodecs.cs` (incl. `ShapesByType` table) |
+| Per-game quirks | `src/EvilHop/Serialization/FormatProfile.cs`, `src/EvilHop/Serialization/Games/*Serializer.cs` (one per game) |
+| Raw read/write primitives | `src/EvilHop/Primitives/EndianReader.cs`, `EndianWriter.cs` |
+| Id / type primitives | `src/EvilHop/Common/AssetId.cs`, `src/EvilHop/Common/AssetType.cs` |
+| Tests | `tests/EvilHop.Tests/Assets/<Family>/`, the family-folder mirror of the asset |
 | Byte-locating script (this skill) | `.claude/skills/implementing-an-asset/scripts/locate-asset.cs` |
 
 §[Reference](#reference-everything-a-codec-needs) below inlines everything a normal implementation
@@ -61,7 +61,7 @@ Before you write a single property, settle three things.
 ### 1. Which parent does it derive from?
 
 This is not a guess. The wiki's type classifier (`Binary`/`Base`/`Entity`/`RenderWare`) says, and the
-archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layout)):
+archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layout-before-writing-the-class)):
 
 - **`Asset`** — no shared header at all; the payload starts directly with the type's own fields. Not
   just a "not modelled yet" fallback — genuinely correct for some types, e.g. `MRKR` (just a
@@ -74,7 +74,9 @@ archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layo
 - **`DynaAsset : BaseAsset`** — `BaseAsset` header + `uint DynaType, short Version, short Handle`, then
   the dyna's own fields. `DYNA` subtypes dispatch twice (see `AssetCodecs` remarks).
 
-Concrete types live right next to their base (`src/EvilHop/Assets/`). Match the naming: an asset that
+Concrete types live in family folders grouped by shape and domain under `src/EvilHop/Assets/`
+(`Cameras/`, `Animation/`, `Audio/`, `Models/`, `Objects/`), not all in the root — tests mirror the
+same families under `tests/EvilHop.Tests/Assets/`. Match the naming: an asset that
 is a `BaseAsset` gets a `FooAsset : BaseAsset` class; one that is an `EntityAsset` gets
 `FooAsset : EntityAsset`; a plain `Asset` gets `FooAsset : Asset`. The class name mirrors the
 `AssetType` enum member exactly (`AssetType.LODTable` → `LODTableAsset`, `AssetType.Hangable` →
@@ -193,7 +195,7 @@ subtype), `Version` (`short`), `Handle` (`short`, runtime-only).
 Each trait member is implemented explicitly and one line long: `AssetId IHasModel.ModelId { get =>
 Physical.ModelId; set => Physical.ModelId = value; }`. The XML doc "Used by" lists on these interfaces
 are wiki-sourced guesses — do not use them to decide whether *your* type gets a trait; decide from
-what the bytes actually show (see §[Validate the layout](#validate-the-layout)) or from a clear wiki
+what the bytes actually show (see §[Validate the layout](#validate-the-layout-before-writing-the-class)) or from a clear wiki
 field name.
 
 ### `AssetPrefixes.cs` — shared byte layout, in exact field order
@@ -227,7 +229,7 @@ for unknown bytes, `FloatParameter`/`IntParameter`/`AssetIdParameter` where the 
 `Read` wherever your type's layout actually places its links (see
 [Wire up the codec](#wire-up-the-codec) — not necessarily right after `LinkCount`).
 
-### Generic shape fallbacks & `ShapesByType` (`GenericAssets.cs`, `AssetCodecs.cs`)
+### Generic shape fallbacks & `ShapesByType` (`src/EvilHop/Assets/Fallbacks/GenericAssets.cs`, `src/EvilHop/Assets/Serialization/AssetCodecs.cs`)
 
 Every `AssetType` without a concrete codec (or whose concrete codec declares a game unsupported) falls
 back to a generic reader for its **shape**: `GenericAsset` (plain `Asset`, whole slice unparsed),
@@ -280,7 +282,7 @@ use it, only to see more context if something here doesn't match your case.
   `InitialValue`): `reader.ReadInt16(); // 2 bytes of padding, always zero` on read, `writer.Write(
   (short)0); // padding` on write. No property at all — there is nothing here worth exposing.
   Reach for this only once you've confirmed the bytes are genuinely constant (see
-  §[Validate the layout](#validate-the-layout)); until then, keep the field and mark it unknown
+  §[Validate the layout](#validate-the-layout-before-writing-the-class)); until then, keep the field and mark it unknown
   instead (next bullet).
 - **An always-present field with no known meaning, kept physical** (`HangableAsset.HangFlags`,
   `LODTableEntry.Flags`): a plain `uint`/similar property doc-commented `Unknown.`, with no attempt at
@@ -400,7 +402,8 @@ Rules to follow:
   (e.g. an `unknown` tail you can't model yet), the remainder goes in the unparsed tail — byte-exact
   round trip is preserved, and you can model more later without breaking fidelity.
 - **`Validate()`-able facts are `Validate()` findings, not exceptions.** The library has no
-  `Validate()` on assets yet (`src/EvilHop/Validation/` is empty). If you find a rule worth recording
+  `Validate()` on assets yet — the `EvilHop.Validation` namespace (and its `src/EvilHop/Validation/`
+  folder) is reserved for it but does not exist yet. If you find a rule worth recording
   (a field the wiki says should always be 0, a `BaseFlags.Valid` check), note it as a TODO for the
   validation layer / `Validate()` rather than throwing at read or write time. Do not add a
   `Validate()` override unless one already exists to extend.
@@ -460,13 +463,18 @@ Key points:
   (or `Fallback` for a plain `Asset`), degrading gracefully instead of misreading. Expose it as
   `internal static IReadOnlySet<GameVersion> SupportedGames { get; }` on the asset class itself (every
   precedent does this), not as a literal at the call site.
+- **Big codecs split into a `.Serialization.cs` partial.** Once a codec outgrows ~250 lines, move the
+  `Read`/`Write`/`SupportedGames` members into a `FooAsset.Serialization.cs` partial beside `FooAsset.cs`
+  in the same family folder — see `CameraAsset.Serialization.cs`, `AnimationTableAsset.Serialization.cs`,
+  `CutsceneAsset.Serialization.cs`.
 - **Write what you read, and nothing else.** A codec that reads a field it doesn't write (or writes one
   it doesn't read) breaks the round trip. The round-trip test below is what catches this.
 
 ## Tests
 
-Follow the pattern in `tests/EvilHop.Tests/Serialization/{Foo}AssetTests.cs` (e.g.
-`HangableAssetTests.cs`, `DestructibleObjectAssetTests.cs`, `MarkerAssetTests.cs`). The minimum:
+Follow the pattern in `tests/EvilHop.Tests/Assets/<Family>/{Foo}AssetTests.cs`, mirroring the asset's
+family folder (e.g. `tests/EvilHop.Tests/Assets/Objects/HangableAssetTests.cs`,
+`DestructibleObjectAssetTests.cs`, `MarkerAssetTests.cs`). The minimum:
 
 1. **Read produces your concrete type.** `Assert.IsType<FooAsset>(Read(AssetType.Foo, bytes))`.
 2. **Read populates your fields** from a hand-built byte array (decode the bytes you put in).
@@ -518,7 +526,7 @@ which is what `locate-asset.cs` and `reading-corpus-inventory` query) — it has
 asset's individual fields.
 
 Until then, and for the type you just implemented, `locate-asset.cs`'s dump against a real archive
-(see §[Validate the layout](#validate-the-layout)) is your validation. At minimum confirm:
+(see §[Validate the layout](#validate-the-layout-before-writing-the-class)) is your validation. At minimum confirm:
 
 - The `baseType` byte and shape are what you modeled.
 - Each "usually constant" field you relied on (`pflags` = 0, padding, `SeeThroughSpeed` = 255, ...) is

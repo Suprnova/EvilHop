@@ -16,7 +16,7 @@ This means we support two tiers of consumers, and we treat both of them as first
 their respective domains. The two layers are mutually exclusive - you cannot mix them in the same
 operation - because a session owns the blocks that describe assets while it is open.
 [`Archive.OpenAssets()`](../src/EvilHop/Archive.cs) returns an
-[`AssetSession`](../src/EvilHop/Assets/AssetSession.cs), which detaches `ATOC`/`LTOC`/`DPAK` from
+[`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs), which detaches `ATOC`/`LTOC`/`DPAK` from
 the block tree and locks their fields; `Commit()` - explicit, or on `Dispose()` - rebuilds them from
 the assets and reattaches.
 

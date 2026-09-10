@@ -162,12 +162,14 @@ the interesting signal** — it means a derivation rule exists that we don't kno
 
 ## What the file deliberately does not contain
 
-**The inventory records observations. Tests assert those observations against EvilHop's code.**
+**The inventory records observations; assertions of them belong against EvilHop's code, in tests —
+not in this data.**
 
 So it holds the raw value `RWTX`, never `"isDefined": true`; the `(name, id)` pair, never
 `"hashMatches": true`. Enum definitions and hash implementations are mutable code, so assertions about
-them live in `EvilHop.Tests` where CI catches a change — not baked into data that only refreshes when
-a maintainer with the full corpus regenerates it.
+them belong in tests where CI catches a change — not baked into data that only refreshes when a
+maintainer with the full corpus regenerates it. (`EvilHop.Tests/Corpus/InventoryTests.cs` was the
+test that did this; it was dropped with the corpus freeze, so nothing asserts the inventory today.)
 
 Two consequences when reading:
 
@@ -210,6 +212,7 @@ error: inventory not found: 'corpus/nope.json'. Generate one with the generating
 ## Multiple inventories
 
 One file per corpus, identified by filename. `corpus/n100f.json` is the official-archive inventory
-today; a `corpus/community.json` may exist later for community-made archives. Strictness differs by
-which test asserts against which file — an official-corpus failure breaks the build, a
-community-corpus one is informational. Point `--inventory` at whichever you mean.
+today; a `corpus/community.json` may exist later for community-made archives. Nothing asserts either
+file today (the corpus is frozen; see AGENTS.md). If assertion tests return, expect strictness to
+differ by file — an official-corpus failure breaking the build, a community-corpus one
+informational. Point `--inventory` at whichever you mean.

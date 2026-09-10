@@ -1,8 +1,9 @@
 # EvilHop.Corpus
 
-A maintainer-only tool that reads real HIP archives from a local corpus, observes what EvilHop's
-assumptions actually look like against them, and emits a small committed inventory so CI can check
-those assumptions without needing the corpus itself.
+A maintainer-only tool that reads real HIP archives from a local corpus and emits a small committed
+inventory (`corpus/*.json`) recording what those archives actually contain - a shareable record that
+doesn't need the multi-GB corpus itself. The hermetic test that once asserted the inventory against
+EvilHop in CI was dropped with the corpus freeze; nothing asserts it today.
 
 ## Prerequisites
 
@@ -68,25 +69,6 @@ Both a missing root and a root with no `.HIP`/`.HOP` files are hard errors, not 
 tool never runs unattended under a test suite, so there's no reason to make a bad argument quietly
 succeed.
 
-## Profiling
-
-`profile.ps1` runs `verify --round-trip` under `dotnet-trace` and prints the methods that spent the
-most time, one run per game. It needs `dotnet tool install -g dotnet-trace`.
-
-```
-./tools/EvilHop.Corpus/profile.ps1 -Game ratatouille   # one game
-./tools/EvilHop.Corpus/profile.ps1                     # all six
-```
-
-Traces, reports, and each run's console output land in the gitignored `profiles/`, including a
-`.speedscope.json` to open at https://speedscope.app when the flat top-N isn't enough.
-
-The profile it collects (`dotnet-sampled-thread-time`) samples thread stacks at ~100 Hz to estimate
-**wall clock** time, not CPU time. A corpus run reads tens of gigabytes, so blocking file reads are
-time too, and on a short run an idling background thread can take a deceptively large share. Read
-the split as "parse-bound or disk-bound", and compare library methods against each other rather
-than against the total.
-
 ## Build profile overrides
 
 `BuildProfiles.json`, committed alongside this tool, lists path-prefix-matched overrides to a game's
@@ -111,14 +93,15 @@ exists for tracing a surprising aggregated value back to every file it appears i
 
 Regenerate when the corpus itself changes (new builds added) or when extraction/invariant policy
 changes in this tool. Routine changes to the `EvilHop` library do **not** require regeneration -
-extraction is reflection-based, so it already reads whatever properties exist; only its *assertions*
-against the inventory (in `EvilHop.Tests`) can start failing, which is the point.
+extraction is reflection-based, so it already reads whatever properties exist. (`EvilHop.Tests/Corpus/
+InventoryTests.cs` once asserted the inventory and could start failing on a regeneration; it was
+dropped with the corpus freeze, so nothing asserts the inventory today.)
 
 ## The governing rule
 
-**This tool records observations. `EvilHop.Tests` asserts those observations against EvilHop's
-current code.** Concretely: this tool writes the raw enum value `0x52575458`, never `"isDefined":
-true`. Enum definitions, hash implementations, and property names are mutable code, so their
-assertions belong where code changes are actually caught - CI - not baked into data that only
-changes when a maintainer with a 12GB corpus feels like it. Do not add `Enum.IsDefined` or similar
-code-dependent checks here.
+**This tool records observations; assertions of them belong in `EvilHop.Tests`, never in this tool or
+its data.** Concretely: this tool writes the raw enum value `0x52575458`, never `"isDefined": true`.
+Enum definitions, hash implementations, and property names are mutable code, so their assertions
+belong where code changes are actually caught - CI - not baked into data that only changes when a
+maintainer with a 12GB corpus feels like it. Do not add `Enum.IsDefined` or similar code-dependent
+checks here.

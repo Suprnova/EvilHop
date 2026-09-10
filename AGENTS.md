@@ -8,7 +8,7 @@ The library is in alpha and is not used in any production applications. Breaking
 
 | Path | What it is |
 |---|---|
-| `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`, `Validation/`. |
+| `src/EvilHop/` | The library. `Blocks/` (block layer), `Assets/` (asset layer, family folders + `Assets/Serialization/` for the codec registry), `Serialization/` (per-game serializers and `FormatProfile`), `Common/`, `Primitives/`. |
 | `tests/EvilHop.Tests/` | Library tests. Fixtures live in `TestData/<game>/`; nothing here reads `artifacts/`. |
 | `tools/EvilHop.Corpus/` | Console tool that reads `artifacts/` and writes `corpus/`. Depends on `EvilHop`; `EvilHop` never depends on it. |
 | `tests/EvilHop.Corpus.Tests/` | Tests for the tool itself. |
@@ -54,9 +54,9 @@ them wrong breaks the library.
 
 ## Corpus and Real Archives
 
-`artifacts/` is a local, gitignored corpus of real game archives - never a build or test dependency, and the full test suite must pass without it. `tools/EvilHop.Corpus` reads it to generate small committed inventories under `corpus/`, which hermetic tests assert against.
+`artifacts/` is a local, gitignored corpus of real game archives - never a build or test dependency, and the full test suite must pass without it. `tools/EvilHop.Corpus` reads it to generate small committed inventories under `corpus/`. A hermetic test (`EvilHop.Tests/Corpus/InventoryTests.cs`) once asserted the inventory against current code; it was dropped with the corpus freeze, so nothing asserts `corpus/*.json` today.
 
-Governing rule: **the Corpus tool records observations; tests assert them against current code.** An inventory must never contain a value whose correctness depends on EvilHop's source.
+Governing rule: **the Corpus tool records observations; tests assert them against current code.** An inventory must never contain a value whose correctness depends on EvilHop's source. When the corpus is unfrozen, the assertion test returns to `EvilHop.Tests` - the rule never moves into the tool or its data.
 
 The tool and `corpus/` are currently frozen: leave them as they are rather than extending or
 redesigning them until the asset layer (codecs, validation) is far enough along to make an informed
