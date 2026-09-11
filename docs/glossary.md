@@ -75,6 +75,10 @@ instead of failing the whole archive to load.
 - **Shape** - which level of the asset hierarchy (`BaseAsset`, `EntityAsset`, `DynaAsset`, or
   `Payload`) a type's bytes are known to follow before a real codec is written for it. See
   `AssetShape` in [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs).
+- **Motion** - how an entity moves or reacts. An `EntityMotion` lives in the Motion block shared by
+  `PLAT` and `BUTN`; a `PlatformMotion` lives in a platform's own type-specific block. A
+  `PlatformAsset` models both as its one `Motion`, from which its type byte and subtype follow. See
+  [`Motion`](../src/EvilHop/Assets/Motions/Motion.cs).
 - **Trait** - an interface (`IHasModel`, `IGrabbable`, ...) a concrete asset type implements to
   expose a field its whole family reserves but only some types use. See
   [`Traits.cs`](../src/EvilHop/Assets/Traits.cs).
