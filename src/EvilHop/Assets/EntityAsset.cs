@@ -39,8 +39,13 @@ public abstract class EntityAsset : BaseAsset, IPhysicalEntityAsset
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalEntityAsset Physical => this;
 
-    private protected byte _subtype;
-    byte IPhysicalEntityAsset.Subtype { get => _subtype; set => _subtype = value; }
+    byte IPhysicalEntityAsset.Subtype { get => Subtype; set => Subtype = value; }
+
+    /// <summary>
+    /// Backs <see cref="IPhysicalEntityAsset.Subtype"/>, for a derived type whose subtype follows
+    /// from its own data.
+    /// </summary>
+    private protected virtual byte Subtype { get; set; }
 
     private protected CollisionFlags _collisionFlags;
     CollisionFlags IPhysicalEntityAsset.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
