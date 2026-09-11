@@ -329,6 +329,27 @@ occurrence in the same file (`--index` gets you *which* occurrence, not a full l
 free-form offset walking once you already know roughly where you're going, or a field the
 leading-count guess doesn't fit (e.g. no leading count at all).
 
+### Sweeping every occurrence
+
+One exemplar per game proves a layout exists, not that it holds everywhere. Before relying on "always
+zero" or "always the same size", sweep every occurrence: a throwaway `dotnet run --file` script in
+`dump/` (gitignored) with `#:project ../src/EvilHop/EvilHop.csproj` can `Archive.Load` each archive,
+`OpenAssets()`, and read every asset of the type. A type without a codec yet parses as its generic
+shape, so `GetUnparsedTail()` on the `EntityAsset`/`BaseAsset` is exactly the bytes after the shared
+prefix - tabulate sizes, discriminator bytes, and which regions are ever nonzero from that.
+
+Two corpus quirks to account for when you do:
+
+- **N100F's platform isn't sniffable.** Every N100F build's `PACK` flags carry no platform bits, so
+  `Serializer.Sniff` falls back to GameCube and Xbox/PS2 archives read their asset fields with the
+  wrong byte order. Round trips stay byte-exact, but field values don't. Derive the platform from the
+  archive's `artifacts/` path (`GC`/`PS2`/`XBOX`) and override it -
+  `Serializer.Create(sniffed with { Platform = ... })` - before interpreting any N100F field value.
+- **Leftover developer archives.** BFBB's `gl/Working/` and `gl/New Folder/` directories, and some of
+  its Xbox `db` archives, are developer leftovers the game never loads, and may predate format changes
+  (e.g. BFBB's entity padding). They're low priority: note what they do, but don't bend a model to fit
+  them - an asset that fails to parse degrades to its generic shape with a diagnostic, which is fine.
+
 ### Proven-from-file facts vs. gameplay-only facts
 
 Treat these differently:

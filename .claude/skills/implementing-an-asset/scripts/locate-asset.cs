@@ -240,6 +240,11 @@ static string? RunGit(string workingDirectory, string arguments)
 // Archive reading - same AHDR field order and hex-dump shape as reading-hip-bytes' hipbytes.cs.
 // ---------------------------------------------------------------------------------------------
 
+// A tag match is only an AHDR's type field if "AHDR" sits 12 bytes before it (tag, size, id): the same
+// four characters also appear as other block tags (PLAT is also the platform block) and inside names.
+static bool IsAssetHeaderType(byte[] data, long typeOffset) =>
+    typeOffset >= 12 && Encoding.ASCII.GetString(data, (int)(typeOffset - 12), 4) == "AHDR";
+
 static void DumpArchive(string archivePath, string tag, int index, int dumpBytes, int? entrySize)
 {
     byte[] data = File.ReadAllBytes(archivePath);
@@ -250,29 +255,27 @@ static void DumpArchive(string archivePath, string tag, int index, int dumpBytes
     {
         long m = IndexOf(data, pattern, pos);
         if (m < 0) break;
-        matches.Add(m);
+        if (IsAssetHeaderType(data, m)) matches.Add(m);
         pos = m + 1;
     }
 
     if (matches.Count == 0)
     {
-        Console.WriteLine($"  '{tag}' bytes not found in {Path.GetFileName(archivePath)} - the corpus record may predate a re-generated archive.");
+        Console.WriteLine($"  no AHDR of type '{tag}' found in {Path.GetFileName(archivePath)} - the corpus record may predate a re-generated archive.");
         return;
     }
     if (index >= matches.Count)
     {
-        Console.WriteLine($"  --index {index} is out of range - only {matches.Count} occurrence(s) of '{tag}' found.");
+        Console.WriteLine($"  --index {index} is out of range - only {matches.Count} AHDR(s) of type '{tag}' found.");
         return;
     }
 
     long typeOffset = matches[index];
     long idOffset = typeOffset - 4;
-    long tagOffset = idOffset - 8;
-    bool confirmed = tagOffset >= 0 && Encoding.ASCII.GetString(data, (int)tagOffset, 4) == "AHDR";
 
-    if (idOffset < 0 || typeOffset + 20 > data.LongLength)
+    if (typeOffset + 20 > data.LongLength)
     {
-        Console.WriteLine($"  match {index} of {matches.Count} at 0x{typeOffset:X8} is too close to a file boundary to be an AHDR entry - probably a false positive (the tag appearing in a name or other data).");
+        Console.WriteLine($"  match {index} of {matches.Count} at 0x{typeOffset:X8} is cut off by the end of the file.");
         return;
     }
 
@@ -282,8 +285,7 @@ static void DumpArchive(string archivePath, string tag, int index, int dumpBytes
     uint plus = ReadU32(data, typeOffset + 12);
     uint flags = ReadU32(data, typeOffset + 16);
 
-    string confirmation = confirmed ? "" : "  (could not confirm a preceding \"AHDR\" tag - this may be a false-positive match; verify manually)";
-    Console.WriteLine($"  AHDR (match {index} of {matches.Count}): id=0x{id:X8} type={tag} offset=0x{offset:X8} size=0x{size:X8} ({size}) plus=0x{plus:X8} flags=0x{flags:X8}{confirmation}");
+    Console.WriteLine($"  AHDR (match {index} of {matches.Count}): id=0x{id:X8} type={tag} offset=0x{offset:X8} size=0x{size:X8} ({size}) plus=0x{plus:X8} flags=0x{flags:X8}");
 
     if (offset >= data.LongLength)
     {
