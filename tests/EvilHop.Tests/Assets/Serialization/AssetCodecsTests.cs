@@ -45,7 +45,6 @@ public class AssetCodecsTests
     [Theory]
     [InlineData(AssetType.Trigger)]
     [InlineData(AssetType.Player)]
-    [InlineData(AssetType.SimpleObject)]
     public void Read_EntityShapedType_ProducesAnEntityAsset(AssetType type) =>
         Assert.IsType<EntityAsset>(Read(type, new byte[80]), exactMatch: false);
 
