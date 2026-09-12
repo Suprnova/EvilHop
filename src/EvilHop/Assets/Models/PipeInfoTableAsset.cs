@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PIPT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PipeInfoTableAsset : Asset, IPhysicalPipeInfoTableAsset
+public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhysicalPipeInfoTableAsset
 {
     /// <summary>
     /// The table's entries, each applying rendering information to one <see cref="AssetType.Model"/>
@@ -43,8 +43,6 @@ public sealed class PipeInfoTableAsset : Asset, IPhysicalPipeInfoTableAsset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal PipeInfoTableAsset() { }
 
     internal static PipeInfoTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

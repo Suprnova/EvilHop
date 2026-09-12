@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CCRV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CameraCurveAsset : BaseAsset, IPhysicalCameraCurveAsset
+public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve), IPhysicalCameraCurveAsset
 {
     /// <summary>
     /// Which <see cref="CameraKind"/> this curve applies to.
@@ -66,8 +66,6 @@ public sealed class CameraCurveAsset : BaseAsset, IPhysicalCameraCurveAsset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal CameraCurveAsset() { }
 
     internal static CameraCurveAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

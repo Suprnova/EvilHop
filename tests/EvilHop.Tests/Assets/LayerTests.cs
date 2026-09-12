@@ -1,10 +1,11 @@
 using EvilHop.Assets;
+using EvilHop.Common;
 
 namespace EvilHop.Tests.Assets;
 
 public class LayerTests
 {
-    private sealed class TestAsset : Asset { }
+    private sealed class TestAsset(AssetType type = AssetType.Counter) : Asset(type);
 
     [Fact]
     public void Add_Asset_SetsLayer()

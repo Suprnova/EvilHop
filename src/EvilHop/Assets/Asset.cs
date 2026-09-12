@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class Asset : IPhysicalAsset
+public abstract class Asset(AssetType type) : IPhysicalAsset
 {
     /// <summary>
     /// The <see cref="Asset"/>'s ID.
@@ -18,9 +18,10 @@ public abstract class Asset : IPhysicalAsset
     public AssetId Id { get; set; }
 
     /// <summary>
-    /// The <see cref="Asset"/>'s type.
+    /// The <see cref="Asset"/>'s type. Fixed by the concrete class that declares it, except on the
+    /// shape-generic classes, which take it as a constructor argument.
     /// </summary>
-    public AssetType Type { get; internal set; }
+    public AssetType Type { get; internal set; } = type;
 
     /// <summary>
     /// The <see cref="Asset"/>'s name.

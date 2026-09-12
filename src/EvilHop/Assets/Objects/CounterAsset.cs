@@ -1,5 +1,6 @@
 using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -13,14 +14,12 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/CNTR">Heavy Iron Modding documentation</seealso>
 /// Validation TODO: Physical.BaseType is always 0x16.
 /// </remarks>
-public sealed class CounterAsset : BaseAsset
+public sealed class CounterAsset() : BaseAsset(AssetType.Counter)
 {
     /// <summary>
     /// The counter's value when the level loads.
     /// </summary>
     public short InitialValue { get; set; }
-
-    internal CounterAsset() { }
 
     internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

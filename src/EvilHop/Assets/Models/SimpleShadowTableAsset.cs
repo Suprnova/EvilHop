@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SHDW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleShadowTableAsset : Asset
+public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable)
 {
     /// <summary>
     /// The table's entries.
@@ -27,8 +27,6 @@ public sealed class SimpleShadowTableAsset : Asset
     {
         GameVersion.BFBB,
     };
-
-    internal SimpleShadowTableAsset() { }
 
     internal static SimpleShadowTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

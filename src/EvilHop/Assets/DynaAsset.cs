@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/DYNA">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class DynaAsset : BaseAsset, IPhysicalDynaAsset
+public abstract class DynaAsset(AssetType type) : BaseAsset(type), IPhysicalDynaAsset
 {
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalDynaAsset Physical => this;

@@ -17,15 +17,13 @@ namespace EvilHop.Assets;
 /// all reset to their defaults once the player starts moving.
 /// <seealso href="https://heavyironmodding.org/wiki/PLYR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PlayerAsset : EntityAsset
+public sealed class PlayerAsset() : EntityAsset(AssetType.Player)
 {
     /// <summary>
     /// The <see cref="AssetType.LightKit"/> applied to the player. Not present in
     /// <see cref="GameVersion.N100F"/>.
     /// </summary>
     public AssetId LightKitId { get; set; }
-
-    internal PlayerAsset() { }
 
     internal static PlayerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

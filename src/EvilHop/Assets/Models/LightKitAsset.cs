@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LKIT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LightKitAsset : Asset, IPhysicalLightKitAsset
+public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightKitAsset
 {
     /// <summary>
     /// The <see cref="AssetType.Group"/> of entities this light kit is applied to, in addition to
@@ -55,8 +55,6 @@ public sealed class LightKitAsset : Asset, IPhysicalLightKitAsset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal LightKitAsset() { }
 
     internal static LightKitAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

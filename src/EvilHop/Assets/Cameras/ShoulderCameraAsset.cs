@@ -32,8 +32,6 @@ public sealed class ShoulderCameraAsset : CameraAsset, IPhysicalShoulderCameraAs
 
     private const int ReservedSize = 8;
 
-    internal ShoulderCameraAsset() { }
-
     private protected override void ReadTypeFields(EndianReader reader)
     {
         Distance = reader.ReadSingle();

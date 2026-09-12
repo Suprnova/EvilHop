@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ATBL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class AnimationTableAsset : Asset, IPhysicalAnimationTableAsset
+public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPhysicalAnimationTableAsset
 {
     /// <summary>
     /// Selects which game-specific "constructor" function builds this table's runtime
@@ -78,8 +78,6 @@ public sealed partial class AnimationTableAsset : Asset, IPhysicalAnimationTable
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal AnimationTableAsset() { }
 }
 
 /// <summary>

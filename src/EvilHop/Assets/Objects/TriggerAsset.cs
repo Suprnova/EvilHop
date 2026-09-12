@@ -24,7 +24,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TriggerAsset : EntityAsset, IPhysicalTriggerAsset
+public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTriggerAsset
 {
     /// <summary>
     /// Which shape this trigger's volume is, and how <see cref="TriggerPosition0"/>/
@@ -66,8 +66,6 @@ public sealed class TriggerAsset : EntityAsset, IPhysicalTriggerAsset
 
     private Vector3 _triggerPosition3;
     Vector3 IPhysicalTriggerAsset.TriggerPosition3 { get => _triggerPosition3; set => _triggerPosition3 = value; }
-
-    internal TriggerAsset() { }
 
     internal static TriggerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

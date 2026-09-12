@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/RANM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ReactiveAnimationAsset : BaseAsset, IPhysicalReactiveAnimationAsset
+public sealed class ReactiveAnimationAsset() : BaseAsset(AssetType.ReactiveAnimation), IPhysicalReactiveAnimationAsset
 {
     /// <summary>
     /// The table's format version.
@@ -45,8 +45,6 @@ public sealed class ReactiveAnimationAsset : BaseAsset, IPhysicalReactiveAnimati
         GameVersion.TSSM,
         GameVersion.Incredibles,
     };
-
-    internal ReactiveAnimationAsset() { }
 
     internal static ReactiveAnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

@@ -5,7 +5,7 @@ namespace EvilHop.Tests.Assets;
 
 public class BaseAssetTests
 {
-    private sealed class TestBaseAsset : BaseAsset { }
+    private sealed class TestBaseAsset(AssetType type = AssetType.Counter) : BaseAsset(type);
 
     [Fact]
     public void LinkCount_AndLinksCount_CanDisagree()

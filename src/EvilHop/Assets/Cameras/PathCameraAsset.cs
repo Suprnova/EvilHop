@@ -31,8 +31,6 @@ public sealed class PathCameraAsset : CameraAsset, IPhysicalPathCameraAsset
 
     private const int ReservedSize = 12;
 
-    internal PathCameraAsset() { }
-
     private protected override void ReadTypeFields(EndianReader reader)
     {
         PathId = reader.ReadAssetId();

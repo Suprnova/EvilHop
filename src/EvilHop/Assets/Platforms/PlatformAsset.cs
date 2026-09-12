@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/PLAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class PlatformAsset : EntityAsset, IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
+public sealed partial class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
 {
     /// <summary>
     /// This platform's behavior flags.
@@ -59,8 +59,6 @@ public sealed partial class PlatformAsset : EntityAsset, IHasModel, IHasSurface,
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasSurface.SurfaceId { get => Physical.SurfaceId; set => Physical.SurfaceId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
-
-    internal PlatformAsset() { }
 }
 
 /// <summary>

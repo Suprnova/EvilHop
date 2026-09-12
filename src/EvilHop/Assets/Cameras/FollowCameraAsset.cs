@@ -29,8 +29,6 @@ public sealed class FollowCameraAsset : CameraAsset
     /// <inheritdoc/>
     public override CameraKind Kind => CameraKind.Follow;
 
-    internal FollowCameraAsset() { }
-
     private protected override void ReadTypeFields(EndianReader reader)
     {
         Rotation = reader.ReadSingle();

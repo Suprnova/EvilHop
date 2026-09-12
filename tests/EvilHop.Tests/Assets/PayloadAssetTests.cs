@@ -1,10 +1,11 @@
 using EvilHop.Assets;
+using EvilHop.Common;
 
 namespace EvilHop.Tests.Assets;
 
 public class PayloadAssetTests
 {
-    private sealed class TestPayloadAsset : PayloadAsset { }
+    private sealed class TestPayloadAsset(AssetType type = AssetType.Model) : PayloadAsset(type);
 
     [Fact]
     public void SaveToFile_ThenLoadFromFile_RoundTripsData()

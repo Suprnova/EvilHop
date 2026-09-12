@@ -20,7 +20,7 @@ namespace EvilHop.Assets;
 /// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
+public sealed class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhysicalSoundInfoAsset
 {
     /// <summary>
     /// Headers for this level's sound effects, one per <see cref="AssetType.Sound"/> asset.
@@ -125,8 +125,6 @@ public sealed class SoundInfoAsset : Asset, IPhysicalSoundInfoAsset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal SoundInfoAsset() { }
 
     internal static SoundInfoAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

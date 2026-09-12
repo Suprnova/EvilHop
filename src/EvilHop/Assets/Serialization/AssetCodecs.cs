@@ -218,7 +218,7 @@ internal static class AssetCodecs
 
     private static GenericAsset ReadPlain(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = new GenericAsset();
+        var asset = new GenericAsset(header.Type);
         AssetFields.Populate(asset, header, debug);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -229,7 +229,7 @@ internal static class AssetCodecs
 
     private static GenericBaseAsset ReadBase(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = PopulateBase(new GenericBaseAsset(), header, debug, reader);
+        var asset = PopulateBase(new GenericBaseAsset(header.Type), header, debug, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -242,7 +242,7 @@ internal static class AssetCodecs
 
     private static GenericEntityAsset ReadEntity(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = PopulateBase(new GenericEntityAsset(), header, debug, reader);
+        var asset = PopulateBase(new GenericEntityAsset(header.Type), header, debug, reader);
         EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -257,7 +257,7 @@ internal static class AssetCodecs
 
     private static GenericDynaAsset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = PopulateBase(new GenericDynaAsset(), header, debug, reader);
+        var asset = PopulateBase(new GenericDynaAsset(header.Type), header, debug, reader);
         DynaAssetPrefix.Read(asset, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -272,7 +272,7 @@ internal static class AssetCodecs
 
     private static GenericPayloadAsset ReadPayload(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = new GenericPayloadAsset();
+        var asset = new GenericPayloadAsset(header.Type);
         AssetFields.Populate(asset, header, debug);
         asset.Data = reader.ReadRemainingBytes();
         return asset;

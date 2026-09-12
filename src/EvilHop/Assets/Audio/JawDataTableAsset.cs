@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/JAW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
+public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysicalJawDataTableAsset
 {
     /// <summary>
     /// The table's entries, each holding one sound's jaw data.
@@ -42,8 +42,6 @@ public sealed class JawDataTableAsset : Asset, IPhysicalJawDataTableAsset
         GameVersion.TSSM,
         GameVersion.ROTU,
     };
-
-    internal JawDataTableAsset() { }
 
     internal static JawDataTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

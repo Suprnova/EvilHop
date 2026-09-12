@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CAM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract partial class CameraAsset : BaseAsset, IPhysicalCameraAsset
+public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera), IPhysicalCameraAsset
 {
     /// <summary>The camera's position.</summary>
     public Vector3 Position { get; set; }
@@ -115,8 +115,6 @@ public abstract partial class CameraAsset : BaseAsset, IPhysicalCameraAsset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    private protected CameraAsset() { }
 }
 
 /// <summary>

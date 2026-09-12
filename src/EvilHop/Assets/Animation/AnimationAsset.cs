@@ -20,7 +20,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ANIM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationAsset : Asset, IPhysicalAnimationAsset
+public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnimationAsset
 {
     /// <summary>
     /// A four-character tag identifying this as the SKB format.
@@ -97,8 +97,6 @@ public sealed class AnimationAsset : Asset, IPhysicalAnimationAsset
         GameVersion.TSSM,
         GameVersion.Incredibles,
     };
-
-    internal AnimationAsset() { }
 
     internal static AnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

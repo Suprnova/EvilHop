@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/HANG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class HangableAsset : EntityAsset, IHasModel, IPhysicalHangableAsset
+public sealed class HangableAsset() : EntityAsset(AssetType.Hangable), IHasModel, IPhysicalHangableAsset
 {
     /// <summary>
     /// The vertical offset from <see cref="EntityAsset.Position"/> up to the pivot the object swings
@@ -69,8 +69,6 @@ public sealed class HangableAsset : EntityAsset, IHasModel, IPhysicalHangableAss
         GameVersion.N100F,
         GameVersion.ROTU,
     };
-
-    internal HangableAsset() { }
 
     internal static HangableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

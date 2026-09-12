@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/BOUL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class BoulderAsset : EntityAsset, IHasModel, IHasAnimList
+public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, IHasAnimList
 {
     /// <summary>
     /// The downward acceleration applied to this boulder.
@@ -145,8 +145,6 @@ public sealed class BoulderAsset : EntityAsset, IHasModel, IHasAnimList
         GameVersion.Incredibles,
         GameVersion.ROTU,
     };
-
-    internal BoulderAsset() { }
 
     internal static BoulderAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

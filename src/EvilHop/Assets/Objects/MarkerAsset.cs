@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MRKR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class MarkerAsset : Asset
+public sealed class MarkerAsset() : Asset(AssetType.Marker)
 {
     /// <summary>
     /// The <see cref="MarkerAsset"/>'s position.
@@ -32,8 +32,6 @@ public sealed class MarkerAsset : Asset
         GameVersion.Incredibles,
         GameVersion.ROTU,
     };
-
-    internal MarkerAsset() { }
 
     internal static MarkerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

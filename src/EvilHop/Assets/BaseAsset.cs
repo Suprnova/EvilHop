@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Base_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class BaseAsset : Asset, IPhysicalBaseAsset
+public abstract class BaseAsset(AssetType type) : Asset(type), IPhysicalBaseAsset
 {
     /// <summary>
     /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.

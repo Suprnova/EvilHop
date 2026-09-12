@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ENV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class EnvironmentAsset : BaseAsset, IPhysicalEnvironmentAsset
+public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhysicalEnvironmentAsset
 {
     /// <summary>
     /// The <see cref="AssetType.JSP"/> this environment loads as its main level geometry.
@@ -106,8 +106,6 @@ public sealed class EnvironmentAsset : BaseAsset, IPhysicalEnvironmentAsset
 
     private float _loldHeight;
     float IPhysicalEnvironmentAsset.LoldHeight { get => _loldHeight; set => _loldHeight = value; }
-
-    internal EnvironmentAsset() { }
 
     internal static EnvironmentAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

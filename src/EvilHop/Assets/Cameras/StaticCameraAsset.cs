@@ -22,8 +22,6 @@ public sealed class StaticCameraAsset : CameraAsset, IPhysicalStaticCameraAsset
 
     private const int ReservedSize = 20;
 
-    internal StaticCameraAsset() { }
-
     private protected override void ReadTypeFields(EndianReader reader)
     {
         Physical.Unused = reader.ReadUInt32();

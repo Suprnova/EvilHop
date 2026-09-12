@@ -105,6 +105,29 @@ opt into them through trait interfaces (`IHasModel`, `IGrabbable`, ...) in
 [`Traits.cs`](../src/EvilHop/Assets/Traits.cs). A trait projects onto the physical storage; it never
 stores a copy.
 
+## An Asset In Memory Is Game-Agnostic
+
+An asset carries every field EvilHop models for its type, regardless of which game it is destined
+for. Nothing about a game reaches the object itself: assets have no
+[`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs), and their constructors take no
+game. The profile is applied at write time and nowhere else.
+
+Per-game variance is about which fields exist on disk, not what they should hold. A codec gates a
+field's presence on `profile.Game` - `EnvironmentAsset` skips `LoldHeight` under N100F,
+`BoulderAsset` reads `StaticFriction` only under BFBB - so a field that is meaningful in one game is
+simply dropped for the others. Its value elsewhere is unobservable, which is what lets a single
+all-games default be correct everywhere.
+
+Where a *value* genuinely differs per game, it is translated at the boundary rather than stored
+per-game: N100F and BFBB shift their on-disk `LHDR` numbering, and
+[`Serializer.Dictionary.cs`](../src/EvilHop/Serialization/Blocks/Serializer.Dictionary.cs) maps it
+to and from [`LayerType`](../src/EvilHop/Common/LayerType.cs) on the way through. `Layer.Type` never
+knows which game it belongs to.
+
+Concrete asset classes fix their own [`AssetType`](../src/EvilHop/Common/AssetType.cs) through a
+primary constructor, so `new SurfaceAsset()` is written by the surface codec with nothing further
+supplied. The shape-generic classes serve many types and take theirs as an argument instead.
+
 ## Support Is Three States, Not Two
 
 An asset type's codec support is one of three states, not a binary "done or not":

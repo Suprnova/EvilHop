@@ -1,3 +1,5 @@
+using EvilHop.Common;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -9,4 +11,4 @@ namespace EvilHop.Assets;
 /// <see cref="Asset.Type"/> still reports whatever type the header names.
 /// </remarks>
 /// TODO: should this be internal? or should GenericAssets.cs's classes be public?
-public sealed class EmptyAsset : Asset;
+public sealed class EmptyAsset(AssetType type) : Asset(type);

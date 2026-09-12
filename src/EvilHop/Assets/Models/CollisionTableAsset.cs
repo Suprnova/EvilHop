@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/COLL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CollisionTableAsset : Asset
+public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable)
 {
     /// <summary>
     /// The table's entries.
@@ -36,8 +36,6 @@ public sealed class CollisionTableAsset : Asset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal CollisionTableAsset() { }
 
     internal static CollisionTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

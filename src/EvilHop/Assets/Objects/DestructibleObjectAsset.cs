@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DSTR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DestructibleObjectAsset : EntityAsset, IHasModel, IHasAnimList
+public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.DestructibleObject), IHasModel, IHasAnimList
 {
     /// <summary>
     /// The playback speed of the animation referenced by <see cref="IHasAnimList.AnimListId"/>.
@@ -109,8 +109,6 @@ public sealed class DestructibleObjectAsset : EntityAsset, IHasModel, IHasAnimLi
         GameVersion.N100F,
         GameVersion.BFBB,
     };
-
-    internal DestructibleObjectAsset() { }
 
     internal static DestructibleObjectAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SIMP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleObjectAsset : EntityAsset, IHasModel, IHasAnimList, IHasSurface, IPhysicalSimpleObjectAsset
+public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), IHasModel, IHasAnimList, IHasSurface, IPhysicalSimpleObjectAsset
 {
     /// <summary>
     /// The playback speed of the animation referenced by <see cref="IHasAnimList.AnimListId"/>.
@@ -42,8 +42,6 @@ public sealed class SimpleObjectAsset : EntityAsset, IHasModel, IHasAnimList, IH
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
     AssetId IHasSurface.SurfaceId { get => Physical.SurfaceId; set => Physical.SurfaceId = value; }
-
-    internal SimpleObjectAsset() { }
 
     internal static SimpleObjectAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

@@ -202,7 +202,7 @@ public class AssetCodecsTests
         Assert.Equal(new RgbaColor(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
     }
 
-    private sealed class StubAsset : Asset;
+    private sealed class StubAsset(AssetType type) : Asset(type);
 
     [Fact]
     public void Write_GenericAssetCarryingAShapedType_FallsBackToItsOwnUnparsedTail()
@@ -211,7 +211,7 @@ public class AssetCodecsTests
         // codec (for example, zero bytes - not even enough for the fixed BaseAsset prefix): it
         // degrades to a bare GenericAsset while keeping the AssetType that failure happened under.
         // Dispatching on that AssetType alone would route it to WriteBase and throw on the cast.
-        var asset = new GenericAsset { Type = AssetType.Group };
+        var asset = new GenericAsset(AssetType.Group);
         asset.SetUnparsedTail([0xDE, 0xAD]);
 
         Assert.Equal<byte>([0xDE, 0xAD], Write(asset));
@@ -228,7 +228,7 @@ public class AssetCodecsTests
 
         AssetCodecs.Register<StubAsset>(
             type,
-            (data, header, debug, profile) => new StubAsset(),
+            (data, header, debug, profile) => new StubAsset(header.Type),
             (stub, writer, profile) => writer.Write("stub"u8));
 
         // Handlers is one global table: registering a new codec for `type` retargets every asset
@@ -252,10 +252,10 @@ public class AssetCodecsTests
 
         AssetCodecs.Register<StubAsset>(
             type,
-            (data, header, debug, profile) => new StubAsset(),
+            (data, header, debug, profile) => new StubAsset(header.Type),
             (asset, writer, profile) => writer.Write("stub"u8));
 
         Assert.IsType<StubAsset>(Read(type, new byte[4]));
-        Assert.Equal("stub"u8.ToArray(), Write(new StubAsset { Type = type }));
+        Assert.Equal("stub"u8.ToArray(), Write(new StubAsset(type)));
     }
 }

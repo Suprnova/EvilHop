@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SURF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
+public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhysicalSurfaceAsset
 {
     /// <summary>
     /// A damage category applied while standing on or touching this surface.
@@ -155,8 +155,6 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
 
     private uint DerivedUvfxFlags =>
         (Uvfxs[0].IsEnabled ? 1u << 0 : 0u) | (Uvfxs[1].IsEnabled ? 1u << 1 : 0u);
-
-    internal SurfaceAsset() { }
 
     private static ImmutableArray<SurfaceTextureAnim> DefaultTextureAnims() => [new(), new()];
     private static ImmutableArray<SurfaceUvfx> DefaultUvfxs() => [new(), new()];

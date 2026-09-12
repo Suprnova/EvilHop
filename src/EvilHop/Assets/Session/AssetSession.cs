@@ -30,6 +30,32 @@ public sealed class AssetSession : IDisposable
     private readonly List<Layer> _layers = [];
 
     /// <summary>
+    /// Creates an empty <see cref="Layer"/> of the given <paramref name="type"/> and places it in
+    /// <see cref="Layers"/>, directly after the last layer that shares its type, or at the end when
+    /// there is none.
+    /// </summary>
+    /// <param name="type">The <see cref="LayerType"/> the new layer carries.</param>
+    /// <returns>The new <see cref="Layer"/>, ready to <see cref="Layer.Add"/> assets to.</returns>
+    /// <remarks>
+    /// Placing rather than appending is what keeps same-type layers adjacent, which is how every
+    /// N100F and Battle for Bikini Bottom archive stores them. Layers read from disk are never
+    /// reordered - from The SpongeBob SquarePants Movie on, a run of <see cref="LayerType.BSP"/>
+    /// layers is followed by the <see cref="LayerType.JSPInfo"/> describing it and that pairing
+    /// repeats, so regrouping an archive by type would both break byte-exact round-tripping and
+    /// separate a <c>JSPInfo</c> from the layers it belongs to.
+    /// </remarks>
+    public Layer CreateLayer(LayerType type)
+    {
+        var layer = new Layer { Type = type };
+        int last = _layers.FindLastIndex(existing => existing.Type == type);
+
+        if (last < 0) _layers.Add(layer);
+        else _layers.Insert(last + 1, layer);
+
+        return layer;
+    }
+
+    /// <summary>
     /// Problems encountered while opening. An asset that fails to parse degrades to its untyped form
     /// and is reported here rather than throwing.
     /// </summary>
@@ -266,7 +292,7 @@ public sealed class AssetSession : IDisposable
 
         if (header.Size == 0)
         {
-            var empty = new EmptyAsset();
+            var empty = new EmptyAsset(header.Type);
             AssetFields.Populate(empty, header, debug);
             return AdoptChecksum(empty, computed, debug);
         }
@@ -281,7 +307,7 @@ public sealed class AssetSession : IDisposable
         catch (Exception ex)
         {
             _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) failed to parse: {ex.Message}. Degraded to raw bytes."));
-            var fallback = new GenericAsset();
+            var fallback = new GenericAsset(header.Type);
             AssetFields.Populate(fallback, header, debug);
             fallback.SetUnparsedTail(slice.ToArray());
             return AdoptChecksum(fallback, computed, debug);

@@ -23,8 +23,6 @@ public sealed class StaticFollowCameraAsset : CameraAsset, IPhysicalStaticFollow
 
     private const int ReservedSize = 20;
 
-    internal StaticFollowCameraAsset() { }
-
     private protected override void ReadTypeFields(EndianReader reader)
     {
         RubberBand = reader.ReadSingle();

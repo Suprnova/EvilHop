@@ -622,7 +622,7 @@ public class AssetSessionTests
             var original = session.Layers.Single().Assets.Single();
             originalId = original.Id.Value;
 
-            var added = new GenericPayloadAsset { Id = new AssetId(originalId + 1), Name = "second" };
+            var added = new GenericPayloadAsset(original.Type) { Id = new AssetId(originalId + 1), Name = "second" };
             added.Physical.Type = original.Type;
             added.Physical.Flags = original.Physical.Flags;
             added.Physical.Alignment = -1;
@@ -814,5 +814,61 @@ public class AssetSessionTests
         using (archive.OpenAssets()) { }
 
         Assert.Equal(["ATOC", "LTOC"], dictionary.Children.Select(child => child.Tag));
+    }
+
+    [Fact]
+    public void CreateLayer_NoLayerOfThatType_AppendsToTheEnd()
+    {
+        using var session = LoadRepaired("bfbb").OpenAssets();
+
+        var created = session.CreateLayer(LayerType.Cutscene);
+
+        Assert.Same(created, session.Layers[^1]);
+    }
+
+    [Fact]
+    public void CreateLayer_LayerOfThatTypeExists_PlacesItAfterTheLastOne()
+    {
+        using var session = LoadRepaired("bfbb").OpenAssets();
+        var first = session.CreateLayer(LayerType.Cutscene);
+        var divider = session.CreateLayer(LayerType.SoundTable);
+
+        var second = session.CreateLayer(LayerType.Cutscene);
+
+        Assert.Equal([first, second, divider], session.Layers.TakeLast(3));
+    }
+
+    [Fact]
+    public void CreateLayer_ThenCommit_WritesItToTheLayerTable()
+    {
+        var archive = LoadRepaired("bfbb");
+
+        using (var session = archive.OpenAssets())
+            session.CreateLayer(LayerType.Cutscene);
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        Assert.Equal(LayerType.Cutscene, dictionary.LayerTable.Headers.Last().Type);
+    }
+
+    /// <summary>
+    /// The whole authoring path end to end: an asset built from its own constructor carries the
+    /// right <see cref="AssetType"/> without the caller naming one, so it reaches the header it
+    /// belongs in and is written by its own codec rather than the fallback.
+    /// </summary>
+    [Fact]
+    public void Commit_AssetBuiltFromItsConstructor_WritesUnderItsOwnType()
+    {
+        var archive = LoadRepaired("bfbb");
+
+        using (var session = archive.OpenAssets())
+        {
+            var surface = new SurfaceAsset { Name = "probe_surface", Friction = 0.5f };
+            surface.CalculateId();
+            session.CreateLayer(LayerType.Default).Add(surface);
+        }
+
+        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var header = dictionary.AssetTable.Headers.Single(h => h.Debug.Name == "probe_surface");
+        Assert.Equal(AssetType.Surface, header.Type);
     }
 }

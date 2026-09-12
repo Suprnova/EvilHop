@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CSN">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class CutsceneAsset : Asset, IPhysicalCutsceneAsset
+public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), IPhysicalCutsceneAsset
 {
     /// <summary>
     /// The models this cutscene needs loaded before playback.
@@ -93,8 +93,6 @@ public sealed partial class CutsceneAsset : Asset, IPhysicalCutsceneAsset
         GameVersion.TSSM,
         GameVersion.Incredibles,
     };
-
-    internal CutsceneAsset() { }
 }
 
 /// <summary>

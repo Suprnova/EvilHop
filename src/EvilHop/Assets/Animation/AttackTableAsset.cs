@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ATKT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class AttackTableAsset : Asset, IPhysicalAttackTableAsset
+public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), IPhysicalAttackTableAsset
 {
     /// <summary>
     /// The table's named categories, each grouping a contiguous range of <see cref="Entries"/>.
@@ -74,8 +74,6 @@ public sealed partial class AttackTableAsset : Asset, IPhysicalAttackTableAsset
     {
         GameVersion.Incredibles,
     };
-
-    internal AttackTableAsset() { }
 }
 
 /// <summary>

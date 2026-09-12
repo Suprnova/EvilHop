@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ALST">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationListAsset : Asset
+public sealed class AnimationListAsset() : Asset(AssetType.AnimationList)
 {
     /// <summary>
     /// The list's 10 animation slots. An unused slot is <see cref="AssetId.None"/>.
@@ -68,8 +68,6 @@ public sealed class AnimationListAsset : Asset
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    internal AnimationListAsset() { }
 
     internal static AnimationListAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

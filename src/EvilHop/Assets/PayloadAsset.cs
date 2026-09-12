@@ -1,10 +1,12 @@
+using EvilHop.Common;
+
 namespace EvilHop.Assets;
 
 /// <summary>
 /// An <see cref="Asset"/> whose body is a file embedded verbatim in the archive, such as
 /// a RenderWare stream, a Bink video, or an audio stream.
 /// </summary>
-public abstract class PayloadAsset : Asset
+public abstract class PayloadAsset(AssetType type) : Asset(type)
 {
     internal byte[] Data { get; set; } = [];
 
