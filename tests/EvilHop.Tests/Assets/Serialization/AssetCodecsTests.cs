@@ -43,7 +43,7 @@ public class AssetCodecsTests
     }
 
     [Theory]
-    [InlineData(AssetType.Trigger)]
+    [InlineData(AssetType.Pendulum)]
     [InlineData(AssetType.Player)]
     public void Read_EntityShapedType_ProducesAnEntityAsset(AssetType type) =>
         Assert.IsType<EntityAsset>(Read(type, new byte[80]), exactMatch: false);
@@ -117,7 +117,7 @@ public class AssetCodecsTests
 
     [Theory]
     [InlineData(AssetType.Group, 16)]
-    [InlineData(AssetType.Trigger, 96)]
+    [InlineData(AssetType.Pendulum, 96)]
     [InlineData(AssetType.Dynamic, 24)]
     [InlineData(AssetType.Texture, 16)]
     [InlineData(AssetType.AttackTable, 16)]
@@ -149,7 +149,7 @@ public class AssetCodecsTests
         byte[] data = EntityBytes(100, zeroPadding: true);
         var profile = BFBBSerializer.DefaultProfile;
 
-        Assert.Equal(data, Write(Read(AssetType.Trigger, data, profile), profile));
+        Assert.Equal(data, Write(Read(AssetType.Pendulum, data, profile), profile));
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class AssetCodecsTests
         byte[] data = EntityBytes(100, zeroPadding: false);
         var profile = BFBBSerializer.DefaultProfile;
 
-        byte[] written = Write(Read(AssetType.Trigger, data, profile), profile);
+        byte[] written = Write(Read(AssetType.Pendulum, data, profile), profile);
 
         Assert.Equal<byte>([0, 0, 0, 0], written.AsSpan(12, 4).ToArray());
         Assert.Equal(data.AsSpan(16).ToArray(), written.AsSpan(16).ToArray());
@@ -173,8 +173,8 @@ public class AssetCodecsTests
     {
         byte[] data = [.. Enumerable.Range(1, 100).Select(i => (byte)i)];
 
-        var withPadding = (EntityAsset)Read(AssetType.Trigger, data, BFBBSerializer.DefaultProfile);
-        var without = (EntityAsset)Read(AssetType.Trigger, data, N100FSerializer.DefaultProfile);
+        var withPadding = (EntityAsset)Read(AssetType.Pendulum, data, BFBBSerializer.DefaultProfile);
+        var without = (EntityAsset)Read(AssetType.Pendulum, data, N100FSerializer.DefaultProfile);
 
         Assert.NotEqual(without.Physical.SurfaceId, withPadding.Physical.SurfaceId);
     }
@@ -197,7 +197,7 @@ public class AssetCodecsTests
             0x00, 0x00, 0x00, 0x00, // AnimListId
         ];
 
-        var entity = (EntityAsset)Read(AssetType.Trigger, data, N100FSerializer.DefaultProfile);
+        var entity = (EntityAsset)Read(AssetType.Pendulum, data, N100FSerializer.DefaultProfile);
 
         Assert.Equal(new RgbaColor(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
     }
