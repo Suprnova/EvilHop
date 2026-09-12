@@ -14,6 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ATKT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
+/// TODO: evaluate asset category
 public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), IPhysicalAttackTableAsset
 {
     /// <summary>
@@ -183,24 +184,27 @@ public sealed class AttackTableEntry
     public ushort Count { get; set; }
 
     /// <summary>
-    /// Input flags that must be held for this entry to trigger. Always 0 in every sampled archive.
+    /// Input flags that must be held for this entry to trigger. Always 0.
     /// </summary>
+    /// TODO: hallucination? check against source
     public ushort OnFlags { get; set; }
 
     /// <summary>
-    /// Input flags that must not be held for this entry to trigger. Always 0 in every sampled
-    /// archive.
+    /// Input flags that must not be held for this entry to trigger. Always 0.
     /// </summary>
+    /// TODO: hallucination?
     public ushort OffFlags { get; set; }
 
     /// <summary>
     /// The controller input that triggers this entry.
     /// </summary>
+    /// TODO: map as enum of buttons
     public byte Input { get; set; }
 
     /// <summary>
     /// The power level required to trigger this entry.
     /// </summary>
+    /// TODO: hallucination?
     public byte Power { get; set; }
 
     /// <summary>
@@ -247,7 +251,7 @@ public sealed class AttackTableTransition
     public float BlendTime { get; set; }
 
     /// <summary>
-    /// Unknown flags. Always 0 in every sampled archive.
+    /// Unknown flags. Always 0.
     /// </summary>
     public uint Flags { get; set; }
 }
@@ -269,7 +273,7 @@ public sealed class HitBoneInfo
     public Vector3 Offset { get; set; }
 
     /// <summary>
-    /// Unknown. Observed values are 0, 3, and 5.
+    /// Unknown.
     /// </summary>
     public short Atomic { get; set; }
 }
@@ -306,6 +310,7 @@ public sealed class AttackTableState
     /// The time, in seconds into the animation, the attack's hit window opens. <c>-1</c> if this
     /// state has no attack.
     /// </summary>
+    /// TODO: hallucination? what would -1 mean if AttackEnd is populated?
     public float AttackStart { get; set; }
 
     /// <summary>
@@ -338,7 +343,7 @@ public sealed class AttackTableState
     public short Damage { get; set; }
 
     /// <summary>
-    /// Unknown. Likely a hit sound or reaction category. Observed values are 9 and 12.
+    /// Unknown.
     /// </summary>
     public ushort Source { get; set; }
 
@@ -361,6 +366,7 @@ public sealed class AttackTableState
     /// The time, in seconds into the animation, <see cref="Effect"/> stops playing. <c>-1</c> if
     /// unused.
     /// </summary>
+    /// TODO: hallucination? an effect that doesn't end?
     public float EffectEnd { get; set; }
 
     private ImmutableArray<ushort> _effectBonesOutside = ZeroedEffectBones();
@@ -397,13 +403,14 @@ public sealed class AttackTableState
     public float RumbleStartTime { get; set; }
 
     /// <summary>
-    /// Unknown. Selects a controller rumble configuration. Always 0 in every sampled archive.
+    /// Unknown.
     /// </summary>
+    /// TODO: some controllers (i.e. OG xbox) have multiple motors that can be controlled
+    /// individually. i bet that's what this was meant to do.
     public uint RumbleEmitterId { get; set; }
 
     /// <summary>
-    /// The <see cref="AssetType.Shrapnel"/> spawned by this state, if any. Always
-    /// <see cref="AssetId.None"/> in every sampled archive.
+    /// The <see cref="AssetType.Shrapnel"/> spawned by this state, if any.
     /// </summary>
     public AssetId ShrapnelId { get; set; }
 
@@ -423,7 +430,7 @@ public sealed class AttackTableState
     public float VelocityAway { get; set; }
 
     /// <summary>
-    /// Unknown flags.
+    /// Unknown.
     /// </summary>
     public uint Flags { get; set; }
 
@@ -446,16 +453,19 @@ public sealed class AttackTableState
     /// <summary>
     /// The time, in seconds into the animation, camera turn-locking begins.
     /// </summary>
+    /// TODO: hallucination? player turn seems more likely
     public float TurnLockStart { get; set; }
 
     /// <summary>
     /// The time, in seconds into the animation, camera turn-locking ends.
     /// </summary>
+    /// TODO: hallucination? player turn seems more likely
     public float TurnLockStop { get; set; }
 
     /// <summary>
     /// The time, in seconds into the animation, a climax (combo finisher) camera move begins.
     /// </summary>
+    /// TODO: hallucination? no idea what this means
     public float ClimaxTime { get; set; }
 
     /// <summary>
@@ -466,6 +476,7 @@ public sealed class AttackTableState
     /// <summary>
     /// The rate, per second, this state drains from a resource (e.g. a power meter) while active.
     /// </summary>
+    /// TODO: hallucination? what works like that in incredibles?
     public float DrainRate { get; set; }
 
     /// <summary>
@@ -499,7 +510,7 @@ public sealed class AttackTableState
     public float BlurFadeOutTime { get; set; }
 
     /// <summary>
-    /// Unknown. Always 0 in every sampled archive.
+    /// Unknown.
     /// </summary>
     public short FlashAlpha { get; set; }
 
@@ -514,13 +525,15 @@ public sealed class AttackTableState
     public float ComboBonus { get; set; }
 
     /// <summary>
-    /// Unknown. Observed values are 0, 10, and 2560.
+    /// Unknown.
     /// </summary>
+    /// TODO: probably an enum
     public short ComboType { get; set; }
 
     /// <summary>
     /// The power meter bonus awarded for this state.
     /// </summary>
+    /// TODO: hallucination? what's a power meter?
     public short PowerBonus { get; set; }
 
     private static ImmutableArray<HitBoneInfo> ZeroedHitBones() => [new(), new(), new(), new()];

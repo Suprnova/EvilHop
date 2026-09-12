@@ -66,9 +66,8 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
     /// The <see cref="GameVersion"/>s <see cref="AssetType.AnimationTable"/> is known to be read by.
     /// </summary>
     /// <remarks>
-    /// <see cref="GameVersion.N100F"/>'s <see cref="AnimationTableAsset.States"/> layout diverges from
-    /// every other supported game past the first entry, and no source confirms the real shape, so it
-    /// degrades to the generic form entirely.
+    /// <see cref="GameVersion.N100F"/> uses a revised <see cref="States"/> layout not modeled
+    /// here, degrading to the generic shape.
     /// </remarks>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
@@ -128,6 +127,7 @@ public sealed class AnimationTableFile
     /// <see cref="NumAnimsX"/>/<see cref="NumAnimsY"/> as an active bilinear blend grid; 0x8000 marks
     /// this as vertex/morph animation data rather than skeletal.
     /// </summary>
+    /// TODO: should be a real flags enum
     public uint FileFlags { get; set; }
 
     /// <summary>

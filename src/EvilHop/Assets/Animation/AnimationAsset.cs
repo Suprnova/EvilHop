@@ -23,26 +23,6 @@ namespace EvilHop.Assets;
 public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnimationAsset
 {
     /// <summary>
-    /// A four-character tag identifying this as the SKB format.
-    /// </summary>
-    /// <remarks>
-    /// Normally <c>0x31424B53</c> ("SKB1" stored reversed), but not every game agrees, so it's read
-    /// and written back verbatim rather than assumed.
-    /// </remarks>
-    public uint Magic { get; set; } = 0x31424B53;
-
-    /// <summary>
-    /// Unknown. Observed values vary and are not always meaningful (at least one archive stores an
-    /// apparent uninitialized-memory pattern here).
-    /// </summary>
-    public uint Flags { get; set; }
-
-    /// <summary>
-    /// The number of bones this animation drives, and the row length of <see cref="Offsets"/>.
-    /// </summary>
-    public ushort BoneCount { get; set; }
-
-    /// <summary>
     /// A per-axis scale applied when decoding <see cref="AnimationKey.Quat"/>/<see cref="AnimationKey.Tran"/>'s
     /// fixed-point values back to real rotation/translation units.
     /// </summary>
@@ -61,13 +41,23 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 
     /// <summary>
     /// For every time except the last, one <see cref="Keys"/> start index per bone - row-major, one
-    /// row of <see cref="BoneCount"/> entries per time. Index as
+    /// row of <see cref="IPhysicalAnimationAsset.BoneCount"/> entries per time. Index as
     /// <c>Offsets[timeIndex * BoneCount + boneIndex]</c>.
     /// </summary>
+    /// TODO: should be a 2D array?
     public Collection<ushort> Offsets { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalAnimationAsset Physical => this;
+
+    private uint _magic = 0x31424B53;
+    uint IPhysicalAnimationAsset.Magic { get => _magic; set => _magic = value; }
+
+    private uint _flags;
+    uint IPhysicalAnimationAsset.AnimationFlags { get => _flags; set => _flags = value; }
+
+    private ushort _boneCount;
+    ushort IPhysicalAnimationAsset.BoneCount { get => _boneCount; set => _boneCount = value; }
 
     private uint? _overriddenKeyCount;
     uint IPhysicalAnimationAsset.KeyCount
@@ -103,9 +93,9 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         var asset = new AnimationAsset();
         AssetFields.Populate(asset, header, debug);
 
-        asset.Magic = reader.ReadUInt32();
-        asset.Flags = reader.ReadUInt32();
-        asset.BoneCount = (ushort)reader.ReadInt16();
+        asset.Physical.Magic = reader.ReadUInt32();
+        asset.Physical.AnimationFlags = reader.ReadUInt32();
+        asset.Physical.BoneCount = (ushort)reader.ReadInt16();
         int timeCount = (ushort)reader.ReadInt16();
         int keyCount = (int)reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
@@ -122,7 +112,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 
         for (int i = 0; i < timeCount; i++) asset.Times.Add(reader.ReadSingle());
 
-        int offsetCount = Math.Max(timeCount - 1, 0) * asset.BoneCount;
+        int offsetCount = Math.Max(timeCount - 1, 0) * asset.Physical.BoneCount;
         for (int i = 0; i < offsetCount; i++) asset.Offsets.Add((ushort)reader.ReadInt16());
 
         asset.Physical.KeyCount = (uint)asset.Keys.Count;
@@ -133,9 +123,9 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 
     internal static void Write(AnimationAsset asset, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(asset.Magic);
-        writer.Write(asset.Flags);
-        writer.Write((short)asset.BoneCount);
+        writer.Write(asset.Physical.Magic);
+        writer.Write(asset.Physical.AnimationFlags);
+        writer.Write((short)asset.Physical.BoneCount);
         writer.Write((short)asset.Physical.TimeCount);
         writer.Write(asset.Physical.KeyCount);
         writer.Write(asset.Scale);
@@ -159,6 +149,21 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 /// </summary>
 public interface IPhysicalAnimationAsset : IPhysicalAsset
 {
+    /// <summary>
+    /// A four-character magic number.
+    /// </summary>
+    uint Magic { get; set; }
+
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    uint AnimationFlags { get; set; }
+
+    /// <summary>
+    /// The number of bones this animation drives, and the row length of <see cref="AnimationAsset.Offsets"/>.
+    /// </summary>
+    ushort BoneCount { get; set; }
+
     /// <summary>
     /// The number of <see cref="AnimationAsset.Keys"/> stored for this asset, read directly from its
     /// header.
@@ -193,18 +198,13 @@ public sealed class AnimationKey
     /// <summary>
     /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W).
     /// </summary>
-    /// <remarks>
-    /// Each component is a raw <see cref="short"/> widened losslessly to <see cref="float"/>, not yet
-    /// decoded to real rotation units; see <see cref="AnimationAsset.Scale"/>.
-    /// </remarks>
+    /// TODO: we really should be storing these as shorts, not floats. UX is one thing, but we can't
+    /// appear to guarantee that float precision is supported when it's not.
     public Vector4 Quat { get; set; }
 
     /// <summary>
     /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
     /// </summary>
-    /// <remarks>
-    /// Each component is a raw <see cref="short"/> widened losslessly to <see cref="float"/>, not yet
-    /// decoded to real translation units; see <see cref="AnimationAsset.Scale"/>.
-    /// </remarks>
+    /// TODO: ditto
     public Vector3 Tran { get; set; }
 }

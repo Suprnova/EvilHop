@@ -38,10 +38,10 @@ public class AnimationTableAssetTests
         return stream.ToArray();
     }
 
-    private static byte[] U16(ushort value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] U32(uint value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] I32(int value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] F32(float value) => BitConverter.GetBytes(value).Reverse().ToArray();
+    private static byte[] U16(ushort value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] U32(uint value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] I32(int value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
 
     private static byte[] TableHeader(int rawCount, int fileCount, int stateCount, uint constructFunc) =>
     [

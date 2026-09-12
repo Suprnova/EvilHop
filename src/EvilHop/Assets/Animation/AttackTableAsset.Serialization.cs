@@ -33,7 +33,7 @@ public sealed partial class AttackTableAsset
             {
                 AnimationStateId = reader.ReadUInt32(),
             };
-            reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero on disk
+            reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero
             entry.AnimationStart = (ushort)reader.ReadInt16();
             entry.AnimationCount = (ushort)reader.ReadInt16();
             entry.Start = (ushort)reader.ReadInt16();
@@ -98,12 +98,12 @@ public sealed partial class AttackTableAsset
             EffectBonesOutside = [ReadEffectBone(reader), ReadEffectBone(reader)],
             EffectBonesInside = [ReadEffectBone(reader), ReadEffectBone(reader)]
         };
-        reader.ReadUInt32(); // bonePositions[0], runtime-resolved zAnimCacheEntry* cache, always zero
-        reader.ReadUInt32(); // bonePositions[1], runtime-resolved zAnimCacheEntry* cache, always zero
+        reader.ReadUInt32(); // runtime-resolved zAnimCacheEntry* cache, always zero
+        reader.ReadUInt32(); // runtime-resolved zAnimCacheEntry* cache, always zero
         state.RumbleStartTime = reader.ReadSingle();
         state.RumbleEmitterId = reader.ReadUInt32();
         state.ShrapnelId = reader.ReadAssetId();
-        reader.ReadUInt32(); // runtime-resolved zShrapnelAsset pointer, always zero on disk
+        reader.ReadUInt32(); // runtime-resolved zShrapnelAsset pointer, always zero
         state.ShrapnelStartTime = reader.ReadSingle();
         state.VelocityUp = reader.ReadSingle();
         state.VelocityAway = reader.ReadSingle();
@@ -146,7 +146,7 @@ public sealed partial class AttackTableAsset
     {
         ushort bone = (ushort)reader.ReadInt16();
         reader.ReadInt16(); // padding, always zero
-        reader.ReadUInt32(); // runtime-resolved xVec3* position cache, always zero on disk
+        reader.ReadUInt32(); // runtime-resolved xVec3* position cache, always zero
         return bone;
     }
 
@@ -167,7 +167,7 @@ public sealed partial class AttackTableAsset
         foreach (var entry in asset.Entries)
         {
             writer.Write(entry.AnimationStateId);
-            writer.Write(0u); // xAnimState pointer
+            writer.Write(0u); // runtime-resolved
             writer.Write((short)entry.AnimationStart);
             writer.Write((short)entry.AnimationCount);
             writer.Write((short)entry.Start);
@@ -215,12 +215,12 @@ public sealed partial class AttackTableAsset
         writer.Write(state.EffectEnd);
         foreach (var bone in state.EffectBonesOutside) WriteEffectBone(writer, bone);
         foreach (var bone in state.EffectBonesInside) WriteEffectBone(writer, bone);
-        writer.Write(0u); // bonePositions[0]
-        writer.Write(0u); // bonePositions[1]
+        writer.Write(0u); // runtime-resolved
+        writer.Write(0u); // runtime-resolved
         writer.Write(state.RumbleStartTime);
         writer.Write(state.RumbleEmitterId);
         writer.Write(state.ShrapnelId);
-        writer.Write(0u); // zShrapnelAsset pointer
+        writer.Write(0u); // runtime-resolved
         writer.Write(state.ShrapnelStartTime);
         writer.Write(state.VelocityUp);
         writer.Write(state.VelocityAway);
@@ -260,6 +260,6 @@ public sealed partial class AttackTableAsset
     {
         writer.Write((short)bone);
         writer.Write((short)0); // padding
-        writer.Write(0u); // xVec3* position cache
+        writer.Write(0u); // runtime-resolved
     }
 }

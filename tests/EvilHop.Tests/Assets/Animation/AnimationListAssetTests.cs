@@ -100,10 +100,10 @@ public class AnimationListAssetTests
 
         var asset = (AnimationListAsset)Read(data, profile);
 
-        Assert.Equal(10, asset.StateHashes.Length);
-        Assert.Equal(0xAAAAAAAAu, asset.StateHashes[0]);
-        Assert.Equal(0xBBBBBBBBu, asset.StateHashes[1]);
-        Assert.Equal(0u, asset.StateHashes[2]);
+        Assert.Equal(10, asset.Physical.StateHashes.Length);
+        Assert.Equal(0xAAAAAAAAu, asset.Physical.StateHashes[0]);
+        Assert.Equal(0xBBBBBBBBu, asset.Physical.StateHashes[1]);
+        Assert.Equal(0u, asset.Physical.StateHashes[2]);
     }
 
     [Fact]
@@ -133,7 +133,7 @@ public class AnimationListAssetTests
 
         var asset = (AnimationListAsset)Read(data);
 
-        Assert.Equal(0u, asset.StateHashes[0]);
+        Assert.Equal(0u, asset.Physical.StateHashes[0]);
         Assert.Equal(52, asset.GetUnparsedTail().Length);
     }
 
@@ -143,5 +143,13 @@ public class AnimationListAssetTests
         var asset = new AnimationListAsset();
 
         Assert.Throws<ArgumentException>(() => asset.Ids = [.. new AssetId[9]]);
+    }
+
+    [Fact]
+    public void StateHashes_AssignedWrongLength_ThrowsArgumentException()
+    {
+        var asset = new AnimationListAsset();
+
+        Assert.Throws<ArgumentException>(() => asset.Physical.StateHashes = [.. new uint[9]]);
     }
 }

@@ -39,10 +39,10 @@ public class AnimationAssetTests
         return stream.ToArray();
     }
 
-    private static byte[] U16(ushort value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] S16(short value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] U32(uint value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] F32(float value) => BitConverter.GetBytes(value).Reverse().ToArray();
+    private static byte[] U16(ushort value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] S16(short value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] U32(uint value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
 
     private static byte[] Header(uint flags, ushort boneCount, ushort timeCount, uint keyCount, Vector3 scale, uint magic = 0x31424B53) =>
     [
@@ -78,8 +78,8 @@ public class AnimationAssetTests
     {
         var asset = (AnimationAsset)Read(OneBoneOneFrameData());
 
-        Assert.Equal(0x31424B53u, asset.Magic);
-        Assert.Equal(1, asset.BoneCount);
+        Assert.Equal(0x31424B53u, asset.Physical.Magic);
+        Assert.Equal(1, asset.Physical.BoneCount);
         Assert.Equal(new Vector3(1, 1, 1), asset.Scale);
         Assert.Single(asset.Keys);
         Assert.Equal(0, asset.Keys[0].TimeIndex);
@@ -169,7 +169,7 @@ public class AnimationAssetTests
 
         var asset = (AnimationAsset)Read(data, profile);
 
-        Assert.Equal(0x5153504Du, asset.Magic);
+        Assert.Equal(0x5153504Du, asset.Physical.Magic);
         Assert.Equal(data, Write(asset, profile));
     }
 

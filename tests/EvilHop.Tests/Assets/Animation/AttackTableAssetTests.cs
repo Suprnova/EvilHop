@@ -40,10 +40,10 @@ public class AttackTableAssetTests
     }
 
     private static byte[] U8(byte value) => [value];
-    private static byte[] U16(ushort value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] S16(short value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] U32(uint value) => BitConverter.GetBytes(value).Reverse().ToArray();
-    private static byte[] F32(float value) => BitConverter.GetBytes(value).Reverse().ToArray();
+    private static byte[] U16(ushort value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] S16(short value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] U32(uint value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
     private static byte[] V3(Vector3 v) => [.. F32(v.X), .. F32(v.Y), .. F32(v.Z)];
 
     private static byte[] TableHeader(int sectionCount, int entryCount, int transitionCount, int stateCount) =>

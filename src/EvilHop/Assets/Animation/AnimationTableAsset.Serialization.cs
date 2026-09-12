@@ -12,7 +12,7 @@ public sealed partial class AnimationTableAsset
         var asset = new AnimationTableAsset();
         AssetFields.Populate(asset, header, debug);
 
-        reader.ReadUInt32(); // Magic, always 0x4C425441 ('ATBL' stored reversed); redundant with AssetType.AnimationTable
+        reader.ReadUInt32(); // Magic
         int rawCount = (int)reader.ReadUInt32();
         int fileCount = (int)reader.ReadUInt32();
         int stateCount = (int)reader.ReadUInt32();
