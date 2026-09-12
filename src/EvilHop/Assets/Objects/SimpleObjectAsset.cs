@@ -27,16 +27,11 @@ public sealed class SimpleObjectAsset : EntityAsset, IHasModel, IHasAnimList, IH
 
     /// <summary>
     /// This object's collision type. Shares its bit values with every other entity type's collision
-    /// type, though only two are ever meaningful here:
-    /// <list type="bullet">
-    /// <item><c>0x00</c> (None) - no collision.</item>
-    /// <item><c>0x02</c> (Static) - collision matching this object's model.</item>
-    /// </list>
-    /// The remaining bits (<c>0x01</c> Trigger, <c>0x04</c> Dynamic, <c>0x08</c> NPC, <c>0x10</c>
-    /// Player) are part of the shared scheme but do not affect a <see cref="SimpleObjectAsset"/>, and
-    /// have not been observed set here.
+    /// type, though only <see cref="SimpleObjectCollisionType.None"/> and
+    /// <see cref="SimpleObjectCollisionType.Static"/> are ever meaningful (or observed) here - the
+    /// remaining bits are part of the shared scheme but do not affect a <see cref="SimpleObjectAsset"/>.
     /// </summary>
-    public byte CollisionType { get; set; }
+    public SimpleObjectCollisionType CollisionType { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalSimpleObjectAsset Physical => this;
@@ -59,7 +54,7 @@ public sealed class SimpleObjectAsset : EntityAsset, IHasModel, IHasAnimList, IH
 
         asset.AnimationSpeed = reader.ReadSingle();
         asset.InitialAnimationState = reader.ReadUInt32();
-        asset.CollisionType = reader.ReadByte();
+        asset.CollisionType = (SimpleObjectCollisionType)reader.ReadByte();
         asset.Physical.SimpleFlags = reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
 
@@ -76,7 +71,7 @@ public sealed class SimpleObjectAsset : EntityAsset, IHasModel, IHasAnimList, IH
 
         writer.Write(asset.AnimationSpeed);
         writer.Write(asset.InitialAnimationState);
-        writer.Write(asset.CollisionType);
+        writer.Write((byte)asset.CollisionType);
         writer.Write(asset.Physical.SimpleFlags);
         writer.Write((short)0); // padding
 
@@ -97,4 +92,38 @@ public interface IPhysicalSimpleObjectAsset : IPhysicalEntityAsset
     /// source.
     /// </summary>
     byte SimpleFlags { get; set; }
+}
+
+/// <summary>
+/// Represents all known values for <see cref="SimpleObjectAsset.CollisionType"/>. Shared with every
+/// other entity type's own collision type field.
+/// </summary>
+[Flags]
+public enum SimpleObjectCollisionType : byte
+{
+    /// <summary>
+    /// No collision.
+    /// </summary>
+    None = 0,
+    /// <summary>
+    /// Used by <see cref="AssetType.Trigger"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
+    /// </summary>
+    Trigger = 1 << 0,
+    /// <summary>
+    /// Collision matching this object's model.
+    /// </summary>
+    Static = 1 << 1,
+    /// <summary>
+    /// Used by dynamic entities (e.g. <see cref="AssetType.Platform"/>, <see cref="AssetType.Button"/>,
+    /// <see cref="AssetType.DestructibleObject"/>). Does not affect a <see cref="SimpleObjectAsset"/>.
+    /// </summary>
+    Dynamic = 1 << 2,
+    /// <summary>
+    /// Used by NPCs. Does not affect a <see cref="SimpleObjectAsset"/>.
+    /// </summary>
+    NPC = 1 << 3,
+    /// <summary>
+    /// Used by <see cref="AssetType.Player"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
+    /// </summary>
+    Player = 1 << 4,
 }

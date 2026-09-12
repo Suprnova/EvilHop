@@ -24,7 +24,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TriggerAsset : EntityAsset
+public sealed class TriggerAsset : EntityAsset, IPhysicalTriggerAsset
 {
     /// <summary>
     /// Which shape this trigger's volume is, and how <see cref="TriggerPosition0"/>/
@@ -48,34 +48,24 @@ public sealed class TriggerAsset : EntityAsset
     public Vector3 TriggerPosition1 { get; set; }
 
     /// <summary>
-    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
-    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
-    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
-    /// <see cref="GameVersion.TSSM"/> onward.
-    /// </summary>
-    public Vector3 TriggerPosition2 { get; set; }
-
-    /// <summary>
-    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
-    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
-    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
-    /// <see cref="GameVersion.TSSM"/> onward.
-    /// </summary>
-    public Vector3 TriggerPosition3 { get; set; }
-
-    /// <summary>
-    /// The direction this trigger must be approached from for <see cref="Flags"/>'s direction gate
-    /// to pass. Usually <c>(0, -0, 1)</c>.
+    /// The direction this trigger must be approached from for <see cref="Flags"/>'s
+    /// <see cref="TriggerFlags.DirectionGate"/> to pass. Usually <c>(0, -0, 1)</c>.
     /// </summary>
     public Vector3 Direction { get; set; }
 
     /// <summary>
-    /// Usually 0. In decompiled <see cref="GameVersion.BFBB"/> source, bit 0 restricts this trigger
-    /// to only fire when approached from <see cref="Direction"/>. Real <see cref="GameVersion.ROTU"/>
-    /// archives carry a wide range of other values in this field with no explanation in available
-    /// decompiled source.
+    /// This trigger's flags.
     /// </summary>
-    public uint Flags { get; set; }
+    public TriggerFlags Flags { get; set; }
+
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalTriggerAsset Physical => this;
+
+    private Vector3 _triggerPosition2;
+    Vector3 IPhysicalTriggerAsset.TriggerPosition2 { get => _triggerPosition2; set => _triggerPosition2 = value; }
+
+    private Vector3 _triggerPosition3;
+    Vector3 IPhysicalTriggerAsset.TriggerPosition3 { get => _triggerPosition3; set => _triggerPosition3 = value; }
 
     internal TriggerAsset() { }
 
@@ -88,10 +78,10 @@ public sealed class TriggerAsset : EntityAsset
 
         asset.TriggerPosition0 = reader.ReadVector3();
         asset.TriggerPosition1 = reader.ReadVector3();
-        asset.TriggerPosition2 = reader.ReadVector3();
-        asset.TriggerPosition3 = reader.ReadVector3();
+        asset.Physical.TriggerPosition2 = reader.ReadVector3();
+        asset.Physical.TriggerPosition3 = reader.ReadVector3();
         asset.Direction = reader.ReadVector3();
-        asset.Flags = reader.ReadUInt32();
+        asset.Flags = (TriggerFlags)reader.ReadUInt32();
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -106,14 +96,36 @@ public sealed class TriggerAsset : EntityAsset
 
         writer.Write(asset.TriggerPosition0);
         writer.Write(asset.TriggerPosition1);
-        writer.Write(asset.TriggerPosition2);
-        writer.Write(asset.TriggerPosition3);
+        writer.Write(asset.Physical.TriggerPosition2);
+        writer.Write(asset.Physical.TriggerPosition3);
         writer.Write(asset.Direction);
-        writer.Write(asset.Flags);
+        writer.Write((uint)asset.Flags);
 
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }
+}
+
+/// <summary>
+/// An explicit interface used to interact with <see cref="TriggerAsset"/>'s underlying values.
+/// </summary>
+public interface IPhysicalTriggerAsset : IPhysicalEntityAsset
+{
+    /// <summary>
+    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
+    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
+    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
+    /// <see cref="GameVersion.TSSM"/> onward.
+    /// </summary>
+    Vector3 TriggerPosition2 { get; set; }
+
+    /// <summary>
+    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
+    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
+    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
+    /// <see cref="GameVersion.TSSM"/> onward.
+    /// </summary>
+    Vector3 TriggerPosition3 { get; set; }
 }
 
 /// <summary>
@@ -139,4 +151,25 @@ public enum TriggerShape : byte
     /// Identical to <see cref="Sphere"/> in decompiled source. Never observed in any real archive.
     /// </summary>
     VSphere = 3,
+}
+
+/// <summary>
+/// Represents all known values for <see cref="TriggerAsset.Flags"/>.
+/// </summary>
+/// <remarks>
+/// Real <see cref="GameVersion.ROTU"/> archives carry a wide range of values in this field beyond
+/// <see cref="DirectionGate"/>, with no explanation in available decompiled source.
+/// </remarks>
+[Flags]
+public enum TriggerFlags : uint
+{
+    /// <summary>
+    /// No flags are set.
+    /// </summary>
+    None = 0,
+    /// <summary>
+    /// Restricts this trigger to only fire when approached from <see cref="TriggerAsset.Direction"/>.
+    /// Confirmed in decompiled <see cref="GameVersion.BFBB"/> source.
+    /// </summary>
+    DirectionGate = 1 << 0,
 }

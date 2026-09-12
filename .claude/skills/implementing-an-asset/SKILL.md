@@ -537,6 +537,34 @@ The decision rule that keeps this moving: **promote when you have evidence (byte
 meaning); keep physical when you only have a name.** Don't block on perfection — physical↔logical
 promotion is meant to be cheap.
 
+A few sharper corollaries, each corrected from a real slip in earlier asset implementations:
+
+- **"Unknown" in your own doc comment means Physical, full stop — regardless of whether the value is
+  constant or varies.** Constancy and understanding are different axes: a field can be "Unknown" and
+  vary across samples (`SurfaceAsset.DamageTimer`/`DamageBounce`), or be well-understood and always the
+  same value (`SeeThroughSpeed`, always 255, still logical). If you catch yourself writing "Unknown."
+  on a property and leaving it logical anyway, that's the bug — move it to `IPhysical*Asset` instead.
+  Don't be afraid to park a field there uncertain; promoting back to logical once it's understood is
+  cheap, and a clean, understood domain surface matters more than a complete one.
+- **"Always X in most samples" is self-contradictory — fix the claim, don't just soften the wording.**
+  Either the corpus sweep shows it's genuinely constant (say so plainly, and it's a physical-field
+  candidate per the point above if also unexplained) or it shows real variance (say what the variance
+  actually is; it stays logical). A hedge like "usually" or "in most samples" attached to the word
+  "always" means the physical/logical call was never actually checked against the sweep - go check it.
+- **A byte/int holding a small, fully-enumerated closed set of real values is an enum, even with no
+  confirmed name for most of them.** Don't leave it as a raw numeric type just because you can't name
+  every value — name what's confirmed, and use placeholder names (`Unknown1`, `Unknown2`, ...) for the
+  rest, the same way partially-understood `[Flags]` enums already carry a named-but-unexplained bit
+  (`SurfacePhysicsFlags.Step`). This is different from a wide-or-unbounded numeric field (a hash, a
+  timer) — those stay plain numeric types.
+- **"Is this sub-object active" belongs on the sub-object, not as a separate index-matched flags
+  property.** When a flags word's bits each gate one element of a same-sized array/tuple the type also
+  exposes (a two-slot texture animation, a two-slot UV effect), decompose it at read time into an
+  `IsEnabled` (or similarly-named) property on each element instead of leaving callers to cross-reference
+  bit position against array index by hand. The physical layer still owns the raw flags word — derive
+  it from the elements' `IsEnabled` values with the same override-clears-on-match shape as `LinkCount`,
+  so an unexplained extra bit still round-trips.
+
 ## EvilHop.Corpus validation — deferred
 
 The strongest verification — "which types actually use which traits," "is this field always zero for

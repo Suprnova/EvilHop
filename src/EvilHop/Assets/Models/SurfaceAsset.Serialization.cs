@@ -30,8 +30,8 @@ public sealed partial class SurfaceAsset
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.GameDamageType = reader.ReadByte();
-        asset.GameSticky = reader.ReadByte();
+        asset.GameDamageType = (SurfaceGameDamageType)reader.ReadByte();
+        asset.Physical.GameSticky = reader.ReadByte();
         asset.GameDamageFlags = (SurfaceGameDamageFlags)reader.ReadByte();
         asset.Physical.SurfType = reader.ReadByte();
         reader.ReadByte(); // phys_pad, always zero
@@ -42,7 +42,7 @@ public sealed partial class SurfaceAsset
 
         asset.MaterialFx = new SurfaceMaterialFx
         {
-            Flags = reader.ReadUInt32(),
+            Flags = (SurfaceMaterialFxFlags)reader.ReadUInt32(),
             BumpMapId = reader.ReadAssetId(),
             EnvMapId = reader.ReadAssetId(),
             Shininess = reader.ReadSingle(),
@@ -52,24 +52,34 @@ public sealed partial class SurfaceAsset
 
         asset.ColorFx = new SurfaceColorFx
         {
-            Flags = (ushort)reader.ReadInt16(),
+            Flags = (SurfaceColorFxFlags)(ushort)reader.ReadInt16(),
             Mode = (ushort)reader.ReadInt16(),
             Speed = reader.ReadSingle(),
         };
 
-        asset.TextureAnimFlags = (SurfaceTextureAnimFlags)reader.ReadUInt32();
-        asset.TextureAnims = [ReadTextureAnim(reader), ReadTextureAnim(reader)];
+        uint textureAnimFlags = reader.ReadUInt32();
+        var textureAnim0 = ReadTextureAnim(reader);
+        var textureAnim1 = ReadTextureAnim(reader);
+        textureAnim0.IsEnabled = (textureAnimFlags & 1 << 0) != 0;
+        textureAnim1.IsEnabled = (textureAnimFlags & 1 << 1) != 0;
+        asset.TextureAnims = [textureAnim0, textureAnim1];
+        asset.Physical.TextureAnimFlags = textureAnimFlags;
 
-        asset.UvfxFlags = (SurfaceUvfxFlags)reader.ReadUInt32();
-        asset.Uvfxs = [ReadUvfx(reader), ReadUvfx(reader)];
+        uint uvfxFlags = reader.ReadUInt32();
+        var uvfx0 = ReadUvfx(reader);
+        var uvfx1 = ReadUvfx(reader);
+        uvfx0.IsEnabled = (uvfxFlags & 1 << 0) != 0;
+        uvfx1.IsEnabled = (uvfxFlags & 1 << 1) != 0;
+        asset.Uvfxs = [uvfx0, uvfx1];
+        asset.Physical.UvfxFlags = uvfxFlags;
 
-        asset.On = reader.ReadByte();
+        asset.Physical.OnValue = reader.ReadByte();
         reader.ReadBytes(3); // surf_pad, always zero
         asset.OutOfBoundsDelay = reader.ReadSingle();
         asset.WallJumpScaleXZ = reader.ReadSingle();
         asset.WallJumpScaleY = reader.ReadSingle();
-        asset.DamageTimer = reader.ReadSingle();
-        asset.DamageBounce = reader.ReadSingle();
+        asset.Physical.DamageTimer = reader.ReadSingle();
+        asset.Physical.DamageBounce = reader.ReadSingle();
 
         // Whatever's left before the links - 0 in most BFBB archives, otherwise a game/build-specific
         // amount of unmodelled data. Computed rather than assumed, so every observed size round-trips.
@@ -86,8 +96,8 @@ public sealed partial class SurfaceAsset
     {
         BaseAssetPrefix.Write(asset, writer);
 
-        writer.Write(asset.GameDamageType);
-        writer.Write(asset.GameSticky);
+        writer.Write((byte)asset.GameDamageType);
+        writer.Write(asset.Physical.GameSticky);
         writer.Write((byte)asset.GameDamageFlags);
         writer.Write(asset.Physical.SurfType);
         writer.Write((byte)0); // phys_pad
@@ -96,32 +106,32 @@ public sealed partial class SurfaceAsset
         writer.Write((byte)asset.PhysFlags);
         writer.Write(asset.Friction);
 
-        writer.Write(asset.MaterialFx.Flags);
+        writer.Write((uint)asset.MaterialFx.Flags);
         writer.Write(asset.MaterialFx.BumpMapId);
         writer.Write(asset.MaterialFx.EnvMapId);
         writer.Write(asset.MaterialFx.Shininess);
         writer.Write(asset.MaterialFx.Bumpiness);
         writer.Write(asset.MaterialFx.DualMapId);
 
-        writer.Write((short)asset.ColorFx.Flags);
+        writer.Write((short)(ushort)asset.ColorFx.Flags);
         writer.Write((short)asset.ColorFx.Mode);
         writer.Write(asset.ColorFx.Speed);
 
-        writer.Write((uint)asset.TextureAnimFlags);
+        writer.Write(asset.Physical.TextureAnimFlags);
         WriteTextureAnim(writer, asset.TextureAnims[0]);
         WriteTextureAnim(writer, asset.TextureAnims[1]);
 
-        writer.Write((uint)asset.UvfxFlags);
+        writer.Write(asset.Physical.UvfxFlags);
         WriteUvfx(writer, asset.Uvfxs[0]);
         WriteUvfx(writer, asset.Uvfxs[1]);
 
-        writer.Write(asset.On);
+        writer.Write(asset.Physical.OnValue);
         writer.Write(new byte[3]); // surf_pad
         writer.Write(asset.OutOfBoundsDelay);
         writer.Write(asset.WallJumpScaleXZ);
         writer.Write(asset.WallJumpScaleY);
-        writer.Write(asset.DamageTimer);
-        writer.Write(asset.DamageBounce);
+        writer.Write(asset.Physical.DamageTimer);
+        writer.Write(asset.Physical.DamageBounce);
 
         writer.Write(asset.ExtendedData.AsSpan());
 

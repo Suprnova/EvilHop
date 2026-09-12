@@ -9,9 +9,9 @@ namespace EvilHop.Assets;
 public sealed class SurfaceMaterialFx
 {
     /// <summary>
-    /// Unknown. Observed values are 0, 1, and 8.
+    /// Unknown flags.
     /// </summary>
-    public uint Flags { get; set; }
+    public SurfaceMaterialFxFlags Flags { get; set; }
 
     /// <summary>
     /// The bump map applied to this surface, if any. Always <see cref="AssetId.None"/> in every
@@ -47,9 +47,9 @@ public sealed class SurfaceMaterialFx
 public sealed class SurfaceColorFx
 {
     /// <summary>
-    /// Unknown. Always 0x000E in every sample checked.
+    /// Unknown flags.
     /// </summary>
-    public ushort Flags { get; set; } = 0x000E;
+    public SurfaceColorFxFlags Flags { get; set; } = SurfaceColorFxFlags.Valid;
 
     /// <summary>
     /// Unknown. Always 0 in every sample checked.
@@ -68,6 +68,11 @@ public sealed class SurfaceColorFx
 /// </summary>
 public sealed class SurfaceTextureAnim
 {
+    /// <summary>
+    /// Whether this animation is active.
+    /// </summary>
+    public bool IsEnabled { get; set; }
+
     /// <summary>
     /// How this animation advances through <see cref="Group"/>.
     /// </summary>
@@ -89,6 +94,11 @@ public sealed class SurfaceTextureAnim
 /// </summary>
 public sealed class SurfaceUvfx
 {
+    /// <summary>
+    /// Whether this animation is active.
+    /// </summary>
+    public bool IsEnabled { get; set; }
+
     /// <summary>
     /// How this animation drives <see cref="Translation"/>/<see cref="Scale"/>.
     /// </summary>
@@ -145,23 +155,51 @@ public sealed class SurfaceUvfx
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.TextureAnimFlags"/>.
+/// Represents all known values for <see cref="SurfaceMaterialFx.Flags"/>.
 /// </summary>
 [Flags]
-public enum SurfaceTextureAnimFlags : uint
+public enum SurfaceMaterialFxFlags : uint
 {
     /// <summary>
-    /// Neither texture animation is active.
+    /// No flags are set.
     /// </summary>
     None = 0,
     /// <summary>
-    /// The first of <see cref="SurfaceAsset.TextureAnims"/> is active.
+    /// Unknown.
     /// </summary>
-    Slot0 = 1 << 0,
+    UnknownBit0 = 1 << 0,
     /// <summary>
-    /// The second of <see cref="SurfaceAsset.TextureAnims"/> is active.
+    /// Unknown.
     /// </summary>
-    Slot1 = 1 << 1,
+    UnknownBit3 = 1 << 3,
+}
+
+/// <summary>
+/// Represents all known values for <see cref="SurfaceColorFx.Flags"/>.
+/// </summary>
+[Flags]
+public enum SurfaceColorFxFlags : ushort
+{
+    /// <summary>
+    /// No flags are set.
+    /// </summary>
+    None = 0,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    UnknownBit1 = 1 << 1,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    UnknownBit2 = 1 << 2,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    UnknownBit3 = 1 << 3,
+    /// <summary>
+    /// Always set. Meaning otherwise undocumented.
+    /// </summary>
+    Valid = UnknownBit1 | UnknownBit2 | UnknownBit3,
 }
 
 /// <summary>
@@ -181,26 +219,6 @@ public enum SurfaceTextureAnimMode : ushort
     /// Jumps to a random member of the group.
     /// </summary>
     Random = 2,
-}
-
-/// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.UvfxFlags"/>.
-/// </summary>
-[Flags]
-public enum SurfaceUvfxFlags : uint
-{
-    /// <summary>
-    /// Neither UV animation is active.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// The first of <see cref="SurfaceAsset.Uvfxs"/> is active.
-    /// </summary>
-    Slot0 = 1 << 0,
-    /// <summary>
-    /// The second of <see cref="SurfaceAsset.Uvfxs"/> is active.
-    /// </summary>
-    Slot1 = 1 << 1,
 }
 
 /// <summary>

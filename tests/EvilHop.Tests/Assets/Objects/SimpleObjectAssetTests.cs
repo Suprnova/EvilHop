@@ -100,7 +100,7 @@ public class SimpleObjectAssetTests
 
         Assert.Equal(1.5f, asset.AnimationSpeed);
         Assert.Equal(2u, asset.InitialAnimationState);
-        Assert.Equal(2, asset.CollisionType);
+        Assert.Equal(SimpleObjectCollisionType.Static, asset.CollisionType);
         Assert.Equal(0, asset.Physical.SimpleFlags);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.Physical.ModelId);
         Assert.Equal(new AssetId(0x11223344), asset.Physical.AnimListId);
@@ -111,7 +111,7 @@ public class SimpleObjectAssetTests
     {
         var asset = (SimpleObjectAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
 
-        Assert.Equal(0, asset.CollisionType);
+        Assert.Equal(SimpleObjectCollisionType.None, asset.CollisionType);
         Assert.Equal(8, asset.Physical.SimpleFlags);
     }
 

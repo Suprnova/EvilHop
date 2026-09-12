@@ -126,22 +126,26 @@ public class SurfaceAssetTests
     {
         var asset = (SurfaceAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(6, asset.GameDamageType);
+        Assert.Equal(SurfaceGameDamageType.Hazard, asset.GameDamageType);
+        Assert.Equal(0, asset.Physical.GameSticky);
         Assert.Equal(0, asset.Physical.SurfType);
         Assert.Equal(20, asset.SlideStartAngle);
         Assert.Equal(10, asset.SlideStopAngle);
         Assert.Equal(SurfacePhysicsFlags.OutOfBounds, asset.PhysFlags);
         Assert.Equal(1.0f, asset.Friction);
-        Assert.Equal((ushort)0x000E, asset.ColorFx.Flags);
+        Assert.Equal(SurfaceColorFxFlags.Valid, asset.ColorFx.Flags);
         Assert.Equal(30f, asset.ColorFx.Speed);
         Assert.Equal(2, asset.TextureAnims.Length);
         Assert.Equal(2, asset.Uvfxs.Length);
         Assert.Equal(new Vector3(1, 1, 0), asset.Uvfxs[0].Scale);
-        Assert.Equal(SurfaceUvfxFlags.Slot0, asset.UvfxFlags);
-        Assert.Equal(1, asset.On);
+        Assert.True(asset.Uvfxs[0].IsEnabled);
+        Assert.False(asset.Uvfxs[1].IsEnabled);
+        Assert.True(asset.IsEnabled);
         Assert.Equal(-1f, asset.OutOfBoundsDelay);
         Assert.Equal(1f, asset.WallJumpScaleXZ);
         Assert.Equal(1f, asset.WallJumpScaleY);
+        Assert.Equal(0f, asset.Physical.DamageTimer);
+        Assert.Equal(0f, asset.Physical.DamageBounce);
         Assert.Empty(asset.ExtendedData);
     }
 
@@ -206,6 +210,51 @@ public class SurfaceAssetTests
 
         Assert.IsNotType<SurfaceAsset>(asset);
         Assert.IsType<BaseAsset>(asset, exactMatch: false);
+    }
+
+    [Fact]
+    public void IsEnabled_SetTrue_ProjectsOntoPhysicalOnValue()
+    {
+        var asset = new SurfaceAsset { IsEnabled = true };
+
+        Assert.Equal(1, asset.Physical.OnValue);
+    }
+
+    [Fact]
+    public void IsEnabled_SetFalse_ProjectsOntoPhysicalOnValue()
+    {
+        var asset = new SurfaceAsset { IsEnabled = false };
+
+        Assert.Equal(0, asset.Physical.OnValue);
+    }
+
+    [Fact]
+    public void TextureAnimFlags_DerivesFromTextureAnimsIsEnabled()
+    {
+        var asset = new SurfaceAsset();
+        asset.TextureAnims = [new SurfaceTextureAnim { IsEnabled = false }, new SurfaceTextureAnim { IsEnabled = true }];
+
+        Assert.Equal(0b10u, asset.Physical.TextureAnimFlags);
+    }
+
+    [Fact]
+    public void TextureAnimFlags_DisagreeingWithTextureAnims_IsStoredIndependently()
+    {
+        var asset = new SurfaceAsset();
+
+        asset.Physical.TextureAnimFlags = 0xFFu;
+
+        Assert.Equal(0xFFu, asset.Physical.TextureAnimFlags);
+        Assert.False(asset.TextureAnims[0].IsEnabled);
+    }
+
+    [Fact]
+    public void UvfxFlags_DerivesFromUvfxsIsEnabled()
+    {
+        var asset = new SurfaceAsset();
+        asset.Uvfxs = [new SurfaceUvfx { IsEnabled = true }, new SurfaceUvfx { IsEnabled = false }];
+
+        Assert.Equal(0b01u, asset.Physical.UvfxFlags);
     }
 
     [Fact]

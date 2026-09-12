@@ -1,6 +1,5 @@
 using EvilHop.Common;
 using System.Collections.Immutable;
-using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -16,15 +15,9 @@ namespace EvilHop.Assets;
 public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
 {
     /// <summary>
-    /// A damage category applied while standing on or touching this surface. Observed values are 0,
-    /// 1, 2, 3, 4, 5, and 6; only 6 ("Hazard?" per the wiki) is guessed at with any confidence.
+    /// A damage category applied while standing on or touching this surface.
     /// </summary>
-    public byte GameDamageType { get; set; }
-
-    /// <summary>
-    /// Whether this surface is "sticky". Always 0 in every sample checked.
-    /// </summary>
-    public byte GameSticky { get; set; }
+    public SurfaceGameDamageType GameDamageType { get; set; }
 
     /// <summary>
     /// Flags controlling <see cref="GameDamageType"/>'s damage.
@@ -61,15 +54,11 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
     /// </summary>
     public SurfaceColorFx ColorFx { get; set; } = new();
 
-    /// <summary>
-    /// Which of <see cref="TextureAnims"/> are active.
-    /// </summary>
-    public SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
-
     private ImmutableArray<SurfaceTextureAnim> _textureAnims = DefaultTextureAnims();
 
     /// <summary>
-    /// This surface's two independent texture animations.
+    /// This surface's two independent texture animations. Each element's own
+    /// <see cref="SurfaceTextureAnim.IsEnabled"/> says whether it is active.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 2.</exception>
     public ImmutableArray<SurfaceTextureAnim> TextureAnims
@@ -80,15 +69,11 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
             : throw new ArgumentException($"{nameof(TextureAnims)} must contain exactly 2 elements.", nameof(value));
     }
 
-    /// <summary>
-    /// Which of <see cref="Uvfxs"/> are active.
-    /// </summary>
-    public SurfaceUvfxFlags UvfxFlags { get; set; }
-
     private ImmutableArray<SurfaceUvfx> _uvfxs = DefaultUvfxs();
 
     /// <summary>
-    /// This surface's two independent UV animations.
+    /// This surface's two independent UV animations. Each element's own
+    /// <see cref="SurfaceUvfx.IsEnabled"/> says whether it is active.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 2.</exception>
     public ImmutableArray<SurfaceUvfx> Uvfxs
@@ -102,12 +87,15 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
     /// <summary>
     /// Whether this surface starts enabled.
     /// </summary>
-    public byte On { get; set; }
+    public bool IsEnabled
+    {
+        get => Physical.OnValue != 0;
+        set => Physical.OnValue = (byte)(value ? 1 : 0);
+    }
 
     /// <summary>
-    /// The time, in seconds, the player can remain on this surface before an out-of-bounds
-    /// <see cref="SurfacePhysicsFlags.OutOfBounds"/> reset triggers. Always -1 (i.e. the flag's own
-    /// default delay applies) in most samples checked.
+    /// The time, in seconds, the player can remain out of bounds on this surface before being reset.
+    /// -1 in the overwhelming majority of samples checked; a small number specify 2 instead.
     /// </summary>
     public float OutOfBoundsDelay { get; set; }
 
@@ -123,20 +111,6 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
     public float WallJumpScaleY { get; set; }
 
     /// <summary>
-    /// Unknown. The wiki claims this is stored little-endian regardless of platform; real archives
-    /// across every game and platform checked contradict that and store it the same way as every
-    /// other field.
-    /// </summary>
-    public float DamageTimer { get; set; }
-
-    /// <summary>
-    /// Unknown. The wiki claims this is stored little-endian regardless of platform; real archives
-    /// across every game and platform checked contradict that and store it the same way as every
-    /// other field.
-    /// </summary>
-    public float DamageBounce { get; set; }
-
-    /// <summary>
     /// Additional per-surface data appended after every field above and before
     /// <see cref="BaseAsset.Links"/>. Empty in most <see cref="GameVersion.BFBB"/> archives; from
     /// <see cref="GameVersion.TSSM"/> onward, typically 140 bytes, occasionally more in specific
@@ -149,6 +123,38 @@ public sealed partial class SurfaceAsset : BaseAsset, IPhysicalSurfaceAsset
 
     private byte _surfType;
     byte IPhysicalSurfaceAsset.SurfType { get => _surfType; set => _surfType = value; }
+
+    private byte _gameSticky;
+    byte IPhysicalSurfaceAsset.GameSticky { get => _gameSticky; set => _gameSticky = value; }
+
+    private byte _on;
+    byte IPhysicalSurfaceAsset.OnValue { get => _on; set => _on = value; }
+
+    private float _damageTimer;
+    float IPhysicalSurfaceAsset.DamageTimer { get => _damageTimer; set => _damageTimer = value; }
+
+    private float _damageBounce;
+    float IPhysicalSurfaceAsset.DamageBounce { get => _damageBounce; set => _damageBounce = value; }
+
+    private uint? _overriddenTextureAnimFlags;
+    uint IPhysicalSurfaceAsset.TextureAnimFlags
+    {
+        get => _overriddenTextureAnimFlags ?? DerivedTextureAnimFlags;
+        set => _overriddenTextureAnimFlags = value == DerivedTextureAnimFlags ? null : value;
+    }
+
+    private uint DerivedTextureAnimFlags =>
+        (TextureAnims[0].IsEnabled ? 1u << 0 : 0u) | (TextureAnims[1].IsEnabled ? 1u << 1 : 0u);
+
+    private uint? _overriddenUvfxFlags;
+    uint IPhysicalSurfaceAsset.UvfxFlags
+    {
+        get => _overriddenUvfxFlags ?? DerivedUvfxFlags;
+        set => _overriddenUvfxFlags = value == DerivedUvfxFlags ? null : value;
+    }
+
+    private uint DerivedUvfxFlags =>
+        (Uvfxs[0].IsEnabled ? 1u << 0 : 0u) | (Uvfxs[1].IsEnabled ? 1u << 1 : 0u);
 
     internal SurfaceAsset() { }
 
@@ -165,6 +171,80 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// Unknown. Always 0 in every sample checked.
     /// </summary>
     byte SurfType { get; set; }
+
+    /// <summary>
+    /// Whether this surface is "sticky". Always 0 in every sample checked.
+    /// </summary>
+    byte GameSticky { get; set; }
+
+    /// <summary>
+    /// Backs <see cref="SurfaceAsset.IsEnabled"/>.
+    /// </summary>
+    byte OnValue { get; set; }
+
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    float DamageTimer { get; set; }
+
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    float DamageBounce { get; set; }
+
+    /// <summary>
+    /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
+    /// <see cref="SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
+    /// second).
+    /// </summary>
+    /// <remarks>
+    /// When disagreements with the derived value exist, this field wins during serialization.
+    /// </remarks>
+    uint TextureAnimFlags { get; set; }
+
+    /// <summary>
+    /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceUvfx.IsEnabled"/>
+    /// (bit 0 for the first element, bit 1 for the second).
+    /// </summary>
+    /// <remarks>
+    /// When disagreements with the derived value exist, this field wins during serialization.
+    /// </remarks>
+    uint UvfxFlags { get; set; }
+}
+
+/// <summary>
+/// Represents all known values for <see cref="SurfaceAsset.GameDamageType"/>.
+/// </summary>
+public enum SurfaceGameDamageType : byte
+{
+    /// <summary>
+    /// No damage.
+    /// </summary>
+    None = 0,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    Unknown1 = 1,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    Unknown2 = 2,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    Unknown3 = 3,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    Unknown4 = 4,
+    /// <summary>
+    /// Unknown.
+    /// </summary>
+    Unknown5 = 5,
+    /// <summary>
+    /// Per the wiki, a hazard.
+    /// </summary>
+    Hazard = 6,
 }
 
 /// <summary>

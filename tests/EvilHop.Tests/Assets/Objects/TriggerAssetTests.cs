@@ -109,10 +109,10 @@ public class TriggerAssetTests
         Assert.Equal(TriggerShape.Box, asset.Shape);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
         Assert.Equal(new Vector3(4, 5, 6), asset.TriggerPosition1);
-        Assert.Equal(new Vector3(7, 8, 9), asset.TriggerPosition2);
-        Assert.Equal(new Vector3(10, 11, 12), asset.TriggerPosition3);
+        Assert.Equal(new Vector3(7, 8, 9), asset.Physical.TriggerPosition2);
+        Assert.Equal(new Vector3(10, 11, 12), asset.Physical.TriggerPosition3);
         Assert.Equal(UsualDirection, asset.Direction);
-        Assert.Equal(0u, asset.Flags);
+        Assert.Equal(TriggerFlags.None, asset.Flags);
     }
 
     [Fact]
@@ -123,9 +123,9 @@ public class TriggerAssetTests
         Assert.Equal(TriggerShape.Sphere, asset.Shape);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
         Assert.Equal(5f, asset.TriggerPosition1.X);
-        Assert.Equal(Vector3.Zero, asset.TriggerPosition2);
-        Assert.Equal(Vector3.Zero, asset.TriggerPosition3);
-        Assert.Equal(1u, asset.Flags);
+        Assert.Equal(Vector3.Zero, asset.Physical.TriggerPosition2);
+        Assert.Equal(Vector3.Zero, asset.Physical.TriggerPosition3);
+        Assert.Equal(TriggerFlags.DirectionGate, asset.Flags);
     }
 
     [Fact]
