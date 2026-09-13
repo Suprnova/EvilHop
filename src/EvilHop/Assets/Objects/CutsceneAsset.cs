@@ -24,22 +24,20 @@ public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), IPhysic
 
     /// <summary>
     /// The left-channel sound name for this cutscene's dialog track.
-    /// <see cref="GameVersion.N100F"/>/<see cref="GameVersion.BFBB"/> only.
+    /// Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public string SoundLeft { get; set; } = string.Empty;
 
     /// <summary>
     /// The right-channel sound name for this cutscene's dialog track.
-    /// <see cref="GameVersion.N100F"/>/<see cref="GameVersion.BFBB"/> only.
+    /// Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
     /// </summary>
-    /// Validation TODO: Always empty?
     public string SoundRight { get; set; } = string.Empty;
 
     /// <summary>
     /// Up to 32 stereo sound track slots this cutscene can play from.
-    /// <see cref="GameVersion.TSSM"/>/<see cref="GameVersion.Incredibles"/> only.
+    /// Only present in <see cref="GameVersion.TSSM"/> and <see cref="GameVersion.Incredibles"/>.
     /// </summary>
-    /// Validation TODO: No more than 32 entries.
     public Collection<CutsceneAudioTrack> AudioTracks { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
@@ -109,6 +107,8 @@ public interface IPhysicalCutsceneAsset : IPhysicalAsset
     /// <summary>
     /// The number of <see cref="CutsceneAsset.Data"/> entries, read directly from the header.
     /// </summary>
+    /// TODO: update to reflect the documentation pattern for other collection count fields in
+    /// Physical
     uint NumData { get; set; }
     /// <summary>
     /// The number of TimeChunk offsets following the (currently unparsed) region after
@@ -153,7 +153,7 @@ public record struct CutsceneDataEntry
     /// <summary>
     /// The offset, in bytes, to this model's data within the cutscene's unparsed chunk data. Zero
     /// alongside a zero <see cref="ChunkSize"/> when the model is instead an external
-    /// <see cref="AssetType.Model"/> asset in the level's HOP.
+    /// <see cref="AssetType.Model"/> asset.
     /// </summary>
     public uint FileOffset { get; set; }
 }

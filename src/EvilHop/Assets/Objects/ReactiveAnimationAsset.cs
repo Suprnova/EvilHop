@@ -194,6 +194,7 @@ public sealed class ReactiveAnimationRow
     /// <summary>
     /// How much fuel the reacting object's fire has before burning out.
     /// </summary>
+    /// TODO: figure out what this actually means.
     public float BurnFuel { get; set; }
 
     /// <summary>

@@ -33,23 +33,22 @@ public sealed class HangableAsset() : EntityAsset(AssetType.Hangable), IHasModel
     public float Gravity { get; set; }
 
     /// <summary>
-    /// How quickly the object accelerates while swinging. Appears to be unused in-game.
+    /// How quickly the object accelerates while swinging.
     /// </summary>
     public float Accel { get; set; }
 
     /// <summary>
-    /// How quickly the object's swing velocity decays over time. Appears to be unused in-game.
+    /// How quickly the object's swing velocity decays over time.
     /// </summary>
     public float Decay { get; set; }
 
     /// <summary>
     /// The delay, in seconds, before the object can be grabbed again after being released.
-    /// Appears to be unused in-game.
     /// </summary>
     public float GrabDelay { get; set; }
 
     /// <summary>
-    /// How quickly the object decelerates once it stops swinging. Appears to be unused in-game.
+    /// How quickly the object decelerates once it stops swinging.
     /// </summary>
     public float StopDecel { get; set; }
 

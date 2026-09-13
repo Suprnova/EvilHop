@@ -7,14 +7,10 @@ using EvilHop.Serialization;
 namespace EvilHop.Assets;
 
 /// <summary>
-/// The single entry point for the player character. Carries no gameplay tuning of its own - physics,
-/// animation, and camera behavior all come from hardcoded settings - beyond a starting
+/// The single entry point for the player character, containing a starting
 /// <see cref="LightKitId"/> and whatever <see cref="BaseAsset.Links"/> respond to player events.
 /// </summary>
 /// <remarks>
-/// Position is usually ignored, since the player is placed at a <see cref="AssetType.Marker"/>
-/// instead; rotation X/Z, <see cref="EntityAsset.Scale"/>, and <see cref="EntityAsset.ColorMultiplier"/>
-/// all reset to their defaults once the player starts moving.
 /// <seealso href="https://heavyironmodding.org/wiki/PLYR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed class PlayerAsset() : EntityAsset(AssetType.Player)

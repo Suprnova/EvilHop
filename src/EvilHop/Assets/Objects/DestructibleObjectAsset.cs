@@ -26,7 +26,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     public uint InitialAnimationState { get; set; }
 
     /// <summary>
-    /// The number of hits this object can take before it is destroyed. Always 1 in known files.
+    /// The number of hits this object can take before it is destroyed.
     /// </summary>
     public uint Health { get; set; }
 
@@ -44,6 +44,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     /// This object's collision type, separate from <see cref="IPhysicalEntityAsset.CollisionFlags"/>.
     /// Usually 0 (dynamic) or 2 (static) - bit 1 gates static collision checks in decompiled source.
     /// </summary>
+    /// TODO: should be Flags enum if we have the decompiled source
     public byte CollisionType { get; set; }
 
     /// <summary>

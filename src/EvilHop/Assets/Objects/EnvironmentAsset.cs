@@ -20,6 +20,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
     /// <summary>
     /// The <see cref="AssetType.JSP"/> this environment loads as its main level geometry.
     /// </summary>
+    /// TODO: pretty sure this is BSP in N100F, and BFBB might support both
     public AssetId BspId { get; set; }
 
     /// <summary>
@@ -33,14 +34,12 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
     public ClimateFlags ClimateFlags { get; set; }
 
     /// <summary>
-    /// The low end of <see cref="ClimateFlags"/>'s effect strength. In decompiled source, the
-    /// effect's initial strength is the midpoint between this and <see cref="ClimateStrengthMax"/>.
+    /// The low end of <see cref="ClimateFlags"/>'s effect strength.
     /// </summary>
     public float ClimateStrengthMin { get; set; }
 
     /// <summary>
-    /// The high end of <see cref="ClimateFlags"/>'s effect strength. In decompiled source, the
-    /// effect's initial strength is the midpoint between this and <see cref="ClimateStrengthMin"/>.
+    /// The high end of <see cref="ClimateFlags"/>'s effect strength.
     /// </summary>
     public float ClimateStrengthMax { get; set; }
 
@@ -193,9 +192,7 @@ public interface IPhysicalEnvironmentAsset : IPhysicalBaseAsset
     uint EnvironmentFlags { get; set; }
 
     /// <summary>
-    /// Unknown ("<c>lold</c>" per decompiled source). Always 10 across every sample checked. Unlike
-    /// every other field on this asset, it is stored little-endian regardless of platform. Not
-    /// present in <see cref="GameVersion.N100F"/>.
+    /// Unknown.. Not present in <see cref="GameVersion.N100F"/>.
     /// </summary>
     float LoldHeight { get; set; }
 }
@@ -211,7 +208,7 @@ public enum ClimateFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// Rain plays. Takes priority over <see cref="Snow"/> in decompiled source if both are set.
+    /// Rain plays. Takes priority over <see cref="Snow"/>..
     /// </summary>
     Rain = 1 << 0,
     /// <summary>

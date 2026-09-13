@@ -19,8 +19,6 @@ namespace EvilHop.Assets;
 /// <para>
 /// <see cref="Shape"/> selects how <see cref="TriggerPosition0"/> and <see cref="TriggerPosition1"/>
 /// are interpreted: absolute box corners, or a sphere's center and radius.
-/// <see cref="TriggerShape.Cylinder"/> and <see cref="TriggerShape.VSphere"/> are defined in
-/// decompiled source but never observed in any real archive.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
@@ -49,7 +47,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
 
     /// <summary>
     /// The direction this trigger must be approached from for <see cref="Flags"/>'s
-    /// <see cref="TriggerFlags.DirectionGate"/> to pass. Usually <c>(0, -0, 1)</c>.
+    /// <see cref="TriggerFlags.DirectionGate"/> to pass.
     /// </summary>
     public Vector3 Direction { get; set; }
 
@@ -142,22 +140,19 @@ public enum TriggerShape : byte
     /// </summary>
     Sphere = 1,
     /// <summary>
-    /// A vertical cylinder. Defined in decompiled source but never observed in any real archive.
+    /// A vertical cylinder.
     /// </summary>
     Cylinder = 2,
     /// <summary>
     /// Identical to <see cref="Sphere"/> in decompiled source. Never observed in any real archive.
     /// </summary>
+    /// TODO: if identical and never observed, should we even define it as a flag?
     VSphere = 3,
 }
 
 /// <summary>
 /// Represents all known values for <see cref="TriggerAsset.Flags"/>.
 /// </summary>
-/// <remarks>
-/// Real <see cref="GameVersion.ROTU"/> archives carry a wide range of values in this field beyond
-/// <see cref="DirectionGate"/>, with no explanation in available decompiled source.
-/// </remarks>
 [Flags]
 public enum TriggerFlags : uint
 {
@@ -167,7 +162,6 @@ public enum TriggerFlags : uint
     None = 0,
     /// <summary>
     /// Restricts this trigger to only fire when approached from <see cref="TriggerAsset.Direction"/>.
-    /// Confirmed in decompiled <see cref="GameVersion.BFBB"/> source.
     /// </summary>
     DirectionGate = 1 << 0,
 }

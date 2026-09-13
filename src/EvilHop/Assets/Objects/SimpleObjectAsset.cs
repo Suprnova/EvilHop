@@ -84,10 +84,8 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), I
 public interface IPhysicalSimpleObjectAsset : IPhysicalEntityAsset
 {
     /// <summary>
-    /// Unknown. Always 0 in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>, as
-    /// the wiki claims; from <see cref="GameVersion.TSSM"/> onward, real archives commonly carry
-    /// <c>0x08</c> and occasionally other bit patterns, with no explanation in available decompiled
-    /// source.
+    /// Unknown. Always 0 in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>;
+    /// from <see cref="GameVersion.TSSM"/> onward, contains real, unknown data.
     /// </summary>
     byte SimpleFlags { get; set; }
 }
@@ -96,6 +94,7 @@ public interface IPhysicalSimpleObjectAsset : IPhysicalEntityAsset
 /// Represents all known values for <see cref="SimpleObjectAsset.CollisionType"/>. Shared with every
 /// other entity type's own collision type field.
 /// </summary>
+/// TODO: if most of these are non-functional and never observed, why define them as flags at all?
 [Flags]
 public enum SimpleObjectCollisionType : byte
 {

@@ -12,7 +12,6 @@ namespace EvilHop.Assets;
 /// </summary>
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CNTR">Heavy Iron Modding documentation</seealso>
-/// Validation TODO: Physical.BaseType is always 0x16.
 /// </remarks>
 public sealed class CounterAsset() : BaseAsset(AssetType.Counter)
 {

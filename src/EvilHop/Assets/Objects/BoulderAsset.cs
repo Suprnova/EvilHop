@@ -1,8 +1,4 @@
-using EvilHop.Assets.Serialization;
-using EvilHop.Blocks;
 using EvilHop.Common;
-using EvilHop.Primitives;
-using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -12,7 +8,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/BOUL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, IHasAnimList
+public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, IHasAnimList
 {
     /// <summary>
     /// The downward acceleration applied to this boulder.
@@ -20,7 +16,7 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
     public float Gravity { get; set; }
 
     /// <summary>
-    /// This boulder's mass, used to scale forces applied to it. Forced to 1 if not positive.
+    /// This boulder's mass, used to scale forces applied to it.
     /// </summary>
     public float Mass { get; set; }
 
@@ -37,7 +33,7 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
 
     /// <summary>
     /// If this boulder's downward velocity is below this threshold when it hits the ground, that
-    /// velocity is reset to 0. <see cref="GameVersion.BFBB"/> only.
+    /// velocity is reset to 0. Only present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float StaticFriction { get; set; }
 
@@ -71,12 +67,14 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
     /// The lifetime, in seconds, before this boulder is destroyed, if
     /// <see cref="BoulderFlags.DieAfterKillTimer"/> is set. If 0, the lifetime is infinite.
     /// </summary>
+    /// TODO: should be a TimedBoulderAsset subclass?
     public float KillTimer { get; set; }
 
     /// <summary>
     /// The number of hits this boulder can take from a damaging surface (see
     /// <see cref="BoulderFlags.DieOnDamagingSurface"/>) before it is destroyed.
     /// </summary>
+    /// TODO: should be a FragileBoulder (name pending) subclass?
     public uint Hitpoints { get; set; }
 
     /// <summary>
@@ -87,7 +85,8 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
     public AssetId BounceSoundId { get; set; }
 
     /// <summary>
-    /// The volume <see cref="BounceSoundId"/> plays at. <see cref="GameVersion.BFBB"/> only.
+    /// The volume <see cref="BounceSoundId"/> plays at. Only present in
+    /// <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float Volume { get; set; }
 
@@ -104,13 +103,13 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
 
     /// <summary>
     /// The distance from this boulder at which <see cref="BounceSoundId"/> is at full volume.
-    /// <see cref="GameVersion.BFBB"/> only.
+    /// Only present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float InnerRadius { get; set; }
 
     /// <summary>
     /// The distance from this boulder beyond which <see cref="BounceSoundId"/> is inaudible.
-    /// <see cref="GameVersion.BFBB"/> only.
+    /// Only present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float OuterRadius { get; set; }
 
@@ -128,7 +127,7 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
 
     /// <summary>
     /// The time, in seconds after spawning, before this boulder can collide with anything.
-    /// <see cref="GameVersion.ROTU"/> only.
+    /// Only present in <see cref="GameVersion.ROTU"/>.
     /// </summary>
     public float InitialNonCollideTime { get; set; }
 
@@ -145,92 +144,6 @@ public sealed class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, 
         GameVersion.Incredibles,
         GameVersion.ROTU,
     };
-
-    internal static BoulderAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
-    {
-        var asset = new BoulderAsset();
-        AssetFields.Populate(asset, header, debug);
-        BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
-
-        asset.Gravity = reader.ReadSingle();
-        asset.Mass = reader.ReadSingle();
-        asset.Bounce = reader.ReadSingle();
-        asset.Friction = reader.ReadSingle();
-        if (profile.Game is GameVersion.BFBB) asset.StaticFriction = reader.ReadSingle();
-        asset.MaxVelocity = reader.ReadSingle();
-        asset.MaxAngularVelocity = reader.ReadSingle();
-        asset.Stickiness = reader.ReadSingle();
-        asset.BounceDamping = reader.ReadSingle();
-        asset.Flags = (BoulderFlags)reader.ReadUInt32();
-        asset.KillTimer = reader.ReadSingle();
-        asset.Hitpoints = reader.ReadUInt32();
-        asset.BounceSoundId = reader.ReadAssetId();
-        if (profile.Game is GameVersion.BFBB) asset.Volume = reader.ReadSingle();
-        asset.MinSoundVelocity = reader.ReadSingle();
-        asset.MaxSoundVelocity = reader.ReadSingle();
-
-        if (profile.Game is GameVersion.BFBB)
-        {
-            asset.InnerRadius = reader.ReadSingle();
-            asset.OuterRadius = reader.ReadSingle();
-        }
-        else
-        {
-            asset.SoundRadius = reader.ReadSingle();
-            reader.ReadByte(); // pad0, always zero
-            reader.ReadByte(); // pad1, always zero
-            reader.ReadByte(); // pad2, always zero
-            asset.BoneIndex = reader.ReadByte();
-            if (profile.Game is GameVersion.ROTU) asset.InitialNonCollideTime = reader.ReadSingle();
-        }
-
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
-        asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
-        return asset;
-    }
-
-    internal static void Write(BoulderAsset asset, EndianWriter writer, FormatProfile profile)
-    {
-        BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
-
-        writer.Write(asset.Gravity);
-        writer.Write(asset.Mass);
-        writer.Write(asset.Bounce);
-        writer.Write(asset.Friction);
-        if (profile.Game is GameVersion.BFBB) writer.Write(asset.StaticFriction);
-        writer.Write(asset.MaxVelocity);
-        writer.Write(asset.MaxAngularVelocity);
-        writer.Write(asset.Stickiness);
-        writer.Write(asset.BounceDamping);
-        writer.Write((uint)asset.Flags);
-        writer.Write(asset.KillTimer);
-        writer.Write(asset.Hitpoints);
-        writer.Write(asset.BounceSoundId);
-        if (profile.Game is GameVersion.BFBB) writer.Write(asset.Volume);
-        writer.Write(asset.MinSoundVelocity);
-        writer.Write(asset.MaxSoundVelocity);
-
-        if (profile.Game is GameVersion.BFBB)
-        {
-            writer.Write(asset.InnerRadius);
-            writer.Write(asset.OuterRadius);
-        }
-        else
-        {
-            writer.Write(asset.SoundRadius);
-            writer.Write((byte)0); // pad0
-            writer.Write((byte)0); // pad1
-            writer.Write((byte)0); // pad2
-            writer.Write(asset.BoneIndex);
-            if (profile.Game is GameVersion.ROTU) writer.Write(asset.InitialNonCollideTime);
-        }
-
-        LinkSerialization.Write(asset, writer);
-        writer.Write(asset.GetUnparsedTail());
-    }
 }
 
 /// <summary>
@@ -244,7 +157,7 @@ public enum BoulderFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// If unset, this boulder is destroyed when it hits a wall.
+    /// This boulder survives hits against walls.
     /// </summary>
     CanHitWalls = 1 << 0,
     /// <summary>
@@ -261,7 +174,7 @@ public enum BoulderFlags : uint
     DamageNPCs = 1 << 3,
     /// <summary>
     /// This boulder is destroyed (after <see cref="BoulderAsset.Hitpoints"/> hits) when it touches a
-    /// surface with a damaging surface type. Per decompiled source.
+    /// surface with a damaging surface type.
     /// </summary>
     DieOnDamagingSurface = 1 << 4,
     /// <summary>
@@ -269,7 +182,7 @@ public enum BoulderFlags : uint
     /// </summary>
     DieOnOutOfBoundsSurfaces = 1 << 5,
     /// <summary>
-    /// This boulder is destroyed when it touches goo. Per decompiled source.
+    /// This boulder is destroyed when it touches goo.
     /// </summary>
     DieInGoo = 1 << 6,
     /// <summary>
