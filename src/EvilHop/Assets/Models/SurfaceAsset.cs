@@ -101,12 +101,14 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     public float OutOfBoundsDelay { get; set; }
 
     /// <summary>
-    /// Scales the player's horizontal wall-jump velocity off this surface.
+    /// Scales the player's horizontal wall-jump velocity off this surface. Applies only when
+    /// <see cref="SurfacePhysicsFlags.WallJump"/> is set.
     /// </summary>
     public float WallJumpScaleXZ { get; set; }
 
     /// <summary>
-    /// Scales the player's vertical wall-jump velocity off this surface.
+    /// Scales the player's vertical wall-jump velocity off this surface. Applies only when
+    /// <see cref="SurfacePhysicsFlags.WallJump"/> is set.
     /// </summary>
     public float WallJumpScaleY { get; set; }
 
@@ -290,4 +292,10 @@ public enum SurfacePhysicsFlags : byte
     /// The player is considered out of bounds while on this surface.
     /// </summary>
     OutOfBounds = 1 << 4,
+    /// <summary>
+    /// The player can wall jump off this surface. Required for
+    /// <see cref="SurfaceAsset.WallJumpScaleXZ"/> and <see cref="SurfaceAsset.WallJumpScaleY"/> to
+    /// apply - without it the move does not trigger at all.
+    /// </summary>
+    WallJump = 1 << 5,
 }
