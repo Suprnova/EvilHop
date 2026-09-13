@@ -108,9 +108,12 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
 
     /// <summary>
     /// The time, in seconds, the player can remain out of bounds on this surface before being reset.
+    /// Only takes effect when <see cref="SurfacePhysicsFlags.OutOfBounds"/> is set.
     /// </summary>
-    /// TODO: mostly -1 in official archives, maybe uses sb.ini's
-    /// player.state.out_of_bounds.out_time field?
+    /// <remarks>
+    /// -1 defers to the game ini's <c>player.state.out_of_bounds.out_time</c>.
+    /// </remarks>
+    /// TODO: probably all non-positive values tbh
     public float OutOfBoundsDelay { get; set; }
 
     /// <summary>
@@ -201,7 +204,7 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// Unknown.
     /// </summary>
     /// TODO: decomp's zThrown has a copy of this field, maybe it controls whether thrown objects
-    /// (i.e. melons, tikis) stick to the surface?
+    /// (i.e. melons, tikis) stick to the surface? might also affect Friction?
     byte GameSticky { get; set; }
 
     /// <summary>
@@ -314,11 +317,13 @@ public enum SurfacePhysicsFlags : byte
     /// </summary>
     Step = 1 << 2,
     /// <summary>
-    /// The player cannot stand on this surface.
+    /// The player cannot stand on this surface: contact with it from above is treated as airborne
+    /// rather than grounded, and the player is pushed off rather than coming to rest.
     /// </summary>
     PreventStanding = 1 << 3,
     /// <summary>
-    /// The player is considered out of bounds while on this surface.
+    /// The player is considered out of bounds while on this surface, and is reset after
+    /// <see cref="SurfaceAsset.OutOfBoundsDelay"/>.
     /// </summary>
     OutOfBounds = 1 << 4,
     /// <summary>

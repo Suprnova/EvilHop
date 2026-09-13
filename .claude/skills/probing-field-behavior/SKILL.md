@@ -64,6 +64,11 @@ Facts worth not rediscovering:
   games even where name and asset ID match exactly - `disco_floor_A_3m` is 816 bytes in BFBB and 736
   in TSSM, because TSSM re-exported it under a different RenderWare version. Loading BFBB's copies
   under TSSM crashes the game.
+- **`EntityAsset.Angle`'s three components are (yaw, roll, pitch)**, confirmed empirically (BFBB and
+  TSSM agree) by rotating a flat tile on each axis in turn and watching which one produces a walkable
+  incline. Guessing this wrong produces a tile that still renders and collides fine, just flat or
+  rotated in the wrong plane - not an obvious failure, so verify with a small multi-axis batch rather
+  than assuming a single axis and re-running.
 - **IndustrialPark archives omit `DPAK`'s padding-amount field.** Read them with
   `profile with { StreamDataHasPaddingField = false }` or every asset offset lands four bytes late
   and anything crossing the boundary silently degrades to empty. Official archives carry the field.

@@ -123,15 +123,12 @@ Borrow(floorSession, hopSession, "disco_floor_A_3m", "disco_floor.RW3");
 var (_, skySession) = Open(Path.Combine(files, setup.SkyFrom));
 Borrow(skySession, hopSession, "skydome_jf", "jf_sky_color.RW3");
 
-var models = hopSession.Layers.SelectMany(l => l.Assets)
-    .ToDictionary(a => a.Name, a => a.Id, StringComparer.OrdinalIgnoreCase);
-
+// Queries hopSession live rather than a snapshot, so a probe can Borrow() more models partway
+// through and still resolve them - the HOP isn't committed/saved until every borrow is done, below.
 AssetId Model(params string[] candidates) =>
-    candidates.Select(name => models.TryGetValue(name, out var id) ? id : default)
+    candidates.Select(name => hopSession.Layers.SelectMany(l => l.Assets)
+            .FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase))?.Id ?? default)
         .FirstOrDefault(id => id != default);
-
-hopSession.Commit();
-using (var stream = File.Create(SlotPath(".HOP"))) hop.Save(stream);
 
 // A shipped SURF of the kind under test, for values this probe should not be inventing - notably
 // TSSM onward, where every surface carries ~140 bytes of ExtendedData whose layout is unknown.
@@ -184,6 +181,17 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
     return asset;
 }
 
+/// <summary>Like <see cref="Place"/>, but rotated by a full <see cref="Vector3"/> of radians rather
+/// than just a yaw - for a tilted ramp, where which component is pitch is exactly what's under
+/// test.</summary>
+SimpleObjectAsset PlaceTilted(string name, AssetId model, Vector3 position, float scale,
+    Vector3 angle, AssetId surface, RgbaColor tint)
+{
+    var asset = Place(name, model, position, scale, SimpleObjectCollisionType.Static, surface, tint);
+    asset.Angle = angle;
+    return asset;
+}
+
 // Skydome, collision off so it can never interfere with a measurement. Without it the framebuffer
 // is never cleared and the level renders as hall-of-mirrors.
 Place("zz_skydome", Model("skydome_jf"), Vector3.Zero, 2.07f, SimpleObjectCollisionType.None);
@@ -192,33 +200,35 @@ Place("zz_skydome", Model("skydome_jf"), Vector3.Zero, 2.07f, SimpleObjectCollis
 // templates do not agree on spawn height. Collision scales with Scale, so a large arena is cheap.
 float floorY = spawn.Y - 1f;
 const float TileStep = 3f * 4f;
-for (float x = -30f; x <= 165f; x += TileStep)
+for (float x = -30f; x <= 225f; x += TileStep)
     for (float z = -42f; z <= 42f; z += TileStep)
         Place($"zz_floor_{count:D3}", Model("disco_floor_A_3m"),
             new Vector3(spawn.X + x, floorY, spawn.Z + z), 4f, SimpleObjectCollisionType.Static);
 
 // ======================= THE PROBE — rewrite below this line =======================
-// A row of pads the player walks across, numbered west to east so the tester can report by
-// position. Variant 1 is the control: the values every harmless shipped surface uses (SurfType and
-// GameSticky are 0 in all 12,773 SURF assets across every game in the corpus). Pads 2-6 vary
-// SurfType, which decomp's zSurfaceGetName/zFeetGetIDs indicates selects the footstep sound
-// (SNDFX_STEP_<name>) and is otherwise unreferenced; pads 7-8 vary GameSticky, whose only decomp
-// reference is an unread accessor. Pad 9 is the positive control: GameDamageType=Fatal1, confirmed
-// by surf-damage.md to kill the player outright, so a null result on pads 2-8 isn't just a broken rig.
+// Round three. Pads 1-7 are settled (see probes/surf-physicsflags.md) and kept only as a rig sanity
+// check: bits 2 (Step, null), 3 (PreventStanding), 4 (OutOfBounds) and OutOfBoundsDelay (0.5/2/20,
+// all exact) are confirmed. This round replaces the broken dynamic-platform teeter rig with static
+// tilted ramps - see the block below.
 
-/// <summary>A SURF matching the shipped damage reference except for the fields under test.</summary>
-SurfaceAsset Surface(string name, byte surfType, byte gameSticky, byte damageType)
+/// <summary>A SURF matching the shipped damage reference except for PhysFlags/GameDamageType.
+/// <paramref name="outOfBoundsDelay"/> defaults to the reference's own -1 ("never trigger", per
+/// <c>zSurfaceGetOutOfBoundsDelay</c>'s no-surface fallback) - every bit-4 pad needs a real, finite
+/// override or the flag would look dead no matter what it does. BFBB's own 'OUTOFBOUNDS_SURF' uses
+/// 2 seconds. <paramref name="slideAngles"/> defaults to the reference's own 20/10.</summary>
+SurfaceAsset Surface(string name, byte physFlags, byte damageType, float? outOfBoundsDelay = null,
+    (byte Start, byte Stop)? slideAngles = null)
 {
     var surface = new SurfaceAsset
     {
         Name = name,
         BaseFlags = reference.BaseFlags,
         GameDamageType = (SurfaceGameDamageType)damageType,
-        PhysFlags = reference.PhysFlags,
+        PhysFlags = (SurfacePhysicsFlags)physFlags,
         Friction = reference.Friction,
-        SlideStartAngle = reference.SlideStartAngle,
-        SlideStopAngle = reference.SlideStopAngle,
-        OutOfBoundsDelay = reference.OutOfBoundsDelay,
+        SlideStartAngle = slideAngles?.Start ?? reference.SlideStartAngle,
+        SlideStopAngle = slideAngles?.Stop ?? reference.SlideStopAngle,
+        OutOfBoundsDelay = outOfBoundsDelay ?? reference.OutOfBoundsDelay,
         WallJumpScaleXZ = reference.WallJumpScaleXZ,
         WallJumpScaleY = reference.WallJumpScaleY,
         IsEnabled = true,
@@ -228,27 +238,25 @@ SurfaceAsset Surface(string name, byte surfType, byte gameSticky, byte damageTyp
     surface.CalculateId();
     surface.Physical.BaseType = 26;
     surface.Physical.Flags = AssetFlags.SourceVirtual;
-    surface.Physical.SurfType = surfType;
-    surface.Physical.GameSticky = gameSticky;
 
     layer.Add(surface);
     count++;
     return surface;
 }
 
-(string Label, byte SurfType, byte GameSticky, byte DamageType, RgbaColor Tint)[] variants =
+// Round two adds pads 6-7: bit 4 was confirmed to gate a delayed reset in round one, but the delay
+// didn't match OutOfBoundsDelay (set to 2, matching BFBB's own OUTOFBOUNDS_SURF; actual wait was 9
+// seconds). Two clearly different values, both far from 2 and from each other, tell us whether the
+// wait tracks the field at all.
+(string Label, byte PhysFlags, byte DamageType, float? OobDelay, RgbaColor Tint)[] padVariants =
 [
-    ("surf_type=0  sticky=0    (control)",        0,   0, 0, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
-    ("surf_type=9  sticky=0    (METAL)",           9,   0, 0, new RgbaColor(0.6f, 0.6f, 0.7f, 1f)),
-    ("surf_type=14 sticky=0    (WOOD)",           14,   0, 0, new RgbaColor(0.6f, 0.4f, 0.2f, 1f)),
-    ("surf_type=16 sticky=0    (ICE)",            16,   0, 0, new RgbaColor(0.7f, 0.9f, 1f, 1f)),
-    ("surf_type=18 sticky=0    (DEEPWATER)",      18,   0, 0, new RgbaColor(0.1f, 0.2f, 0.8f, 1f)),
-    ("surf_type=23 sticky=0    (past NONE=22)",   23,   0, 0, new RgbaColor(1f, 0.1f, 1f, 1f)),
-
-    ("surf_type=0  sticky=1",                      0,   1, 0, new RgbaColor(0.9f, 0.9f, 0.3f, 1f)),
-    ("surf_type=0  sticky=255",                    0, 255, 0, new RgbaColor(0.9f, 0.5f, 0f, 1f)),
-
-    ("surf_type=0  sticky=0  damage=1 (control+)", 0,   0, 1, new RgbaColor(1f, 0.2f, 0.2f, 1f)),
+    ("flags=0  (control)",                    0, 0, null, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
+    ("flags=4  Step",                         4, 0, null, new RgbaColor(0.6f, 0.2f, 0.8f, 1f)),
+    ("flags=8  PreventStanding",              8, 0, null, new RgbaColor(0.9f, 0.6f, 0.1f, 1f)),
+    ("flags=16 OutOfBounds delay=2",         16, 0, 2f,   new RgbaColor(0.1f, 0.8f, 0.8f, 1f)),
+    ("flags=0  damage=1 (control+)",          0, 1, null, new RgbaColor(1f, 0.2f, 0.2f, 1f)),
+    ("flags=16 OutOfBounds delay=0.5",       16, 0, 0.5f, new RgbaColor(0.2f, 1f, 0.4f, 1f)),
+    ("flags=16 OutOfBounds delay=20",        16, 0, 20f,  new RgbaColor(0.1f, 0.3f, 0.15f, 1f)),
 ];
 
 // Pads sit just above the floor so the player unambiguously contacts the pad's surface rather than
@@ -257,10 +265,10 @@ const float PadStep = 12f;
 const float PadLift = 0.35f;
 Console.WriteLine($"  spawn {spawn}; pad row runs +X, {PadStep} apart:");
 
-for (int i = 0; i < variants.Length; i++)
+for (int i = 0; i < padVariants.Length; i++)
 {
-    var (label, surfType, gameSticky, damageType, tint) = variants[i];
-    var surface = Surface($"zz_surf_{i + 1:D2}", surfType, gameSticky, damageType);
+    var (label, physFlags, damageType, oobDelay, tint) = padVariants[i];
+    var surface = Surface($"zz_surf_{i + 1:D2}", physFlags, damageType, oobDelay);
     var position = new Vector3(spawn.X + ((i + 1) * PadStep), floorY + PadLift, spawn.Z);
     Place($"zz_pad_{i + 1:D2}", Model("disco_floor_A_3m"), position, 3f,
         SimpleObjectCollisionType.Static, surface.Id, tint);
@@ -276,8 +284,60 @@ for (int i = 0; i < variants.Length; i++)
     Console.WriteLine($"    #{i + 1} x={position.X,6:F1}  {label}");
 }
 
+// ---- tilted ramps: bits 0 (Slide) and 1 (MatchOrient), and whether slide angles affect
+// PreventStanding ----
+// The dynamic TeeterTotterMotion rig (see probes/surf-physicsflags.md) never worked - no tilt, no
+// difference between PhysFlags values, cause not found in the asset's own data. This drops the
+// dynamic platform entirely: a plain SimpleObject, statically tilted via Angle, needs nothing but a
+// rotation, and PreciseCollision already handles rotated static geometry correctly (the wall-jump
+// probe's walls rely on the same thing).
+//
+// Angle's three components are confirmed, empirically, to be (yaw, roll, pitch) - round one of this
+// ramp rig guessed X for pitch (wrong: it's yaw, so those ramps were flat) and included Y/Z as a
+// fallback, which is how this was found. Pitch is Z.
+//
+// Run in both games, not just BFBB: no TSSM SURF in the corpus sets bits 0/1, but that says nothing
+// about whether the engine still implements them there - same reasoning as every field probed so
+// far that turned out to be constant in shipped content without being dead.
+{
+    const float TiltAngle = 0.5236f; // 30 degrees: clearly past both SlideStartAngle (20) and
+                                      // SlideStopAngle (10), so full sliding is unambiguous if Slide works.
+    const float RampScale = 4f;
+    const float RampStep = 12f;
+    int rampBase = padVariants.Length;
+    Console.WriteLine($"  ramp row continues +X, {RampStep} apart, pitched {TiltAngle:F2} rad (Z):");
+
+    (string Label, byte PhysFlags, (byte, byte)? SlideAngles, Vector3 Angle, RgbaColor Tint)[] ramps =
+    [
+        ("flags=0  neither",                     0, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 0.4f, 1f, 1f)),
+        ("flags=1  Slide only",                   1, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.9f, 0.9f, 0.3f, 1f)),
+        ("flags=2  MatchOrient only",             2, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 0.9f, 0.9f, 1f)),
+        ("flags=3  both (shipped value)",         3, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 1f, 0.3f, 1f)),
+        ("flags=8  PreventStanding, slide=20/10", 8, (20, 10), new Vector3(0, 0, TiltAngle), new RgbaColor(0.9f, 0.6f, 0.1f, 1f)),
+        ("flags=8  PreventStanding, slide=1/1",   8, (1, 1),   new Vector3(0, 0, TiltAngle), new RgbaColor(0.6f, 0.3f, 0f, 1f)),
+    ];
+
+    for (int i = 0; i < ramps.Length; i++)
+    {
+        var (label, physFlags, slideAngles, angle, tint) = ramps[i];
+        int num = rampBase + i + 1;
+        var surface = Surface($"zz_ramp_{num:D2}_surf", physFlags, 0, slideAngles: slideAngles);
+        var position = new Vector3(spawn.X + (num * RampStep), floorY + 1f, spawn.Z);
+        PlaceTilted($"zz_ramp_{num:D2}", Model("disco_floor_A_3m"), position, RampScale, angle, surface.Id, tint);
+
+        for (int t = 0; t <= i; t++)
+            Place($"zz_tally_{num:D2}_{t:D2}", Model("disco_floor_A_3m"),
+                new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
+                0.5f, SimpleObjectCollisionType.None);
+
+        Console.WriteLine($"    #{num} x={position.X,6:F1}  {label}");
+    }
+}
+
 // ======================= end of probe =======================
 
+hopSession.Commit();
+using (var stream = File.Create(SlotPath(".HOP"))) hop.Save(stream);
 hipSession.Commit();
 using (var stream = File.Create(SlotPath(".HIP"))) hip.Save(stream);
 PointBootIni();
