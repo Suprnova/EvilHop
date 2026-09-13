@@ -63,7 +63,9 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
             int length = hasUnknownField ? reader.ReadInt32() : BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));
             uint unknown = hasUnknownField ? reader.ReadUInt32() : 0;
             byte[] jawData = reader.ReadBytes(length);
-            SkipPadding(reader, EntrySize(hasUnknownField, length));
+
+            int padding = Align4(length) - length;
+            if (padding > 0) reader.ReadBytes(padding); // 4-byte alignment padding, always zero
 
             var entry = new JawDataTableEntry { SoundId = soundId, Unknown = unknown };
             foreach (byte b in jawData) entry.JawData.Add(b);
@@ -83,12 +85,14 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
         int dataStart = 0;
         foreach (var entry in asset.Entries)
         {
-            int dataLength = EntrySize(hasUnknownField, entry.JawData.Count);
+            int dataLength = (hasUnknownField ? 8 : 4) + entry.JawData.Count;
             writer.Write(entry.SoundId);
             writer.Write(dataStart);
             writer.Write(dataLength);
             dataStart = Align4(dataStart + dataLength);
         }
+
+        Span<byte> writeBuffer = stackalloc byte[4];
 
         foreach (var entry in asset.Entries)
         {
@@ -99,37 +103,19 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
             }
             else
             {
-                WriteLengthLittleEndian(writer, entry.JawData.Count);
+                BinaryPrimitives.WriteInt32LittleEndian(writeBuffer, entry.JawData.Count);
+                writer.Write(writeBuffer);
             }
             writer.Write(entry.JawData.ToArray());
-            WritePadding(writer, EntrySize(hasUnknownField, entry.JawData.Count));
+
+            int padding = Align4(entry.JawData.Count) - entry.JawData.Count;
+            for (int i = 0; i < padding; i++) writer.Write((byte)0);
         }
 
         writer.Write(asset.GetUnparsedTail());
     }
 
-    private static int EntrySize(bool hasUnknownField, int jawDataLength) => (hasUnknownField ? 8 : 4) + jawDataLength;
-
     private static int Align4(int value) => (value + 3) & ~3;
-
-    private static void SkipPadding(EndianReader reader, int entrySize)
-    {
-        int padding = Align4(entrySize) - entrySize;
-        if (padding > 0) reader.ReadBytes(padding); // 4-byte alignment padding, always zero
-    }
-
-    private static void WritePadding(EndianWriter writer, int entrySize)
-    {
-        int padding = Align4(entrySize) - entrySize;
-        for (int i = 0; i < padding; i++) writer.Write((byte)0);
-    }
-
-    private static void WriteLengthLittleEndian(EndianWriter writer, int value)
-    {
-        Span<byte> bytes = stackalloc byte[4];
-        BinaryPrimitives.WriteInt32LittleEndian(bytes, value);
-        writer.Write(bytes);
-    }
 }
 
 /// <summary>
@@ -167,7 +153,7 @@ public sealed class JawDataTableEntry
     public Collection<byte> JawData { get; } = [];
 
     /// <summary>
-    /// Unknown. Present only in <see cref="GameVersion.ROTU"/>.
+    /// Unknown. Only present in <see cref="GameVersion.ROTU"/>.
     /// </summary>
     public uint Unknown { get; set; }
 }
