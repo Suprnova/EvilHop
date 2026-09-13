@@ -199,18 +199,21 @@ for (float x = -30f; x <= 165f; x += TileStep)
 
 // ======================= THE PROBE — rewrite below this line =======================
 // A row of pads the player walks across, numbered west to east so the tester can report by
-// position. Variant 1 is the control: the values every harmless shipped surface uses. Include a
-// positive control that is known to do something, or a null result proves nothing.
+// position. Variant 1 is the control: the values every harmless shipped surface uses (SurfType and
+// GameSticky are 0 in all 12,773 SURF assets across every game in the corpus). Pads 2-6 vary
+// SurfType, which decomp's zSurfaceGetName/zFeetGetIDs indicates selects the footstep sound
+// (SNDFX_STEP_<name>) and is otherwise unreferenced; pads 7-8 vary GameSticky, whose only decomp
+// reference is an unread accessor. Pad 9 is the positive control: GameDamageType=Fatal1, confirmed
+// by surf-damage.md to kill the player outright, so a null result on pads 2-8 isn't just a broken rig.
 
 /// <summary>A SURF matching the shipped damage reference except for the fields under test.</summary>
-SurfaceAsset Surface(string name, byte damageType, byte damageFlags, float damageTimer, float damageBounce)
+SurfaceAsset Surface(string name, byte surfType, byte gameSticky, byte damageType)
 {
     var surface = new SurfaceAsset
     {
         Name = name,
         BaseFlags = reference.BaseFlags,
         GameDamageType = (SurfaceGameDamageType)damageType,
-        GameDamageFlags = (SurfaceGameDamageFlags)damageFlags,
         PhysFlags = reference.PhysFlags,
         Friction = reference.Friction,
         SlideStartAngle = reference.SlideStartAngle,
@@ -225,34 +228,27 @@ SurfaceAsset Surface(string name, byte damageType, byte damageFlags, float damag
     surface.CalculateId();
     surface.Physical.BaseType = 26;
     surface.Physical.Flags = AssetFlags.SourceVirtual;
-    surface.Physical.SurfType = reference.Physical.SurfType;
-    surface.Physical.GameSticky = reference.Physical.GameSticky;
-    surface.DamageTimer = damageTimer;
-    surface.DamageBounce = damageBounce;
+    surface.Physical.SurfType = surfType;
+    surface.Physical.GameSticky = gameSticky;
 
     layer.Add(surface);
     count++;
     return surface;
 }
 
-// Pads 1-5 re-stage the four fatal types side by side, to see whether the manner of death differs
-// and gives them names. Pads 6-12 test whether damage_flags bit 0 is gated on a non-zero
-// damage_timer - with the timer at 0, as every shipped surface leaves it, the flag did nothing.
-(string Label, byte Type, byte Flags, float Timer, float Bounce, RgbaColor Tint)[] variants =
+(string Label, byte SurfType, byte GameSticky, byte DamageType, RgbaColor Tint)[] variants =
 [
-    ("type=6  flags=0 timer=0     (damage control)", 6, 0, 0f,   0f, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
-    ("type=1  flags=0 timer=0     (fatal)",          1, 0, 0f,   0f, new RgbaColor(1f, 0.3f, 0.3f, 1f)),
-    ("type=2  flags=0 timer=0     (fatal)",          2, 0, 0f,   0f, new RgbaColor(1f, 0.6f, 0.2f, 1f)),
-    ("type=3  flags=0 timer=0     (fatal)",          3, 0, 0f,   0f, new RgbaColor(1f, 1f, 0.3f, 1f)),
-    ("type=5  flags=0 timer=0     (fatal)",          5, 0, 0f,   0f, new RgbaColor(0.3f, 1f, 1f, 1f)),
+    ("surf_type=0  sticky=0    (control)",        0,   0, 0, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
+    ("surf_type=9  sticky=0    (METAL)",           9,   0, 0, new RgbaColor(0.6f, 0.6f, 0.7f, 1f)),
+    ("surf_type=14 sticky=0    (WOOD)",           14,   0, 0, new RgbaColor(0.6f, 0.4f, 0.2f, 1f)),
+    ("surf_type=16 sticky=0    (ICE)",            16,   0, 0, new RgbaColor(0.7f, 0.9f, 1f, 1f)),
+    ("surf_type=18 sticky=0    (DEEPWATER)",      18,   0, 0, new RgbaColor(0.1f, 0.2f, 0.8f, 1f)),
+    ("surf_type=23 sticky=0    (past NONE=22)",   23,   0, 0, new RgbaColor(1f, 0.1f, 1f, 1f)),
 
-    ("type=6  flags=1 timer=0",                      6, 1, 0f,   0f, new RgbaColor(1f, 0.3f, 1f, 1f)),
-    ("type=6  flags=0 timer=0.25",                   6, 0, 0.25f, 0f, new RgbaColor(0.4f, 0.9f, 0.4f, 1f)),
-    ("type=6  flags=1 timer=0.25",                   6, 1, 0.25f, 0f, new RgbaColor(0.1f, 0.5f, 0.1f, 1f)),
-    ("type=6  flags=0 timer=2",                      6, 0, 2f,   0f, new RgbaColor(0.9f, 0.6f, 0.9f, 1f)),
-    ("type=6  flags=1 timer=2",                      6, 1, 2f,   0f, new RgbaColor(0.5f, 0.2f, 0.5f, 1f)),
-    ("type=6  flags=0 timer=0    bounce=10",         6, 0, 0f,  10f, new RgbaColor(1f, 0.85f, 0.4f, 1f)),
-    ("type=6  flags=0 timer=0.25 bounce=10",         6, 0, 0.25f, 10f, new RgbaColor(0.6f, 0.45f, 0.1f, 1f)),
+    ("surf_type=0  sticky=1",                      0,   1, 0, new RgbaColor(0.9f, 0.9f, 0.3f, 1f)),
+    ("surf_type=0  sticky=255",                    0, 255, 0, new RgbaColor(0.9f, 0.5f, 0f, 1f)),
+
+    ("surf_type=0  sticky=0  damage=1 (control+)", 0,   0, 1, new RgbaColor(1f, 0.2f, 0.2f, 1f)),
 ];
 
 // Pads sit just above the floor so the player unambiguously contacts the pad's surface rather than
@@ -263,8 +259,8 @@ Console.WriteLine($"  spawn {spawn}; pad row runs +X, {PadStep} apart:");
 
 for (int i = 0; i < variants.Length; i++)
 {
-    var (label, type, flags, timer, bounce, tint) = variants[i];
-    var surface = Surface($"zz_surf_{i + 1:D2}", type, flags, timer, bounce);
+    var (label, surfType, gameSticky, damageType, tint) = variants[i];
+    var surface = Surface($"zz_surf_{i + 1:D2}", surfType, gameSticky, damageType);
     var position = new Vector3(spawn.X + ((i + 1) * PadStep), floorY + PadLift, spawn.Z);
     Place($"zz_pad_{i + 1:D2}", Model("disco_floor_A_3m"), position, 3f,
         SimpleObjectCollisionType.Static, surface.Id, tint);

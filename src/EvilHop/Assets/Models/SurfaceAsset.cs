@@ -193,11 +193,15 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// <summary>
     /// Unknown.
     /// </summary>
+    /// TODO: decomp's zFeetStepVillainCB calls zFeetGetIDs (which calls zSurfaceGetName), maybe
+    /// this field changes footstep sounds for NPCs?
     byte SurfType { get; set; }
 
     /// <summary>
     /// Unknown.
     /// </summary>
+    /// TODO: decomp's zThrown has a copy of this field, maybe it controls whether thrown objects
+    /// (i.e. melons, tikis) stick to the surface?
     byte GameSticky { get; set; }
 
     /// <summary>
