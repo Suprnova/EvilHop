@@ -145,10 +145,10 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve), IPhys
 /// </summary>
 public interface IPhysicalCameraCurveAsset : IPhysicalBaseAsset
 {
-    /// <summary>Currently always 4.</summary>
+    /// <summary>The internal version of the <see cref="CameraCurveAsset"/> struct.</summary>
     byte Version { get; set; }
 
-    /// <summary>Unknown. Usually 0.</summary>
+    /// <summary>Unknown.</summary>
     uint CameraFlags { get; set; }
 
     /// <summary>
@@ -165,6 +165,7 @@ public interface IPhysicalCameraCurveAsset : IPhysicalBaseAsset
 /// <summary>
 /// One tuning point along a <see cref="CameraCurveAsset"/>'s length.
 /// </summary>
+/// TODO: hallucinations? unless this info is in the decompiled source.
 public sealed class CameraCurveBead
 {
     /// <summary>The parameter along the first rail this bead sits at.</summary>

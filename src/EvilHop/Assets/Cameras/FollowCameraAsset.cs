@@ -24,6 +24,7 @@ public sealed class FollowCameraAsset : CameraAsset
     public float StartSpeed { get; set; }
 
     /// <summary>The camera's movement speed once fully caught up.</summary>
+    /// TODO: hallucination? what does this mean?
     public float EndSpeed { get; set; }
 
     /// <inheritdoc/>

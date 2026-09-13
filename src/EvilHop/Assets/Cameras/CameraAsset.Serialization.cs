@@ -10,9 +10,8 @@ public abstract partial class CameraAsset
     /// <exception cref="InvalidDataException">The stored <see cref="Kind"/> byte is not a known <see cref="CameraKind"/>.</exception>
     internal static CameraAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        // Cam Type - the discriminator selecting which of these fields apply - is stored after the
-        // type-specific block it selects, so the concrete instance can't be constructed until
-        // everything up to and including that byte has been read.
+        // store fields for later, until we have a concrete Camera subclass instance after reading
+        // kind.
         var baseId = reader.ReadAssetId();
         var baseType = reader.ReadByte();
         var linkCount = reader.ReadByte();

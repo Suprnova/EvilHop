@@ -10,11 +10,9 @@ namespace EvilHop.Assets;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A camera's type-specific fields - <see cref="FollowCameraAsset"/>, <see cref="ShoulderCameraAsset"/>,
-/// <see cref="StaticCameraAsset"/>, <see cref="PathCameraAsset"/>, and <see cref="StaticFollowCameraAsset"/> -
-/// occupy the same fixed-size region of the on-disk layout, selected by <see cref="Kind"/>. Each is
-/// its own sealed subclass rather than a shared set of nullable properties, so a given
-/// <see cref="CameraAsset"/> instance can only ever expose the fields for the one type it actually is.
+/// Not instantiated directly, instead used by <see cref="FollowCameraAsset"/>,
+/// <see cref="ShoulderCameraAsset"/>, <see cref="StaticCameraAsset"/>, <see cref="PathCameraAsset"/>,
+/// and <see cref="StaticFollowCameraAsset"/> branching based on <see cref="Kind"/>.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CAM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
@@ -50,28 +48,29 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera), IPhys
     /// <summary>How the camera eases into position over <see cref="TransitionTime"/>.</summary>
     public CameraTransitionType TransitionType { get; set; }
 
-    /// <summary>Usually 0.</summary>
+    /// <summary>Unknown.</summary>
+    /// TODO: probably controls a fade from black
     public float FadeUp { get; set; }
 
-    /// <summary>Usually 0.</summary>
+    /// <summary>Unknown.</summary>
+    /// TODO: probably controls a fade to black
     public float FadeDown { get; set; }
 
     /// <summary>
     /// The <see cref="AssetId"/> of the first <see cref="AssetType.Marker"/> associated with this
-    /// camera, if any. Usually <see cref="AssetId.None"/>.
+    /// camera, if any.
     /// </summary>
     public AssetId MarkerId1 { get; set; }
 
     /// <summary>
     /// The <see cref="AssetId"/> of the second <see cref="AssetType.Marker"/> associated with this
-    /// camera, if any. Usually <see cref="AssetId.None"/>.
+    /// camera, if any.
     /// </summary>
     public AssetId MarkerId2 { get; set; }
 
     /// <summary>
     /// Which camera type this asset is, determining which concrete <see cref="CameraAsset"/> subclass
-    /// it can be. Implied by the concrete type - a <see cref="FollowCameraAsset"/> is always
-    /// <see cref="CameraKind.Follow"/>, and so on.
+    /// it can be.
     /// </summary>
     public abstract CameraKind Kind { get; }
 
@@ -126,8 +125,7 @@ public interface IPhysicalCameraAsset : IPhysicalBaseAsset
     uint CameraFlags { get; set; }
 
     /// <summary>
-    /// Unknown bit layout. In known files, byte 1 is usually 0, byte 2 is usually 1, byte 3 is
-    /// usually 1, and byte 4 is usually 0x8F or 0xC0.
+    /// Unknown.
     /// </summary>
     uint ValidFlags { get; set; }
 }
