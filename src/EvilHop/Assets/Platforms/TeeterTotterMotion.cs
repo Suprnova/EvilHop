@@ -18,7 +18,7 @@ public sealed class TeeterTotterMotion : PlatformMotion
     public float InverseMass { get; set; }
 
     /// <summary>
-    /// Unknown; its values look like an <see cref="AssetId"/>. <see cref="GameVersion.ROTU"/> only.
+    /// Unknown. Only present in <see cref="GameVersion.ROTU"/>.
     /// </summary>
     public uint Unknown { get; set; }
 

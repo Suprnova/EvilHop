@@ -6,9 +6,6 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that moves forward, then returns.
 /// </summary>
-/// <remarks>
-/// No known file uses this motion, and <see cref="GameVersion.BFBB"/>'s code never reads it.
-/// </remarks>
 public sealed class ForwardReturnMotion : PlatformMotion
 {
     /// <summary>The speed to move forward at.</summary>
@@ -25,7 +22,7 @@ public sealed class ForwardReturnMotion : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.ForwardReturn;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    private protected override void ReadFields(EndianReader reader, GameVersion _)
     {
         ForwardSpeed = reader.ReadSingle();
         ReturnSpeed = reader.ReadSingle();
@@ -33,7 +30,7 @@ public sealed class ForwardReturnMotion : PlatformMotion
         PostReturnDelay = reader.ReadSingle();
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    private protected override void WriteFields(EndianWriter writer, GameVersion _)
     {
         writer.Write(ForwardSpeed);
         writer.Write(ReturnSpeed);

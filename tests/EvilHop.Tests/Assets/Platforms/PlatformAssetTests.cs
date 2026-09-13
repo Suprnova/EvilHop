@@ -567,9 +567,10 @@ public class PlatformAssetTests
     [InlineData(6)]
     public void Orientations_SetWithinMax_StoresValue(int length)
     {
-        var motion = new PaddleMotion();
-
-        motion.Orientations = [.. new float[length]];
+        var motion = new PaddleMotion
+        {
+            Orientations = [.. new float[length]]
+        };
 
         Assert.Equal(length, motion.Orientations.Length);
     }

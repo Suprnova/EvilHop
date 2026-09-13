@@ -20,7 +20,8 @@ public sealed class BreakawayMotion : PlatformMotion
 
     /// <summary>
     /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> the platform switches to as it
-    /// falls, if any. <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/> only.
+    /// falls, if any. Only present in <see cref="GameVersion.N100F"/> and
+    /// <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public AssetId BustModelId { get; set; }
 
@@ -30,8 +31,7 @@ public sealed class BreakawayMotion : PlatformMotion
     public BreakawayFlags BreakFlags { get; set; }
 
     /// <summary>
-    /// The time, in seconds, before a falling platform stops colliding, judging by its name. Not
-    /// present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
+    /// Unknown. Not present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float CollisionOffTime { get; set; }
 

@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -7,18 +11,9 @@ namespace EvilHop.Assets;
 /// moves or reacts - from sliding along a path, to breaking away, to launching the player upward.
 /// </summary>
 /// <remarks>
-/// <para>
-/// The format splits a platform's behavior across two fixed-size blocks: a type-specific block,
-/// selected by <see cref="IPhysicalPlatformAsset.PlatformType"/>, and a Motion block shared with
-/// <see cref="AssetType.Button"/>. Which block a behavior occupies is a detail of the format rather
-/// than of the platform, so both are modelled as the one <see cref="Motion"/>: an
-/// <see cref="EntityMotion"/> occupies the Motion block and leaves the type-specific block empty,
-/// and a <see cref="PlatformMotion"/> occupies the type-specific block and leaves the Motion block
-/// empty.
-/// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/PLAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
+public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
 {
     /// <summary>
     /// This platform's behavior flags.
@@ -59,6 +54,68 @@ public sealed partial class PlatformAsset() : EntityAsset(AssetType.Platform), I
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasSurface.SurfaceId { get => Physical.SurfaceId; set => Physical.SurfaceId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
+    
+    /// <exception cref="InvalidDataException">
+    /// The stored <see cref="PlatformType"/> is unknown, or its blocks don't hold what it selects.
+    /// </exception>
+    internal static PlatformAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new PlatformAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+
+        // Subtype derives from PlatformType, which derives from Motion - reassigned once both are read.
+        byte subtype = asset.Physical.Subtype;
+        var platformType = (PlatformType)reader.ReadByte();
+        reader.ReadByte(); // padding, always zero
+        asset.Flags = (PlatformFlags)reader.ReadInt16();
+
+        if (platformType <= PlatformType.Pendulum)
+        {
+            PlatformMotion.ReadEmpty(reader, profile.Game);
+            asset.Motion = EntityMotion.Read(reader, profile.Game);
+        }
+        else
+        {
+            var motion = PlatformMotion.Read(reader, platformType, profile.Game);
+            motion.Flags = EntityMotion.ReadEmpty(reader, profile.Game);
+            asset.Motion = motion;
+        }
+
+        asset.Physical.PlatformType = platformType;
+        asset.Physical.Subtype = subtype;
+
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        asset.Physical.LinkCount = (byte)asset.Links.Count;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(PlatformAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+
+        writer.Write((byte)asset.Physical.PlatformType);
+        writer.Write((byte)0); // padding
+        writer.Write((short)asset.Flags);
+
+        switch (asset.Motion)
+        {
+            case EntityMotion motion:
+                PlatformMotion.WriteEmpty(writer, profile.Game);
+                motion.Write(writer, profile.Game);
+                break;
+            case PlatformMotion motion:
+                motion.Write(writer, profile.Game);
+                EntityMotion.WriteEmpty(writer, profile.Game, motion.Flags);
+                break;
+        }
+
+        LinkSerialization.Write(asset, writer);
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>
@@ -121,6 +178,9 @@ public enum PlatformType : byte
 /// Per <see cref="GameVersion.BFBB"/>. <see cref="GameVersion.TSSM"/> is documented as storing a
 /// collision type here instead, and <see cref="GameVersion.ROTU"/> sets bits whose meaning is unknown.
 /// </remarks>
+/// TODO: not sure what the "storing a collision type here instead" matters to the documentation of
+/// the enum itself. The enum should be game-agnostic (see LayerType), matters like that are a job
+/// for the serialization method.
 [Flags]
 public enum PlatformFlags : ushort
 {

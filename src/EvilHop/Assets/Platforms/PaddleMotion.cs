@@ -8,8 +8,7 @@ namespace EvilHop.Assets;
 /// A <see cref="PlatformMotion"/> that rotates between a set of orientations when hit.
 /// </summary>
 /// <remarks>
-/// Not present in <see cref="GameVersion.N100F"/>, whose type-specific block is too small to hold
-/// one; written there as an empty block.
+/// Not present in <see cref="GameVersion.N100F"/>.
 /// </remarks>
 public sealed class PaddleMotion : PlatformMotion
 {
@@ -109,19 +108,19 @@ public enum PaddleFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// The paddle can rotate forward, toward its next orientation. Per decompiled source.
+    /// The paddle can rotate forward, toward its next orientation.
     /// </summary>
     RotatesForward = 1 << 0,
     /// <summary>
-    /// The paddle can rotate backward, toward its previous orientation. Per decompiled source.
+    /// The paddle can rotate backward, toward its previous orientation.
     /// </summary>
     RotatesBackward = 1 << 1,
     /// <summary>
-    /// The paddle wraps around between its last and first orientations. Per decompiled source.
+    /// The paddle wraps around between its last and first orientations.
     /// </summary>
     Wraps = 1 << 2,
     /// <summary>
-    /// The Cruise Bubble can rotate the paddle. Per decompiled source.
+    /// The Cruise Bubble can rotate the paddle.
     /// </summary>
     HitByCruiseBubble = 1 << 5,
 }

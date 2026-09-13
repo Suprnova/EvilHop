@@ -6,26 +6,23 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> for a falling platform.
 /// </summary>
-/// <remarks>
-/// No known file uses this motion, and <see cref="GameVersion.BFBB"/>'s code never reads it.
-/// </remarks>
 public sealed class FallingMotion : PlatformMotion
 {
     /// <summary>Unknown.</summary>
     public float Speed { get; set; }
 
-    /// <summary>The <see cref="AssetId"/> of a <see cref="AssetType.Model"/>, named <c>bustModelID</c> in source.</summary>
+    /// <summary>An unknown <see cref="AssetType.Model"/> <see cref="AssetId"/>.</summary>
     public AssetId BustModelId { get; set; }
 
     internal override PlatformType PlatformType => PlatformType.Falling;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    private protected override void ReadFields(EndianReader reader, GameVersion _)
     {
         Speed = reader.ReadSingle();
         BustModelId = reader.ReadAssetId();
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    private protected override void WriteFields(EndianWriter writer, GameVersion _)
     {
         writer.Write(Speed);
         writer.Write(BustModelId);
