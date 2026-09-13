@@ -8,23 +8,7 @@ namespace EvilHop.Assets;
 
 public sealed partial class SurfaceAsset
 {
-    /// <summary>
-    /// The <see cref="GameVersion"/>s <see cref="AssetType.Surface"/> is known to be read by.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="GameVersion.N100F"/>'s <c>SURF</c> layout is substantially smaller than every
-    /// other game's and does not match decompiled source; it is not modelled here.
-    /// </remarks>
-    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
-    {
-        GameVersion.BFBB,
-        GameVersion.TSSM,
-        GameVersion.Incredibles,
-        GameVersion.ROTU,
-        GameVersion.Ratatouille,
-    };
-
-    internal static SurfaceAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    internal static SurfaceAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {
         var asset = new SurfaceAsset();
         AssetFields.Populate(asset, header, debug);
@@ -34,7 +18,7 @@ public sealed partial class SurfaceAsset
         asset.Physical.GameSticky = reader.ReadByte();
         asset.GameDamageFlags = (SurfaceGameDamageFlags)reader.ReadByte();
         asset.Physical.SurfType = reader.ReadByte();
-        reader.ReadByte(); // phys_pad, always zero
+        reader.ReadByte(); // padding, always zero
         asset.SlideStartAngle = reader.ReadByte();
         asset.SlideStopAngle = reader.ReadByte();
         asset.PhysFlags = (SurfacePhysicsFlags)reader.ReadByte();
@@ -52,6 +36,7 @@ public sealed partial class SurfaceAsset
 
         asset.ColorFx = new SurfaceColorFx
         {
+            // TODO: double cast? why?
             Flags = (SurfaceColorFxFlags)(ushort)reader.ReadInt16(),
             Mode = (ushort)reader.ReadInt16(),
             Speed = reader.ReadSingle(),
@@ -74,7 +59,7 @@ public sealed partial class SurfaceAsset
         asset.Physical.UvfxFlags = uvfxFlags;
 
         asset.Physical.OnValue = reader.ReadByte();
-        reader.ReadBytes(3); // surf_pad, always zero
+        reader.ReadBytes(3); // padding, always zero
         asset.OutOfBoundsDelay = reader.ReadSingle();
         asset.WallJumpScaleXZ = reader.ReadSingle();
         asset.WallJumpScaleY = reader.ReadSingle();
@@ -92,7 +77,7 @@ public sealed partial class SurfaceAsset
         return asset;
     }
 
-    internal static void Write(SurfaceAsset asset, EndianWriter writer, FormatProfile profile)
+    internal static void Write(SurfaceAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -100,7 +85,7 @@ public sealed partial class SurfaceAsset
         writer.Write(asset.Physical.GameSticky);
         writer.Write((byte)asset.GameDamageFlags);
         writer.Write(asset.Physical.SurfType);
-        writer.Write((byte)0); // phys_pad
+        writer.Write((byte)0); // padding
         writer.Write(asset.SlideStartAngle);
         writer.Write(asset.SlideStopAngle);
         writer.Write((byte)asset.PhysFlags);
@@ -113,6 +98,7 @@ public sealed partial class SurfaceAsset
         writer.Write(asset.MaterialFx.Bumpiness);
         writer.Write(asset.MaterialFx.DualMapId);
 
+        // TODO: ditto; double cast?
         writer.Write((short)(ushort)asset.ColorFx.Flags);
         writer.Write((short)asset.ColorFx.Mode);
         writer.Write(asset.ColorFx.Speed);
@@ -126,7 +112,7 @@ public sealed partial class SurfaceAsset
         WriteUvfx(writer, asset.Uvfxs[1]);
 
         writer.Write(asset.Physical.OnValue);
-        writer.Write(new byte[3]); // surf_pad
+        writer.Write(new byte[3]); // padding
         writer.Write(asset.OutOfBoundsDelay);
         writer.Write(asset.WallJumpScaleXZ);
         writer.Write(asset.WallJumpScaleY);
@@ -141,7 +127,7 @@ public sealed partial class SurfaceAsset
 
     private static SurfaceTextureAnim ReadTextureAnim(EndianReader reader)
     {
-        reader.ReadInt16(); // pad, always zero
+        reader.ReadInt16(); // padding, always zero
         var mode = (SurfaceTextureAnimMode)(ushort)reader.ReadInt16();
         return new SurfaceTextureAnim
         {
@@ -153,7 +139,7 @@ public sealed partial class SurfaceAsset
 
     private static void WriteTextureAnim(EndianWriter writer, SurfaceTextureAnim anim)
     {
-        writer.Write((short)0); // pad
+        writer.Write((short)0); // padding
         writer.Write((short)(ushort)anim.Mode);
         writer.Write(anim.Group);
         writer.Write(anim.Speed);

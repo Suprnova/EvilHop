@@ -87,7 +87,7 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
             {
                 writer.Write((byte)entry.Layer);
                 writer.Write(entry.AlphaDiscard);
-                writer.Write((short)0); // PipePad
+                writer.Write((short)0); // padding
             }
         }
         writer.Write(asset.GetUnparsedTail());
@@ -127,6 +127,7 @@ public sealed class PipeInfoEntry
     /// and ending with its first atomic as the most significant bit. 0xFFFFFFFF applies the entry to
     /// every atomic.
     /// </summary>
+    /// TODO: obviously should be a flags enum
     public uint SubObjectBits { get; set; }
 
     /// <summary>
@@ -151,6 +152,7 @@ public sealed class PipeInfoEntry
 /// Packed rendering flags for a <see cref="PipeInfoEntry"/>. Wraps the raw 32-bit value so bits with
 /// no known meaning round-trip untouched alongside the named fields.
 /// </summary>
+/// TODO: this is very complex and depends on the wiki being correct, needs validation
 public readonly record struct PipeRenderFlags(uint Value)
 {
     /// <summary>
@@ -240,14 +242,14 @@ public enum PipeLightingMode : byte
     PrelightOnly = 1,
     /// <summary>Lit by both the level's light kit and prebaked vertex lighting.</summary>
     LightKitAndPrelight = 2,
-    /// <summary>Unknown meaning.</summary>
+    /// <summary>Unknown.</summary>
     Unknown = 3,
 }
 
 /// <summary>Which faces of a <see cref="PipeInfoEntry"/>'s selected atomics are culled.</summary>
 public enum PipeCullMode : byte
 {
-    /// <summary>Unknown meaning.</summary>
+    /// <summary>Unknown.</summary>
     Unknown = 0,
     /// <summary>No culling; both front and back faces are rendered.</summary>
     None = 1,
@@ -266,7 +268,7 @@ public enum PipeZWriteMode : byte
     Disabled = 1,
     /// <summary>Rendered twice: once with z-write disabled, then once with z-write enabled.</summary>
     Dual = 2,
-    /// <summary>Unknown meaning.</summary>
+    /// <summary>Unknown.</summary>
     Unknown = 3,
 }
 

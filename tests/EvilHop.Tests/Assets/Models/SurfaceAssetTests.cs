@@ -231,8 +231,10 @@ public class SurfaceAssetTests
     [Fact]
     public void TextureAnimFlags_DerivesFromTextureAnimsIsEnabled()
     {
-        var asset = new SurfaceAsset();
-        asset.TextureAnims = [new SurfaceTextureAnim { IsEnabled = false }, new SurfaceTextureAnim { IsEnabled = true }];
+        var asset = new SurfaceAsset
+        {
+            TextureAnims = [new SurfaceTextureAnim { IsEnabled = false }, new SurfaceTextureAnim { IsEnabled = true }]
+        };
 
         Assert.Equal(0b10u, asset.Physical.TextureAnimFlags);
     }
@@ -251,8 +253,10 @@ public class SurfaceAssetTests
     [Fact]
     public void UvfxFlags_DerivesFromUvfxsIsEnabled()
     {
-        var asset = new SurfaceAsset();
-        asset.Uvfxs = [new SurfaceUvfx { IsEnabled = true }, new SurfaceUvfx { IsEnabled = false }];
+        var asset = new SurfaceAsset
+        {
+            Uvfxs = [new SurfaceUvfx { IsEnabled = true }, new SurfaceUvfx { IsEnabled = false }]
+        };
 
         Assert.Equal(0b01u, asset.Physical.UvfxFlags);
     }

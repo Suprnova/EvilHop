@@ -9,13 +9,12 @@ namespace EvilHop.Assets;
 public sealed class SurfaceMaterialFx
 {
     /// <summary>
-    /// Unknown flags.
+    /// Unknown.
     /// </summary>
     public SurfaceMaterialFxFlags Flags { get; set; }
 
     /// <summary>
-    /// The bump map applied to this surface, if any. Always <see cref="AssetId.None"/> in every
-    /// sample checked.
+    /// The bump map applied to this surface, if any.
     /// </summary>
     public AssetId BumpMapId { get; set; }
 
@@ -30,13 +29,12 @@ public sealed class SurfaceMaterialFx
     public float Shininess { get; set; }
 
     /// <summary>
-    /// How bumpy this surface's bump map is. Always 0 in every sample checked.
+    /// How bumpy this surface's bump map is.
     /// </summary>
     public float Bumpiness { get; set; }
 
     /// <summary>
-    /// A secondary map applied to this surface, if any. Always <see cref="AssetId.None"/> in every
-    /// sample checked.
+    /// A secondary map applied to this surface, if any.
     /// </summary>
     public AssetId DualMapId { get; set; }
 }
@@ -47,12 +45,12 @@ public sealed class SurfaceMaterialFx
 public sealed class SurfaceColorFx
 {
     /// <summary>
-    /// Unknown flags.
+    /// Unknown.
     /// </summary>
     public SurfaceColorFxFlags Flags { get; set; } = SurfaceColorFxFlags.Valid;
 
     /// <summary>
-    /// Unknown. Always 0 in every sample checked.
+    /// Unknown.
     /// </summary>
     public ushort Mode { get; set; }
 
@@ -102,11 +100,11 @@ public sealed class SurfaceUvfx
     /// <summary>
     /// How this animation drives <see cref="Translation"/>/<see cref="Scale"/>.
     /// </summary>
+    /// TODO: extract this into subclasses?
     public SurfaceUvfxMode Mode { get; set; }
 
     /// <summary>
-    /// The current UV rotation, in degrees. The wiki claims this is always 0; real archives show
-    /// 0, 90, 180, and 270.
+    /// The current UV rotation, in degrees.
     /// </summary>
     public float Rotation { get; set; }
 
@@ -114,6 +112,9 @@ public sealed class SurfaceUvfx
     /// The speed <see cref="Rotation"/> advances at, in degrees per second.
     /// </summary>
     public float RotationSpeed { get; set; }
+
+    // TODO: if Vector3.Z is always 0, then Vector2 seems more apt. Though this would require
+    // a physical layer for an Asset's internal struct, which we haven't done yet.
 
     /// <summary>
     /// The current UV translation. <see cref="Vector3.Z"/> is always 0.
@@ -131,25 +132,23 @@ public sealed class SurfaceUvfx
     public Vector3 Scale { get; set; }
 
     /// <summary>
-    /// The speed <see cref="Scale"/> advances at. Usually <see cref="Vector3.Zero"/>.
+    /// The speed <see cref="Scale"/> advances at.
     /// </summary>
     public Vector3 ScaleSpeed { get; set; }
 
     /// <summary>
     /// For <see cref="SurfaceUvfxMode.MinMaxOscillate"/>, the low end of the UV translation range.
-    /// Usually <see cref="Vector3.Zero"/>.
     /// </summary>
     public Vector3 Min { get; set; }
 
     /// <summary>
     /// For <see cref="SurfaceUvfxMode.MinMaxOscillate"/>, the high end of the UV translation range.
-    /// Usually <see cref="Vector3.Zero"/>.
     /// </summary>
     public Vector3 Max { get; set; }
 
     /// <summary>
     /// For <see cref="SurfaceUvfxMode.MinMaxOscillate"/>, how quickly the translation oscillates
-    /// between <see cref="Min"/> and <see cref="Max"/>. Usually <see cref="Vector3.Zero"/>.
+    /// between <see cref="Min"/> and <see cref="Max"/>.
     /// </summary>
     public Vector3 MinMaxSpeed { get; set; }
 }
@@ -157,6 +156,8 @@ public sealed class SurfaceUvfx
 /// <summary>
 /// Represents all known values for <see cref="SurfaceMaterialFx.Flags"/>.
 /// </summary>
+/// TODO: i don't think there's a point modelling these if we both don't know what they mean and
+/// we don't know of a specific set of flags that are always set (like SurfaceColorFxFlags).
 [Flags]
 public enum SurfaceMaterialFxFlags : uint
 {

@@ -15,12 +15,14 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LKIT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
+/// TODO: evaluate asset category (environment?)
 public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightKitAsset
 {
     /// <summary>
     /// The <see cref="AssetType.Group"/> of entities this light kit is applied to, in addition to
     /// whichever single object referenced it directly, if any.
     /// </summary>
+    /// TODO: what does that second half mean
     public AssetId GroupId { get; set; }
 
     /// <summary>
@@ -31,8 +33,8 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalLightKitAsset Physical => this;
 
-    private uint _tagId = TikleTag;
-    uint IPhysicalLightKitAsset.TagId { get => _tagId; set => _tagId = value; }
+    private uint _magic = 0x54494B4C; // "TIKL"
+    uint IPhysicalLightKitAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint? _overriddenLightCount;
     uint IPhysicalLightKitAsset.LightCount
@@ -40,9 +42,6 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
         get => _overriddenLightCount ?? (uint)Lights.Count;
         set => _overriddenLightCount = value == (uint)Lights.Count ? null : value;
     }
-
-    /// <summary>"TIKL" - this type's tag, reversed, as stored on disk.</summary>
-    private const uint TikleTag = 0x54494B4C;
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.LightKit"/> is known to be read by.
@@ -61,13 +60,14 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
         var asset = new LightKitAsset();
         AssetFields.Populate(asset, header, debug);
 
-        asset.Physical.TagId = reader.ReadUInt32();
+        asset.Physical.Magic = reader.ReadUInt32();
         asset.GroupId = reader.ReadAssetId();
         uint lightCount = reader.ReadUInt32();
-        reader.ReadUInt32(); // lightList pointer slot; always 0 on disk, patched to point past the header at load
+        reader.ReadUInt32(); // runtime-resolved lightList, always 0
 
         if (profile.Game is GameVersion.ROTU or GameVersion.Ratatouille)
             reader.ReadUInt32(); // "blended" - always 0xCDCDCDCD (uninitialized) on disk, reset to false at load
+            // TODO: validate against decompiled source. what data type is this really?
 
         for (int i = 0; i < lightCount; i++)
         {
@@ -77,6 +77,8 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
                 Color = new RgbaColor(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
                 Right = reader.ReadVector3(),
             };
+
+            // TODO: definitely should store these homogeneous components, they count as data
             reader.ReadSingle(); // Right's homogeneous component; always 0
             light.Up = reader.ReadVector3();
             reader.ReadSingle(); // Up's homogeneous component; always 0
@@ -86,7 +88,8 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             light.PositionW = reader.ReadSingle();
             light.Radius = reader.ReadSingle();
             light.Angle = reader.ReadSingle();
-            reader.ReadUInt32(); // platLight pointer slot; always 0 on disk, patched to a live RenderWare light at load
+            reader.ReadUInt32(); // runtime-resolved platLight, always 0
+
             asset.Lights.Add(light);
         }
 
@@ -97,10 +100,10 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
 
     internal static void Write(LightKitAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write(asset.Physical.TagId);
+        writer.Write(asset.Physical.Magic);
         writer.Write(asset.GroupId);
         writer.Write(asset.Physical.LightCount);
-        writer.Write(0u); // lightList pointer slot
+        writer.Write(0u); // runtime-resolved
 
         if (profile.Game is GameVersion.ROTU or GameVersion.Ratatouille)
             writer.Write(0xCDCDCDCDu); // "blended"
@@ -122,7 +125,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             writer.Write(light.PositionW);
             writer.Write(light.Radius);
             writer.Write(light.Angle);
-            writer.Write(0u); // platLight pointer slot
+            writer.Write(0u); // runtime-resolved
         }
 
         writer.Write(asset.GetUnparsedTail());
@@ -135,10 +138,9 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
 public interface IPhysicalLightKitAsset : IPhysicalAsset
 {
     /// <summary>
-    /// This asset's own tag, stored as "TIKL" - <see cref="AssetType.LightKit"/>'s FourCC reversed.
-    /// Always that value in every sample checked.
+    /// A four-character magic number.
     /// </summary>
-    uint TagId { get; set; }
+    uint Magic { get; set; }
 
     /// <summary>
     /// The number of <see cref="LightKitAsset.Lights"/> stored for this asset, read directly from
@@ -160,6 +162,8 @@ public interface IPhysicalLightKitAsset : IPhysicalAsset
 /// negated in the process; <see cref="Position"/> becomes its world position. For an
 /// <see cref="LightKitLightType.Ambient"/> light, all four are <see cref="Vector3.Zero"/>.
 /// </remarks>
+/// TODO: elaborate on what this means. it seems archaic, can we abstract it?
+/// TODO: abstract LightKitLight into subclasses branching from LightKitLightType
 public sealed class LightKitLight
 {
     /// <summary>
@@ -168,54 +172,48 @@ public sealed class LightKitLight
     public LightKitLightType Type { get; set; }
 
     /// <summary>
-    /// This light's color. <see cref="RgbaColor.A"/> is always 1 in every sample checked.
+    /// This light's color.
     /// </summary>
     public RgbaColor Color { get; set; }
 
     /// <summary>
-    /// The right vector of this light's orientation. <see cref="Vector3.Zero"/> for
-    /// <see cref="LightKitLightType.Ambient"/> lights.
+    /// The right vector of this light's orientation.
     /// </summary>
     public Vector3 Right { get; set; }
 
     /// <summary>
-    /// The up vector of this light's orientation. <see cref="Vector3.Zero"/> for
-    /// <see cref="LightKitLightType.Ambient"/> lights.
+    /// The up vector of this light's orientation.
     /// </summary>
     public Vector3 Up { get; set; }
 
     /// <summary>
     /// The direction a <see cref="LightKitLightType.Directional"/> light points towards, as an angle
-    /// throughout the level rather than a position. <see cref="Vector3.Zero"/> for
-    /// <see cref="LightKitLightType.Ambient"/> lights.
+    /// throughout the level rather than a position.
     /// </summary>
     public Vector3 At { get; set; }
 
     /// <summary>
     /// This light's world position, for <see cref="LightKitLightType.Point"/> and
-    /// <see cref="LightKitLightType.Spot"/> lights. <see cref="Vector3.Zero"/> for
-    /// <see cref="LightKitLightType.Ambient"/> lights.
+    /// <see cref="LightKitLightType.Spot"/> lights.
     /// </summary>
     public Vector3 Position { get; set; }
 
     /// <summary>
     /// Unknown. The fourth component alongside <see cref="Position"/>, forming a complete
     /// homogeneous 4-vector with <see cref="Right"/>/<see cref="Up"/>/<see cref="At"/> (each of whose
-    /// own fourth components are always 0 and not modelled). Always 1 for every light type other than
-    /// <see cref="LightKitLightType.Ambient"/>, where it is 0 along with the rest of this light's
-    /// transform.
+    /// own fourth components are always 0 and not modelled). Always 1 for every
+    /// non-<see cref="LightKitLightType.Ambient"/> light type.
     /// </summary>
     public float PositionW { get; set; }
 
     /// <summary>
     /// The radius of a <see cref="LightKitLightType.Point"/> or <see cref="LightKitLightType.Spot"/>
-    /// light. Always 0 in every sample checked - no real light of either type has been observed.
+    /// light.
     /// </summary>
     public float Radius { get; set; }
 
     /// <summary>
-    /// The cone angle of a <see cref="LightKitLightType.Spot"/> light. Always 0 in every sample
-    /// checked - no real spot light has been observed.
+    /// The cone angle of a <see cref="LightKitLightType.Spot"/> light.
     /// </summary>
     public float Angle { get; set; }
 }
@@ -236,13 +234,13 @@ public enum LightKitLightType : uint
     Directional = 2,
     /// <summary>
     /// A light radiating from <see cref="LightKitLight.Position"/> in every direction, out to
-    /// <see cref="LightKitLight.Radius"/>. Not observed in any real archive.
+    /// <see cref="LightKitLight.Radius"/>.
     /// </summary>
     Point = 3,
     /// <summary>
     /// A light radiating from <see cref="LightKitLight.Position"/> in a cone along
     /// <see cref="LightKitLight.At"/>, out to <see cref="LightKitLight.Radius"/> and
-    /// <see cref="LightKitLight.Angle"/>. Not observed in any real archive.
+    /// <see cref="LightKitLight.Angle"/>.
     /// </summary>
     Spot = 4,
 }

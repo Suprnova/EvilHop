@@ -206,5 +206,5 @@ public class LightKitAssetTests
 
     [Fact]
     public void TagId_DefaultsToTikl() =>
-        Assert.Equal(0x54494B4Cu, new LightKitAsset().Physical.TagId);
+        Assert.Equal(0x54494B4Cu, new LightKitAsset().Physical.Magic);
 }

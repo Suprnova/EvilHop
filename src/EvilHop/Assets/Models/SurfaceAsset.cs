@@ -95,13 +95,13 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
 
     /// <summary>
     /// The time, in seconds, the player can remain out of bounds on this surface before being reset.
-    /// -1 in the overwhelming majority of samples checked; a small number specify 2 instead.
     /// </summary>
+    /// TODO: mostly -1 in official archives, maybe uses sb.ini's
+    /// player.state.out_of_bounds.out_time field?
     public float OutOfBoundsDelay { get; set; }
 
     /// <summary>
-    /// Scales the player's horizontal wall-jump velocity off this surface. Always 1 in every sample
-    /// checked.
+    /// Scales the player's horizontal wall-jump velocity off this surface.
     /// </summary>
     public float WallJumpScaleXZ { get; set; }
 
@@ -158,6 +158,22 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
 
     private static ImmutableArray<SurfaceTextureAnim> DefaultTextureAnims() => [new(), new()];
     private static ImmutableArray<SurfaceUvfx> DefaultUvfxs() => [new(), new()];
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Surface"/> is known to be read by.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="GameVersion.N100F"/>'s <c>SURF</c> layout is substantially smaller than every
+    /// other game's and does not match decompiled source; it is not modelled here.
+    /// </remarks>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 }
 
 /// <summary>
@@ -166,12 +182,12 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
 public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
 {
     /// <summary>
-    /// Unknown. Always 0 in every sample checked.
+    /// Unknown.
     /// </summary>
     byte SurfType { get; set; }
 
     /// <summary>
-    /// Whether this surface is "sticky". Always 0 in every sample checked.
+    /// Unknown.
     /// </summary>
     byte GameSticky { get; set; }
 
@@ -198,6 +214,7 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// <remarks>
     /// When disagreements with the derived value exist, this field wins during serialization.
     /// </remarks>
+    /// TODO: i know this is in Physical, but we could still use a flag enum
     uint TextureAnimFlags { get; set; }
 
     /// <summary>
@@ -207,6 +224,7 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// <remarks>
     /// When disagreements with the derived value exist, this field wins during serialization.
     /// </remarks>
+    /// TODO: ditto w/ TextureAnimFlags
     uint UvfxFlags { get; set; }
 }
 
@@ -221,26 +239,6 @@ public enum SurfaceGameDamageType : byte
     None = 0,
     /// <summary>
     /// Unknown.
-    /// </summary>
-    Unknown1 = 1,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Unknown2 = 2,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Unknown3 = 3,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Unknown4 = 4,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Unknown5 = 5,
-    /// <summary>
-    /// Per the wiki, a hazard.
     /// </summary>
     Hazard = 6,
 }
@@ -264,11 +262,6 @@ public enum SurfaceGameDamageFlags : byte
 /// <summary>
 /// Represents all known values for <see cref="SurfaceAsset.PhysFlags"/>.
 /// </summary>
-/// <remarks>
-/// The wiki lists <c>0x10</c> as "Wall Jump" and <c>0x20</c> as "Ledge Grab", but decompiled source
-/// confirms <c>0x10</c> as <see cref="OutOfBounds"/>. Real archives also set <c>0x20</c> and
-/// <c>0x40</c>, with no confirmed meaning for either.
-/// </remarks>
 [Flags]
 public enum SurfacePhysicsFlags : byte
 {
@@ -286,7 +279,7 @@ public enum SurfacePhysicsFlags : byte
     /// </summary>
     MatchOrient = 1 << 1,
     /// <summary>
-    /// Unknown. Named "Step" in decompiled source.
+    /// Unknown.
     /// </summary>
     Step = 1 << 2,
     /// <summary>

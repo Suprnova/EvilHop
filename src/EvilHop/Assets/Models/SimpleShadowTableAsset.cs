@@ -80,7 +80,7 @@ public record struct SimpleShadowTableEntry
     public AssetId ShadowModelId { get; set; }
 
     /// <summary>
-    /// Unknown. Observed to be 0 or 1 in real archives.
+    /// Unknown.
     /// </summary>
     public uint Unknown { get; set; }
 }
