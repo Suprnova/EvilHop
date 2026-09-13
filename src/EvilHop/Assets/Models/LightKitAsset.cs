@@ -67,7 +67,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
 
         if (profile.Game is GameVersion.ROTU or GameVersion.Ratatouille)
             reader.ReadUInt32(); // "blended" - always 0xCDCDCDCD (uninitialized) on disk, reset to false at load
-            // TODO: validate against decompiled source. what data type is this really?
+                                 // TODO: validate against decompiled source. what data type is this really?
 
         for (int i = 0; i < lightCount; i++)
         {

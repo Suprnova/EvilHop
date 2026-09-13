@@ -54,7 +54,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasSurface.SurfaceId { get => Physical.SurfaceId; set => Physical.SurfaceId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
-    
+
     /// <exception cref="InvalidDataException">
     /// The stored <see cref="PlatformType"/> is unknown, or its blocks don't hold what it selects.
     /// </exception>

@@ -101,6 +101,20 @@ uses one opts in through a trait interface (`IHasSurface`, `IHasModel`, `IHasAni
 that projects onto the physical storage — it never stores a copy. See §Reference for the full trait
 list.
 
+A physical field is always an explicit `IPhysicalFooAsset` member backed by a private field — never a
+plain public property directly on the asset class, even when nothing else determines its value and
+there's no derived-value dance to do:
+
+```csharp
+private uint _magic = 0x31424B53;
+uint IPhysicalFooAsset.Magic { get => _magic; set => _magic = value; }
+```
+
+A raw four-character tag read back verbatim (not assumed — not every game agrees) is named `Magic` on
+the interface and documented as "A four-character magic number.", regardless of what the bytes spell
+reversed; put the type's own FourCC trivia in an inline comment on the default value (`// "TIKL"`), not
+in the public doc.
+
 **Do not trust the wiki's "Used by" lists** for deciding which traits a type gets. Those lists are
 plausible but unverified — EvilHop.Corpus doesn't extract asset fields yet, so nothing has actually
 checked them against real archives (see §[EvilHop.Corpus validation](#evilhopcorpus-validation--deferred)).
@@ -293,7 +307,11 @@ use it, only to see more context if something here doesn't match your case.
   exact same `if (profile.Game == GameVersion.BFBB) { ... }` block, field-for-field symmetric, in both
   `Read` and `Write`. Never branch on `profile.EntityHasPadding` or any other derived quirk for this —
   branch on `Game` directly so the intent reads as "this game's layout has different fields," not
-  "this incidental flag happens to correlate."
+  "this incidental flag happens to correlate." Document the field the same way every time: "<summary>.
+  Only present in <see cref="GameVersion.BFBB"/>." (join more than one game with "and") — not "BFBB
+  only." or "Populated for BFBB only." An enum's own summary stays game-agnostic, describing what a
+  value means everywhere it's read; a game-specific reading quirk belongs as a comment in that game's
+  branch of `Read`/`Write`, not folded into the enum member's doc.
 
 ## Validate the layout (before writing the class)
 
@@ -484,10 +502,19 @@ Key points:
   (or `Fallback` for a plain `Asset`), degrading gracefully instead of misreading. Expose it as
   `internal static IReadOnlySet<GameVersion> SupportedGames { get; }` on the asset class itself (every
   precedent does this), not as a literal at the call site.
-- **Big codecs split into a `.Serialization.cs` partial.** Once a codec outgrows ~250 lines, move the
-  `Read`/`Write`/`SupportedGames` members into a `FooAsset.Serialization.cs` partial beside `FooAsset.cs`
-  in the same family folder — see `CameraAsset.Serialization.cs`, `AnimationTableAsset.Serialization.cs`,
-  `CutsceneAsset.Serialization.cs`.
+- **Big codecs split into a `.Serialization.cs` partial.** Once a class's combined content (fields,
+  nested types, `Read`/`Write`) outgrows ~250 lines, move just the `Read`/`Write` methods — and any
+  private helpers only they use — into a `FooAsset.Serialization.cs` partial beside `FooAsset.cs` in the
+  same family folder. `SupportedGames` stays on `FooAsset.cs` with the type's other declarations; it's
+  part of the class's public shape, not its serialization mechanics — see `SurfaceAsset`/`SoundInfoAsset`
+  for `SupportedGames` living in the main file even though `Read`/`Write` don't, and
+  `CameraAsset.Serialization.cs`/`AnimationTableAsset.Serialization.cs`/`CutsceneAsset.Serialization.cs`
+  for the split's shape otherwise. The split is worth reversing if it turns out not to earn its keep —
+  `PlatformAsset` had its own `.Serialization.cs` folded back into one ~200-line file once splitting it
+  out stopped paying for itself.
+- **An unused `Read`/`Write` parameter is discarded, not left named.** A type with no per-game variance
+  still takes `FormatProfile profile`/`GameVersion game` to match the codec's signature — name it `_`
+  (or `_`/`__` for two) when the method body never touches it, rather than a name implying it matters.
 - **Write what you read, and nothing else.** A codec that reads a field it doesn't write (or writes one
   it doesn't read) breaks the round trip. The round-trip test below is what catches this.
 
@@ -506,6 +533,9 @@ family folder (e.g. `tests/EvilHop.Tests/Assets/Objects/HangableAssetTests.cs`,
    `SupportedGames`-gated type, assert an unsupported game degrades to its generic shape).
 5. If you add a trait, assert it round-trips into the physical storage (and, for negative/bit-mapped
    ones, that setting the trait toggles exactly the stored bit).
+
+Build a test's asset/motion instances with an object initializer (`new FooAsset { Prop = value }`)
+rather than assigning properties after a bare constructor call.
 
 Also look at `tests/EvilHop.Tests/Assets/` for unit tests of a concrete asset's properties. Run:
 `dotnet build` and `dotnet test` from the repo root. Fix every analyzer message — the project is
@@ -551,6 +581,27 @@ A few sharper corollaries, each corrected from a real slip in earlier asset impl
   candidate per the point above if also unexplained) or it shows real variance (say what the variance
   actually is; it stays logical). A hedge like "usually" or "in most samples" attached to the word
   "always" means the physical/logical call was never actually checked against the sweep - go check it.
+- **A specific-value claim ("always 0", "observed values are X and Y") needs the sweep behind it, or
+  it's `Unknown.` instead.** Field-level corpus verification doesn't exist yet (see
+  §[EvilHop.Corpus validation](#evilhopcorpus-validation--deferred)), so a claim sourced from a handful
+  of hand-checked archives reads as more settled than it is, and is exactly the kind of thing that turns
+  out wrong once more archives get checked. Prefer a plain `Unknown.` over reporting specific observed
+  values unless you've actually run §[Sweeping every occurrence](#sweeping-every-occurrence) yourself.
+- **Flag a suspected inference with a `TODO`, not a hedge word.** If you're guessing a field's purpose
+  from its name, unsure whether a wiki claim is real, or suspect an earlier pass invented something
+  outright, don't bury the doubt in the doc comment ("probably", "likely", "judging by its name") and
+  don't quietly drop it either — write the doc as if the read were settled, then follow it with a line
+  naming the specific doubt: `/// TODO: validate against decompiled
+  source` for something public, `// TODO: ...` for an internal-only question. This keeps speculative
+  content visible and searchable instead of either asserted as fact or invisibly hedged.
+- **State facts plainly; drop the provenance narration once a fact is settled.** "Per decompiled
+  source", "confirmed in X", and similar qualifiers describe how you arrived at a fact, not the fact
+  itself — cut them once the doc comment states something true. Reserve a provenance callout for a
+  conflict the reader genuinely still needs to know about (the wiki and decompiled source disagree and
+  neither has won yet), and record that as a `TODO` (previous bullet) rather than permanent prose.
+- **A flags enum's zero value is only `None` when it truly means "nothing is set."** If the all-clear
+  state has its own real behavior (a mechanism that idles by repeating forever, not "doing nothing"),
+  name it for that behavior instead (`Repeat = 0`), the same as any other member.
 - **A byte/int holding a small, fully-enumerated closed set of real values is an enum, even with no
   confirmed name for most of them.** Don't leave it as a raw numeric type just because you can't name
   every value — name what's confirmed, and use placeholder names (`Unknown1`, `Unknown2`, ...) for the

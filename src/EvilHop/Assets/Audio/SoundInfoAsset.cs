@@ -123,8 +123,6 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhys
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-
-    
 }
 
 /// <summary>
