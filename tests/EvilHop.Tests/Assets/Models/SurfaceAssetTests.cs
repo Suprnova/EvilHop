@@ -126,7 +126,7 @@ public class SurfaceAssetTests
     {
         var asset = (SurfaceAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(SurfaceGameDamageType.Hazard, asset.GameDamageType);
+        Assert.Equal(SurfaceGameDamageType.Damage6, asset.GameDamageType);
         Assert.Equal(0, asset.Physical.GameSticky);
         Assert.Equal(0, asset.Physical.SurfType);
         Assert.Equal(20, asset.SlideStartAngle);
@@ -144,8 +144,8 @@ public class SurfaceAssetTests
         Assert.Equal(-1f, asset.OutOfBoundsDelay);
         Assert.Equal(1f, asset.WallJumpScaleXZ);
         Assert.Equal(1f, asset.WallJumpScaleY);
-        Assert.Equal(0f, asset.Physical.DamageTimer);
-        Assert.Equal(0f, asset.Physical.DamageBounce);
+        Assert.Equal(0f, asset.DamageTimer);
+        Assert.Equal(0f, asset.DamageBounce);
         Assert.Empty(asset.ExtendedData);
     }
 

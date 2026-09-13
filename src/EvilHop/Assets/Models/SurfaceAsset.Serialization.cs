@@ -63,8 +63,8 @@ public sealed partial class SurfaceAsset
         asset.OutOfBoundsDelay = reader.ReadSingle();
         asset.WallJumpScaleXZ = reader.ReadSingle();
         asset.WallJumpScaleY = reader.ReadSingle();
-        asset.Physical.DamageTimer = reader.ReadSingle();
-        asset.Physical.DamageBounce = reader.ReadSingle();
+        asset.DamageTimer = reader.ReadSingle();
+        asset.DamageBounce = reader.ReadSingle();
 
         // Whatever's left before the links - 0 in most BFBB archives, otherwise a game/build-specific
         // amount of unmodelled data. Computed rather than assumed, so every observed size round-trips.
@@ -116,8 +116,8 @@ public sealed partial class SurfaceAsset
         writer.Write(asset.OutOfBoundsDelay);
         writer.Write(asset.WallJumpScaleXZ);
         writer.Write(asset.WallJumpScaleY);
-        writer.Write(asset.Physical.DamageTimer);
-        writer.Write(asset.Physical.DamageBounce);
+        writer.Write(asset.DamageTimer);
+        writer.Write(asset.DamageBounce);
 
         writer.Write(asset.ExtendedData.AsSpan());
 

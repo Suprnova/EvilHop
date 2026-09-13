@@ -26,15 +26,13 @@ var setups = new Dictionary<string, Setup>(StringComparer.OrdinalIgnoreCase)
 {
     ["bfbb"] = new(GameVersion.BFBB, @"BattleForBikiniBottom\GameCube\Utility", @"dump\bfbb-gc",
         "sb.ini", "zz", "ZZ01",
-        FloorFrom: @"bc\bc01.HOP", SkyFrom: @"jf\jf02.HOP", RigFrom: @"bc\bc02.HOP",
-        RigModel: "wall_jump_high", RigTexture: "walljump_symbol.RW3", RigScale: 2f,
-        ReferenceSurfaceArchive: @"bc\bc02.HIP", ReferenceSurfaceName: "WALLJUMP_SURFACE"),
+        FloorFrom: @"bc\bc01.HOP", SkyFrom: @"jf\jf02.HOP",
+        ReferenceSurfaceArchive: @"bb\bb03.HIP", ReferenceSurfaceName: "HAZARD_SURF"),
 
     ["tssm"] = new(GameVersion.TSSM, @"MovieGame\GameCube\Utility", @"dump\tssm-gc",
         "SB04.ini", "ZZ", "ZZ01",
-        FloorFrom: @"TT\tt01.HOP", SkyFrom: @"BB\bb01.HOP", RigFrom: @"PT\pt01.HOP",
-        RigModel: "pt_wall_jump_vert", RigTexture: "pt_sign_walljump.RW3", RigScale: 1.5f,
-        ReferenceSurfaceArchive: @"BB\bb02.HIP", ReferenceSurfaceName: "WALLJUMP_SURF_01"),
+        FloorFrom: @"TT\tt01.HOP", SkyFrom: @"BB\bb01.HOP",
+        ReferenceSurfaceArchive: @"BB\bb03.HIP", ReferenceSurfaceName: "DAMAGE_SURF"),
 };
 
 var setup = setups[args.Length > 0 ? args[0] : "bfbb"];
@@ -125,10 +123,6 @@ Borrow(floorSession, hopSession, "disco_floor_A_3m", "disco_floor.RW3");
 var (_, skySession) = Open(Path.Combine(files, setup.SkyFrom));
 Borrow(skySession, hopSession, "skydome_jf", "jf_sky_color.RW3");
 
-// Rig models: whatever the shipped rig for this mechanic uses.
-var (_, rigSession) = Open(Path.Combine(files, setup.RigFrom));
-Borrow(rigSession, hopSession, setup.RigModel, setup.RigTexture);
-
 var models = hopSession.Layers.SelectMany(l => l.Assets)
     .ToDictionary(a => a.Name, a => a.Id, StringComparer.OrdinalIgnoreCase);
 
@@ -198,30 +192,32 @@ Place("zz_skydome", Model("skydome_jf"), Vector3.Zero, 2.07f, SimpleObjectCollis
 // templates do not agree on spawn height. Collision scales with Scale, so a large arena is cheap.
 float floorY = spawn.Y - 1f;
 const float TileStep = 3f * 4f;
-for (float x = -30f; x <= 120f; x += TileStep)
+for (float x = -30f; x <= 165f; x += TileStep)
     for (float z = -42f; z <= 42f; z += TileStep)
         Place($"zz_floor_{count:D3}", Model("disco_floor_A_3m"),
             new Vector3(spawn.X + x, floorY, spawn.Z + z), 4f, SimpleObjectCollisionType.Static);
 
 // ======================= THE PROBE — rewrite below this line =======================
-// One row of rigs running +X from the spawn, numbered west to east so the tester can report by
-// position. Variant 1 is the control: the value every shipped asset uses. Include a positive
-// control varying a field known to work, or a null result proves nothing.
+// A row of pads the player walks across, numbered west to east so the tester can report by
+// position. Variant 1 is the control: the values every harmless shipped surface uses. Include a
+// positive control that is known to do something, or a null result proves nothing.
 
-/// <summary>A SURF matching the shipped reference except for the fields under test.</summary>
-SurfaceAsset Surface(string name, float scaleXZ, float scaleY, SurfacePhysicsFlags physFlags)
+/// <summary>A SURF matching the shipped damage reference except for the fields under test.</summary>
+SurfaceAsset Surface(string name, byte damageType, byte damageFlags, float damageTimer, float damageBounce)
 {
     var surface = new SurfaceAsset
     {
         Name = name,
         BaseFlags = reference.BaseFlags,
-        PhysFlags = physFlags,
+        GameDamageType = (SurfaceGameDamageType)damageType,
+        GameDamageFlags = (SurfaceGameDamageFlags)damageFlags,
+        PhysFlags = reference.PhysFlags,
         Friction = reference.Friction,
         SlideStartAngle = reference.SlideStartAngle,
         SlideStopAngle = reference.SlideStopAngle,
         OutOfBoundsDelay = reference.OutOfBoundsDelay,
-        WallJumpScaleXZ = scaleXZ,
-        WallJumpScaleY = scaleY,
+        WallJumpScaleXZ = reference.WallJumpScaleXZ,
+        WallJumpScaleY = reference.WallJumpScaleY,
         IsEnabled = true,
         ExtendedData = reference.ExtendedData
     };
@@ -229,36 +225,58 @@ SurfaceAsset Surface(string name, float scaleXZ, float scaleY, SurfacePhysicsFla
     surface.CalculateId();
     surface.Physical.BaseType = 26;
     surface.Physical.Flags = AssetFlags.SourceVirtual;
+    surface.Physical.SurfType = reference.Physical.SurfType;
+    surface.Physical.GameSticky = reference.Physical.GameSticky;
+    surface.DamageTimer = damageTimer;
+    surface.DamageBounce = damageBounce;
 
     layer.Add(surface);
     count++;
     return surface;
 }
 
-const SurfacePhysicsFlags WallJump = SurfacePhysicsFlags.WallJump;
-
-(string Label, float XZ, float Y, RgbaColor Tint, SurfacePhysicsFlags Flags)[] variants =
+// Pads 1-5 re-stage the four fatal types side by side, to see whether the manner of death differs
+// and gives them names. Pads 6-12 test whether damage_flags bit 0 is gated on a non-zero
+// damage_timer - with the timer at 0, as every shipped surface leaves it, the flag did nothing.
+(string Label, byte Type, byte Flags, float Timer, float Bounce, RgbaColor Tint)[] variants =
 [
-    ("XZ=1 (control)",  1f,  1f, new RgbaColor(1f, 1f, 1f, 1f), WallJump),
-    ("XZ=0",            0f,  1f, new RgbaColor(1f, 0.3f, 0.3f, 1f), WallJump),
-    ("XZ=3",            3f,  1f, new RgbaColor(0.3f, 1f, 0.3f, 1f), WallJump),
-    ("XZ=10",          10f,  1f, new RgbaColor(0.3f, 0.4f, 1f, 1f), WallJump),
-    ("XZ=-3",          -3f,  1f, new RgbaColor(1f, 1f, 0.3f, 1f), WallJump),
-    ("Y=5 (positive control, shipped)", 1f,  5f, new RgbaColor(1f, 0.3f, 1f, 1f), WallJump),
-    ("Y=15 (positive control)",         1f, 15f, new RgbaColor(0.3f, 1f, 1f, 1f), WallJump),
-    ("XZ=10, PhysFlags=None (gate)",   10f,  1f, new RgbaColor(1f, 0.55f, 0.1f, 1f), SurfacePhysicsFlags.None),
+    ("type=6  flags=0 timer=0     (damage control)", 6, 0, 0f,   0f, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
+    ("type=1  flags=0 timer=0     (fatal)",          1, 0, 0f,   0f, new RgbaColor(1f, 0.3f, 0.3f, 1f)),
+    ("type=2  flags=0 timer=0     (fatal)",          2, 0, 0f,   0f, new RgbaColor(1f, 0.6f, 0.2f, 1f)),
+    ("type=3  flags=0 timer=0     (fatal)",          3, 0, 0f,   0f, new RgbaColor(1f, 1f, 0.3f, 1f)),
+    ("type=5  flags=0 timer=0     (fatal)",          5, 0, 0f,   0f, new RgbaColor(0.3f, 1f, 1f, 1f)),
+
+    ("type=6  flags=1 timer=0",                      6, 1, 0f,   0f, new RgbaColor(1f, 0.3f, 1f, 1f)),
+    ("type=6  flags=0 timer=0.25",                   6, 0, 0.25f, 0f, new RgbaColor(0.4f, 0.9f, 0.4f, 1f)),
+    ("type=6  flags=1 timer=0.25",                   6, 1, 0.25f, 0f, new RgbaColor(0.1f, 0.5f, 0.1f, 1f)),
+    ("type=6  flags=0 timer=2",                      6, 0, 2f,   0f, new RgbaColor(0.9f, 0.6f, 0.9f, 1f)),
+    ("type=6  flags=1 timer=2",                      6, 1, 2f,   0f, new RgbaColor(0.5f, 0.2f, 0.5f, 1f)),
+    ("type=6  flags=0 timer=0    bounce=10",         6, 0, 0f,  10f, new RgbaColor(1f, 0.85f, 0.4f, 1f)),
+    ("type=6  flags=0 timer=0.25 bounce=10",         6, 0, 0.25f, 10f, new RgbaColor(0.6f, 0.45f, 0.1f, 1f)),
 ];
 
-var rigModel = Model(setup.RigModel);
-const float WallStep = 18f;
-Console.WriteLine($"  spawn {spawn}; probe row runs +X, {WallStep} apart:");
+// Pads sit just above the floor so the player unambiguously contacts the pad's surface rather than
+// the untouched floor beneath it.
+const float PadStep = 12f;
+const float PadLift = 0.35f;
+Console.WriteLine($"  spawn {spawn}; pad row runs +X, {PadStep} apart:");
 
 for (int i = 0; i < variants.Length; i++)
 {
-    var (label, scaleXZ, scaleY, tint, physFlags) = variants[i];
-    var surface = Surface($"zz_surf_{i + 1:D2}", scaleXZ, scaleY, physFlags);
-    var position = new Vector3(spawn.X + (i * WallStep), floorY, spawn.Z + 12f);
-    Place($"zz_wall_{i + 1:D2}", rigModel, position, setup.RigScale, SimpleObjectCollisionType.Static, surface.Id, tint);
+    var (label, type, flags, timer, bounce, tint) = variants[i];
+    var surface = Surface($"zz_surf_{i + 1:D2}", type, flags, timer, bounce);
+    var position = new Vector3(spawn.X + ((i + 1) * PadStep), floorY + PadLift, spawn.Z);
+    Place($"zz_pad_{i + 1:D2}", Model("disco_floor_A_3m"), position, 3f,
+        SimpleObjectCollisionType.Static, surface.Id, tint);
+
+    // Tally markers beside each pad, in rows of five, so its number can be read off at a glance.
+    // Tint alone is not enough: TSSM ignores a SimpleObject's colour multiplier and renders every
+    // pad the same shade. Collision off so they cannot affect what the pad is measuring.
+    for (int t = 0; t <= i; t++)
+        Place($"zz_tally_{i + 1:D2}_{t:D2}", Model("disco_floor_A_3m"),
+            new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
+            0.5f, SimpleObjectCollisionType.None);
+
     Console.WriteLine($"    #{i + 1} x={position.X,6:F1}  {label}");
 }
 
@@ -277,6 +295,5 @@ record Setup(
     string Ini,          // boot ini inside the disc's files/
     string SlotDir,      // level folder to create; case matters on the disc
     string Slot,         // four-character scene id
-    string FloorFrom, string SkyFrom, string RigFrom,
-    string RigModel, string RigTexture, float RigScale,
+    string FloorFrom, string SkyFrom,
     string ReferenceSurfaceArchive, string ReferenceSurfaceName);

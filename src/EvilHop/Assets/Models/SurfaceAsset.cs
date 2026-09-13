@@ -15,14 +15,27 @@ namespace EvilHop.Assets;
 public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhysicalSurfaceAsset
 {
     /// <summary>
-    /// A damage category applied while standing on or touching this surface.
+    /// What touching this surface does to the player.
     /// </summary>
     public SurfaceGameDamageType GameDamageType { get; set; }
 
     /// <summary>
-    /// Flags controlling <see cref="GameDamageType"/>'s damage.
+    /// Flags controlling how this surface's damage is applied.
     /// </summary>
     public SurfaceGameDamageFlags GameDamageFlags { get; set; }
+
+    /// <summary>
+    /// The time, in seconds, the player is immune to this surface's damage after being hit by it.
+    /// Further contact within the window neither damages nor knocks the player back. 0 defers to
+    /// the game ini's <c>G.DamageTimeSurface</c>.
+    /// </summary>
+    public float DamageTimer { get; set; }
+
+    /// <summary>
+    /// The vertical velocity applied to the player as knockback when this surface damages them. 0
+    /// defers to the game ini's <c>G.DamageSurfKnock</c>.
+    /// </summary>
+    public float DamageBounce { get; set; }
 
     /// <summary>
     /// The angle, in degrees, below which the player is not slid off this surface.
@@ -132,12 +145,6 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     private byte _on;
     byte IPhysicalSurfaceAsset.OnValue { get => _on; set => _on = value; }
 
-    private float _damageTimer;
-    float IPhysicalSurfaceAsset.DamageTimer { get => _damageTimer; set => _damageTimer = value; }
-
-    private float _damageBounce;
-    float IPhysicalSurfaceAsset.DamageBounce { get => _damageBounce; set => _damageBounce = value; }
-
     private uint? _overriddenTextureAnimFlags;
     uint IPhysicalSurfaceAsset.TextureAnimFlags
     {
@@ -199,16 +206,6 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     byte OnValue { get; set; }
 
     /// <summary>
-    /// Unknown.
-    /// </summary>
-    float DamageTimer { get; set; }
-
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    float DamageBounce { get; set; }
-
-    /// <summary>
     /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
     /// <see cref="SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
     /// second).
@@ -231,18 +228,45 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.GameDamageType"/>.
+/// Represents all known values for <see cref="SurfaceAsset.GameDamageType"/>. Any other value
+/// leaves the surface harmless.
 /// </summary>
+/// <remarks>
+/// Each value is a category every consumer interprets for itself, so values the player cannot tell
+/// apart are not necessarily equivalent elsewhere: <see cref="AssetType.Boulder"/> destroys itself
+/// on <see cref="FatalDeathPlane"/> but merely loses a hit point on every other non-zero value.
+/// </remarks>
 public enum SurfaceGameDamageType : byte
 {
     /// <summary>
-    /// No damage.
+    /// Harmless.
     /// </summary>
     None = 0,
     /// <summary>
-    /// Unknown.
+    /// Kills the player outright.
     /// </summary>
-    Hazard = 6,
+    Fatal1 = 1,
+    /// <summary>
+    /// Kills the player outright.
+    /// </summary>
+    Fatal2 = 2,
+    /// <summary>
+    /// Kills the player outright.
+    /// </summary>
+    Fatal3 = 3,
+    /// <summary>
+    /// Costs the player one hit point.
+    /// </summary>
+    Damage4 = 4,
+    /// <summary>
+    /// Kills the player outright, and destroys a <see cref="AssetType.Boulder"/> rather than
+    /// costing it a hit point.
+    /// </summary>
+    FatalDeathPlane = 5,
+    /// <summary>
+    /// Costs the player one hit point.
+    /// </summary>
+    Damage6 = 6,
 }
 
 /// <summary>
@@ -256,7 +280,8 @@ public enum SurfaceGameDamageFlags : byte
     /// </summary>
     None = 0,
     /// <summary>
-    /// Damage from <see cref="SurfaceAsset.GameDamageType"/> passes through invincibility.
+    /// The player passes through this surface instead of colliding with it, while still taking its
+    /// <see cref="SurfaceAsset.GameDamageType"/> damage on contact.
     /// </summary>
     DamagePassthrough = 1 << 0,
 }
