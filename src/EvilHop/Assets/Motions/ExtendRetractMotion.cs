@@ -29,7 +29,7 @@ public sealed class ExtendRetractMotion : EntityMotion
 
     private protected override MotionType Type => MotionType.ExtendRetract;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    private protected override void ReadFields(EndianReader reader, GameVersion _)
     {
         RetractPosition = reader.ReadVector3();
         ExtendOffset = reader.ReadVector3();
@@ -39,7 +39,7 @@ public sealed class ExtendRetractMotion : EntityMotion
         RetractWaitTime = reader.ReadSingle();
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    private protected override void WriteFields(EndianWriter writer, GameVersion _)
     {
         writer.Write(RetractPosition);
         writer.Write(ExtendOffset);

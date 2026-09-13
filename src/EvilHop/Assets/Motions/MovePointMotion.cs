@@ -24,21 +24,20 @@ public sealed class MovePointMotion : EntityMotion
     public float Speed { get; set; }
 
     /// <summary>
-    /// Whether the entity banks into turns while following a curved path. Always
-    /// <see langword="false"/> in known files.
+    /// Whether the entity banks into turns while following a curved path.
     /// </summary>
     public bool UseBanking { get; set; }
 
     private protected override MotionType Type => MotionType.MovePoint;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    private protected override void ReadFields(EndianReader reader, GameVersion _)
     {
         MovePointFlags = (MovePointFlags)reader.ReadUInt32();
         MovePointId = reader.ReadAssetId();
         Speed = reader.ReadSingle();
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    private protected override void WriteFields(EndianWriter writer, GameVersion _)
     {
         writer.Write((uint)MovePointFlags);
         writer.Write(MovePointId);
@@ -57,7 +56,7 @@ public enum MovePointFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// The motion stops on reaching each move point, until run again. Per decompiled source.
+    /// The motion stops on reaching each move point, until run again.
     /// </summary>
     StopAtEachPoint = 1 << 0,
 }

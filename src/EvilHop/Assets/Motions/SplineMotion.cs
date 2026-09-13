@@ -25,8 +25,7 @@ public sealed class SplineMotion : EntityMotion
     public float Speed { get; set; }
 
     /// <summary>
-    /// Unknown. Always 0 in known files. Not present in <see cref="GameVersion.N100F"/> or
-    /// <see cref="GameVersion.BFBB"/>.
+    /// Unknown. Not present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public float LeanModifier { get; set; }
 

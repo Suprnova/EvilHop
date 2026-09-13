@@ -22,8 +22,7 @@ public sealed class MechanismMotion : EntityMotion
     public MotionAxis RotateAxis { get; set; }
 
     /// <summary>
-    /// Unknown bit layout; 0, 1, 2, and 6 are observed. Not present in <see cref="GameVersion.N100F"/>
-    /// or <see cref="GameVersion.BFBB"/>.
+    /// Unknown. Not present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public byte ScaleAxis { get; set; }
 
@@ -156,7 +155,7 @@ public enum MechanismFlags : byte
     /// <summary>
     /// No flags are set: the mechanism only moves forward, repeating continuously.
     /// </summary>
-    None = 0,
+    Repeat = 0,
     /// <summary>
     /// Each cycle moves forward, then back to the start.
     /// </summary>

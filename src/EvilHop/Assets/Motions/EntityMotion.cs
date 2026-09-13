@@ -81,6 +81,7 @@ public abstract class EntityMotion : Motion
     /// <see cref="PlatformMotion"/>, returning the only thing it holds - its flags.
     /// </summary>
     /// <exception cref="InvalidDataException">The block's type isn't <see cref="MotionType.None"/>.</exception>
+    /// TODO: do we really need this defense against MotionType?
     internal static MotionFlags ReadEmpty(EndianReader reader, GameVersion game)
     {
         using var block = ReadBlock(reader, BlockSize(game));

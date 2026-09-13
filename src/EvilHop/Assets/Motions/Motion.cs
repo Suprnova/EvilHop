@@ -61,6 +61,8 @@ public abstract class Motion
 /// <summary>
 /// Represents all known values for <see cref="Motion.Flags"/>.
 /// </summary>
+/// TODO: sweeping change that applies everywhere: we need to stop writing that template summary
+/// for Flag enums where we know the general meaning of the flags, like here.
 [Flags]
 public enum MotionFlags : ushort
 {
@@ -69,8 +71,7 @@ public enum MotionFlags : ushort
     /// </summary>
     None = 0,
     /// <summary>
-    /// A <see cref="MovePointMotion"/> turns its entity to face the direction it travels. Per
-    /// decompiled source.
+    /// A <see cref="MovePointMotion"/> turns its entity to face the direction it travels.
     /// </summary>
     FaceTravelDirection = 1 << 0,
     /// <summary>

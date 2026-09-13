@@ -6,9 +6,6 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityMotion"/> that swings from side to side.
 /// </summary>
-/// <remarks>
-/// No known <see cref="AssetType.Platform"/> uses this motion.
-/// </remarks>
 public sealed class PendulumMotion : EntityMotion
 {
     /// <summary>Unknown.</summary>
@@ -23,7 +20,7 @@ public sealed class PendulumMotion : EntityMotion
     /// <summary>The angle, in radians, swung to either side.</summary>
     public float Range { get; set; }
 
-    /// <summary>The time, in seconds, one full swing takes. Forced to 1 if not positive.</summary>
+    /// <summary>The time, in seconds, one full swing takes.</summary>
     public float Period { get; set; }
 
     /// <summary>The angle, in radians, into the swing to start at.</summary>
@@ -31,18 +28,18 @@ public sealed class PendulumMotion : EntityMotion
 
     private protected override MotionType Type => MotionType.Pendulum;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    private protected override void ReadFields(EndianReader reader, GameVersion _)
     {
         PendulumFlags = reader.ReadByte();
         Plane = reader.ReadByte();
-        reader.ReadBytes(2); // padding
+        reader.ReadBytes(2); // padding, always 0
         Length = reader.ReadSingle();
         Range = reader.ReadSingle();
         Period = reader.ReadSingle();
         Phase = reader.ReadSingle();
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    private protected override void WriteFields(EndianWriter writer, GameVersion _)
     {
         writer.Write(PendulumFlags);
         writer.Write(Plane);
