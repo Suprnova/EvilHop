@@ -68,6 +68,7 @@ internal static class AssetCodecs
         Register(AssetType.Camera, CameraAsset.Read, CameraAsset.Write, CameraAsset.SupportedGames);
         Register(AssetType.CameraCurve, CameraCurveAsset.Read, CameraCurveAsset.Write, CameraCurveAsset.SupportedGames);
         Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
+        Register(AssetType.Conditional, ConditionalAsset.Read, ConditionalAsset.Write);
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
         Register(AssetType.Cutscene, CutsceneAsset.Read, CutsceneAsset.Write, CutsceneAsset.SupportedGames);
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
