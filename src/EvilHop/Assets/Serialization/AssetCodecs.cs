@@ -72,6 +72,7 @@ internal static class AssetCodecs
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
         Register(AssetType.Credits, CreditsAsset.Read, CreditsAsset.Write, CreditsAsset.SupportedGames);
         Register(AssetType.Cutscene, CutsceneAsset.Read, CutsceneAsset.Write, CutsceneAsset.SupportedGames);
+        Register(AssetType.CutsceneManager, CutsceneManagerAsset.Read, CutsceneManagerAsset.Write, CutsceneManagerAsset.SupportedGames);
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.Environment, EnvironmentAsset.Read, EnvironmentAsset.Write);
         Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
