@@ -298,6 +298,18 @@ use it, only to see more context if something here doesn't match your case.
   Reach for this only once you've confirmed the bytes are genuinely constant (see
   §[Validate the layout](#validate-the-layout-before-writing-the-class)); until then, keep the field and mark it unknown
   instead (next bullet).
+- **A runtime-only handle, proven always zero on disk** (`AttackTableAsset`'s `xAnimState`/
+  `zAnimCacheEntry`/`zShrapnelAsset` pointers, `xVec3*` position cache): same treatment as
+  proven-always-zero padding, and the same corpus-verification requirement - a source comment
+  calling a field a resolved pointer or cache slot is a reason to *suspect* it is discardable, not
+  proof. `reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero` on read,
+  `writer.Write(0u); // runtime-resolved` on write. No property at all once confirmed. `CreditsTexture`'s
+  own `RwTexture* texture` field looked identical to this pattern and was discarded on that
+  assumption alone, unchecked - two independent real archives (TSSM, Incredibles) then turned up
+  non-zero, non-matching garbage in it, and in the struct's trailing `pad` field beside it. Both are
+  modelled as plain `Unknown.` `uint` properties instead (next bullet), preserving whatever the
+  source tool happened to leave there. Uninitialized-looking bytes next to a genuinely dead field are
+  not a coincidence to write off - check them too before deciding either is discardable.
 - **An always-present field with no known meaning, kept physical** (`HangableAsset.HangFlags`,
   `LODTableEntry.Flags`): a plain `uint`/similar property doc-commented `Unknown.`, with no attempt at
   semantics. On an `Asset` subclass this goes through a dedicated `IPhysicalFooAsset` interface,

@@ -70,6 +70,7 @@ internal static class AssetCodecs
         Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
         Register(AssetType.Conditional, ConditionalAsset.Read, ConditionalAsset.Write);
         Register(AssetType.Counter, CounterAsset.Read, CounterAsset.Write);
+        Register(AssetType.Credits, CreditsAsset.Read, CreditsAsset.Write, CreditsAsset.SupportedGames);
         Register(AssetType.Cutscene, CutsceneAsset.Read, CutsceneAsset.Write, CutsceneAsset.SupportedGames);
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.Environment, EnvironmentAsset.Read, EnvironmentAsset.Write);
