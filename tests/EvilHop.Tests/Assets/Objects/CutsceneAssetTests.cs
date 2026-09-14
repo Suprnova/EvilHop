@@ -35,19 +35,25 @@ public class CutsceneAssetTests
         return stream.ToArray();
     }
 
-    private static byte[] Header(uint numData, uint numTime, uint headerSize, uint visCount = 0, uint visSize = 0, uint breakCount = 0) =>
+    // N100F's Cutscene/CutsceneTable payloads are little-endian even on GameCube - see
+    // CutsceneAsset.HeaderReader/HeaderWriter - unlike every other game's, and unlike every other
+    // field these fixtures build.
+    private static byte[] U32(uint value, bool littleEndian) =>
+        littleEndian ? BitConverter.GetBytes(value) : [.. BitConverter.GetBytes(value).Reverse()];
+
+    private static byte[] Header(uint numData, uint numTime, uint headerSize, uint visCount = 0, uint visSize = 0, uint breakCount = 0, bool littleEndian = false) =>
     [
-        .. BitConverter.GetBytes(0x4E535443u).Reverse(), // Magic "NSTC"
-        0x00, 0x00, 0x12, 0x34, // AssetID
-        .. BitConverter.GetBytes(numData).Reverse(),
-        .. BitConverter.GetBytes(numTime).Reverse(),
+        .. U32(0x4E535443u, littleEndian), // Magic "NSTC"/"CTSN"
+        .. U32(0x00001234u, littleEndian), // AssetID
+        .. U32(numData, littleEndian),
+        .. U32(numTime, littleEndian),
         0x00, 0x00, 0x00, 0x00, // MaxModel
         0x00, 0x00, 0x00, 0x00, // MaxBufEven
         0x00, 0x00, 0x00, 0x00, // MaxBufOdd
-        .. BitConverter.GetBytes(headerSize).Reverse(),
-        .. BitConverter.GetBytes(visCount).Reverse(),
-        .. BitConverter.GetBytes(visSize).Reverse(),
-        .. BitConverter.GetBytes(breakCount).Reverse(),
+        .. U32(headerSize, littleEndian),
+        .. U32(visCount, littleEndian),
+        .. U32(visSize, littleEndian),
+        .. U32(breakCount, littleEndian),
         0x00, 0x00, 0x00, 0x00, // pad
     ];
 
@@ -57,20 +63,20 @@ public class CutsceneAssetTests
         .. new byte[length - value.Length],
     ];
 
-    private static byte[] DataEntry(uint dataType, uint assetId, uint chunkSize, uint fileOffset) =>
+    private static byte[] DataEntry(uint dataType, uint assetId, uint chunkSize, uint fileOffset, bool littleEndian = false) =>
     [
-        .. BitConverter.GetBytes(dataType).Reverse(),
-        .. BitConverter.GetBytes(assetId).Reverse(),
-        .. BitConverter.GetBytes(chunkSize).Reverse(),
-        .. BitConverter.GetBytes(fileOffset).Reverse(),
+        .. U32(dataType, littleEndian),
+        .. U32(assetId, littleEndian),
+        .. U32(chunkSize, littleEndian),
+        .. U32(fileOffset, littleEndian),
     ];
 
     private static byte[] N100FData(byte[]? tail = null) =>
     [
-        .. Header(numData: 1, numTime: 0, headerSize: 0x64),
+        .. Header(numData: 1, numTime: 0, headerSize: 0x64, littleEndian: true),
         .. FixedString("boss_intro", 16),
         .. FixedString(string.Empty, 16),
-        .. DataEntry(1, 0xAABBCCDD, 100, 2048),
+        .. DataEntry(1, 0xAABBCCDD, 100, 2048, littleEndian: true),
         .. tail ?? [],
     ];
 
@@ -112,7 +118,7 @@ public class CutsceneAssetTests
         // leaving no room for a null terminator. strncpy-style truncation, not corruption.
         byte[] data =
         [
-            .. Header(numData: 0, numTime: 0, headerSize: 0x50),
+            .. Header(numData: 0, numTime: 0, headerSize: 0x50, littleEndian: true),
             .. System.Text.Encoding.ASCII.GetBytes("B3_Ending_German"),
             .. FixedString(string.Empty, 16),
         ];
@@ -127,7 +133,7 @@ public class CutsceneAssetTests
     {
         byte[] data =
         [
-            .. Header(numData: 0, numTime: 0, headerSize: 0x50),
+            .. Header(numData: 0, numTime: 0, headerSize: 0x50, littleEndian: true),
             .. System.Text.Encoding.ASCII.GetBytes("B3_Ending_German"),
             .. FixedString(string.Empty, 16),
         ];

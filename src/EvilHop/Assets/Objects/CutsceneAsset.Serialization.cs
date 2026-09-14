@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace EvilHop.Assets;
@@ -13,31 +14,45 @@ public sealed partial class CutsceneAsset
     {
         var asset = new CutsceneAsset();
         AssetFields.Populate(asset, header, debug);
+        ReadHeader(asset, reader, profile);
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    /// <summary>
+    /// Reads the xCutsceneInfo header and referenced-model table - the portion of this format that a
+    /// <see cref="CutsceneTableEntry"/> duplicates verbatim, without the chunked media data that
+    /// follows it in a standalone <see cref="AssetType.Cutscene"/> file.
+    /// </summary>
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "HeaderReader's result never owns a resource worth disposing - see its remarks.")]
+    internal static void ReadHeader(ICutsceneHeader header, EndianReader reader, FormatProfile profile)
+    {
+        reader = HeaderReader(reader, profile);
 
         reader.ReadUInt32(); // Magic
-        asset.Physical.AssetId = reader.ReadAssetId();
-        asset.Physical.NumData = reader.ReadUInt32();
-        asset.Physical.NumTime = reader.ReadUInt32();
-        asset.Physical.MaxModel = reader.ReadUInt32();
-        asset.Physical.MaxBufEven = reader.ReadUInt32();
-        asset.Physical.MaxBufOdd = reader.ReadUInt32();
-        asset.Physical.HeaderSize = reader.ReadUInt32();
-        asset.Physical.VisCount = reader.ReadUInt32();
-        asset.Physical.VisSize = reader.ReadUInt32();
-        asset.Physical.BreakCount = reader.ReadUInt32();
+        header.Physical.AssetId = reader.ReadAssetId();
+        header.Physical.NumData = reader.ReadUInt32();
+        header.Physical.NumTime = reader.ReadUInt32();
+        header.Physical.MaxModel = reader.ReadUInt32();
+        header.Physical.MaxBufEven = reader.ReadUInt32();
+        header.Physical.MaxBufOdd = reader.ReadUInt32();
+        header.Physical.HeaderSize = reader.ReadUInt32();
+        header.Physical.VisCount = reader.ReadUInt32();
+        header.Physical.VisSize = reader.ReadUInt32();
+        header.Physical.BreakCount = reader.ReadUInt32();
         reader.ReadUInt32(); // padding, always zero
 
         if (profile.Game is GameVersion.TSSM or GameVersion.Incredibles)
-            ReadAudioTracks(asset, reader, AudioTrackSoundLength(asset.Physical));
+            ReadAudioTracks(header, reader, AudioTrackSoundLength(header.Physical));
         else
         {
-            asset.SoundLeft = ReadFixedString(reader, 16);
-            asset.SoundRight = ReadFixedString(reader, 16);
+            header.SoundLeft = ReadFixedString(reader, 16);
+            header.SoundRight = ReadFixedString(reader, 16);
         }
 
-        for (int i = 0; i < asset.Physical.NumData; i++)
+        for (int i = 0; i < header.Physical.NumData; i++)
         {
-            asset.Data.Add(new CutsceneDataEntry
+            header.Data.Add(new CutsceneDataEntry
             {
                 DataType = (CutsceneDataType)reader.ReadUInt32(),
                 AssetId = reader.ReadAssetId(),
@@ -45,51 +60,86 @@ public sealed partial class CutsceneAsset
                 FileOffset = reader.ReadUInt32(),
             });
         }
-        asset.Physical.NumData = (uint)asset.Data.Count;
-
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
-        return asset;
+        header.Physical.NumData = (uint)header.Data.Count;
     }
 
     internal static void Write(CutsceneAsset asset, EndianWriter writer, FormatProfile profile)
     {
+        WriteHeader(asset, writer, profile);
+        writer.Write(asset.GetUnparsedTail());
+    }
+
+    /// <summary>
+    /// Writes the xCutsceneInfo header and referenced-model table. See <see cref="ReadHeader"/>.
+    /// </summary>
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "HeaderWriter's result never owns a resource worth disposing - see HeaderReader's remarks.")]
+    internal static void WriteHeader(ICutsceneHeader header, EndianWriter writer, FormatProfile profile)
+    {
+        writer = HeaderWriter(writer, profile);
+
         writer.Write(0x4E535443u); // "NSTC" (CTSN) magic
-        writer.Write(asset.Physical.AssetId);
-        writer.Write(asset.Physical.NumData);
-        writer.Write(asset.Physical.NumTime);
-        writer.Write(asset.Physical.MaxModel);
-        writer.Write(asset.Physical.MaxBufEven);
-        writer.Write(asset.Physical.MaxBufOdd);
-        writer.Write(asset.Physical.HeaderSize);
-        writer.Write(asset.Physical.VisCount);
-        writer.Write(asset.Physical.VisSize);
-        writer.Write(asset.Physical.BreakCount);
+        writer.Write(header.Physical.AssetId);
+        writer.Write(header.Physical.NumData);
+        writer.Write(header.Physical.NumTime);
+        writer.Write(header.Physical.MaxModel);
+        writer.Write(header.Physical.MaxBufEven);
+        writer.Write(header.Physical.MaxBufOdd);
+        writer.Write(header.Physical.HeaderSize);
+        writer.Write(header.Physical.VisCount);
+        writer.Write(header.Physical.VisSize);
+        writer.Write(header.Physical.BreakCount);
         writer.Write(0u); // padding
 
         if (profile.Game is GameVersion.TSSM or GameVersion.Incredibles)
-            WriteAudioTracks(asset, writer, AudioTrackSoundLength(asset.Physical));
+            WriteAudioTracks(header, writer, AudioTrackSoundLength(header.Physical));
         else
         {
-            WriteFixedString(writer, asset.SoundLeft, 16);
-            WriteFixedString(writer, asset.SoundRight, 16);
+            WriteFixedString(writer, header.SoundLeft, 16);
+            WriteFixedString(writer, header.SoundRight, 16);
         }
 
-        foreach (var entry in asset.Data)
+        foreach (var entry in header.Data)
         {
             writer.Write((uint)entry.DataType);
             writer.Write(entry.AssetId);
             writer.Write(entry.ChunkSize);
             writer.Write(entry.FileOffset);
         }
-
-        writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Wraps <paramref name="reader"/> to force <see cref="Endianness.Little"/> under
+    /// <see cref="GameVersion.N100F"/>, whose <see cref="AssetType.Cutscene"/>/
+    /// <see cref="AssetType.CutsceneTable"/> payloads are written little-endian even in the GameCube
+    /// build - unlike every other asset type, which follows the platform's endianness. A real
+    /// GameCube archive's header reads as nonsense (a <c>NumData</c> in the tens of millions) under
+    /// the platform's own big-endian byte order, and exactly sane read little-endian instead. Shared
+    /// by <see cref="ReadHeader"/>/<see cref="WriteHeader"/> and <see cref="CutsceneTableAsset"/>'s
+    /// own leading count field, which carries the same quirk.
+    /// </summary>
+    /// <remarks>
+    /// Never disposed: it shares <paramref name="reader"/>'s underlying stream with
+    /// <c>leaveOpen: true</c> and owns nothing else, so there is nothing for a missing
+    /// <see cref="IDisposable.Dispose"/> call to leak.
+    /// </remarks>
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see remarks.")]
+    internal static EndianReader HeaderReader(EndianReader reader, FormatProfile profile) =>
+        profile.Game == GameVersion.N100F && reader.Endianness != Endianness.Little
+            ? new EndianReader(reader.BaseStream, Endianness.Little, leaveOpen: true)
+            : reader;
+
+    /// <summary>See <see cref="HeaderReader"/>.</summary>
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see HeaderReader.")]
+    internal static EndianWriter HeaderWriter(EndianWriter writer, FormatProfile profile) =>
+        profile.Game == GameVersion.N100F && writer.Endianness != Endianness.Little
+            ? new EndianWriter(writer.BaseStream, Endianness.Little, leaveOpen: true)
+            : writer;
 
     /// <summary>
     /// Derives the per-track sound-name field length from <paramref name="physical"/>'s header
     /// counts.
     /// </summary>
-    private static int AudioTrackSoundLength(IPhysicalCutsceneAsset physical)
+    private static int AudioTrackSoundLength(IPhysicalCutsceneHeader physical)
     {
         uint fixedTotal = physical.HeaderSize
             - physical.NumData * 16u
@@ -100,7 +150,7 @@ public sealed partial class CutsceneAsset
         return (int)(trackSize - 8) / 2;
     }
 
-    private static void ReadAudioTracks(CutsceneAsset asset, EndianReader reader, int soundLength)
+    private static void ReadAudioTracks(ICutsceneHeader header, EndianReader reader, int soundLength)
     {
         for (int i = 0; i < 32; i++)
         {
@@ -108,16 +158,16 @@ public sealed partial class CutsceneAsset
             var rightId = reader.ReadAssetId();
             var left = ReadFixedString(reader, soundLength);
             var right = ReadFixedString(reader, soundLength);
-            asset.AudioTracks.Add(new CutsceneAudioTrack(leftId, rightId, left, right));
+            header.AudioTracks.Add(new CutsceneAudioTrack(leftId, rightId, left, right));
         }
     }
 
-    private static void WriteAudioTracks(CutsceneAsset asset, EndianWriter writer, int soundLength)
+    private static void WriteAudioTracks(ICutsceneHeader header, EndianWriter writer, int soundLength)
     {
         for (int i = 0; i < 32; i++)
         {
-            var track = i < asset.AudioTracks.Count
-                ? asset.AudioTracks[i]
+            var track = i < header.AudioTracks.Count
+                ? header.AudioTracks[i]
                 : new CutsceneAudioTrack(default, default, string.Empty, string.Empty);
             writer.Write(track.LeftSoundId);
             writer.Write(track.RightSoundId);
