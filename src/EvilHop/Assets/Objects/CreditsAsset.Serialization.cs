@@ -287,7 +287,7 @@ public sealed partial class CreditsAsset
             bytes.Add(next);
 
         r.BaseStream.Position = savedPosition;
-        return Encoding.Latin1.GetString([.. bytes]);
+        return Encoding.Latin1.GetString([.. bytes]); // todo: latin?
     }
 
     private static void WriteInlineText(EndianWriter w, string? text)
