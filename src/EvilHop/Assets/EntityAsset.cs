@@ -217,9 +217,10 @@ public enum CollisionFlags : byte
     /// </remarks>
     PreciseCollision = 1 << 1,
     /// <summary>
-    /// Unknown. Used by <see cref="AssetType.ElectricArcGenerator"/>.
+    /// Disables player and NPC collision against the <see cref="EntityAsset"/>. Read by
+    /// <see cref="AssetType.ElectricArcGenerator"/>.
     /// </summary>
-    Unknown = 1 << 2,
+    NoPlayerOrNpcCollision = 1 << 2,
     /// <summary>
     /// The <see cref="EntityAsset"/> is grabbable by Patrick in <see cref="GameVersion.BFBB"/>
     /// and <see cref="GameVersion.TSSM"/>.
