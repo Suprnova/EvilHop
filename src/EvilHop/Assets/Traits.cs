@@ -83,6 +83,7 @@ public interface IHasModel
 /// <item><see cref="AssetType.DestructibleObject"/></item>
 /// <item><see cref="AssetType.Platform"/></item>
 /// <item><see cref="AssetType.SimpleObject"/></item>
+/// <item><see cref="AssetType.UI"/></item>
 /// </list>
 /// </remarks>
 public interface IHasAnimList

@@ -97,6 +97,7 @@ internal static class AssetCodecs
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
         Register(AssetType.Trigger, TriggerAsset.Read, TriggerAsset.Write);
+        Register(AssetType.UI, UIAsset.Read, UIAsset.Write, UIAsset.SupportedGames);
     }
 
     /// <summary>
