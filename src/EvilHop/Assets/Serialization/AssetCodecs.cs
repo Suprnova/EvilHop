@@ -82,6 +82,7 @@ internal static class AssetCodecs
         Register(AssetType.ElectricArcGenerator, ElectricArcGeneratorAsset.Read, ElectricArcGeneratorAsset.Write, ElectricArcGeneratorAsset.SupportedGames);
         Register(AssetType.Environment, EnvironmentAsset.Read, EnvironmentAsset.Write);
         Register(AssetType.Fly, FlyAsset.Read, FlyAsset.Write, FlyAsset.SupportedGames);
+        Register(AssetType.Fog, FogAsset.Read, FogAsset.Write, FogAsset.SupportedGames);
         Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
         Register(AssetType.JawDataTable, JawDataTableAsset.Read, JawDataTableAsset.Write, JawDataTableAsset.SupportedGames);
         Register(AssetType.LightKit, LightKitAsset.Read, LightKitAsset.Write, LightKitAsset.SupportedGames);
