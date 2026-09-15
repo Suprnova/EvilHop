@@ -98,6 +98,7 @@ internal static class AssetCodecs
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
         Register(AssetType.Trigger, TriggerAsset.Read, TriggerAsset.Write);
         Register(AssetType.UI, UIAsset.Read, UIAsset.Write, UIAsset.SupportedGames);
+        Register(AssetType.UIMotion, UIMotionAsset.Read, UIMotionAsset.Write, UIMotionAsset.SupportedGames);
     }
 
     /// <summary>
