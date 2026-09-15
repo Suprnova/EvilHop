@@ -74,7 +74,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             var light = new LightKitLight
             {
                 Type = (LightKitLightType)reader.ReadUInt32(),
-                Color = new RgbaColor(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
+                Color = reader.ReadRgba(),
                 Right = reader.ReadVector3(),
             };
 
@@ -111,10 +111,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
         foreach (var light in asset.Lights)
         {
             writer.Write((uint)light.Type);
-            writer.Write(light.Color.R);
-            writer.Write(light.Color.G);
-            writer.Write(light.Color.B);
-            writer.Write(light.Color.A);
+            writer.Write(light.Color);
             writer.Write(light.Right);
             writer.Write(0f); // Right's homogeneous component
             writer.Write(light.Up);
@@ -174,7 +171,7 @@ public sealed class LightKitLight
     /// <summary>
     /// This light's color.
     /// </summary>
-    public RgbaColor Color { get; set; }
+    public Rgba Color { get; set; }
 
     /// <summary>
     /// The right vector of this light's orientation.

@@ -119,8 +119,8 @@ public class UIMotionAssetTests
         var asset = (UIMotionAsset)Read(data, TSSMSerializer.DefaultProfile);
         var command = Assert.IsType<ColorCommand>(asset.Commands[0]);
 
-        Assert.Equal(new Rgb24(0xFF, 0x80, 0x00), command.StartColor);
-        Assert.Equal(new Rgb24(0x00, 0x80, 0xFF), command.EndColor);
+        Assert.Equal(new Rgb(0xFF / 255f, 0x80 / 255f, 0x00 / 255f), command.StartColor);
+        Assert.Equal(new Rgb(0x00 / 255f, 0x80 / 255f, 0xFF / 255f), command.EndColor);
     }
 
     [Fact]

@@ -13,6 +13,7 @@ using EvilHop;
 using EvilHop.Assets;
 using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -149,7 +150,7 @@ int count = 0;
 /// <summary>A <see cref="SimpleObjectAsset"/> carrying <paramref name="model"/>, with field values
 /// copied from a shipped SIMP rather than guessed.</summary>
 SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scale,
-    SimpleObjectCollisionType collision, AssetId surface = default, RgbaColor? tint = null, float yaw = 0f)
+    SimpleObjectCollisionType collision, AssetId surface = default, Rgba? tint = null, float yaw = 0f)
 {
     var asset = new SimpleObjectAsset
     {
@@ -160,7 +161,7 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
         Position = position,
         Angle = new Vector3(yaw, 0f, 0f),
         Scale = new Vector3(scale, scale, scale),
-        ColorMultiplier = new RgbaColor(1f, 1f, 1f, 1f),
+        ColorMultiplier = new Rgba(1f, 1f, 1f, 1f),
         AnimationSpeed = 1f,
         CollisionType = collision
     };
@@ -185,7 +186,7 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
 /// than just a yaw - for a tilted ramp, where which component is pitch is exactly what's under
 /// test.</summary>
 SimpleObjectAsset PlaceTilted(string name, AssetId model, Vector3 position, float scale,
-    Vector3 angle, AssetId surface, RgbaColor tint)
+    Vector3 angle, AssetId surface, Rgba tint)
 {
     var asset = Place(name, model, position, scale, SimpleObjectCollisionType.Static, surface, tint);
     asset.Angle = angle;
@@ -248,15 +249,15 @@ SurfaceAsset Surface(string name, byte physFlags, byte damageType, float? outOfB
 // didn't match OutOfBoundsDelay (set to 2, matching BFBB's own OUTOFBOUNDS_SURF; actual wait was 9
 // seconds). Two clearly different values, both far from 2 and from each other, tell us whether the
 // wait tracks the field at all.
-(string Label, byte PhysFlags, byte DamageType, float? OobDelay, RgbaColor Tint)[] padVariants =
+(string Label, byte PhysFlags, byte DamageType, float? OobDelay, Rgba Tint)[] padVariants =
 [
-    ("flags=0  (control)",                    0, 0, null, new RgbaColor(0.3f, 0.4f, 1f, 1f)),
-    ("flags=4  Step",                         4, 0, null, new RgbaColor(0.6f, 0.2f, 0.8f, 1f)),
-    ("flags=8  PreventStanding",              8, 0, null, new RgbaColor(0.9f, 0.6f, 0.1f, 1f)),
-    ("flags=16 OutOfBounds delay=2",         16, 0, 2f,   new RgbaColor(0.1f, 0.8f, 0.8f, 1f)),
-    ("flags=0  damage=1 (control+)",          0, 1, null, new RgbaColor(1f, 0.2f, 0.2f, 1f)),
-    ("flags=16 OutOfBounds delay=0.5",       16, 0, 0.5f, new RgbaColor(0.2f, 1f, 0.4f, 1f)),
-    ("flags=16 OutOfBounds delay=20",        16, 0, 20f,  new RgbaColor(0.1f, 0.3f, 0.15f, 1f)),
+    ("flags=0  (control)",                    0, 0, null, new Rgba(0.3f, 0.4f, 1f, 1f)),
+    ("flags=4  Step",                         4, 0, null, new Rgba(0.6f, 0.2f, 0.8f, 1f)),
+    ("flags=8  PreventStanding",              8, 0, null, new Rgba(0.9f, 0.6f, 0.1f, 1f)),
+    ("flags=16 OutOfBounds delay=2",         16, 0, 2f,   new Rgba(0.1f, 0.8f, 0.8f, 1f)),
+    ("flags=0  damage=1 (control+)",          0, 1, null, new Rgba(1f, 0.2f, 0.2f, 1f)),
+    ("flags=16 OutOfBounds delay=0.5",       16, 0, 0.5f, new Rgba(0.2f, 1f, 0.4f, 1f)),
+    ("flags=16 OutOfBounds delay=20",        16, 0, 20f,  new Rgba(0.1f, 0.3f, 0.15f, 1f)),
 ];
 
 // Pads sit just above the floor so the player unambiguously contacts the pad's surface rather than
@@ -307,14 +308,14 @@ for (int i = 0; i < padVariants.Length; i++)
     int rampBase = padVariants.Length;
     Console.WriteLine($"  ramp row continues +X, {RampStep} apart, pitched {TiltAngle:F2} rad (Z):");
 
-    (string Label, byte PhysFlags, (byte, byte)? SlideAngles, Vector3 Angle, RgbaColor Tint)[] ramps =
+    (string Label, byte PhysFlags, (byte, byte)? SlideAngles, Vector3 Angle, Rgba Tint)[] ramps =
     [
-        ("flags=0  neither",                     0, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 0.4f, 1f, 1f)),
-        ("flags=1  Slide only",                   1, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.9f, 0.9f, 0.3f, 1f)),
-        ("flags=2  MatchOrient only",             2, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 0.9f, 0.9f, 1f)),
-        ("flags=3  both (shipped value)",         3, null,    new Vector3(0, 0, TiltAngle), new RgbaColor(0.3f, 1f, 0.3f, 1f)),
-        ("flags=8  PreventStanding, slide=20/10", 8, (20, 10), new Vector3(0, 0, TiltAngle), new RgbaColor(0.9f, 0.6f, 0.1f, 1f)),
-        ("flags=8  PreventStanding, slide=1/1",   8, (1, 1),   new Vector3(0, 0, TiltAngle), new RgbaColor(0.6f, 0.3f, 0f, 1f)),
+        ("flags=0  neither",                     0, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 0.4f, 1f, 1f)),
+        ("flags=1  Slide only",                   1, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.9f, 0.9f, 0.3f, 1f)),
+        ("flags=2  MatchOrient only",             2, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 0.9f, 0.9f, 1f)),
+        ("flags=3  both (shipped value)",         3, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 1f, 0.3f, 1f)),
+        ("flags=8  PreventStanding, slide=20/10", 8, (20, 10), new Vector3(0, 0, TiltAngle), new Rgba(0.9f, 0.6f, 0.1f, 1f)),
+        ("flags=8  PreventStanding, slide=1/1",   8, (1, 1),   new Vector3(0, 0, TiltAngle), new Rgba(0.6f, 0.3f, 0f, 1f)),
     ];
 
     for (int i = 0; i < ramps.Length; i++)

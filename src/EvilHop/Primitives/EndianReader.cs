@@ -57,6 +57,18 @@ public sealed class EndianReader(Stream input, Endianness endianness, bool leave
     /// <summary>Reads an <see cref="AssetId"/>.</summary>
     public AssetId ReadAssetId() => new(ReadUInt32());
 
+    /// <summary>Reads three consecutive <see cref="ReadSingle"/>s as an <see cref="Rgb"/>.</summary>
+    public Rgb ReadRgb() => new(ReadSingle(), ReadSingle(), ReadSingle());
+
+    /// <summary>Reads three consecutive bytes, each scaled from 0-255 to 0-1, as an <see cref="Rgb"/>.</summary>
+    public Rgb ReadRgb24() => new(ReadByte() / 255f, ReadByte() / 255f, ReadByte() / 255f);
+
+    /// <summary>Reads four consecutive <see cref="ReadSingle"/>s as an <see cref="Rgba"/>.</summary>
+    public Rgba ReadRgba() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+
+    /// <summary>Reads four consecutive bytes, each scaled from 0-255 to 0-1, as an <see cref="Rgba"/>.</summary>
+    public Rgba ReadRgba32() => new(ReadByte() / 255f, ReadByte() / 255f, ReadByte() / 255f, ReadByte() / 255f);
+
     /// <summary>Reads every byte remaining between the current position and the end of the stream.</summary>
     public byte[] ReadRemainingBytes() => ReadBytes((int)(BaseStream.Length - BaseStream.Position));
 }

@@ -18,12 +18,12 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
     /// <summary>
     /// The color the sky/background is drawn as while this fog is active.
     /// </summary>
-    public Color32 BackgroundColor { get; set; }
+    public Rgba BackgroundColor { get; set; }
 
     /// <summary>
     /// The fog's own color.
     /// </summary>
-    public Color32 Color { get; set; }
+    public Rgba Color { get; set; }
 
     /// <summary>
     /// How dense the fog is.
@@ -71,8 +71,8 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.BackgroundColor = ReadColor32(reader);
-        asset.Color = ReadColor32(reader);
+        asset.BackgroundColor = reader.ReadRgba32();
+        asset.Color = reader.ReadRgba32();
         asset.Density = reader.ReadSingle();
         asset.StartDistance = reader.ReadSingle();
         asset.StopDistance = reader.ReadSingle();
@@ -90,8 +90,8 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
     {
         BaseAssetPrefix.Write(asset, writer);
 
-        WriteColor32(writer, asset.BackgroundColor);
-        WriteColor32(writer, asset.Color);
+        writer.WriteRgba32(asset.BackgroundColor);
+        writer.WriteRgba32(asset.Color);
         writer.Write(asset.Density);
         writer.Write(asset.StartDistance);
         writer.Write(asset.StopDistance);
@@ -103,15 +103,6 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
         writer.Write(asset.GetUnparsedTail());
     }
 
-    private static Color32 ReadColor32(EndianReader r) => new(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
-
-    private static void WriteColor32(EndianWriter w, Color32 color)
-    {
-        w.Write(color.R);
-        w.Write(color.G);
-        w.Write(color.B);
-        w.Write(color.A);
-    }
 }
 
 /// <summary>

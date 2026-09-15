@@ -316,10 +316,10 @@ public sealed class BrightnessCommand : UIMotionCommand
 public sealed class ColorCommand : UIMotionCommand
 {
     /// <summary>The starting color.</summary>
-    public Rgb24 StartColor { get; set; }
+    public Rgb StartColor { get; set; }
 
     /// <summary>The ending color.</summary>
-    public Rgb24 EndColor { get; set; }
+    public Rgb EndColor { get; set; }
 
     /// <inheritdoc/>
     public override UIMotionCommandType Type => UIMotionCommandType.Color;
@@ -328,30 +328,18 @@ public sealed class ColorCommand : UIMotionCommand
 
     internal override void ReadFields(EndianReader reader)
     {
-        StartColor = new Rgb24(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        EndColor = new Rgb24(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        StartColor = reader.ReadRgb24();
+        EndColor = reader.ReadRgb24();
         reader.ReadBytes(2); // padding, always zero
     }
 
     internal override void WriteFields(EndianWriter writer)
     {
-        writer.Write(StartColor.R);
-        writer.Write(StartColor.G);
-        writer.Write(StartColor.B);
-        writer.Write(EndColor.R);
-        writer.Write(EndColor.G);
-        writer.Write(EndColor.B);
+        writer.WriteRgb24(StartColor);
+        writer.WriteRgb24(EndColor);
         writer.Write(new byte[2]); // padding
     }
 }
-
-/// <summary>
-/// An RGB color with no alpha channel.
-/// </summary>
-/// <param name="R">The red channel.</param>
-/// <param name="G">The green channel.</param>
-/// <param name="B">The blue channel.</param>
-public readonly record struct Rgb24(byte R, byte G, byte B);
 
 /// <summary>
 /// Scrolls the UI's UV offset by <see cref="AmountU"/>/<see cref="AmountV"/>, relative to the

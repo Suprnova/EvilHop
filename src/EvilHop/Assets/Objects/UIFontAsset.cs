@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -78,12 +79,12 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont)
     /// The color of the backdrop drawn behind the text when <see cref="UIFontFlags.HasBackdrop"/> is
     /// set.
     /// </summary>
-    public Color32 BackdropColor { get; set; }
+    public Rgba BackdropColor { get; set; }
 
     /// <summary>
     /// The text's color.
     /// </summary>
-    public Color32 Color { get; set; }
+    public Rgba Color { get; set; }
 
     /// <summary>The text bounds' inset from the top edge, in pixels.</summary>
     public short InsetTop { get; set; }

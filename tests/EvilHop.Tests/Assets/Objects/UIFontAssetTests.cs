@@ -124,8 +124,8 @@ public class UIFontAssetTests
         Assert.Equal(UIFontMode.Mode1, asset.Mode);
         Assert.Equal((byte)1, asset.FontId);
         Assert.Equal(new AssetId(0x93615FD2), asset.TextId);
-        Assert.Equal(new Color32(0x80, 0x80, 0x80, 0x80), asset.BackdropColor);
-        Assert.Equal(new Color32(0xFF, 0xE6, 0x00, 0xFF), asset.Color);
+        Assert.Equal(new Rgba(0x80 / 255f, 0x80 / 255f, 0x80 / 255f, 0x80 / 255f), asset.BackdropColor);
+        Assert.Equal(new Rgba(0xFF / 255f, 0xE6 / 255f, 0x00 / 255f, 0xFF / 255f), asset.Color);
         Assert.Equal((short)2, asset.InsetTop);
         Assert.Equal((short)3, asset.InsetBottom);
         Assert.Equal((short)4, asset.InsetLeft);

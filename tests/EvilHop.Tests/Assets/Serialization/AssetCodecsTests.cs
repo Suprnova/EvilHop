@@ -199,7 +199,7 @@ public class AssetCodecsTests
 
         var entity = (EntityAsset)Read(AssetType.Pendulum, data, N100FSerializer.DefaultProfile);
 
-        Assert.Equal(new RgbaColor(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
+        Assert.Equal(new Rgba(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
     }
 
     private sealed class StubAsset(AssetType type) : Asset(type);

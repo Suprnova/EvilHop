@@ -167,7 +167,7 @@ public sealed partial class CreditsAsset
     private static CreditsTextbox ReadTextbox(EndianReader r) => new()
     {
         Font = r.ReadUInt32(),
-        Color = ReadColor32(r),
+        Color = r.ReadRgba32(),
         CharSize = new Vector2(r.ReadSingle(), r.ReadSingle()),
         CharSpacing = new Vector2(r.ReadSingle(), r.ReadSingle()),
         Size = new Vector2(r.ReadSingle(), r.ReadSingle()),
@@ -176,7 +176,7 @@ public sealed partial class CreditsAsset
     private static void WriteTextbox(EndianWriter w, CreditsTextbox textbox)
     {
         w.Write(textbox.Font);
-        WriteColor32(w, textbox.Color);
+        w.WriteRgba32(textbox.Color);
         w.Write(textbox.CharSize.X);
         w.Write(textbox.CharSize.Y);
         w.Write(textbox.CharSpacing.X);
@@ -188,7 +188,7 @@ public sealed partial class CreditsAsset
     private static CreditsTexture ReadTexture(EndianReader r) => new()
     {
         TextureId = r.ReadAssetId(),
-        Color = ReadColor32(r),
+        Color = r.ReadRgba32(),
         Position = new Vector2(r.ReadSingle(), r.ReadSingle()),
         Size = new Vector2(r.ReadSingle(), r.ReadSingle()),
         Handle = r.ReadUInt32(),
@@ -198,23 +198,13 @@ public sealed partial class CreditsAsset
     private static void WriteTexture(EndianWriter w, CreditsTexture texture)
     {
         w.Write(texture.TextureId);
-        WriteColor32(w, texture.Color);
+        w.WriteRgba32(texture.Color);
         w.Write(texture.Position.X);
         w.Write(texture.Position.Y);
         w.Write(texture.Size.X);
         w.Write(texture.Size.Y);
         w.Write(texture.Handle);
         w.Write(texture.Padding);
-    }
-
-    private static Color32 ReadColor32(EndianReader r) => new(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
-
-    private static void WriteColor32(EndianWriter w, Color32 color)
-    {
-        w.Write(color.R);
-        w.Write(color.G);
-        w.Write(color.B);
-        w.Write(color.A);
     }
 
     /// <remarks>

@@ -29,8 +29,8 @@ public sealed partial class UIFontAsset
         asset.Mode = (UIFontMode)reader.ReadByte();
         asset.FontId = reader.ReadByte();
         asset.TextId = reader.ReadAssetId();
-        asset.BackdropColor = ReadColor32(reader);
-        asset.Color = ReadColor32(reader);
+        asset.BackdropColor = reader.ReadRgba32();
+        asset.Color = reader.ReadRgba32();
         asset.InsetTop = reader.ReadInt16();
         asset.InsetBottom = reader.ReadInt16();
         asset.InsetLeft = reader.ReadInt16();
@@ -67,8 +67,8 @@ public sealed partial class UIFontAsset
         writer.Write((byte)asset.Mode);
         writer.Write(asset.FontId);
         writer.Write(asset.TextId);
-        WriteColor32(writer, asset.BackdropColor);
-        WriteColor32(writer, asset.Color);
+        writer.WriteRgba32(asset.BackdropColor);
+        writer.WriteRgba32(asset.Color);
         writer.Write(asset.InsetTop);
         writer.Write(asset.InsetBottom);
         writer.Write(asset.InsetLeft);
@@ -91,16 +91,5 @@ public sealed partial class UIFontAsset
     {
         writer.Write(value.X);
         writer.Write(value.Y);
-    }
-
-    private static Color32 ReadColor32(EndianReader reader) =>
-        new(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-
-    private static void WriteColor32(EndianWriter writer, Color32 color)
-    {
-        writer.Write(color.R);
-        writer.Write(color.G);
-        writer.Write(color.B);
-        writer.Write(color.A);
     }
 }

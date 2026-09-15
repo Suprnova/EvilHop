@@ -59,15 +59,17 @@ public class CreditsAssetTests
         return [.. bytes, .. new byte[paddedLength - bytes.Length]];
     }
 
-    private static byte[] Textbox(uint font, Color32 color, Vector2 charSize, Vector2 charSpacing, Vector2 size) =>
+    private static byte Channel(float normalized) => (byte)MathF.Round(normalized * 255f);
+
+    private static byte[] Textbox(uint font, Rgba color, Vector2 charSize, Vector2 charSpacing, Vector2 size) =>
     [
-        .. U32(font), color.R, color.G, color.B, color.A,
+        .. U32(font), Channel(color.R), Channel(color.G), Channel(color.B), Channel(color.A),
         .. V2(charSize), .. V2(charSpacing), .. V2(size),
     ];
 
-    private static byte[] Texture(uint textureId, Color32 color, Vector2 position, Vector2 size, uint handle, uint padding) =>
+    private static byte[] Texture(uint textureId, Rgba color, Vector2 position, Vector2 size, uint handle, uint padding) =>
     [
-        .. U32(textureId), color.R, color.G, color.B, color.A,
+        .. U32(textureId), Channel(color.R), Channel(color.G), Channel(color.B), Channel(color.A),
         .. V2(position), .. V2(size),
         .. U32(handle), .. U32(padding),
     ];
@@ -101,8 +103,8 @@ public class CreditsAssetTests
     // Section 0: one Center preset (two textboxes) and one hunk with Text1 set.
     private static byte[] Section0PresetBytes() => Preset(
         index: 7, alignment: CreditsPresetAlignment.Center, delay: 0.25f, innerSpacing: 0f,
-        box0: Textbox(font: 1, color: new Color32(255, 255, 0, 255), charSize: new Vector2(10, 12), charSpacing: new Vector2(1, 2), size: new Vector2(0.8f, 0.05f)),
-        box1: Textbox(font: 2, color: new Color32(0, 255, 255, 128), charSize: new Vector2(8, 10), charSpacing: new Vector2(0.5f, 1), size: new Vector2(0.6f, 0.04f)));
+        box0: Textbox(font: 1, color: new Rgba(255 / 255f, 255 / 255f, 0 / 255f, 255 / 255f), charSize: new Vector2(10, 12), charSpacing: new Vector2(1, 2), size: new Vector2(0.8f, 0.05f)),
+        box1: Textbox(font: 2, color: new Rgba(0 / 255f, 255 / 255f, 255 / 255f, 128 / 255f), charSize: new Vector2(8, 10), charSpacing: new Vector2(0.5f, 1), size: new Vector2(0.6f, 0.04f)));
 
     // Text1's absolute offset (from the asset's magic number) for this hunk: 24 (header) + 56
     // (section header) + 76 (preset) + 24 (hunk header) = 180.
@@ -120,8 +122,8 @@ public class CreditsAssetTests
         // Handle and padding are non-zero here on purpose: real archives carry leftover garbage in
         // both, so a fixture that zeroes them can't catch a codec that discards rather than
         // preserves them.
-        box0: Texture(textureId: 0x11223344, color: new Color32(10, 20, 30, 255), position: new Vector2(0.1f, 0.1f), size: new Vector2(0.2f, 0.2f), handle: 0x3DCCCCCD, padding: 0),
-        box1: Texture(textureId: 0x55667788, color: new Color32(40, 50, 60, 200), position: new Vector2(0.3f, 0.3f), size: new Vector2(0.25f, 0.25f), handle: 0, padding: 0x3F19999A));
+        box0: Texture(textureId: 0x11223344, color: new Rgba(10 / 255f, 20 / 255f, 30 / 255f, 255 / 255f), position: new Vector2(0.1f, 0.1f), size: new Vector2(0.2f, 0.2f), handle: 0x3DCCCCCD, padding: 0),
+        box1: Texture(textureId: 0x55667788, color: new Rgba(40 / 255f, 50 / 255f, 60 / 255f, 200 / 255f), position: new Vector2(0.3f, 0.3f), size: new Vector2(0.25f, 0.25f), handle: 0, padding: 0x3F19999A));
 
     private static byte[] Section1HunkBytes() =>
         Hunk(presetIndex: 0, startTime: 1f, endTime: 6f, text1Offset: 0, text2Offset: 0, text1Bytes: [], text2Bytes: []);
@@ -204,7 +206,7 @@ public class CreditsAssetTests
         Assert.Equal(2, preset.Textboxes.Count);
         var textbox = preset.Textboxes[0];
         Assert.Equal(1u, textbox.Font);
-        Assert.Equal(new Color32(255, 255, 0, 255), textbox.Color);
+        Assert.Equal(new Rgba(255 / 255f, 255 / 255f, 0 / 255f, 255 / 255f), textbox.Color);
         Assert.Equal(new Vector2(10, 12), textbox.CharSize);
         Assert.Equal(new Vector2(1, 2), textbox.CharSpacing);
         Assert.Equal(new Vector2(0.8f, 0.05f), textbox.Size);
@@ -225,7 +227,7 @@ public class CreditsAssetTests
         Assert.Equal(2, preset.Textures.Count);
         var texture = preset.Textures[0];
         Assert.Equal(new AssetId(0x11223344), texture.TextureId);
-        Assert.Equal(new Color32(10, 20, 30, 255), texture.Color);
+        Assert.Equal(new Rgba(10 / 255f, 20 / 255f, 30 / 255f, 255 / 255f), texture.Color);
         Assert.Equal(new Vector2(0.1f, 0.1f), texture.Position);
         Assert.Equal(new Vector2(0.2f, 0.2f), texture.Size);
         Assert.Equal(0x3DCCCCCDu, texture.Handle);

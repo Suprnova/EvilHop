@@ -185,7 +185,7 @@ copy this exact line shape, substituting your own collection/count pair.
 ### `EntityAsset : BaseAsset` (the 0x54-ish entity prefix)
 
 Logical: `EntityFlags` (`EntityFlags`), `Angle`/`Position`/`Scale` (`Vector3`), `ColorMultiplier`
-(`RgbaColor`, R/G/B/A floats).
+(`Rgba`, R/G/B/A floats).
 Physical (`IPhysicalEntityAsset : IPhysicalBaseAsset`): `Subtype` (`byte`), `PFlags` (`byte`, "always
 0" per every sample checked so far), `CollisionFlags` (`CollisionFlags`), `SurfaceId`/`ModelId`/
 `AnimListId` (`AssetId`), `SeeThroughSpeed` (`float`, "always 255" per every sample checked so far).

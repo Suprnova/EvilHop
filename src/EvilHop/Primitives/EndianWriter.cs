@@ -64,4 +64,40 @@ public sealed class EndianWriter(Stream output, Endianness endianness, bool leav
 
     /// <summary>Writes an <see cref="AssetId"/>.</summary>
     public void Write(AssetId value) => Write(value.Value);
+
+    /// <summary>Writes an <see cref="Rgb"/> as three consecutive <see cref="Write(float)"/>s.</summary>
+    public void Write(Rgb value)
+    {
+        Write(value.R);
+        Write(value.G);
+        Write(value.B);
+    }
+
+    /// <summary>Writes an <see cref="Rgb"/> as three consecutive bytes, each channel scaled from 0-1 to 0-255.</summary>
+    public void WriteRgb24(Rgb value)
+    {
+        Write(ToByte(value.R));
+        Write(ToByte(value.G));
+        Write(ToByte(value.B));
+    }
+
+    /// <summary>Writes an <see cref="Rgba"/> as four consecutive <see cref="Write(float)"/>s.</summary>
+    public void Write(Rgba value)
+    {
+        Write(value.R);
+        Write(value.G);
+        Write(value.B);
+        Write(value.A);
+    }
+
+    /// <summary>Writes an <see cref="Rgba"/> as four consecutive bytes, each channel scaled from 0-1 to 0-255.</summary>
+    public void WriteRgba32(Rgba value)
+    {
+        Write(ToByte(value.R));
+        Write(ToByte(value.G));
+        Write(ToByte(value.B));
+        Write(ToByte(value.A));
+    }
+
+    private static byte ToByte(float channel) => (byte)Math.Clamp(MathF.Round(channel * 255f), 0f, 255f);
 }

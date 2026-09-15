@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -34,7 +35,7 @@ public abstract class EntityAsset(AssetType type) : BaseAsset(type), IPhysicalEn
     /// <summary>
     /// The <see cref="EntityAsset"/>'s color multiplier, alpha included.
     /// </summary>
-    public RgbaColor ColorMultiplier { get; set; }
+    public Rgba ColorMultiplier { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalEntityAsset Physical => this;
@@ -123,15 +124,6 @@ public interface IPhysicalEntityAsset : IPhysicalBaseAsset
     /// </summary>
     float SeeThroughSpeed { get; set; }
 }
-
-/// <summary>
-/// An RGBA color multiplier.
-/// </summary>
-/// <param name="R">The red channel.</param>
-/// <param name="G">The green channel.</param>
-/// <param name="B">The blue channel.</param>
-/// <param name="A">The alpha channel.</param>
-public readonly record struct RgbaColor(float R, float G, float B, float A);
 
 /// <summary>
 /// Represents all known values for <see cref="EntityAsset.EntityFlags"/>.

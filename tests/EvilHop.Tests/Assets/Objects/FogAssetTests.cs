@@ -77,8 +77,8 @@ public class FogAssetTests
 
         var asset = Read(data);
 
-        Assert.Equal(new Color32(0x68, 0x59, 0x59, 0xFF), asset.BackgroundColor);
-        Assert.Equal(new Color32(0x68, 0x59, 0xA6, 0xFF), asset.Color);
+        Assert.Equal(new Rgba(0x68 / 255f, 0x59 / 255f, 0x59 / 255f, 0xFF / 255f), asset.BackgroundColor);
+        Assert.Equal(new Rgba(0x68 / 255f, 0x59 / 255f, 0xA6 / 255f, 0xFF / 255f), asset.Color);
         Assert.Equal(1.0f, asset.Density);
         Assert.Equal(50.0f, asset.StartDistance);
         Assert.Equal(150.0f, asset.StopDistance);

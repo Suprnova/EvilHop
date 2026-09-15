@@ -73,8 +73,11 @@ read/write helpers each shape's codec is built from.
 
 [`src/EvilHop/Primitives/`](../src/EvilHop/Primitives/) holds format-agnostic building blocks:
 [`EndianReader`](../src/EvilHop/Primitives/EndianReader.cs)/[`EndianWriter`](../src/EvilHop/Primitives/EndianWriter.cs)
-for endian-aware I/O, and [`EvilString`](../src/EvilHop/Primitives/EvilString.cs) for the format's
-string encoding.
+for endian-aware I/O, [`EvilString`](../src/EvilHop/Primitives/EvilString.cs) for the format's string
+encoding, and [`Rgb`](../src/EvilHop/Primitives/Rgb.cs)/[`Rgba`](../src/EvilHop/Primitives/Rgba.cs) for
+colors with normalized (0–1) channels. `EndianReader`/`EndianWriter` natively read/write both on-disk
+forms found across assets: one float per channel (`ReadRgb`/`ReadRgba`), and one byte per channel,
+scaled to/from 0-255 (`ReadRgb24`/`ReadRgba32`).
 [`src/EvilHop/Common/`](../src/EvilHop/Common/) holds shared enums and hashing/checksum types used
 by both layers: [`GameVersion`](../src/EvilHop/Common/GameVersion.cs),
 [`Platform`](../src/EvilHop/Common/Platform.cs), [`AssetType`](../src/EvilHop/Common/AssetType.cs),

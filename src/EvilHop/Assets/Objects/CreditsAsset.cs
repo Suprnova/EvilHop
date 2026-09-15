@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
 using System.Collections.ObjectModel;
 using System.Numerics;
 
@@ -271,7 +272,7 @@ public sealed class CreditsTextbox
     /// <summary>
     /// The text's color.
     /// </summary>
-    public Color32 Color { get; set; }
+    public Rgba Color { get; set; }
 
     /// <summary>
     /// The character width and height, in pixels.
@@ -302,7 +303,7 @@ public sealed class CreditsTexture
     /// <summary>
     /// The texture's color.
     /// </summary>
-    public Color32 Color { get; set; }
+    public Rgba Color { get; set; }
 
     /// <summary>
     /// The texture's position, as a percentage (0 to 1) of the screen.
@@ -324,11 +325,6 @@ public sealed class CreditsTexture
     /// </summary>
     public uint Padding { get; set; }
 }
-
-/// <summary>
-/// A 32-bit color with one byte per red, green, blue, and alpha channel.
-/// </summary>
-public readonly record struct Color32(byte R, byte G, byte B, byte A);
 
 /// <summary>
 /// One line (or pair of lines) of scrolling credits text, shown between <see cref="StartTime"/> and

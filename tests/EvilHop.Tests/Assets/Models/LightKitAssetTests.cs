@@ -100,14 +100,14 @@ public class LightKitAssetTests
 
         var ambient = asset.Lights[0];
         Assert.Equal(LightKitLightType.Ambient, ambient.Type);
-        Assert.Equal(new RgbaColor(0.25f, 0.25f, 0.25f, 1f), ambient.Color);
+        Assert.Equal(new Rgba(0.25f, 0.25f, 0.25f, 1f), ambient.Color);
         Assert.Equal(default, ambient.Right);
         Assert.Equal(default, ambient.Position);
         Assert.Equal(0f, ambient.PositionW);
 
         var directional = asset.Lights[1];
         Assert.Equal(LightKitLightType.Directional, directional.Type);
-        Assert.Equal(new RgbaColor(0.75f, 0.75f, 0.75f, 1f), directional.Color);
+        Assert.Equal(new Rgba(0.75f, 0.75f, 0.75f, 1f), directional.Color);
         Assert.Equal(new Vector3(1, 0, 0), directional.Right);
         Assert.Equal(new Vector3(0, 1, 0), directional.Up);
         Assert.Equal(new Vector3(0, -1, 0), directional.At);
