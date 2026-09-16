@@ -1,0 +1,99 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+using System.Collections.ObjectModel;
+
+namespace EvilHop.Assets;
+
+/// <summary>
+/// Forwards any event it receives on to a fixed set of other assets, chosen according to
+/// <see cref="GroupFlags"/>.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/GRUP">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+public sealed class GroupAsset() : BaseAsset(AssetType.Group), IPhysicalGroupAsset
+{
+    /// <summary>The assets an event received by this group is forwarded to.</summary>
+    public Collection<AssetId> Items { get; } = [];
+
+    /// <summary>Which of <see cref="Items"/> a received event is forwarded to.</summary>
+    public GroupEventMode GroupFlags { get; set; }
+
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalGroupAsset Physical => this;
+
+    private ushort? _overriddenItemCount;
+    ushort IPhysicalGroupAsset.ItemCount
+    {
+        get => _overriddenItemCount ?? (ushort)Items.Count;
+        set => _overriddenItemCount = value == (ushort)Items.Count ? null : value;
+    }
+
+    internal static GroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    {
+        var asset = new GroupAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+
+        int itemCount = reader.ReadInt16();
+        asset.GroupFlags = (GroupEventMode)reader.ReadInt16();
+
+        for (int i = 0; i < itemCount; i++)
+            asset.Items.Add(reader.ReadAssetId());
+
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+
+        asset.Physical.ItemCount = (ushort)asset.Items.Count;
+        asset.Physical.LinkCount = (byte)asset.Links.Count;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(GroupAsset asset, EndianWriter writer, FormatProfile _)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+        writer.Write((short)asset.Physical.ItemCount);
+        writer.Write((short)asset.GroupFlags);
+
+        foreach (var item in asset.Items)
+            writer.Write(item);
+
+        LinkSerialization.Write(asset, writer);
+        writer.Write(asset.GetUnparsedTail());
+    }
+}
+
+/// <summary>
+/// An explicit interface used to interact with <see cref="GroupAsset"/>'s underlying values.
+/// </summary>
+public interface IPhysicalGroupAsset : IPhysicalBaseAsset
+{
+    /// <summary>
+    /// The number of <see cref="GroupAsset.Items"/> stored for this asset, read directly from its
+    /// leading count field.
+    /// </summary>
+    /// <remarks>
+    /// When disagreements with <see cref="GroupAsset.Items"/>.Count exist, this field wins during
+    /// serialization.
+    /// </remarks>
+    ushort ItemCount { get; set; }
+}
+
+/// <summary>Which of a <see cref="GroupAsset"/>'s <see cref="GroupAsset.Items"/> a received event is forwarded to.</summary>
+public enum GroupEventMode : short
+{
+    /// <summary>The event is forwarded to every item.</summary>
+    All = 0,
+
+    /// <summary>The event is forwarded to one randomly chosen item.</summary>
+    Random = 1,
+
+    /// <summary>
+    /// The event is forwarded to one item, advancing to the next item (wrapping back to the first)
+    /// each time an event is received.
+    /// </summary>
+    Sequential = 2,
+}
