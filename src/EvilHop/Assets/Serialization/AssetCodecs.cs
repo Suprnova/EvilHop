@@ -90,6 +90,7 @@ internal static class AssetCodecs
         Register(AssetType.JawDataTable, JawDataTableAsset.Read, JawDataTableAsset.Write, JawDataTableAsset.SupportedGames);
         Register(AssetType.Light, LightAsset.Read, LightAsset.Write, LightAsset.SupportedGames);
         Register(AssetType.LightKit, LightKitAsset.Read, LightKitAsset.Write, LightKitAsset.SupportedGames);
+        Register(AssetType.LobMaster, LobMasterAsset.Read, LobMasterAsset.Write, LobMasterAsset.SupportedGames);
         Register(AssetType.LODTable, LODTableAsset.Read, LODTableAsset.Write, LODTableAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
@@ -100,6 +101,7 @@ internal static class AssetCodecs
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
+        Register(AssetType.SurfaceMapper, SurfaceMapperAsset.Read, SurfaceMapperAsset.Write, SurfaceMapperAsset.SupportedGames);
         Register(AssetType.Trigger, TriggerAsset.Read, TriggerAsset.Write);
         Register(AssetType.UI, UIAsset.Read, UIAsset.Write, UIAsset.SupportedGames);
         Register(AssetType.UIFont, UIFontAsset.Read, UIFontAsset.Write, UIFontAsset.SupportedGames);
