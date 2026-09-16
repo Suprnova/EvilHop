@@ -247,7 +247,7 @@ public class AssetCodecsTests
         // for. Implementing one for this type will fail the guard below - move this test to another
         // unimplemented type rather than deleting the guard, or every other test touching this type
         // starts failing on scheduling order instead.
-        const AssetType type = AssetType.NPCSettings;
+        const AssetType type = AssetType.OneLiner;
         Assert.IsType<GenericAsset>(Read(type, new byte[4]));
 
         AssetCodecs.Register<StubAsset>(

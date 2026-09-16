@@ -5,7 +5,6 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Numerics;
-using System.Text;
 
 namespace EvilHop.Assets;
 
@@ -90,7 +89,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
         while (reader.BaseStream.Length - reader.BaseStream.Position >= 5)
         {
             long entryStart = reader.BaseStream.Position;
-            uint hashId = reader.ReadUInt32();
+            reader.ReadUInt32();
             byte wordLength = reader.ReadByte();
             int stringAreaLength = (wordLength + 1) * 4 - 1;
 
@@ -100,11 +99,8 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
                 break;
             }
 
-            byte[] stringArea = reader.ReadBytes(stringAreaLength);
-            int nullIndex = Array.IndexOf(stringArea, (byte)0);
-            string value = Encoding.Latin1.GetString(stringArea, 0, nullIndex >= 0 ? nullIndex : stringArea.Length);
-
-            asset.Parameters.Add(new ModelInfoParameter { HashId = hashId, Value = value });
+            reader.BaseStream.Position = entryStart;
+            asset.Parameters.Add(ModelInfoParameterSerialization.Read(reader));
         }
 
         asset.Physical.ModelInstanceCount = (uint)asset.ModelInstances.Count;
@@ -128,19 +124,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
             WriteInstance(writer, instance);
 
         foreach (var parameter in asset.Parameters)
-        {
-            byte[] valueBytes = Encoding.Latin1.GetBytes(parameter.Value);
-            int stringBytesWithNull = valueBytes.Length + 1;
-            int totalRegion = ((1 + stringBytesWithNull + 3) / 4) * 4;
-            byte wordLength = (byte)(totalRegion / 4 - 1);
-
-            writer.Write(parameter.HashId);
-            writer.Write(wordLength);
-            writer.Write(valueBytes);
-            writer.Write((byte)0);
-            for (int i = 1 + stringBytesWithNull; i < totalRegion; i++)
-                writer.Write((byte)0);
-        }
+            ModelInfoParameterSerialization.Write(writer, parameter);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -225,20 +209,4 @@ public sealed class ModelInfoInstance
 
     /// <summary>This instance's position relative to <see cref="Parent"/>, usually zero.</summary>
     public Vector3 Position { get; set; }
-}
-
-/// <summary>
-/// One named <see cref="ModelInfoAsset"/> parameter, read by an NPC's AI code by hashing the
-/// parameter's name and matching it against <see cref="HashId"/>.
-/// </summary>
-public sealed class ModelInfoParameter
-{
-    /// <summary>A BKDR hash of this parameter's name.</summary>
-    public uint HashId { get; set; }
-
-    /// <summary>
-    /// This parameter's value, usually a floating-point number or a vector written as text (for
-    /// example <c>"1.0"</c> or <c>"{ 3.0, 3.0, 3.0 }"</c>).
-    /// </summary>
-    public string Value { get; set; } = "";
 }
