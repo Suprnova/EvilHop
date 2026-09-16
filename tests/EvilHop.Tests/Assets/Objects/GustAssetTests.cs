@@ -1,0 +1,150 @@
+using EvilHop.Assets;
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+using System.Numerics;
+
+namespace EvilHop.Tests.Serialization;
+
+public class GustAssetTests
+{
+    private static (AssetHeader Header, AssetDebug Debug) HeaderFor()
+    {
+        var serializer = new N100FSerializer();
+        var header = serializer.CreateBlock<AssetHeader>();
+        var debug = serializer.CreateBlock<AssetDebug>();
+
+        header.Type = AssetType.Gust;
+        header.Debug = debug;
+
+        return (header, debug);
+    }
+
+    private static Asset Read(byte[] data, FormatProfile profile)
+    {
+        var (header, debug) = HeaderFor();
+        using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
+        return AssetCodecs.Read(reader, header, debug, profile);
+    }
+
+    private static byte[] Write(Asset asset, FormatProfile profile)
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
+            AssetCodecs.Write(asset, writer, profile);
+        return stream.ToArray();
+    }
+
+    private static byte[] Prefix(byte linkCount) =>
+    [
+        0x00, 0x00, 0x12, 0x34, // BaseId
+        0x1C,                   // BaseType
+        linkCount,
+        0x00, 0x1D,             // BaseFlags
+    ];
+
+    private static byte[] UInt32(uint value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] Single(float value) => [.. BitConverter.GetBytes(value).Reverse()];
+    private static byte[] Vector(float x, float y, float z) => [.. Single(x), .. Single(y), .. Single(z)];
+
+    private static byte[] LinkBytes(short sourceEvent, short destinationEvent, uint destinationAssetId) =>
+    [
+        (byte)(sourceEvent >> 8), (byte)sourceEvent,
+        (byte)(destinationEvent >> 8), (byte)destinationEvent,
+        .. UInt32(destinationAssetId),
+        .. new byte[16], // Params
+        .. new byte[4],  // ParamWidgetAssetId
+        .. new byte[4],  // CheckAssetId
+    ];
+
+    private static byte[] Body(uint flags, uint volumeId, uint effectVolumeId, Vector3 velocity, float fade, float particleModifier) =>
+    [
+        .. UInt32(flags),
+        .. UInt32(volumeId),
+        .. UInt32(effectVolumeId),
+        .. Vector(velocity.X, velocity.Y, velocity.Z),
+        .. Single(fade),
+        .. Single(particleModifier),
+    ];
+
+    private static byte[] SampleData() =>
+    [
+        .. Prefix(0),
+        .. Body(3, 0x05FA0A9E, 0, new Vector3(0.0f, 4.0f, 0.0f), 0.5f, 1.0f),
+    ];
+
+    [Fact]
+    public void Read_Gust_UnderN100F_ProducesGustAsset() =>
+        Assert.IsType<GustAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+
+    [Fact]
+    public void Read_Gust_PopulatesEveryField()
+    {
+        var asset = (GustAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+
+        Assert.Equal(GustFlags.On | GustFlags.Dust, asset.Flags);
+        Assert.Equal(new AssetId(0x05FA0A9E), asset.VolumeId);
+        Assert.Equal(AssetId.None, asset.EffectVolumeId);
+        Assert.Equal(new Vector3(0.0f, 4.0f, 0.0f), asset.Velocity);
+        Assert.Equal(0.5f, asset.Fade);
+        Assert.Equal(1.0f, asset.ParticleModifier);
+    }
+
+    [Fact]
+    public void Read_Gust_LinkCountKeepsDerivingAfterLinksAreMutated()
+    {
+        byte[] data = [.. Prefix(1), .. Body(0, 0, 0, Vector3.Zero, 0, 0), .. LinkBytes(0, 0, 0)];
+
+        var asset = (GustAsset)Read(data, N100FSerializer.DefaultProfile);
+        Assert.Equal(1, asset.Physical.LinkCount);
+
+        asset.Links.Add(new Link());
+
+        Assert.Equal(2, asset.Physical.LinkCount);
+    }
+
+    [Fact]
+    public void Read_ThenWrite_Gust_ReproducesInputBytes()
+    {
+        byte[] data = SampleData();
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_GustWithLinks_ReproducesInputBytes()
+    {
+        byte[] data =
+        [
+            .. Prefix(1),
+            .. Body(1, 0x05FA0A9E, 0x0CAFE000, new Vector3(1.0f, -2.0f, 3.5f), 1.25f, 0.75f),
+            .. LinkBytes(1, 2, 0xAABBCCDD),
+        ];
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_GustWithUnparsedTail_ReproducesInputBytes()
+    {
+        byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_Gust_UnderBFBB_DegradesToGenericAsset()
+    {
+        byte[] data = SampleData();
+
+        var asset = Read(data, BFBBSerializer.DefaultProfile);
+
+        Assert.IsNotType<GustAsset>(asset);
+        Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());
+    }
+}
