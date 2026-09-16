@@ -88,6 +88,7 @@ internal static class AssetCodecs
         Register(AssetType.Gust, GustAsset.Read, GustAsset.Write, GustAsset.SupportedGames);
         Register(AssetType.Hangable, HangableAsset.Read, HangableAsset.Write, HangableAsset.SupportedGames);
         Register(AssetType.JawDataTable, JawDataTableAsset.Read, JawDataTableAsset.Write, JawDataTableAsset.SupportedGames);
+        Register(AssetType.Light, LightAsset.Read, LightAsset.Write, LightAsset.SupportedGames);
         Register(AssetType.LightKit, LightKitAsset.Read, LightKitAsset.Write, LightKitAsset.SupportedGames);
         Register(AssetType.LODTable, LODTableAsset.Read, LODTableAsset.Write, LODTableAsset.SupportedGames);
         Register(AssetType.Marker, MarkerAsset.Read, MarkerAsset.Write, MarkerAsset.SupportedGames);
