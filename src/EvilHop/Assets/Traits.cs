@@ -56,6 +56,7 @@ public interface IHasSurface
 /// <item><see cref="AssetType.DestructibleObject"/></item>
 /// <item><see cref="AssetType.ElectricArcGenerator"/></item>
 /// <item><see cref="AssetType.Hangable"/></item>
+/// <item><see cref="AssetType.NPC"/></item>
 /// <item><see cref="AssetType.Pendulum"/></item>
 /// <item><see cref="AssetType.Platform"/></item>
 /// <item><see cref="AssetType.Pickup"/></item>

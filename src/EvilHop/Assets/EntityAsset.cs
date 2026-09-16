@@ -90,6 +90,7 @@ public interface IPhysicalEntityAsset : IPhysicalBaseAsset
     /// <remarks>
     /// <para>Used by:</para>
     /// <list type="bullet">
+    /// <item><see cref="AssetType.NPC"/></item>
     /// <item><see cref="AssetType.Pickup"/></item>
     /// <item><see cref="AssetType.Platform"/></item>
     /// <item><see cref="AssetType.Trigger"/></item>
