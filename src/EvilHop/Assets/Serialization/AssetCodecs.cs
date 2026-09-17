@@ -100,6 +100,7 @@ internal static class AssetCodecs
         Register(AssetType.OneLiner, OneLinerAsset.Read, OneLinerAsset.Write, OneLinerAsset.SupportedGames);
         Register(AssetType.ParticleEmitter, ParticleEmitterAsset.Read, ParticleEmitterAsset.Write, ParticleEmitterAsset.SupportedGames);
         Register(AssetType.ParticleEmitterProperty, ParticleEmitterPropertyAsset.Read, ParticleEmitterPropertyAsset.Write, ParticleEmitterPropertyAsset.SupportedGames);
+        Register(AssetType.ParticleSystem, ParticleSystemAsset.Read, ParticleSystemAsset.Write, ParticleSystemAsset.SupportedGames);
         Register(AssetType.NPC, NPCAsset.Read, NPCAsset.Write, NPCAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
         Register(AssetType.Platform, PlatformAsset.Read, PlatformAsset.Write);
