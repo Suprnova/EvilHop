@@ -248,7 +248,7 @@ public class TimerAssetTests
         [
             .. Prefix(linkCount: 0, bigEndian: bigEndian),
             .. F32(8.0f, bigEndian),
-            .. F32(0.0f, bigEndian),
+            .. game is not GameVersion.N100F ? F32(0.0f, bigEndian) : [],
         ];
 
         var asset = Read(data, profile);
@@ -258,6 +258,45 @@ public class TimerAssetTests
         Assert.Equal(8.0f, timerAsset.Seconds);
         Assert.Equal(0.0f, timerAsset.RandomRange);
         Assert.Equal(data, Write(timerAsset, profile));
+    }
+
+    [Fact]
+    public void Read_RealN100FExemplar_RoundTripsExactly()
+    {
+        // From c002.HIP: AHDR id=0xAE422535 "TIMR", size=108
+        byte[] data =
+        [
+            0xAE, 0x42, 0x25, 0x35, 0x0E, 0x03, 0x00, 0x1D, 0x3F, 0xC0, 0x00, 0x00, 0x00, 0x14, 0x00, 0x12,
+            0x9D, 0x1B, 0xF8, 0x9D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x12,
+            0x9D, 0x1B, 0xF9, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x0A,
+            0xAE, 0x42, 0x25, 0x35, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        ];
+
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        var asset = (TimerAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0xAE422535), asset.Physical.BaseId);
+        Assert.Equal(0x0E, asset.Physical.BaseType);
+        Assert.Equal(1.5f, asset.Seconds);
+        Assert.Equal(0.0f, asset.RandomRange);
+        Assert.Equal(3, asset.Links.Count);
+
+        Assert.Equal(20, asset.Links[0].SourceEvent);
+        Assert.Equal(18, asset.Links[0].DestinationEvent);
+        Assert.Equal(new AssetId(0x9D1BF89D), asset.Links[0].DestinationAssetId);
+
+        Assert.Equal(20, asset.Links[1].SourceEvent);
+        Assert.Equal(18, asset.Links[1].DestinationEvent);
+        Assert.Equal(new AssetId(0x9D1BF920), asset.Links[1].DestinationAssetId);
+
+        Assert.Equal(20, asset.Links[2].SourceEvent);
+        Assert.Equal(10, asset.Links[2].DestinationEvent);
+        Assert.Equal(new AssetId(0xAE422535), asset.Links[2].DestinationAssetId);
+
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

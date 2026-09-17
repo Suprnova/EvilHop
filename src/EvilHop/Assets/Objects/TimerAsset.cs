@@ -30,17 +30,18 @@ public sealed class TimerAsset : BaseAsset
 
     /// <summary>
     /// The maximum random variation added to or subtracted from <see cref="Seconds"/>, in seconds.
+    /// Not present in <see cref="GameVersion.N100F"/>.
     /// </summary>
     public float RandomRange { get; set; }
 
-    internal static TimerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static TimerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new TimerAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
         asset.Seconds = reader.ReadSingle();
-        asset.RandomRange = reader.ReadSingle();
+        if (profile.Game is not GameVersion.N100F) asset.RandomRange = reader.ReadSingle();
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -48,11 +49,11 @@ public sealed class TimerAsset : BaseAsset
         return asset;
     }
 
-    internal static void Write(TimerAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(TimerAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.Seconds);
-        writer.Write(asset.RandomRange);
+        if (profile.Game is not GameVersion.N100F) writer.Write(asset.RandomRange);
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }
