@@ -131,6 +131,7 @@ internal static class AssetCodecs
         Register(AssetType.UI, UIAsset.Read, UIAsset.Write, UIAsset.SupportedGames);
         Register(AssetType.UIFont, UIFontAsset.Read, UIFontAsset.Write, UIFontAsset.SupportedGames);
         Register(AssetType.UIMotion, UIMotionAsset.Read, UIMotionAsset.Write, UIMotionAsset.SupportedGames);
+        Register(AssetType.Villain, VillainAsset.Read, VillainAsset.Write, VillainAsset.SupportedGames);
     }
 
     /// <summary>
