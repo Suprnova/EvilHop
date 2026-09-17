@@ -97,6 +97,7 @@ internal static class AssetCodecs
         Register(AssetType.MorphTarget, MorphTargetAsset.Read, MorphTargetAsset.Write, MorphTargetAsset.SupportedGames);
         Register(AssetType.MovePoint, MovePointAsset.Read, MovePointAsset.Write);
         Register(AssetType.NPCSettings, NPCSettingsAsset.Read, NPCSettingsAsset.Write, NPCSettingsAsset.SupportedGames);
+        Register(AssetType.OneLiner, OneLinerAsset.Read, OneLinerAsset.Write, OneLinerAsset.SupportedGames);
         Register(AssetType.NPC, NPCAsset.Read, NPCAsset.Write, NPCAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
         Register(AssetType.Platform, PlatformAsset.Read, PlatformAsset.Write);
