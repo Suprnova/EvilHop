@@ -106,6 +106,7 @@ internal static class AssetCodecs
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
         Register(AssetType.Platform, PlatformAsset.Read, PlatformAsset.Write);
         Register(AssetType.Player, PlayerAsset.Read, PlayerAsset.Write);
+        Register(AssetType.ProgressScript, ProgressScriptAsset.Read, ProgressScriptAsset.Write, ProgressScriptAsset.SupportedGames);
         Register(AssetType.ReactiveAnimation, ReactiveAnimationAsset.Read, ReactiveAnimationAsset.Write, ReactiveAnimationAsset.SupportedGames);
         Register(AssetType.SimpleObject, SimpleObjectAsset.Read, SimpleObjectAsset.Write);
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
