@@ -1,0 +1,178 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
+using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+using System.Collections.ObjectModel;
+using System.Text;
+
+namespace EvilHop.Assets;
+
+/// <summary>
+/// A <see cref="BaseAsset"/> defining timed subtitle text lines displayed during cutscenes or gameplay.
+/// </summary>
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/SUBT">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+public sealed class SubtitlesAsset : BaseAsset, IPhysicalSubtitlesAsset
+{
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubtitlesAsset"/>.
+    /// </summary>
+    public SubtitlesAsset() : base(AssetType.Subtitles)
+    {
+        _baseType = 0x00;
+        BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows;
+    }
+
+    /// <summary>
+    /// The subtitle lines in this asset, displayed in sequence.
+    /// </summary>
+    public Collection<SubtitleLine> Lines { get; } = [];
+
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalSubtitlesAsset Physical => this;
+
+    private ushort? _overriddenNumLines;
+    ushort IPhysicalSubtitlesAsset.NumLines
+    {
+        get => _overriddenNumLines ?? (ushort)Lines.Count;
+        set => _overriddenNumLines = value == (ushort)Lines.Count ? null : value;
+    }
+
+    private ushort? _overriddenByteCount;
+    ushort IPhysicalSubtitlesAsset.ByteCount
+    {
+        get => _overriddenByteCount ?? CalculateByteCount();
+        set => _overriddenByteCount = value == CalculateByteCount() ? null : value;
+    }
+
+    internal ushort CalculateByteCount()
+    {
+        int total = Lines.Count * 12;
+        foreach (var line in Lines)
+            total += Encoding.Latin1.GetByteCount(line.Text ?? string.Empty) + 1;
+        return (ushort)total;
+    }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Subtitles"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+    };
+
+    internal static SubtitlesAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    {
+        var asset = new SubtitlesAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+
+        ushort numLines = reader.ReadUInt16();
+        ushort byteCount = reader.ReadUInt16();
+
+        var descriptors = new (float StartTime, float StopTime, uint StringOffset)[numLines];
+        for (int i = 0; i < numLines; i++)
+        {
+            descriptors[i] = (reader.ReadSingle(), reader.ReadSingle(), reader.ReadUInt32());
+        }
+
+        int descriptorSize = numLines * 12;
+        int stringPoolSize = byteCount >= descriptorSize ? byteCount - descriptorSize : 0;
+        byte[] stringPool = reader.ReadBytes(stringPoolSize);
+
+        for (int i = 0; i < numLines; i++)
+        {
+            var desc = descriptors[i];
+            string text = string.Empty;
+            if (desc.StringOffset < stringPool.Length)
+            {
+                int start = (int)desc.StringOffset;
+                int nullIndex = Array.IndexOf(stringPool, (byte)0, start);
+                int length = nullIndex >= 0 ? nullIndex - start : stringPool.Length - start;
+                text = Encoding.Latin1.GetString(stringPool, start, length);
+            }
+
+            asset.Lines.Add(new SubtitleLine
+            {
+                StartTime = desc.StartTime,
+                StopTime = desc.StopTime,
+                Text = text,
+            });
+        }
+
+        asset.Physical.NumLines = numLines;
+        asset.Physical.ByteCount = byteCount;
+
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        asset.Physical.LinkCount = (byte)asset.Links.Count;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(SubtitlesAsset asset, EndianWriter writer, FormatProfile _)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+
+        writer.Write(asset.Physical.NumLines);
+        writer.Write(asset.Physical.ByteCount);
+
+        int currentOffset = 0;
+        foreach (var line in asset.Lines)
+        {
+            writer.Write(line.StartTime);
+            writer.Write(line.StopTime);
+            writer.Write((uint)currentOffset);
+            currentOffset += Encoding.Latin1.GetByteCount(line.Text ?? string.Empty) + 1;
+        }
+
+        foreach (var line in asset.Lines)
+        {
+            byte[] textBytes = Encoding.Latin1.GetBytes(line.Text ?? string.Empty);
+            writer.Write(textBytes);
+            writer.Write((byte)0);
+        }
+
+        LinkSerialization.Write(asset, writer);
+        writer.Write(asset.GetUnparsedTail());
+    }
+}
+
+/// <summary>
+/// An explicit interface used to interact with <see cref="SubtitlesAsset"/>'s underlying values.
+/// </summary>
+public interface IPhysicalSubtitlesAsset : IPhysicalBaseAsset
+{
+    /// <summary>
+    /// The number of subtitle lines stored in this asset.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <see cref="SubtitlesAsset.Lines"/> count unless explicitly overridden.
+    /// </remarks>
+    ushort NumLines { get; set; }
+
+    /// <summary>
+    /// The byte count of this asset following the 12-byte header (line descriptors and string pool).
+    /// </summary>
+    /// <remarks>
+    /// Defaults to the calculated size of the lines and string pool unless explicitly overridden.
+    /// </remarks>
+    ushort ByteCount { get; set; }
+}
+
+/// <summary>
+/// A single timed subtitle line within a <see cref="SubtitlesAsset"/>.
+/// </summary>
+public sealed class SubtitleLine
+{
+    /// <summary>The time, in seconds, when this subtitle line begins displaying.</summary>
+    public float StartTime { get; set; }
+
+    /// <summary>The time, in seconds, when this subtitle line stops displaying.</summary>
+    public float StopTime { get; set; }
+
+    /// <summary>The text displayed for this subtitle line.</summary>
+    public string Text { get; set; } = string.Empty;
+}

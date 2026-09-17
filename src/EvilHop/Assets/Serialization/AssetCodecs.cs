@@ -120,6 +120,7 @@ internal static class AssetCodecs
         Register(AssetType.SoundGroup, SoundGroupAsset.Read, SoundGroupAsset.Write, SoundGroupAsset.SupportedGames);
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
         Register(AssetType.SplinePath, SplinePathAsset.Read, SplinePathAsset.Write, SplinePathAsset.SupportedGames);
+        Register(AssetType.Subtitles, SubtitlesAsset.Read, SubtitlesAsset.Write, SubtitlesAsset.SupportedGames);
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
         Register(AssetType.SurfaceMapper, SurfaceMapperAsset.Read, SurfaceMapperAsset.Write, SurfaceMapperAsset.SupportedGames);
         Register(AssetType.Trigger, TriggerAsset.Read, TriggerAsset.Write);
