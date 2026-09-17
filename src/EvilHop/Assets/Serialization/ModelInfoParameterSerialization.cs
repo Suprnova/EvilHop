@@ -21,7 +21,10 @@ internal static class ModelInfoParameterSerialization
         byte[] stringArea = reader.ReadBytes(stringAreaLength);
         int nullIndex = Array.IndexOf(stringArea, (byte)0);
         string value = Encoding.Latin1.GetString(stringArea, 0, nullIndex >= 0 ? nullIndex : stringArea.Length);
-        return new ModelInfoParameter { HashId = hashId, Value = value };
+        byte[] padding = nullIndex >= 0 && nullIndex + 1 < stringArea.Length
+            ? stringArea[(nullIndex + 1)..]
+            : [];
+        return new ModelInfoParameter { HashId = hashId, Value = value, Padding = padding };
     }
 
     /// <summary>
@@ -31,14 +34,20 @@ internal static class ModelInfoParameterSerialization
     {
         byte[] valueBytes = Encoding.Latin1.GetBytes(parameter.Value);
         int stringBytesWithNull = valueBytes.Length + 1;
-        int totalRegion = ((1 + stringBytesWithNull + 3) / 4) * 4;
+        int naturalPaddingLength = (4 - ((1 + stringBytesWithNull) % 4)) % 4;
+
+        byte[] rawPadding = parameter.Padding ?? [];
+        byte[] padding = (1 + stringBytesWithNull + rawPadding.Length) % 4 == 0 && rawPadding.Length >= naturalPaddingLength
+            ? rawPadding
+            : new byte[naturalPaddingLength];
+
+        int totalRegion = 1 + stringBytesWithNull + padding.Length;
         byte wordLength = (byte)(totalRegion / 4 - 1);
 
         writer.Write(parameter.HashId);
         writer.Write(wordLength);
         writer.Write(valueBytes);
         writer.Write((byte)0);
-        for (int i = 1 + stringBytesWithNull; i < totalRegion; i++)
-            writer.Write((byte)0);
+        writer.Write(padding);
     }
 }

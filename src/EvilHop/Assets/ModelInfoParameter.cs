@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -17,4 +18,11 @@ public sealed class ModelInfoParameter
     /// example <c>"1.0"</c> or <c>"{ 3.0, 3.0, 3.0 }"</c>).
     /// </summary>
     public string Value { get; set; } = "";
+
+    /// <summary>
+    /// Trailing padding bytes between the null terminator and the 4-byte boundary.
+    /// Preserved directly to reproduce uninitialized memory on round-trip.
+    /// </summary>
+    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Raw padding bytes with no field structure of its own; a byte[] is the natural representation.")]
+    public byte[] Padding { get; set; } = [];
 }

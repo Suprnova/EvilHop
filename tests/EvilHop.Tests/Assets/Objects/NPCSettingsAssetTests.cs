@@ -51,6 +51,15 @@ public class NPCSettingsAssetTests
         return [.. UInt32(hashId), wordLength, .. stringArea];
     }
 
+    private static byte[] Param(uint hashId, string value, byte[] padding)
+    {
+        byte[] valueBytes = System.Text.Encoding.ASCII.GetBytes(value);
+        int stringBytesWithNull = valueBytes.Length + 1;
+        int totalRegion = 1 + stringBytesWithNull + padding.Length;
+        byte wordLength = (byte)(totalRegion / 4 - 1);
+        return [.. UInt32(hashId), wordLength, .. valueBytes, 0, .. padding];
+    }
+
     private static byte[] Data(uint parameterCount, params byte[][] parameters) =>
     [
         .. UInt32(parameterCount),
@@ -132,5 +141,57 @@ public class NPCSettingsAssetTests
         var asset = Read(data, BFBBSerializer.DefaultProfile);
 
         Assert.IsNotType<NPCSettingsAsset>(asset);
+    }
+
+    [Fact]
+    public void Read_NPCSettings_PreservesNonZeroPaddingInParameters()
+    {
+        byte[] padding = [0x52, 0x50];
+        byte[] data = Data(1, Param(0xC1708625, "1000", padding));
+
+        var asset = (NPCSettingsAsset)Read(data);
+
+        Assert.Single(asset.Parameters);
+        Assert.Equal("1000", asset.Parameters[0].Value);
+        Assert.Equal(padding, asset.Parameters[0].Padding);
+    }
+
+    [Fact]
+    public void Read_ThenWrite_NPCSettingsWithNonZeroPadding_ReproducesInputBytes()
+    {
+        byte[] data = Data(2,
+            Param(0xC1708625, "1000", [0x52, 0x50]),
+            Param(0x7274763D, "1", [0x57]));
+
+        Assert.Equal(data, Write(Read(data)));
+    }
+
+    [Fact]
+    public void Write_NPCSettings_WithEmptyPadding_WritesZeroPadding()
+    {
+        var (header, debug) = HeaderFor();
+        var asset = new NPCSettingsAsset();
+        AssetFields.Populate(asset, header, debug);
+        asset.Parameters.Add(new ModelInfoParameter { HashId = 0xC1708625, Value = "1000", Padding = [] });
+
+        byte[] written = Write(asset);
+        byte[] expected = Data(1, Param(0xC1708625, "1000", [0x00, 0x00]));
+
+        Assert.Equal(expected, written);
+    }
+
+    [Fact]
+    public void Write_NPCSettings_WhenValueMutatedToMismatchedLength_FallsBackToZeroPadding()
+    {
+        byte[] data = Data(1, Param(0xC1708625, "1000", [0x52, 0x50]));
+        var asset = (NPCSettingsAsset)Read(data);
+
+        // Mutate value to a length whose alignment doesn't match the 2-byte padding
+        asset.Parameters[0].Value = "1";
+
+        byte[] written = Write(asset);
+        byte[] expected = Data(1, Param(0xC1708625, "1", [0x00]));
+
+        Assert.Equal(expected, written);
     }
 }
