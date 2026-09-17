@@ -48,10 +48,10 @@ public class TextAssetTests
         return stream.ToArray();
     }
 
-    private static byte[] MakeTextBytes(string text, bool bigEndian = true, uint? overriddenLength = null, byte[]? tail = null)
+    private static byte[] MakeTextBytes(string text, bool bigEndian = true, uint? overriddenLength = null, byte[]? tail = null, bool lengthIncludesNull = false)
     {
         byte[] textBytes = Encoding.Latin1.GetBytes(text);
-        uint len = overriddenLength ?? (uint)textBytes.Length;
+        uint len = overriddenLength ?? (uint)textBytes.Length + (lengthIncludesNull ? 1u : 0u);
         byte[] lenBytes = bigEndian
             ? [(byte)(len >> 24), (byte)(len >> 16), (byte)(len >> 8), (byte)len]
             : [(byte)len, (byte)(len >> 8), (byte)(len >> 16), (byte)(len >> 24)];
@@ -169,6 +169,42 @@ public class TextAssetTests
     }
 
     [Fact]
+    public void Read_RealN100FExemplar_RoundTripsExactly()
+    {
+        // From boot.HIP: AHDR id=0xE9DB1B39 "TALKTEXT", size=24. N100F's length field includes
+        // the null terminator, leaving no room for separate padding.
+        byte[] data =
+        [
+            0x00, 0x00, 0x00, 0x14,
+            0x50, 0x52, 0x45, 0x53, 0x53, 0x20, 0x24, 0x44, 0x7E, 0x24, 0x43, 0x20,
+            0x54, 0x4F, 0x20, 0x54, 0x41, 0x4C, 0x4B, 0x00,
+        ];
+
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        var asset = (TextAsset)Read(data, profile, id: 0xE9DB1B39);
+
+        Assert.Equal("PRESS $D~$C TO TALK", asset.Text);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Theory]
+    [InlineData("AB")] // strlen % 4 == 2, needs 1 padding byte
+    [InlineData("ABC")] // strlen % 4 == 3, no padding needed
+    [InlineData("ABCD")] // strlen % 4 == 0, needs 3 padding bytes
+    [InlineData("ABCDE")] // strlen % 4 == 1, needs 2 padding bytes
+    public void Read_ThenWrite_N100FLengthIncludesNullTerminator_RoundTripsExactly(string text)
+    {
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        byte[] data = MakeTextBytes(text, lengthIncludesNull: true);
+
+        var asset = (TextAsset)Read(data, profile);
+
+        Assert.Equal(text, asset.Text);
+        Assert.Equal((uint)text.Length, asset.Physical.Length);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_FormattedTextWithTags_RoundTripsExactly()
     {
         string text = "{color=00FF00}Press {tex:button_a} to jump!{n}{wait:2.0}";
@@ -243,7 +279,7 @@ public class TextAssetTests
     {
         var profile = Serializer.DefaultProfileFor(game);
         bool bigEndian = profile.Endianness == Endianness.Big;
-        byte[] data = MakeTextBytes("Game Test", bigEndian: bigEndian);
+        byte[] data = MakeTextBytes("Game Test", bigEndian: bigEndian, lengthIncludesNull: game is GameVersion.N100F);
 
         var asset = Read(data, profile);
 

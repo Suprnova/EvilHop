@@ -39,12 +39,13 @@ public sealed class TextAsset : Asset, IPhysicalTextAsset
 
     internal uint CalculateLength() => (uint)Encoding.Latin1.GetByteCount(Text ?? string.Empty);
 
-    internal static TextAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static TextAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new TextAsset();
         AssetFields.Populate(asset, header, debug);
 
-        uint length = reader.ReadUInt32();
+        uint rawLength = reader.ReadUInt32();
+        uint length = profile.Game is GameVersion.N100F && rawLength > 0 ? rawLength - 1 : rawLength;
         byte[] textBytes = reader.ReadBytes((int)length);
         asset.Text = Encoding.Latin1.GetString(textBytes);
         asset.Physical.Length = length;
@@ -67,10 +68,11 @@ public sealed class TextAsset : Asset, IPhysicalTextAsset
         return asset;
     }
 
-    internal static void Write(TextAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(TextAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write(asset.Physical.Length);
         byte[] textBytes = Encoding.Latin1.GetBytes(asset.Text ?? string.Empty);
+        uint onDiskLength = profile.Game is GameVersion.N100F ? asset.Physical.Length + 1 : asset.Physical.Length;
+        writer.Write(onDiskLength);
         writer.Write(textBytes);
         writer.Write((byte)0); // Null terminator
 
@@ -94,6 +96,9 @@ public interface IPhysicalTextAsset : IPhysicalAsset
     /// </summary>
     /// <remarks>
     /// Defaults to <see cref="TextAsset.Text"/> length in bytes unless explicitly overridden.
+    /// On disk, <see cref="GameVersion.N100F"/> stores this count including the null terminator;
+    /// <see cref="TextAsset.Read"/> and <see cref="TextAsset.Write"/> adjust for that so this
+    /// property means the same thing across every game.
     /// </remarks>
     uint Length { get; set; }
 }
