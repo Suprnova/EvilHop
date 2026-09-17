@@ -75,6 +75,9 @@ public class SubtitlesAssetTests
         .. U32(stringOffset),
     ];
 
+    /// <summary>Rounds a string pool's naive byte count up to the 4-byte boundary the format pads it to.</summary>
+    private static ushort Align4(int naiveByteCount) => (ushort)(naiveByteCount + (4 - naiveByteCount % 4) % 4);
+
     [Fact]
     public void Type_IsSubtitles()
     {
@@ -117,8 +120,8 @@ public class SubtitlesAssetTests
             Text = "Hello",
         });
 
-        // 12 bytes descriptor + 5 bytes "Hello" + 1 byte null = 18 bytes
-        Assert.Equal((ushort)18, _asset.Physical.ByteCount);
+        // 12 bytes descriptor + 5 bytes "Hello" + 1 byte null = 18 bytes, padded to 20
+        Assert.Equal((ushort)20, _asset.Physical.ByteCount);
 
         _asset.Lines.Add(new SubtitleLine
         {
@@ -127,8 +130,8 @@ public class SubtitlesAssetTests
             Text = "World!",
         });
 
-        // 24 bytes descriptors + 6 ("Hello\0") + 7 ("World!\0") = 37 bytes
-        Assert.Equal((ushort)37, _asset.Physical.ByteCount);
+        // 24 bytes descriptors + 6 ("Hello\0") + 7 ("World!\0") = 37 bytes, padded to 40
+        Assert.Equal((ushort)40, _asset.Physical.ByteCount);
     }
 
     [Fact]
@@ -156,13 +159,13 @@ public class SubtitlesAssetTests
         _asset.Lines.Add(new SubtitleLine { Text = "Test" });
         Assert.Equal((ushort)200, _asset.Physical.ByteCount);
 
-        // 12 + 4 + 1 = 17 bytes
-        _asset.Physical.ByteCount = 17;
-        Assert.Equal((ushort)17, _asset.Physical.ByteCount);
+        // 12 + 4 + 1 = 17 bytes, padded to 20
+        _asset.Physical.ByteCount = 20;
+        Assert.Equal((ushort)20, _asset.Physical.ByteCount);
 
         _asset.Lines.Add(new SubtitleLine { Text = "A" });
-        // 24 + 5 + 2 = 31 bytes
-        Assert.Equal((ushort)31, _asset.Physical.ByteCount);
+        // 24 + 5 + 2 = 31 bytes, padded to 32
+        Assert.Equal((ushort)32, _asset.Physical.ByteCount);
     }
 
     [Fact]
@@ -210,7 +213,9 @@ public class SubtitlesAssetTests
         byte[] pool1 = Encoding.Latin1.GetBytes(text1 + "\0");
 
         ushort numLines = 2;
-        ushort byteCount = (ushort)(numLines * 12 + pool0.Length + pool1.Length);
+        int naiveByteCount = numLines * 12 + pool0.Length + pool1.Length;
+        ushort byteCount = Align4(naiveByteCount);
+        byte[] padding = new byte[byteCount - naiveByteCount];
 
         byte[] data =
         [
@@ -221,6 +226,7 @@ public class SubtitlesAssetTests
             .. LineBytes(2.5f, 5.0f, (uint)pool0.Length),
             .. pool0,
             .. pool1,
+            .. padding,
         ];
 
         var asset = (SubtitlesAsset)Read(data);
@@ -244,7 +250,9 @@ public class SubtitlesAssetTests
         string text0 = "Line 1";
         byte[] pool0 = Encoding.Latin1.GetBytes(text0 + "\0");
         ushort numLines = 1;
-        ushort byteCount = (ushort)(numLines * 12 + pool0.Length);
+        int naiveByteCount = numLines * 12 + pool0.Length;
+        ushort byteCount = Align4(naiveByteCount);
+        byte[] padding = new byte[byteCount - naiveByteCount];
 
         byte[] data =
         [
@@ -253,6 +261,7 @@ public class SubtitlesAssetTests
             .. U16(byteCount),
             .. LineBytes(1.0f, 3.0f, 0),
             .. pool0,
+            .. padding,
         ];
 
         var asset = (SubtitlesAsset)Read(data);
@@ -261,7 +270,7 @@ public class SubtitlesAssetTests
 
         asset.Lines.Add(new SubtitleLine { StartTime = 3.5f, StopTime = 6.0f, Text = "Line 2" });
         Assert.Equal((ushort)2, asset.Physical.NumLines);
-        Assert.Equal((ushort)(24 + pool0.Length + 7), asset.Physical.ByteCount);
+        Assert.Equal(Align4(24 + pool0.Length + 7), asset.Physical.ByteCount);
     }
 
     [Fact]
@@ -288,7 +297,9 @@ public class SubtitlesAssetTests
         string text = "Incoming!";
         byte[] pool = Encoding.Latin1.GetBytes(text + "\0");
         ushort numLines = 1;
-        ushort byteCount = (ushort)(numLines * 12 + pool.Length);
+        int naiveByteCount = numLines * 12 + pool.Length;
+        ushort byteCount = Align4(naiveByteCount);
+        byte[] padding = new byte[byteCount - naiveByteCount];
 
         byte[] data =
         [
@@ -297,6 +308,7 @@ public class SubtitlesAssetTests
             .. U16(byteCount),
             .. LineBytes(0.0f, 1.0f, 0),
             .. pool,
+            .. padding,
             .. LinkBytes(15, 25, 0x12345678),
         ];
 
