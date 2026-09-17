@@ -52,6 +52,7 @@ public sealed class SubtitlesAsset : BaseAsset, IPhysicalSubtitlesAsset
         int total = Lines.Count * 12;
         foreach (var line in Lines)
             total += Encoding.Latin1.GetByteCount(line.Text ?? string.Empty) + 1;
+        total += (4 - total % 4) % 4;
         return (ushort)total;
     }
 
@@ -135,6 +136,9 @@ public sealed class SubtitlesAsset : BaseAsset, IPhysicalSubtitlesAsset
             writer.Write((byte)0);
         }
 
+        int poolPadding = asset.Physical.ByteCount - (asset.Lines.Count * 12) - currentOffset;
+        if (poolPadding > 0) writer.Write(new byte[poolPadding]);
+
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }
@@ -157,7 +161,8 @@ public interface IPhysicalSubtitlesAsset : IPhysicalBaseAsset
     /// The byte count of this asset following the 12-byte header (line descriptors and string pool).
     /// </summary>
     /// <remarks>
-    /// Defaults to the calculated size of the lines and string pool unless explicitly overridden.
+    /// Defaults to the calculated size of the lines and string pool, padded with trailing nulls to a
+    /// 4-byte boundary, unless explicitly overridden.
     /// </remarks>
     ushort ByteCount { get; set; }
 }
