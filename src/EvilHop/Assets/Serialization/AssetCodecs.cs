@@ -105,6 +105,7 @@ internal static class AssetCodecs
         Register(AssetType.Pendulum, PendulumAsset.Read, PendulumAsset.Write, PendulumAsset.SupportedGames);
         Register(AssetType.Pickup, PickupAsset.Read, PickupAsset.Write, PickupAsset.SupportedGames);
         Register(AssetType.PickupTable, PickupTableAsset.Read, PickupTableAsset.Write, PickupTableAsset.SupportedGames);
+        Register(AssetType.PickupTypes, PickupTypesAsset.Read, PickupTypesAsset.Write, PickupTypesAsset.SupportedGames);
         Register(AssetType.PipeInfoTable, PipeInfoTableAsset.Read, PipeInfoTableAsset.Write, PipeInfoTableAsset.SupportedGames);
         Register(AssetType.Platform, PlatformAsset.Read, PlatformAsset.Write);
         Register(AssetType.Player, PlayerAsset.Read, PlayerAsset.Write);
