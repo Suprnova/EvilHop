@@ -77,6 +77,27 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
         _ => -1,
     };
 
+    /// <summary>
+    /// The on-disk size of an <see cref="ShrapnelFragType.Inactive"/> fragment, keyed by its
+    /// otherwise-unused <see cref="ShrapnelFrag.Id"/> field.
+    /// </summary>
+    /// <remarks>
+    /// The wiki does not document this fragment type's layout. When a fragment is deactivated in
+    /// the level editor, its <c>Id</c> field is repurposed to hold a small marker instead of an
+    /// asset ID, and the rest of the fragment's original bytes are left on disk unchanged - so its
+    /// size can't be derived from the type alone. These sizes were reverse-engineered from every
+    /// real occurrence of an inactive fragment in the TSSM corpus; an unrecognized marker still
+    /// fails loudly rather than guessing.
+    /// </remarks>
+    internal static int GetInactiveFragSize(GameVersion game, uint id) => (game, id) switch
+    {
+        (GameVersion.TSSM, 3) => 0x1FC,
+        (GameVersion.TSSM, 4) => 0x114,
+        (GameVersion.TSSM, 6) => 0x48,
+        (GameVersion.TSSM, 9) => 0x60,
+        _ => -1,
+    };
+
     internal static ShrapnelAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new ShrapnelAsset();
@@ -95,7 +116,9 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
             float lifetime = reader.ReadSingle();
             float delay = reader.ReadSingle();
 
-            int totalFragSize = GetFragSize(profile.Game, fragType);
+            int totalFragSize = fragType == ShrapnelFragType.Inactive
+                ? GetInactiveFragSize(profile.Game, id.Value)
+                : GetFragSize(profile.Game, fragType);
             if (totalFragSize < 24)
             {
                 throw new InvalidDataException($"Unknown or unsupported fragment type {(uint)fragType} under {profile.Game}.");
@@ -205,7 +228,10 @@ public sealed class ShrapnelFrag
 /// </summary>
 public enum ShrapnelFragType : uint
 {
-    /// <summary>Inactive fragment slot.</summary>
+    /// <summary>
+    /// Inactive fragment slot. Its <see cref="ShrapnelFrag.Id"/> is repurposed as a marker for
+    /// the deactivated fragment's on-disk size - see <see cref="ShrapnelAsset.GetInactiveFragSize"/>.
+    /// </summary>
     Inactive = 0,
 
     /// <summary>Group fragment.</summary>

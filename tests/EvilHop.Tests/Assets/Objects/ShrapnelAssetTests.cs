@@ -367,6 +367,89 @@ public class ShrapnelAssetTests
         Assert.Equal(data, written);
     }
 
+    [Theory]
+    [InlineData(3u, 0x1FC)]
+    [InlineData(4u, 0x114)]
+    [InlineData(6u, 0x48)]
+    [InlineData(9u, 0x60)]
+    public void Read_ThenWrite_InactiveFragUnderTSSM_RoundTripsAccurately(uint markerId, int totalSize)
+    {
+        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM);
+        byte[] payload = new byte[totalSize - 24];
+        for (int i = 0; i < payload.Length; i++)
+            payload[i] = (byte)(i & 0xFF);
+
+        byte[] data =
+        [
+            .. HeaderBytes(1, shrapnelId: 0x55667788),
+            .. FragBytes(ShrapnelFragType.Inactive, markerId, 0x22334455, 0x33445566, lifetime: 0.0f, delay: 0.5f, payload: payload),
+        ];
+
+        var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
+
+        Assert.Single(asset.Frags);
+        Assert.Equal(ShrapnelFragType.Inactive, asset.Frags[0].Type);
+        Assert.Equal(new AssetId(markerId), asset.Frags[0].Id);
+        Assert.Equal(payload, asset.Frags[0].Data);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
+    public void Read_ThrowsOnUnrecognizedInactiveMarker()
+    {
+        byte[] data =
+        [
+            .. HeaderBytes(1, shrapnelId: 0x12345678),
+            .. FragBytes(ShrapnelFragType.Inactive, 0xDEADBEEF, payload: []),
+        ];
+
+        Assert.Throws<InvalidDataException>(() => Read(data, Serializer.DefaultProfileFor(GameVersion.TSSM), id: 0x12345678));
+    }
+
+    [Fact]
+    public void Read_ThrowsOnInactiveFragUnderUnverifiedGame()
+    {
+        // The id=6 -> 0x48 marker is only confirmed for TSSM; other games must still fail loudly.
+        byte[] data =
+        [
+            .. HeaderBytes(1, shrapnelId: 0x12345678),
+            .. FragBytes(ShrapnelFragType.Inactive, 6, payload: new byte[0x48 - 24]),
+        ];
+
+        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
+    }
+
+    [Fact]
+    public void Read_RealTSSMExemplar_RoundTripsExactly()
+    {
+        // From de01.HOP: AHDR id=0x4E11860F "SHRP", size=1764. Frag 5 is an Inactive marker (id=6)
+        // sandwiched between real Projectile/Particle/Distortion fragments.
+        byte[] data =
+        [
+            .. HeaderBytes(7, shrapnelId: 0x4E11860F),
+
+            .. FragBytes(ShrapnelFragType.Projectile, 0x78EF8BB0, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelFragType.Projectile, 0x78EF8BB1, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelFragType.Projectile, 0xEB300BFD, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelFragType.Projectile, 0xEB300BFE, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelFragType.Particle, 0x38A9BED6, lifetime: 0.2f, payload: new byte[0x1F4 - 24]),
+            .. FragBytes(ShrapnelFragType.Inactive, 6, 0xD7AFC6CA, lifetime: 0.0f, delay: 3.0f, payload: new byte[0x48 - 24]),
+            .. FragBytes(ShrapnelFragType.Distortion, 0x831684E8, lifetime: 1.0f, payload: new byte[0x5C - 24]),
+        ];
+
+        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM);
+        var asset = (ShrapnelAsset)Read(data, profile, id: 0x4E11860F);
+
+        Assert.Equal(7, asset.Frags.Count);
+        Assert.Equal(ShrapnelFragType.Inactive, asset.Frags[5].Type);
+        Assert.Equal(new AssetId(6u), asset.Frags[5].Id);
+        Assert.Equal(ShrapnelFragType.Distortion, asset.Frags[6].Type);
+        Assert.Equal(new AssetId(0x831684E8), asset.Frags[6].Id);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
     [Fact]
     public void Write_GuardedNonShrapnelAsset_DoesNotThrow()
     {
