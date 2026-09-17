@@ -12,6 +12,11 @@ namespace EvilHop.Assets;
 /// or leave the track.
 /// </summary>
 /// <remarks>
+/// <para>
+/// TODO:
+/// This asset has no decompiled source, and most fields on the wiki are undocumented. These
+/// field definitions should be treated as assumptions, not yet validated against the game.
+/// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/DTRK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack), IPhysicalDashTrackAsset
@@ -31,11 +36,9 @@ public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack), I
     public Collection<DashTrackPortal> Portals { get; } = [];
 
     /// <summary>The index into <see cref="Triangles"/> where the player may land onto the track.</summary>
-    /// TODO: validate against decompiled source
     public int LandableStart { get; set; }
 
     /// <summary>The index into <see cref="Triangles"/> where the player may leave the track.</summary>
-    /// TODO: validate against decompiled source
     public int LeavableStart { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
@@ -126,15 +129,13 @@ public sealed class DashTrackTriangle
     /// <summary>The third of the triangle's three <see cref="DashTrackAsset.Vertices"/> indices.</summary>
     public ushort VertexC { get; set; }
 
-    /// <summary>Unknown. Observed to always be 0 in every real archive.</summary>
+    /// <summary>Unknown.</summary>
     public ushort Flags { get; set; }
 
-    /// <summary>Unknown. Used alongside <see cref="V"/>, likely in point-in-triangle tests.</summary>
-    /// TODO: validate against decompiled source
+    /// <summary>Unknown.</summary>
     public Vector3 U { get; set; }
 
-    /// <summary>Unknown. Used alongside <see cref="U"/>, likely in point-in-triangle tests.</summary>
-    /// TODO: validate against decompiled source
+    /// <summary>Unknown.</summary>
     public Vector3 V { get; set; }
 }
 
@@ -143,8 +144,6 @@ public sealed class DashTrackTriangle
 /// edges, used to walk from one triangle to the next as the player crosses it. A value of
 /// <c>0xFFFF</c> marks an edge with no neighbor.
 /// </summary>
-/// TODO: validate against decompiled source; the edge each of these three corresponds to is
-/// inferred from position, not confirmed.
 public sealed class DashTrackPortal
 {
     /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>

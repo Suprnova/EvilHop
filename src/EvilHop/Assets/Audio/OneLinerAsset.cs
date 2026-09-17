@@ -8,6 +8,11 @@ namespace EvilHop.Assets;
 /// game event, subject to a probability and replay cooldown.
 /// </summary>
 /// <remarks>
+/// <para>
+/// TODO:
+/// This asset has no decompiled source, and most fields on the wiki are undocumented. These
+/// field definitions should be treated as assumptions, not yet validated against the game.
+/// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ONEL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), IPhysicalOneLinerAsset
@@ -63,21 +68,17 @@ public sealed class OneLinerEntry
     public float SoundStartDelay { get; set; }
 
     /// <summary>
-    /// A time window, in seconds, associated with this entry's play-count tracking. Every real
-    /// archive checked uses 0.
+    /// A time window, in seconds, associated with this entry's play-count tracking.
     /// </summary>
-    /// TODO: validate against decompiled source
     public float TimeSpan { get; set; }
 
     /// <summary>
-    /// The time this entry last played, used to enforce <see cref="DelayBetweenPlays"/>. Always 0 on
-    /// disk - the initial state before this entry has ever played.
+    /// The time this entry last played, used to enforce <see cref="DelayBetweenPlays"/>.
     /// </summary>
     public float TimeLastPlayed { get; set; }
 
     /// <summary>
-    /// The number of times this entry has played so far. Always 0 on disk - the initial state before
-    /// this entry has ever played.
+    /// The number of times this entry has played so far.
     /// </summary>
     public uint NumPlays { get; set; }
 
@@ -91,15 +92,13 @@ public sealed class OneLinerEntry
     public float DefaultDuration { get; set; }
 
     /// <summary>
-    /// The duration, in seconds, of this entry's last play. Always 0 on disk - the initial state
-    /// before this entry has ever played.
+    /// The duration, in seconds, of this entry's last play.
     /// </summary>
     public float LastDuration { get; set; }
 
     /// <summary>
-    /// The maximum number of times this entry may play. Every real archive checked uses 0.
+    /// The maximum number of times this entry may play.
     /// </summary>
-    /// TODO: validate against decompiled source
     public uint MaxPlays { get; set; }
 
     /// <summary>The game event that triggers this entry.</summary>
@@ -130,19 +129,15 @@ public enum OneLinerPlayerType
     /// <summary>This entry has no gating condition - it is always eligible to play.</summary>
     Always = 0,
 
-    /// <summary>Unknown gating condition.</summary>
-    /// TODO: validate against decompiled source
+    /// <summary>Unknown.</summary>
     Counter = 1,
 
-    /// <summary>Unknown gating condition.</summary>
-    /// TODO: validate against decompiled source
+    /// <summary>Unknown.</summary>
     Checker = 2,
 
     /// <summary>
     /// This entry's eligibility is gated by evaluating <see cref="OneLinerEntry.FirstParam"/> and
-    /// <see cref="OneLinerEntry.SecondParam"/> against an unconfirmed condition. Every real archive
-    /// checked uses this value.
+    /// <see cref="OneLinerEntry.SecondParam"/> against an unconfirmed condition.
     /// </summary>
-    /// TODO: validate against decompiled source
     Tester = 3,
 }
