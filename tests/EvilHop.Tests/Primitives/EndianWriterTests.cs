@@ -25,6 +25,11 @@ public class EndianWriterTests
     public void Write_Int16_RespectsConstructedEndianness(Endianness endianness, byte[] expected) =>
         Assert.Equal(expected, Written(endianness, w => w.Write((short)0x1122)));
 
+    [Theory]
+    [MemberData(nameof(Int16Data))]
+    public void Write_UInt16_RespectsConstructedEndianness(Endianness endianness, byte[] expected) =>
+        Assert.Equal(expected, Written(endianness, w => w.Write((ushort)0x1122)));
+
     public static IEnumerable<object[]> Int32Data =>
     [
         [Endianness.Big, new byte[] { 0x11, 0x22, 0x33, 0x44 }],

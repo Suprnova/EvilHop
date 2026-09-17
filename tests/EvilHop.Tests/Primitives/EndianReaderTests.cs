@@ -23,6 +23,20 @@ public class EndianReaderTests
         Assert.Equal(expected, reader.ReadInt16());
     }
 
+    public static IEnumerable<object[]> UInt16Data =>
+    [
+        [Endianness.Big, new byte[] { 0x11, 0x22 }, (ushort)0x1122],
+        [Endianness.Little, new byte[] { 0x22, 0x11 }, (ushort)0x1122],
+    ];
+
+    [Theory]
+    [MemberData(nameof(UInt16Data))]
+    public void ReadUInt16_RespectsConstructedEndianness(Endianness endianness, byte[] bytes, ushort expected)
+    {
+        using var reader = Reader(endianness, bytes);
+        Assert.Equal(expected, reader.ReadUInt16());
+    }
+
     public static IEnumerable<object[]> Int32Data =>
     [
         [Endianness.Big, new byte[] { 0x11, 0x22, 0x33, 0x44 }, 0x11223344],

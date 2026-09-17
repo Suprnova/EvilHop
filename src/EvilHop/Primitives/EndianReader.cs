@@ -37,6 +37,11 @@ public sealed class EndianReader(Stream input, Endianness endianness, bool leave
         : BinaryPrimitives.ReadInt16LittleEndian(ReadBytes(2));
 
     /// <inheritdoc/>
+    public override ushort ReadUInt16() => Endianness == Endianness.Big
+        ? BinaryPrimitives.ReadUInt16BigEndian(ReadBytes(2))
+        : BinaryPrimitives.ReadUInt16LittleEndian(ReadBytes(2));
+
+    /// <inheritdoc/>
     public override int ReadInt32() => Endianness == Endianness.Big
         ? BinaryPrimitives.ReadInt32BigEndian(ReadBytes(4))
         : BinaryPrimitives.ReadInt32LittleEndian(ReadBytes(4));

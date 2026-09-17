@@ -28,6 +28,15 @@ public sealed class EndianWriter(Stream output, Endianness endianness, bool leav
     }
 
     /// <inheritdoc/>
+    public override void Write(ushort value)
+    {
+        Span<byte> bytes = stackalloc byte[2];
+        if (Endianness == Endianness.Big) BinaryPrimitives.WriteUInt16BigEndian(bytes, value);
+        else BinaryPrimitives.WriteUInt16LittleEndian(bytes, value);
+        Write(bytes);
+    }
+
+    /// <inheritdoc/>
     public override void Write(int value)
     {
         Span<byte> bytes = stackalloc byte[4];
