@@ -124,6 +124,7 @@ internal static class AssetCodecs
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
         Register(AssetType.SurfaceMapper, SurfaceMapperAsset.Read, SurfaceMapperAsset.Write, SurfaceMapperAsset.SupportedGames);
         Register(AssetType.Text, TextAsset.Read, TextAsset.Write);
+        Register(AssetType.Timer, TimerAsset.Read, TimerAsset.Write);
         Register(AssetType.Trigger, TriggerAsset.Read, TriggerAsset.Write);
         Register(AssetType.UI, UIAsset.Read, UIAsset.Write, UIAsset.SupportedGames);
         Register(AssetType.UIFont, UIFontAsset.Read, UIFontAsset.Write, UIFontAsset.SupportedGames);
