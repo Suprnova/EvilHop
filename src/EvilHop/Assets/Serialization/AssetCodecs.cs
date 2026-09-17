@@ -114,6 +114,7 @@ internal static class AssetCodecs
         Register(AssetType.Script, ScriptAsset.Read, ScriptAsset.Write, ScriptAsset.SupportedGames);
         Register(AssetType.SimpleObject, SimpleObjectAsset.Read, SimpleObjectAsset.Write);
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
+        Register(AssetType.SoundEffect, SoundEffectAsset.Read, SoundEffectAsset.Write, SoundEffectAsset.SupportedGames);
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
         Register(AssetType.SurfaceMapper, SurfaceMapperAsset.Read, SurfaceMapperAsset.Write, SurfaceMapperAsset.SupportedGames);
