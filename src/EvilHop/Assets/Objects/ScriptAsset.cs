@@ -101,7 +101,11 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script), IPhysicalScript
                 ],
                 ParamWidgetId = reader.ReadAssetId(),
             };
-            if (hasEnabled) evt.Enabled = reader.ReadInt32() != 0;
+            if (hasEnabled)
+            {
+                evt.Enabled = reader.ReadByte() != 0;
+                reader.ReadBytes(3); // padding, always zero
+            }
             asset.Events.Add(evt);
         }
         asset.Physical.EventCount = (uint)asset.Events.Count;
@@ -134,7 +138,11 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script), IPhysicalScript
             writer.Write(evt.ParamEvent);
             foreach (var param in evt.Param) param.WriteTo(writer);
             writer.Write(evt.ParamWidgetId);
-            if (hasEnabled) writer.Write(evt.Enabled ? 1 : 0);
+            if (hasEnabled)
+            {
+                writer.Write((byte)(evt.Enabled ? 1 : 0));
+                writer.Write(new byte[3]); // padding
+            }
         }
 
         LinkSerialization.Write(asset, writer);
