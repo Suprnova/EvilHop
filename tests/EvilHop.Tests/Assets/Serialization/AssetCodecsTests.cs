@@ -73,7 +73,7 @@ public class AssetCodecsTests
 
     [Theory]
     [InlineData(AssetType.AttackTable)]
-    [InlineData(AssetType.Text)]
+    [InlineData(AssetType.CutsceneStreamingSound)]
     [InlineData(AssetType.Wireframe)]
     public void Read_UnclassifiedType_PreservesEveryByte(AssetType type)
     {
