@@ -56,7 +56,7 @@ public class ScriptAssetTests
         .. U32(paramEvent),
         .. new byte[16], // Param
         .. U32(paramWidgetId),
-        .. enabled is bool e ? U32(e ? 1u : 0u) : [],
+        .. enabled is bool e ? new byte[] { (byte)(e ? 1 : 0), 0, 0, 0 } : [],
     ];
 
     private static byte[] LinkBytes(short sourceEvent, short destinationEvent, uint destinationAssetId) =>
