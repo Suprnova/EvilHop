@@ -37,8 +37,8 @@ public sealed partial class SurfaceAsset
         asset.ColorFx = new SurfaceColorFx
         {
             // TODO: double cast? why?
-            Flags = (SurfaceColorFxFlags)(ushort)reader.ReadInt16(),
-            Mode = (ushort)reader.ReadInt16(),
+            Flags = (SurfaceColorFxFlags)reader.ReadUInt16(),
+            Mode = reader.ReadUInt16(),
             Speed = reader.ReadSingle(),
         };
 
@@ -128,7 +128,7 @@ public sealed partial class SurfaceAsset
     private static SurfaceTextureAnim ReadTextureAnim(EndianReader reader)
     {
         reader.ReadInt16(); // padding, always zero
-        var mode = (SurfaceTextureAnimMode)(ushort)reader.ReadInt16();
+        var mode = (SurfaceTextureAnimMode)reader.ReadUInt16();
         return new SurfaceTextureAnim
         {
             Mode = mode,

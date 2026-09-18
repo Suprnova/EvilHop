@@ -132,7 +132,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
     private static ModelInfoInstance ReadInstance(EndianReader reader) => new()
     {
         ModelId = reader.ReadAssetId(),
-        Flags = (ushort)reader.ReadInt16(),
+        Flags = reader.ReadUInt16(),
         Parent = reader.ReadByte(),
         Bone = reader.ReadByte(),
         Right = reader.ReadVector3(),

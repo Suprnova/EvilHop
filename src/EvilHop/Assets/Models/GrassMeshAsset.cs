@@ -112,9 +112,9 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh), IPhysical
 
     private static GrassMeshFace ReadFace(EndianReader reader) => new()
     {
-        VertexA = (ushort)reader.ReadInt16(),
-        VertexB = (ushort)reader.ReadInt16(),
-        VertexC = (ushort)reader.ReadInt16(),
+        VertexA = reader.ReadUInt16(),
+        VertexB = reader.ReadUInt16(),
+        VertexC = reader.ReadUInt16(),
     };
 
     private static void WriteFace(EndianWriter writer, GrassMeshFace face)

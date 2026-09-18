@@ -123,8 +123,8 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoun
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Physical.SFXFlags = (ushort)reader.ReadInt16();
-        asset.Frequency = (ushort)reader.ReadInt16();
+        asset.Physical.SFXFlags = reader.ReadUInt16();
+        asset.Frequency = reader.ReadUInt16();
         asset.FrequencyMultiplier = reader.ReadSingle();
         asset.SoundId = reader.ReadAssetId();
         asset.AttachId = reader.ReadAssetId();

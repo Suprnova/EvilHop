@@ -64,10 +64,10 @@ public sealed partial class DashTrackAsset
 
     private static DashTrackTriangle ReadTriangle(EndianReader reader) => new()
     {
-        VertexA = (ushort)reader.ReadInt16(),
-        VertexB = (ushort)reader.ReadInt16(),
-        VertexC = (ushort)reader.ReadInt16(),
-        Flags = (ushort)reader.ReadInt16(),
+        VertexA = reader.ReadUInt16(),
+        VertexB = reader.ReadUInt16(),
+        VertexC = reader.ReadUInt16(),
+        Flags = reader.ReadUInt16(),
         U = reader.ReadVector3(),
         V = reader.ReadVector3(),
     };
@@ -84,9 +84,9 @@ public sealed partial class DashTrackAsset
 
     private static DashTrackPortal ReadPortal(EndianReader reader) => new()
     {
-        Neighbor0 = (ushort)reader.ReadInt16(),
-        Neighbor1 = (ushort)reader.ReadInt16(),
-        Neighbor2 = (ushort)reader.ReadInt16(),
+        Neighbor0 = reader.ReadUInt16(),
+        Neighbor1 = reader.ReadUInt16(),
+        Neighbor2 = reader.ReadUInt16(),
     };
 
     private static void WritePortal(EndianWriter writer, DashTrackPortal portal)

@@ -77,8 +77,8 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI), IHasSurface, IHasMode
         EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.Flags = (UIFlags)reader.ReadUInt32();
-        asset.Width = (ushort)reader.ReadInt16();
-        asset.Height = (ushort)reader.ReadInt16();
+        asset.Width = reader.ReadUInt16();
+        asset.Height = reader.ReadUInt16();
         asset.TextureId = reader.ReadAssetId();
         asset.TopLeftUV = ReadVector2(reader);
         asset.TopRightUV = ReadVector2(reader);

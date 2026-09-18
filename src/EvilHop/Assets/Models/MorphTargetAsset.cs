@@ -71,8 +71,8 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
         AssetFields.Populate(asset, header, debug);
 
         asset.Physical.Magic = reader.ReadUInt32();
-        ushort targetCount = (ushort)reader.ReadInt16();
-        ushort vertexCount = (ushort)reader.ReadInt16();
+        ushort targetCount = reader.ReadUInt16();
+        ushort vertexCount = reader.ReadUInt16();
         asset.Physical.MorphFlags = reader.ReadUInt32();
         asset.Scale = reader.ReadSingle();
         asset.Center = reader.ReadVector3();

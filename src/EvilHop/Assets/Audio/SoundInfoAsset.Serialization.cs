@@ -81,17 +81,17 @@ public sealed partial class SoundInfoAsset
             NibbleCount = reader.ReadUInt32(),
             SampleRate = reader.ReadUInt32(),
             IsLooped = reader.ReadInt16() != 0,
-            Format = (ushort)reader.ReadInt16(),
+            Format = reader.ReadUInt16(),
             LoopStart = reader.ReadUInt32(),
             LoopEnd = reader.ReadUInt32(),
             InitialOffset = reader.ReadUInt32(),
         };
         for (int i = 0; i < header.Coefficients.Count; i++) header.Coefficients[i] = reader.ReadInt16();
-        header.Gain = (ushort)reader.ReadInt16();
-        header.PredictorScale = (ushort)reader.ReadInt16();
+        header.Gain = reader.ReadUInt16();
+        header.PredictorScale = reader.ReadUInt16();
         header.History1 = reader.ReadInt16();
         header.History2 = reader.ReadInt16();
-        header.LoopPredictorScale = (ushort)reader.ReadInt16();
+        header.LoopPredictorScale = reader.ReadUInt16();
         header.LoopHistory1 = reader.ReadInt16();
         header.LoopHistory2 = reader.ReadInt16();
         for (int i = 0; i < header.Unknown.Count; i++) header.Unknown[i] = reader.ReadByte();
@@ -127,7 +127,7 @@ public sealed partial class SoundInfoAsset
         asset.Physical.SoundInfoId = reader.ReadAssetId();
         uint footerOffset = reader.ReadUInt32(); // relative to the end of this header
         reader.ReadBytes(16); // runtime-resolved pFMusicMod/pFSBFileArray/pWavInfoArray/pCutsceneAudioHeaders, always null
-        int soundCount = (ushort)reader.ReadInt16();
+        int soundCount = reader.ReadUInt16();
         reader.ReadInt16(); // nSounds, a subset count of Sounds recomputed from Flags on write
         reader.ReadInt16(); // nStreams, ditto
         int soundBankCount = reader.ReadByte();

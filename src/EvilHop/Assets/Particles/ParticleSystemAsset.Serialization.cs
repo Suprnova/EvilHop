@@ -19,7 +19,7 @@ public sealed partial class ParticleSystemAsset
         asset.TextureId = reader.ReadAssetId();
         asset.Flags = (ParticleSystemFlags)reader.ReadByte();
         asset.Priority = reader.ReadByte();
-        asset.MaxParticles = (ushort)reader.ReadInt16();
+        asset.MaxParticles = reader.ReadUInt16();
         asset.RenderFunction = (ParticleSystemRenderFunction)reader.ReadByte();
         asset.SourceBlend = (RwBlendFunction)(byte)(reader.ReadByte() + 1);
         asset.DestinationBlend = (RwBlendFunction)(byte)(reader.ReadByte() + 1);

@@ -17,15 +17,15 @@ public sealed partial class UIFontAsset
         EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.Flags = (UIFlags)reader.ReadUInt32();
-        asset.Width = (ushort)reader.ReadInt16();
-        asset.Height = (ushort)reader.ReadInt16();
+        asset.Width = reader.ReadUInt16();
+        asset.Height = reader.ReadUInt16();
         asset.TextureId = reader.ReadAssetId();
         asset.TopLeftUV = ReadVector2(reader);
         asset.TopRightUV = ReadVector2(reader);
         asset.BottomRightUV = ReadVector2(reader);
         asset.BottomLeftUV = ReadVector2(reader);
 
-        asset.FontFlags = (UIFontFlags)(ushort)reader.ReadInt16();
+        asset.FontFlags = (UIFontFlags)reader.ReadUInt16();
         asset.Mode = (UIFontMode)reader.ReadByte();
         asset.FontId = reader.ReadByte();
         asset.TextId = reader.ReadAssetId();

@@ -95,8 +95,8 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 
         asset.Physical.Magic = reader.ReadUInt32();
         asset.Physical.AnimationFlags = reader.ReadUInt32();
-        asset.Physical.BoneCount = (ushort)reader.ReadInt16();
-        int timeCount = (ushort)reader.ReadInt16();
+        asset.Physical.BoneCount = reader.ReadUInt16();
+        int timeCount = reader.ReadUInt16();
         int keyCount = (int)reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
 
@@ -104,7 +104,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         {
             asset.Keys.Add(new AnimationKey
             {
-                TimeIndex = (ushort)reader.ReadInt16(),
+                TimeIndex = reader.ReadUInt16(),
                 Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
                 Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
             });
@@ -113,7 +113,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         for (int i = 0; i < timeCount; i++) asset.Times.Add(reader.ReadSingle());
 
         int offsetCount = Math.Max(timeCount - 1, 0) * asset.Physical.BoneCount;
-        for (int i = 0; i < offsetCount; i++) asset.Offsets.Add((ushort)reader.ReadInt16());
+        for (int i = 0; i < offsetCount; i++) asset.Offsets.Add(reader.ReadUInt16());
 
         asset.Physical.KeyCount = (uint)asset.Keys.Count;
         asset.Physical.TimeCount = (ushort)asset.Times.Count;

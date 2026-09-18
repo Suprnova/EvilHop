@@ -12,18 +12,18 @@ public sealed partial class AttackTableAsset
         var asset = new AttackTableAsset();
         AssetFields.Populate(asset, header, debug);
 
-        int sectionCount = (ushort)reader.ReadInt16();
-        int entryCount = (ushort)reader.ReadInt16();
-        int transitionCount = (ushort)reader.ReadInt16();
-        int stateCount = (ushort)reader.ReadInt16();
+        int sectionCount = reader.ReadUInt16();
+        int entryCount = reader.ReadUInt16();
+        int transitionCount = reader.ReadUInt16();
+        int stateCount = reader.ReadUInt16();
 
         for (int i = 0; i < sectionCount; i++)
         {
             asset.Sections.Add(new AttackTableSection
             {
                 SectionId = reader.ReadUInt32(),
-                Start = (ushort)reader.ReadInt16(),
-                Count = (ushort)reader.ReadInt16(),
+                Start = reader.ReadUInt16(),
+                Count = reader.ReadUInt16(),
             });
         }
 
@@ -34,12 +34,12 @@ public sealed partial class AttackTableAsset
                 AnimationStateId = reader.ReadUInt32(),
             };
             reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero
-            entry.AnimationStart = (ushort)reader.ReadInt16();
-            entry.AnimationCount = (ushort)reader.ReadInt16();
-            entry.Start = (ushort)reader.ReadInt16();
-            entry.Count = (ushort)reader.ReadInt16();
-            entry.OnFlags = (ushort)reader.ReadInt16();
-            entry.OffFlags = (ushort)reader.ReadInt16();
+            entry.AnimationStart = reader.ReadUInt16();
+            entry.AnimationCount = reader.ReadUInt16();
+            entry.Start = reader.ReadUInt16();
+            entry.Count = reader.ReadUInt16();
+            entry.OnFlags = reader.ReadUInt16();
+            entry.OffFlags = reader.ReadUInt16();
             entry.Input = reader.ReadByte();
             entry.Power = reader.ReadByte();
             reader.ReadUInt16(); // padding, always zero
@@ -90,9 +90,9 @@ public sealed partial class AttackTableAsset
                 ReadHitBone(reader),
             ],
             Damage = reader.ReadInt16(),
-            Source = (ushort)reader.ReadInt16(),
-            Effect = (ushort)reader.ReadInt16(),
-            HitEffect = (ushort)reader.ReadInt16(),
+            Source = reader.ReadUInt16(),
+            Effect = reader.ReadUInt16(),
+            HitEffect = reader.ReadUInt16(),
             EffectStart = reader.ReadSingle(),
             EffectEnd = reader.ReadSingle(),
             EffectBonesOutside = [ReadEffectBone(reader), ReadEffectBone(reader)],
@@ -134,7 +134,7 @@ public sealed partial class AttackTableAsset
 
     private static HitBoneInfo ReadHitBone(EndianReader reader)
     {
-        var hitBone = new HitBoneInfo { Bone = (ushort)reader.ReadInt16() };
+        var hitBone = new HitBoneInfo { Bone = reader.ReadUInt16() };
         reader.ReadInt16(); // padding, always zero
         hitBone.Offset = reader.ReadVector3();
         hitBone.Atomic = reader.ReadInt16();
@@ -144,7 +144,7 @@ public sealed partial class AttackTableAsset
 
     private static ushort ReadEffectBone(EndianReader reader)
     {
-        ushort bone = (ushort)reader.ReadInt16();
+        ushort bone = reader.ReadUInt16();
         reader.ReadInt16(); // padding, always zero
         reader.ReadUInt32(); // runtime-resolved xVec3* position cache, always zero
         return bone;

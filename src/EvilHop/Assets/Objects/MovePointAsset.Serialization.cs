@@ -15,12 +15,12 @@ public sealed partial class MovePointAsset
         BaseAssetPrefix.Read(asset, reader);
 
         asset.Position = reader.ReadVector3();
-        asset.Weight = (ushort)reader.ReadInt16();
+        asset.Weight = reader.ReadUInt16();
         asset.Kind = (MovePointKind)reader.ReadByte();
         asset.BezierRole = (MovePointBezierRole)reader.ReadByte();
         asset.Physical.FlagsProps = reader.ReadByte();
         reader.ReadByte(); // pad, always zero
-        int numPoints = (ushort)reader.ReadInt16();
+        int numPoints = reader.ReadUInt16();
         asset.Delay = reader.ReadSingle();
 
         if (profile.Game is not GameVersion.N100F)

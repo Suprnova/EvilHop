@@ -61,7 +61,7 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
                 PickupHash = reader.ReadUInt32(),
                 PickupType = reader.ReadByte(),
                 PickupIndex = reader.ReadByte(),
-                Flags = (ushort)reader.ReadInt16(),
+                Flags = reader.ReadUInt16(),
                 Quantity = reader.ReadUInt32(),
                 ModelId = reader.ReadAssetId(),
                 AnimId = reader.ReadAssetId(),
