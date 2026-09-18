@@ -14,7 +14,7 @@ public sealed partial class UIFontAsset
         var asset = new UIFontAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.Flags = (UIFlags)reader.ReadUInt32();
         asset.Width = (ushort)reader.ReadInt16();
@@ -52,7 +52,7 @@ public sealed partial class UIFontAsset
     internal static void Write(UIFontAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write((uint)asset.Flags);
         writer.Write((short)asset.Width);

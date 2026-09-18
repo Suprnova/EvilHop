@@ -289,7 +289,7 @@ internal static class AssetCodecs
     private static GenericEntityAsset ReadEntity(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = PopulateBase(new GenericEntityAsset(header.Type), header, debug, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -297,7 +297,7 @@ internal static class AssetCodecs
     private static void WriteEntity(EntityAsset entity, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(entity, writer);
-        EntityAssetPrefix.Write(entity, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(entity, writer, profile);
         writer.Write(entity.GetUnparsedTail());
     }
 

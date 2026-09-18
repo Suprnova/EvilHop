@@ -11,14 +11,16 @@ internal static class SniffProfileBuilder
 {
     /// <summary>
     /// Builds <paramref name="game"/>'s <c>DefaultProfile</c>, overridden with whatever
-    /// <paramref name="signals"/> imply about <see cref="FormatProfile.Platform"/> and
-    /// <see cref="FormatProfile.StreamDataHasPaddingField"/>.
+    /// <paramref name="signals"/> imply about <see cref="FormatProfile.Platform"/>,
+    /// <see cref="FormatProfile.StreamDataHasPaddingField"/>, and
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/>.
     /// </summary>
     public static FormatProfile Build(GameVersion game, SniffSignals signals) =>
         Serializer.DefaultProfileFor(game) with
         {
             Platform = DerivePlatform(signals.Flags, signals.PlatformStrings),
-            StreamDataHasPaddingField = signals.DpakPaddingObserved ?? (signals.ClientVersion != ClientVersion.N100FPrototype)
+            StreamDataHasPaddingField = signals.DpakPaddingObserved ?? (signals.ClientVersion != ClientVersion.N100FPrototype),
+            EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype
         };
 
     /// <summary>

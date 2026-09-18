@@ -88,7 +88,7 @@ public sealed class VillainAsset : EntityAsset, IHasModel, IGrabbable
         var asset = new VillainAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.NpcFlags = reader.ReadInt32();
         asset.NpcModelId = reader.ReadAssetId();
@@ -112,7 +112,7 @@ public sealed class VillainAsset : EntityAsset, IHasModel, IGrabbable
     internal static void Write(VillainAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.NpcFlags);
         writer.Write(asset.NpcModelId);

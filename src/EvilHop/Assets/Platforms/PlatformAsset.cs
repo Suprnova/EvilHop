@@ -63,7 +63,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
         var asset = new PlatformAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         // Subtype derives from PlatformType, which derives from Motion - reassigned once both are read.
         byte subtype = asset.Physical.Subtype;
@@ -95,7 +95,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
     internal static void Write(PlatformAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write((byte)asset.Physical.PlatformType);
         writer.Write((byte)0); // padding

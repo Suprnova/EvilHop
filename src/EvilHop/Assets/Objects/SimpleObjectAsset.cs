@@ -48,7 +48,7 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), I
         var asset = new SimpleObjectAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.AnimationSpeed = reader.ReadSingle();
         asset.InitialAnimationState = reader.ReadUInt32();
@@ -65,7 +65,7 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), I
     internal static void Write(SimpleObjectAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.AnimationSpeed);
         writer.Write(asset.InitialAnimationState);

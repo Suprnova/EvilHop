@@ -26,7 +26,7 @@ public sealed class PlayerAsset() : EntityAsset(AssetType.Player)
         var asset = new PlayerAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -41,7 +41,7 @@ public sealed class PlayerAsset() : EntityAsset(AssetType.Player)
     internal static void Write(PlayerAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         LinkSerialization.Write(asset, writer);
 

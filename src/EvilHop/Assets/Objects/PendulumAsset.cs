@@ -40,7 +40,7 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum), IHasModel
         var asset = new PendulumAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.Motion = (PendulumMotion)EntityMotion.Read(reader, profile.Game);
 
@@ -53,7 +53,7 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum), IHasModel
     internal static void Write(PendulumAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         asset.Motion.Write(writer, profile.Game);
 

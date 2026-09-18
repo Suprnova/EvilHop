@@ -56,7 +56,7 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup)
         var asset = new PickupAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.PickupHash = reader.ReadUInt32();
         asset.Flags = (PickupFlags)reader.ReadInt16();
@@ -71,7 +71,7 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup)
     internal static void Write(PickupAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.PickupHash);
         writer.Write((short)asset.Flags);

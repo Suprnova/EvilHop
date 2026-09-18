@@ -28,6 +28,19 @@ namespace EvilHop.Serialization;
 /// flag bytes. True for <see cref="GameVersion.BFBB"/> release builds, false for every other game,
 /// including beta builds.
 /// </param>
+/// <param name="EntityHasExtendedFields">
+/// Whether an <see cref="EntityAsset"/> on-disk layout includes <c>SurfaceId</c>, <c>ColorMultiplier</c>,
+/// <c>SeeThroughSpeed</c>, and <c>AnimListId</c> after <c>Scale</c>/before <c>ModelId</c>. False only for
+/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose entities are just flags, angle,
+/// position, scale, and a model ID; true everywhere else, including every later N100F build.
+/// </param>
+/// <param name="PickupTypesHasPulseFields">
+/// Whether a <see cref="PickupTypeEntry"/> carries <see cref="PickupTypeEntry.PulseModelId"/>,
+/// <see cref="PickupTypeEntry.PulseTime"/>, <see cref="PickupTypeEntry.PulseAddScale"/>,
+/// <see cref="PickupTypeEntry.PulseMoveDown"/>, and <see cref="PickupTypeEntry.ColorMultiplier"/>.
+/// True everywhere except Incredibles' <c>prototype_2004-07-19</c> build, whose pickup pulse effect
+/// and tint hadn't been added yet.
+/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
 /// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
@@ -37,7 +50,9 @@ public sealed record FormatProfile(
     Platform Platform,
     PlatformFieldOrder PlatformFieldOrder,
     bool StreamDataHasPaddingField,
-    bool EntityHasPadding = false)
+    bool EntityHasPadding = false,
+    bool EntityHasExtendedFields = true,
+    bool PickupTypesHasPulseFields = true)
 {
     /// <summary>
     /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always

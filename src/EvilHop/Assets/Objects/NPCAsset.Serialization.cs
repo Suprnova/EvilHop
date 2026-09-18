@@ -13,7 +13,7 @@ public sealed partial class NPCAsset
         var asset = new NPCAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.ActivateRadius = reader.ReadSingle();
         asset.ActivateFOV = reader.ReadSingle();
@@ -58,7 +58,7 @@ public sealed partial class NPCAsset
     internal static void Write(NPCAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.ActivateRadius);
         writer.Write(asset.ActivateFOV);

@@ -54,7 +54,7 @@ public sealed class PickupTypesAsset : BaseAsset, IPhysicalPickupTypesAsset
         GameVersion.Ratatouille,
     };
 
-    internal static PickupTypesAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static PickupTypesAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new PickupTypesAsset();
         AssetFields.Populate(asset, header, debug);
@@ -64,24 +64,31 @@ public sealed class PickupTypesAsset : BaseAsset, IPhysicalPickupTypesAsset
         int rowCount = reader.ReadInt32();
         for (int i = 0; i < rowCount; i++)
         {
-            asset.Entries.Add(new PickupTypeEntry
+            var entry = new PickupTypeEntry
             {
                 TypeHash = reader.ReadAssetId(),
                 ModelId = reader.ReadAssetId(),
-                PulseModelId = reader.ReadAssetId(),
-                PulseTime = reader.ReadSingle(),
-                PulseAddScale = reader.ReadSingle(),
-                PulseMoveDown = reader.ReadSingle(),
-                ColorMultiplier = reader.ReadRgb(),
-                Color = reader.ReadUInt32(),
-                FlyingSoundGroupId = reader.ReadAssetId(),
-                UsedSoundGroupId = reader.ReadAssetId(),
-                CantUseSoundGroupId = reader.ReadAssetId(),
-                HealthGain = reader.ReadByte(),
-                PowerGain = reader.ReadByte(),
-                SaveFlag = reader.ReadByte(),
-                Initialized = reader.ReadSByte(),
-            });
+            };
+
+            if (profile.PickupTypesHasPulseFields)
+            {
+                entry.PulseModelId = reader.ReadAssetId();
+                entry.PulseTime = reader.ReadSingle();
+                entry.PulseAddScale = reader.ReadSingle();
+                entry.PulseMoveDown = reader.ReadSingle();
+                entry.ColorMultiplier = reader.ReadRgb();
+            }
+
+            entry.Color = reader.ReadUInt32();
+            entry.FlyingSoundGroupId = reader.ReadAssetId();
+            entry.UsedSoundGroupId = reader.ReadAssetId();
+            entry.CantUseSoundGroupId = reader.ReadAssetId();
+            entry.HealthGain = reader.ReadByte();
+            entry.PowerGain = reader.ReadByte();
+            entry.SaveFlag = reader.ReadByte();
+            entry.Initialized = reader.ReadSByte();
+
+            asset.Entries.Add(entry);
         }
 
         asset.Physical.RowCount = rowCount;
@@ -89,7 +96,7 @@ public sealed class PickupTypesAsset : BaseAsset, IPhysicalPickupTypesAsset
         return asset;
     }
 
-    internal static void Write(PickupTypesAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(PickupTypesAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -99,11 +106,16 @@ public sealed class PickupTypesAsset : BaseAsset, IPhysicalPickupTypesAsset
         {
             writer.Write(entry.TypeHash);
             writer.Write(entry.ModelId);
-            writer.Write(entry.PulseModelId);
-            writer.Write(entry.PulseTime);
-            writer.Write(entry.PulseAddScale);
-            writer.Write(entry.PulseMoveDown);
-            writer.Write(entry.ColorMultiplier);
+
+            if (profile.PickupTypesHasPulseFields)
+            {
+                writer.Write(entry.PulseModelId);
+                writer.Write(entry.PulseTime);
+                writer.Write(entry.PulseAddScale);
+                writer.Write(entry.PulseMoveDown);
+                writer.Write(entry.ColorMultiplier);
+            }
+
             writer.Write(entry.Color);
             writer.Write(entry.FlyingSoundGroupId);
             writer.Write(entry.UsedSoundGroupId);
@@ -152,26 +164,41 @@ public sealed class PickupTypeEntry
     /// <summary>
     /// The <see cref="AssetType.Model"/> used when the pickup pulses.
     /// </summary>
+    /// <remarks>
+    /// Not present when <see cref="FormatProfile.PickupTypesHasPulseFields"/> is <see langword="false"/>.
+    /// </remarks>
     public AssetId PulseModelId { get; set; }
 
     /// <summary>
     /// The duration or rate of the pickup's pulsing effect.
     /// </summary>
+    /// <remarks>
+    /// Not present when <see cref="FormatProfile.PickupTypesHasPulseFields"/> is <see langword="false"/>.
+    /// </remarks>
     public float PulseTime { get; set; }
 
     /// <summary>
     /// The additional scale applied during pulsing.
     /// </summary>
+    /// <remarks>
+    /// Not present when <see cref="FormatProfile.PickupTypesHasPulseFields"/> is <see langword="false"/>.
+    /// </remarks>
     public float PulseAddScale { get; set; }
 
     /// <summary>
     /// The vertical offset downwards applied during pulsing.
     /// </summary>
+    /// <remarks>
+    /// Not present when <see cref="FormatProfile.PickupTypesHasPulseFields"/> is <see langword="false"/>.
+    /// </remarks>
     public float PulseMoveDown { get; set; }
 
     /// <summary>
     /// The color multiplier or tint applied to the pickup's model.
     /// </summary>
+    /// <remarks>
+    /// Not present when <see cref="FormatProfile.PickupTypesHasPulseFields"/> is <see langword="false"/>.
+    /// </remarks>
     public Rgb ColorMultiplier { get; set; }
 
     /// <summary>

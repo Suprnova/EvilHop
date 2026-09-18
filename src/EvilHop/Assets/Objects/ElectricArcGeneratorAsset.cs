@@ -61,7 +61,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
         var asset = new ElectricArcGeneratorAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.SourceOffset = reader.ReadVector3();
         asset.DamageType = reader.ReadByte();
@@ -79,7 +79,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
     internal static void Write(ElectricArcGeneratorAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.SourceOffset);
         writer.Write(asset.DamageType);

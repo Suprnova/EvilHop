@@ -160,6 +160,43 @@ public class PlayerAssetTests
     }
 
     [Fact]
+    public void Read_RealN100FPrototypeExemplar_RoundTripsExactly()
+    {
+        // From FOO1.HIP: AHDR id=0xBC44C2B2 "PLYR", size=52, n100f/prototype_2001-06-11/PS2.
+        // This build's EntityAssetPrefix has no SurfaceId, ColorMultiplier, SeeThroughSpeed, or
+        // AnimListId - just flags, angle, position, scale, and a model ID.
+        byte[] data =
+        [
+            0xB2, 0xC2, 0x44, 0xBC, 0x03, 0x00, 0x00, 0x00,
+            0x01, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Angle
+            0x00, 0xA0, 0x31, 0x44, 0x9A, 0x19, 0x89, 0x43, 0x0C, 0x22, 0x18, 0x44, // Position
+            0x00, 0x00, 0x80, 0x3F, 0x00, 0x00, 0x80, 0x3F, 0x00, 0x00, 0x80, 0x3F, // Scale
+            0xD5, 0xF1, 0xE7, 0x96, // ModelId
+        ];
+
+        var profile = N100FSerializer.DefaultProfile with
+        {
+            Platform = Platform.PlayStation2,
+            StreamDataHasPaddingField = false,
+            EntityHasExtendedFields = false,
+        };
+
+        var asset = (PlayerAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0), asset.Physical.SurfaceId);
+        Assert.Equal(default, asset.ColorMultiplier);
+        Assert.Equal(0f, asset.Physical.SeeThroughSpeed);
+        Assert.Equal(new AssetId(0x96E7F1D5), asset.Physical.ModelId);
+        Assert.Equal(new AssetId(0), asset.Physical.AnimListId);
+        Assert.Equal(1.0f, asset.Scale.X);
+        Assert.Equal(1.0f, asset.Scale.Y);
+        Assert.Equal(1.0f, asset.Scale.Z);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_ThenWrite_PlayerWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), .. LightKitId(0x4E24E022), 0xDE, 0xAD, 0xBE, 0xEF];

@@ -13,7 +13,7 @@ public sealed partial class BoulderAsset
         var asset = new BoulderAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.Gravity = reader.ReadSingle();
         asset.Mass = reader.ReadSingle();
@@ -54,7 +54,7 @@ public sealed partial class BoulderAsset
     internal static void Write(BoulderAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.Gravity);
         writer.Write(asset.Mass);

@@ -137,6 +137,32 @@ public class PickupTypesAssetTests
         (byte)initialized,
     ];
 
+    /// <summary>An entry as laid out before <see cref="FormatProfile.PickupTypesHasPulseFields"/> existed.</summary>
+    private static byte[] ReducedEntry(
+        uint typeHash,
+        uint modelId,
+        uint color,
+        uint flyingSoundGroupId,
+        uint usedSoundGroupId,
+        uint cantUseSoundGroupId,
+        byte healthGain,
+        byte powerGain,
+        byte saveFlag,
+        sbyte initialized,
+        bool bigEndian = true) =>
+    [
+        .. U32(typeHash, bigEndian),
+        .. U32(modelId, bigEndian),
+        .. U32(color, bigEndian),
+        .. U32(flyingSoundGroupId, bigEndian),
+        .. U32(usedSoundGroupId, bigEndian),
+        .. U32(cantUseSoundGroupId, bigEndian),
+        healthGain,
+        powerGain,
+        saveFlag,
+        (byte)initialized,
+    ];
+
     [Fact]
     public void Defaults_HaveExpectedValues()
     {
@@ -357,6 +383,62 @@ public class PickupTypesAssetTests
         ];
 
         Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_WithoutPulseFields_ReproducesInputBytes()
+    {
+        byte[] data =
+        [
+            .. Prefix(),
+            .. TableHeader(3, 2),
+            .. ReducedEntry(0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 10, 0, 0, 0),
+            .. ReducedEntry(0x77777777, 0x88888888, 0, 0, 0x99999999, 0xAAAAAAAA, 0, 25, 1, -1),
+        ];
+        var profile = IncrediblesSerializer.DefaultProfile with { PickupTypesHasPulseFields = false };
+
+        var asset = (PickupTypesAsset)Read(data, profile);
+
+        Assert.Equal(2, asset.Entries.Count);
+        Assert.Equal(new AssetId(0x11111111), asset.Entries[0].TypeHash);
+        Assert.Equal(default, asset.Entries[0].PulseModelId);
+        Assert.Equal(0f, asset.Entries[0].PulseTime);
+        Assert.Equal(default(Rgb), asset.Entries[0].ColorMultiplier);
+        Assert.Equal((byte)10, asset.Entries[0].HealthGain);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_RealIncrediblesPrototypeExemplar_ReproducesInputBytesWithoutPulseFields()
+    {
+        // incredibles/prototype_2004-07-19/GC/NTSC-U/US/BOOT.HIP, AHDR id=0x7C1E7D4D
+        byte[] data =
+        [
+            0x7C, 0x1E, 0x7D, 0x4D, 0x00, 0x00, 0x00, 0x1D,
+            0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x09,
+            .. ReducedEntry(0x66BFB77B, 0x72E0B667, 0x00000000, 0x00000000, 0x98EB34D6, 0xA1A1F173, 0x0A, 0x00, 0x00, 0x00),
+            .. ReducedEntry(0x66BFB803, 0x72E0B667, 0x00000000, 0x00000000, 0x98EB34D6, 0xA1A1F173, 0x19, 0x00, 0x00, 0x00),
+            .. ReducedEntry(0x66BFB987, 0xF6F0DF51, 0x00000000, 0x00000000, 0x98EB34D6, 0xA1A1F173, 0x32, 0x00, 0x00, 0x00),
+            .. ReducedEntry(0x941AE421, 0xF6F0DF51, 0x00000000, 0x00000000, 0x4C02878E, 0xA1A1F173, 0x64, 0x00, 0x00, 0x00),
+            .. ReducedEntry(0xD4F738C2, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0xA1A1F173, 0x00, 0x0A, 0x00, 0x00),
+            .. ReducedEntry(0xD4F7394A, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0xA1A1F173, 0x00, 0x19, 0x00, 0x00),
+            .. ReducedEntry(0xD4F73ACE, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0xA1A1F173, 0x00, 0x32, 0x00, 0x00),
+            .. ReducedEntry(0xFA820B76, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0xA1A1F173, 0x00, 0x64, 0x00, 0x00),
+            .. ReducedEntry(0x91338C47, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0x00000000, 0x00, 0x00, 0x01, 0x00),
+        ];
+        var profile = IncrediblesSerializer.DefaultProfile with { PickupTypesHasPulseFields = false };
+
+        var asset = (PickupTypesAsset)Read(data, profile);
+
+        Assert.Equal(9, asset.Entries.Count);
+        Assert.Equal(new AssetId(0x66BFB77B), asset.Entries[0].TypeHash);
+        Assert.Equal((byte)10, asset.Entries[0].HealthGain);
+        Assert.Equal((byte)25, asset.Entries[5].PowerGain);
+        Assert.Equal((byte)1, asset.Entries[8].SaveFlag);
+        Assert.Empty(asset.GetUnparsedTail().ToArray());
+
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

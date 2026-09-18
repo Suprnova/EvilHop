@@ -70,7 +70,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
         var asset = new TriggerAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding);
+        EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.TriggerPosition0 = reader.ReadVector3();
         asset.TriggerPosition1 = reader.ReadVector3();
@@ -88,7 +88,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
     internal static void Write(TriggerAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
-        EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
+        EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write(asset.TriggerPosition0);
         writer.Write(asset.TriggerPosition1);

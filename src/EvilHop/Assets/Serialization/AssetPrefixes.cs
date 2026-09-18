@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets.Serialization;
 
@@ -46,11 +47,11 @@ internal static class EntityAssetPrefix
     /// </summary>
     /// <param name="asset">The <see cref="EntityAsset"/> to populate.</param>
     /// <param name="reader">The reader to read from.</param>
-    /// <param name="hasPadding">
-    /// Whether this build inserts four bytes of padding after the four flag bytes, from
-    /// <see cref="EvilHop.Serialization.FormatProfile.EntityHasPadding"/>.
+    /// <param name="profile">
+    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout.
     /// </param>
-    public static void Read(EntityAsset asset, EndianReader reader, bool hasPadding)
+    public static void Read(EntityAsset asset, EndianReader reader, FormatProfile profile)
     {
         asset.EntityFlags = (EntityFlags)reader.ReadByte();
         asset.Physical.Subtype = reader.ReadByte();
@@ -58,16 +59,19 @@ internal static class EntityAssetPrefix
         asset.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte();
 
         // Read and discarded, never modelled - it is always zero where it exists.
-        if (hasPadding) reader.ReadBytes(4);
+        if (profile.EntityHasPadding) reader.ReadBytes(4);
 
-        asset.Physical.SurfaceId = reader.ReadAssetId();
+        if (profile.EntityHasExtendedFields) asset.Physical.SurfaceId = reader.ReadAssetId();
         asset.Angle = reader.ReadVector3();
         asset.Position = reader.ReadVector3();
         asset.Scale = reader.ReadVector3();
-        asset.ColorMultiplier = reader.ReadRgba();
-        asset.Physical.SeeThroughSpeed = reader.ReadSingle();
+        if (profile.EntityHasExtendedFields)
+        {
+            asset.ColorMultiplier = reader.ReadRgba();
+            asset.Physical.SeeThroughSpeed = reader.ReadSingle();
+        }
         asset.Physical.ModelId = reader.ReadAssetId();
-        asset.Physical.AnimListId = reader.ReadAssetId();
+        if (profile.EntityHasExtendedFields) asset.Physical.AnimListId = reader.ReadAssetId();
     }
 
     /// <summary>
@@ -75,27 +79,31 @@ internal static class EntityAssetPrefix
     /// </summary>
     /// <param name="asset">The <see cref="EntityAsset"/> to read from.</param>
     /// <param name="writer">The writer to write to.</param>
-    /// <param name="hasPadding">
-    /// Whether this build writes four bytes of padding after the four flag bytes. Written as zero
-    /// where it applies.
+    /// <param name="profile">
+    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout. Padding
+    /// is written as zero where it applies.
     /// </param>
-    public static void Write(EntityAsset asset, EndianWriter writer, bool hasPadding)
+    public static void Write(EntityAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write((byte)asset.EntityFlags);
         writer.Write(asset.Physical.Subtype);
         writer.Write(asset.Physical.PFlags);
         writer.Write((byte)asset.Physical.CollisionFlags);
 
-        if (hasPadding) writer.Write(new byte[4]);
+        if (profile.EntityHasPadding) writer.Write(new byte[4]);
 
-        writer.Write(asset.Physical.SurfaceId);
+        if (profile.EntityHasExtendedFields) writer.Write(asset.Physical.SurfaceId);
         writer.Write(asset.Angle);
         writer.Write(asset.Position);
         writer.Write(asset.Scale);
-        writer.Write(asset.ColorMultiplier);
-        writer.Write(asset.Physical.SeeThroughSpeed);
+        if (profile.EntityHasExtendedFields)
+        {
+            writer.Write(asset.ColorMultiplier);
+            writer.Write(asset.Physical.SeeThroughSpeed);
+        }
         writer.Write(asset.Physical.ModelId);
-        writer.Write(asset.Physical.AnimListId);
+        if (profile.EntityHasExtendedFields) writer.Write(asset.Physical.AnimListId);
     }
 }
 

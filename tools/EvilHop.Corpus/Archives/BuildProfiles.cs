@@ -5,13 +5,15 @@ using System.Text.Json.Serialization;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, Platform? Platform)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
         StreamDataHasPaddingField = StreamDataHasPaddingField ?? profile.StreamDataHasPaddingField,
         PlatformFieldOrder = PlatformFieldOrder ?? profile.PlatformFieldOrder,
         EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding,
+        EntityHasExtendedFields = EntityHasExtendedFields ?? profile.EntityHasExtendedFields,
+        PickupTypesHasPulseFields = PickupTypesHasPulseFields ?? profile.PickupTypesHasPulseFields,
         Platform = Platform ?? profile.Platform
     };
 }
