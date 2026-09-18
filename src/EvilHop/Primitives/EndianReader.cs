@@ -56,6 +56,21 @@ public sealed class EndianReader(Stream input, Endianness endianness, bool leave
         ? BinaryPrimitives.ReadSingleBigEndian(ReadBytes(4))
         : BinaryPrimitives.ReadSingleLittleEndian(ReadBytes(4));
 
+    /// <inheritdoc/>
+    public override double ReadDouble() => Endianness == Endianness.Big
+        ? BinaryPrimitives.ReadDoubleBigEndian(ReadBytes(8))
+        : BinaryPrimitives.ReadDoubleLittleEndian(ReadBytes(8));
+
+    /// <inheritdoc/>
+    public override long ReadInt64() => Endianness == Endianness.Big
+        ? BinaryPrimitives.ReadInt64BigEndian(ReadBytes(8))
+        : BinaryPrimitives.ReadInt64LittleEndian(ReadBytes(8));
+
+    /// <inheritdoc/>
+    public override ulong ReadUInt64() => Endianness == Endianness.Big
+        ? BinaryPrimitives.ReadUInt64BigEndian(ReadBytes(8))
+        : BinaryPrimitives.ReadUInt64LittleEndian(ReadBytes(8));
+
     /// <summary>Reads three consecutive <see cref="ReadSingle"/>s as a <see cref="Vector3"/>.</summary>
     public Vector3 ReadVector3() => new(ReadSingle(), ReadSingle(), ReadSingle());
 

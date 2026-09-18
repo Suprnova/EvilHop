@@ -63,6 +63,33 @@ public sealed class EndianWriter(Stream output, Endianness endianness, bool leav
         Write(bytes);
     }
 
+    /// <inheritdoc/>
+    public override void Write(double value)
+    {
+        Span<byte> bytes = stackalloc byte[8];
+        if (Endianness == Endianness.Big) BinaryPrimitives.WriteDoubleBigEndian(bytes, value);
+        else BinaryPrimitives.WriteDoubleLittleEndian(bytes, value);
+        Write(bytes);
+    }
+
+    /// <inheritdoc/>
+    public override void Write(long value)
+    {
+        Span<byte> bytes = stackalloc byte[8];
+        if (Endianness == Endianness.Big) BinaryPrimitives.WriteInt64BigEndian(bytes, value);
+        else BinaryPrimitives.WriteInt64LittleEndian(bytes, value);
+        Write(bytes);
+    }
+
+    /// <inheritdoc/>
+    public override void Write(ulong value)
+    {
+        Span<byte> bytes = stackalloc byte[8];
+        if (Endianness == Endianness.Big) BinaryPrimitives.WriteUInt64BigEndian(bytes, value);
+        else BinaryPrimitives.WriteUInt64LittleEndian(bytes, value);
+        Write(bytes);
+    }
+
     /// <summary>Writes a <see cref="Vector3"/> as three consecutive <see cref="Write(float)"/>s.</summary>
     public void Write(Vector3 value)
     {

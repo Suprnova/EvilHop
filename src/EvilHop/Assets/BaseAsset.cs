@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Base_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class BaseAsset(AssetType type) : Asset(type), IPhysicalBaseAsset
+public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type), IPhysicalBaseAsset
 {
     /// <summary>
     /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.
@@ -31,7 +31,7 @@ public abstract class BaseAsset(AssetType type) : Asset(type), IPhysicalBaseAsse
         set => _overriddenBaseId = value == Id ? null : value;
     }
 
-    private protected byte _baseType;
+    private protected byte _baseType = baseType;
     byte IPhysicalBaseAsset.BaseType
     {
         get => _baseType;

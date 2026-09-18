@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Entity_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class EntityAsset(AssetType type) : BaseAsset(type), IPhysicalEntityAsset
+public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset(type, baseType), IPhysicalEntityAsset
 {
     /// <summary>
     /// Information about the <see cref="EntityAsset"/>'s properties in-game.
