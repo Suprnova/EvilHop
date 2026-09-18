@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, Platform? Platform)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
@@ -14,6 +14,10 @@ internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, Platform
         EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding,
         EntityHasExtendedFields = EntityHasExtendedFields ?? profile.EntityHasExtendedFields,
         PickupTypesHasPulseFields = PickupTypesHasPulseFields ?? profile.PickupTypesHasPulseFields,
+        LinkHasExtendedFields = LinkHasExtendedFields ?? profile.LinkHasExtendedFields,
+        TriggerHasDirectionAndFlags = TriggerHasDirectionAndFlags ?? profile.TriggerHasDirectionAndFlags,
+        EnvironmentHasExtendedFields = EnvironmentHasExtendedFields ?? profile.EnvironmentHasExtendedFields,
+        NPCHasExtendedFields = NPCHasExtendedFields ?? profile.NPCHasExtendedFields,
         Platform = Platform ?? profile.Platform
     };
 }

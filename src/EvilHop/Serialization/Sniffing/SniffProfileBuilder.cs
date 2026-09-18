@@ -12,15 +12,21 @@ internal static class SniffProfileBuilder
     /// <summary>
     /// Builds <paramref name="game"/>'s <c>DefaultProfile</c>, overridden with whatever
     /// <paramref name="signals"/> imply about <see cref="FormatProfile.Platform"/>,
-    /// <see cref="FormatProfile.StreamDataHasPaddingField"/>, and
-    /// <see cref="FormatProfile.EntityHasExtendedFields"/>.
+    /// <see cref="FormatProfile.StreamDataHasPaddingField"/>,
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/>,
+    /// <see cref="FormatProfile.LinkHasExtendedFields"/>, and
+    /// <see cref="FormatProfile.TriggerHasDirectionAndFlags"/>.
     /// </summary>
     public static FormatProfile Build(GameVersion game, SniffSignals signals) =>
         Serializer.DefaultProfileFor(game) with
         {
             Platform = DerivePlatform(signals.Flags, signals.PlatformStrings),
             StreamDataHasPaddingField = signals.DpakPaddingObserved ?? (signals.ClientVersion != ClientVersion.N100FPrototype),
-            EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype
+            EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
+            LinkHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
+            TriggerHasDirectionAndFlags = signals.ClientVersion != ClientVersion.N100FPrototype,
+            EnvironmentHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
+            NPCHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype
         };
 
     /// <summary>

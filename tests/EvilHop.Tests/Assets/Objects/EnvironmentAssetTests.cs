@@ -161,6 +161,36 @@ public class EnvironmentAssetTests
     }
 
     [Fact]
+    public void Read_RealN100FPrototypeExemplar_RoundTripsExactly()
+    {
+        // From FOO2.HIP: AHDR id=0x001239AD "ENV", size=16, n100f/prototype_2001-06-11/PS2. This
+        // build's environments are just BspId and StartCameraId - no climate, lighting, or
+        // secondary BSP/mapper IDs.
+        byte[] data =
+        [
+            0xAD, 0x39, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x27, 0x05, 0x4C, 0xC3, // BspId
+            0xF8, 0xDE, 0x15, 0x00, // StartCameraId
+        ];
+
+        var profile = N100FSerializer.DefaultProfile with
+        {
+            Platform = Platform.PlayStation2,
+            StreamDataHasPaddingField = false,
+            EnvironmentHasExtendedFields = false,
+        };
+
+        var asset = (EnvironmentAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0xC34C0527), asset.BspId);
+        Assert.Equal(new AssetId(0x0015DEF8), asset.StartCameraId);
+        Assert.Equal(ClimateFlags.None, asset.ClimateFlags);
+        Assert.Equal(new AssetId(0), asset.BspLightKitId);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_ThenWrite_EnvironmentUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();

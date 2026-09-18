@@ -114,18 +114,22 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
 
         asset.BspId = reader.ReadAssetId();
         asset.StartCameraId = reader.ReadAssetId();
-        asset.ClimateFlags = (ClimateFlags)reader.ReadUInt32();
-        asset.ClimateStrengthMin = reader.ReadSingle();
-        asset.ClimateStrengthMax = reader.ReadSingle();
-        asset.BspLightKitId = reader.ReadAssetId();
-        asset.ObjectLightKitId = reader.ReadAssetId();
-        asset.Physical.EnvironmentFlags = reader.ReadUInt32();
-        asset.BspCollisionId = reader.ReadAssetId();
-        asset.BspFxId = reader.ReadAssetId();
-        asset.BspCameraId = reader.ReadAssetId();
-        asset.BspMapperId = reader.ReadAssetId();
-        asset.BspMapperCollisionId = reader.ReadAssetId();
-        asset.BspMapperFxId = reader.ReadAssetId();
+
+        if (profile.EnvironmentHasExtendedFields)
+        {
+            asset.ClimateFlags = (ClimateFlags)reader.ReadUInt32();
+            asset.ClimateStrengthMin = reader.ReadSingle();
+            asset.ClimateStrengthMax = reader.ReadSingle();
+            asset.BspLightKitId = reader.ReadAssetId();
+            asset.ObjectLightKitId = reader.ReadAssetId();
+            asset.Physical.EnvironmentFlags = reader.ReadUInt32();
+            asset.BspCollisionId = reader.ReadAssetId();
+            asset.BspFxId = reader.ReadAssetId();
+            asset.BspCameraId = reader.ReadAssetId();
+            asset.BspMapperId = reader.ReadAssetId();
+            asset.BspMapperCollisionId = reader.ReadAssetId();
+            asset.BspMapperFxId = reader.ReadAssetId();
+        }
 
         if (profile.Game is not GameVersion.N100F)
             asset.Physical.LoldHeight = BinaryPrimitives.ReadSingleLittleEndian(reader.ReadBytes(4));
@@ -136,7 +140,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
             asset.MaxBounds = reader.ReadVector3();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount, profile.LinkHasExtendedFields);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -148,18 +152,22 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
 
         writer.Write(asset.BspId);
         writer.Write(asset.StartCameraId);
-        writer.Write((uint)asset.ClimateFlags);
-        writer.Write(asset.ClimateStrengthMin);
-        writer.Write(asset.ClimateStrengthMax);
-        writer.Write(asset.BspLightKitId);
-        writer.Write(asset.ObjectLightKitId);
-        writer.Write(asset.Physical.EnvironmentFlags);
-        writer.Write(asset.BspCollisionId);
-        writer.Write(asset.BspFxId);
-        writer.Write(asset.BspCameraId);
-        writer.Write(asset.BspMapperId);
-        writer.Write(asset.BspMapperCollisionId);
-        writer.Write(asset.BspMapperFxId);
+
+        if (profile.EnvironmentHasExtendedFields)
+        {
+            writer.Write((uint)asset.ClimateFlags);
+            writer.Write(asset.ClimateStrengthMin);
+            writer.Write(asset.ClimateStrengthMax);
+            writer.Write(asset.BspLightKitId);
+            writer.Write(asset.ObjectLightKitId);
+            writer.Write(asset.Physical.EnvironmentFlags);
+            writer.Write(asset.BspCollisionId);
+            writer.Write(asset.BspFxId);
+            writer.Write(asset.BspCameraId);
+            writer.Write(asset.BspMapperId);
+            writer.Write(asset.BspMapperCollisionId);
+            writer.Write(asset.BspMapperFxId);
+        }
 
         if (profile.Game is not GameVersion.N100F)
         {
@@ -174,7 +182,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
             writer.Write(asset.MaxBounds);
         }
 
-        LinkSerialization.Write(asset, writer);
+        LinkSerialization.Write(asset, writer, profile.LinkHasExtendedFields);
         writer.Write(asset.GetUnparsedTail());
     }
 }

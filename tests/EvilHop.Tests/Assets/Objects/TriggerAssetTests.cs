@@ -160,6 +160,51 @@ public class TriggerAssetTests
     }
 
     [Fact]
+    public void Read_RealN100FPrototypeExemplar_RoundTripsExactly()
+    {
+        // From FOO2.HIP: AHDR id=0xB0F021A9 "TRIG", size=124, n100f/prototype_2001-06-11/PS2. This
+        // build's triggers are just the four positions (no Direction/Flags), and its links are 24
+        // bytes (no ParamWidgetAssetId/CheckAssetId).
+        byte[] data =
+        [
+            0xA9, 0x21, 0xF0, 0xB0, 0x01, 0x01, 0x00, 0x00,
+            0x01, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Angle
+            0x47, 0x46, 0x47, 0x42, 0x0D, 0x35, 0x33, 0x42, 0x68, 0x01, 0xA6, 0x42, // Position
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Scale
+            0xD9, 0x01, 0xBB, 0x15, // ModelId
+            0xE2, 0x0C, 0x43, 0x42, 0x45, 0x74, 0x30, 0x42, 0x51, 0xE3, 0xA0, 0x42, // TriggerPosition0
+            0x31, 0x10, 0x4C, 0x42, 0x5A, 0x1D, 0x41, 0x42, 0xBD, 0x46, 0xD9, 0x42, // TriggerPosition1
+            0xCB, 0xCD, 0xCD, 0xCD, 0xCC, 0xCD, 0xCD, 0xCD, 0xCA, 0xCD, 0xCD, 0xCD, // TriggerPosition2
+            0xCB, 0xCD, 0xCD, 0xCD, 0xCC, 0xCD, 0xCD, 0xCD, 0xCA, 0xCD, 0xCD, 0xCD, // TriggerPosition3
+            0x06, 0x00, 0x01, 0x00, 0x84, 0x9C, 0xC0, 0x85, // Link: SourceEvent, DestEvent, DestAssetId
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3F, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x40, 0x40, // Params
+        ];
+
+        var profile = N100FSerializer.DefaultProfile with
+        {
+            Platform = Platform.PlayStation2,
+            StreamDataHasPaddingField = false,
+            EntityHasExtendedFields = false,
+            LinkHasExtendedFields = false,
+            TriggerHasDirectionAndFlags = false,
+        };
+
+        var asset = (TriggerAsset)Read(data, profile);
+
+        Assert.Equal(new Vector3(0f, 0f, 0f), asset.Direction);
+        Assert.Equal(TriggerFlags.None, asset.Flags);
+        Assert.Single(asset.Links);
+        Assert.Equal(6, asset.Links[0].SourceEvent);
+        Assert.Equal(1, asset.Links[0].DestinationEvent);
+        Assert.Equal(new AssetId(0x85C09C84), asset.Links[0].DestinationAssetId);
+        Assert.Equal(new AssetId(0), asset.Links[0].ParamWidgetAssetId);
+        Assert.Equal(new AssetId(0), asset.Links[0].CheckAssetId);
+
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_ThenWrite_TriggerWithLinks_ReproducesInputBytes()
     {
         byte[] data =

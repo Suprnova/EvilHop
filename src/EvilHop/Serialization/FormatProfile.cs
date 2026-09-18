@@ -41,6 +41,32 @@ namespace EvilHop.Serialization;
 /// True everywhere except Incredibles' <c>prototype_2004-07-19</c> build, whose pickup pulse effect
 /// and tint hadn't been added yet.
 /// </param>
+/// <param name="LinkHasExtendedFields">
+/// Whether a <see cref="Link"/> is followed by <see cref="Link.ParamWidgetAssetId"/> and
+/// <see cref="Link.CheckAssetId"/> - 32 bytes per link rather than 24. False only for
+/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype; true everywhere else. Not read from this
+/// record directly - passed explicitly at whichever <see cref="Assets.Serialization.LinkSerialization"/>
+/// call sites a build known to differ actually reaches.
+/// </param>
+/// <param name="TriggerHasDirectionAndFlags">
+/// Whether a <see cref="TriggerAsset"/> carries a <see cref="TriggerAsset.Direction"/> and
+/// <see cref="TriggerAsset.Flags"/> after its four trigger positions. False only for
+/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose triggers are just the four
+/// positions; true everywhere else.
+/// </param>
+/// <param name="EnvironmentHasExtendedFields">
+/// Whether an <see cref="EnvironmentAsset"/> carries anything beyond <see cref="EnvironmentAsset.BspId"/>
+/// and <see cref="EnvironmentAsset.StartCameraId"/> - climate, lighting, and the secondary BSP/mapper
+/// IDs. False only for <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose environments are
+/// just those two IDs; true everywhere else.
+/// </param>
+/// <param name="NPCHasExtendedFields">
+/// Whether an <see cref="NPCAsset"/> carries its combat/AI stat block (<see cref="NPCAsset.ActivateRadius"/>
+/// through <see cref="NPCAsset.MinGameDifficulty"/>). False only for <see cref="GameVersion.N100F"/>'s
+/// 2001-06-11 prototype: real archives from that build carry a fixed 72-byte region there whose field
+/// boundaries can't be determined from the identical placeholder data every observed instance has, so
+/// it's preserved as <see cref="Asset.GetUnparsedTail"/> instead of being decoded. True everywhere else.
+/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
 /// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
@@ -52,7 +78,11 @@ public sealed record FormatProfile(
     bool StreamDataHasPaddingField,
     bool EntityHasPadding = false,
     bool EntityHasExtendedFields = true,
-    bool PickupTypesHasPulseFields = true)
+    bool PickupTypesHasPulseFields = true,
+    bool LinkHasExtendedFields = true,
+    bool TriggerHasDirectionAndFlags = true,
+    bool EnvironmentHasExtendedFields = true,
+    bool NPCHasExtendedFields = true)
 {
     /// <summary>
     /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always

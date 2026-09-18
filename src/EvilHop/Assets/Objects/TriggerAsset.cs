@@ -76,10 +76,13 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
         asset.TriggerPosition1 = reader.ReadVector3();
         asset.Physical.TriggerPosition2 = reader.ReadVector3();
         asset.Physical.TriggerPosition3 = reader.ReadVector3();
-        asset.Direction = reader.ReadVector3();
-        asset.Flags = (TriggerFlags)reader.ReadUInt32();
+        if (profile.TriggerHasDirectionAndFlags)
+        {
+            asset.Direction = reader.ReadVector3();
+            asset.Flags = (TriggerFlags)reader.ReadUInt32();
+        }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount, profile.LinkHasExtendedFields);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -94,10 +97,13 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
         writer.Write(asset.TriggerPosition1);
         writer.Write(asset.Physical.TriggerPosition2);
         writer.Write(asset.Physical.TriggerPosition3);
-        writer.Write(asset.Direction);
-        writer.Write((uint)asset.Flags);
+        if (profile.TriggerHasDirectionAndFlags)
+        {
+            writer.Write(asset.Direction);
+            writer.Write((uint)asset.Flags);
+        }
 
-        LinkSerialization.Write(asset, writer);
+        LinkSerialization.Write(asset, writer, profile.LinkHasExtendedFields);
         writer.Write(asset.GetUnparsedTail());
     }
 }

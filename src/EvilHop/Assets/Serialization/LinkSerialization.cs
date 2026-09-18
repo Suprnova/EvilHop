@@ -1,3 +1,4 @@
+using EvilHop.Common;
 using EvilHop.Primitives;
 
 namespace EvilHop.Assets.Serialization;
@@ -12,11 +13,19 @@ internal static class LinkSerialization
     /// Reads <paramref name="count"/> <see cref="Link"/>s from <paramref name="reader"/>'s current
     /// position into <paramref name="asset"/>'s <see cref="BaseAsset.Links"/>.
     /// </summary>
-    public static void Read(BaseAsset asset, EndianReader reader, int count)
+    /// <param name="asset">The <see cref="BaseAsset"/> to populate.</param>
+    /// <param name="reader">The reader to read from.</param>
+    /// <param name="count">How many links to read.</param>
+    /// <param name="hasExtendedFields">
+    /// Whether each <see cref="Link"/> is followed by <see cref="Link.ParamWidgetAssetId"/> and
+    /// <see cref="Link.CheckAssetId"/>. False only for <see cref="GameVersion.N100F"/>'s 2001-06-11
+    /// prototype, whose links are 24 bytes instead of 32; true everywhere else.
+    /// </param>
+    public static void Read(BaseAsset asset, EndianReader reader, int count, bool hasExtendedFields = true)
     {
         for (int i = 0; i < count; i++)
         {
-            asset.Links.Add(new Link
+            var link = new Link
             {
                 SourceEvent = reader.ReadInt16(),
                 DestinationEvent = reader.ReadInt16(),
@@ -28,16 +37,27 @@ internal static class LinkSerialization
                     new RawParameter(reader.ReadBytes(4)),
                     new RawParameter(reader.ReadBytes(4)),
                 ],
-                ParamWidgetAssetId = reader.ReadAssetId(),
-                CheckAssetId = reader.ReadAssetId(),
-            });
+            };
+            if (hasExtendedFields)
+            {
+                link.ParamWidgetAssetId = reader.ReadAssetId();
+                link.CheckAssetId = reader.ReadAssetId();
+            }
+            asset.Links.Add(link);
         }
     }
 
     /// <summary>
     /// Writes <paramref name="asset"/>'s <see cref="BaseAsset.Links"/> to <paramref name="writer"/>.
     /// </summary>
-    public static void Write(BaseAsset asset, EndianWriter writer)
+    /// <param name="asset">The <see cref="BaseAsset"/> to read from.</param>
+    /// <param name="writer">The writer to write to.</param>
+    /// <param name="hasExtendedFields">
+    /// Whether each <see cref="Link"/> is followed by <see cref="Link.ParamWidgetAssetId"/> and
+    /// <see cref="Link.CheckAssetId"/>. False only for <see cref="GameVersion.N100F"/>'s 2001-06-11
+    /// prototype, whose links are 24 bytes instead of 32; true everywhere else.
+    /// </param>
+    public static void Write(BaseAsset asset, EndianWriter writer, bool hasExtendedFields = true)
     {
         foreach (var link in asset.Links)
         {
@@ -46,8 +66,11 @@ internal static class LinkSerialization
             writer.Write(link.DestinationAssetId);
             foreach (var param in link.Params)
                 param.WriteTo(writer);
-            writer.Write(link.ParamWidgetAssetId);
-            writer.Write(link.CheckAssetId);
+            if (hasExtendedFields)
+            {
+                writer.Write(link.ParamWidgetAssetId);
+                writer.Write(link.CheckAssetId);
+            }
         }
     }
 }
