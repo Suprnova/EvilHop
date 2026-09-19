@@ -200,7 +200,7 @@ public class VillainAssetTests
         var asset = Read(data, profile);
 
         Assert.IsNotType<VillainAsset>(asset);
-        Assert.IsAssignableFrom<EntityAsset>(asset);
+        Assert.IsType<EntityAsset>(asset, exactMatch: false);
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public class VillainAssetTests
         var asset = Read(data, profile);
 
         Assert.IsNotType<VillainAsset>(asset);
-        Assert.IsAssignableFrom<EntityAsset>(asset);
+        Assert.IsType<EntityAsset>(asset, exactMatch: false);
     }
 
     [Fact]

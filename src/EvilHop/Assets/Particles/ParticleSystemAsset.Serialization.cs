@@ -1,6 +1,5 @@
 using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
-using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -34,7 +33,7 @@ public sealed partial class ParticleSystemAsset
         return asset;
     }
 
-    internal static void Write(ParticleSystemAsset asset, EndianWriter writer, FormatProfile profile)
+    internal static void Write(ParticleSystemAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
 

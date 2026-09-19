@@ -49,7 +49,7 @@ public class PickupAssetTests
     private static byte[] EntityPrefix(byte subtype, bool hasPadding) =>
     [
         0x01, subtype, 0x00, 0x02, // EntityFlags, Subtype, PFlags, CollisionFlags
-        .. hasPadding ? new byte[4] : Array.Empty<byte>(),
+        .. hasPadding ? new byte[4] : [],
         0x00, 0x00, 0x00, 0x00,   // SurfaceId
         .. new byte[36],          // Angle/Position/Scale
         .. new byte[16],          // ColorMultiplier

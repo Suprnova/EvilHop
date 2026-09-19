@@ -4,7 +4,6 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
-using System.IO;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -342,7 +341,7 @@ public class ThrowableTableAssetTests
         var asset = Read(data, profile);
 
         Assert.IsNotType<ThrowableTableAsset>(asset);
-        Assert.IsAssignableFrom<BaseAsset>(asset);
+        Assert.IsType<BaseAsset>(asset, exactMatch: false);
     }
 
     [Theory]

@@ -82,7 +82,7 @@ public abstract partial class CameraAsset
         return asset;
     }
 
-    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile profile)
+    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
 

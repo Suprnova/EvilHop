@@ -288,7 +288,7 @@ public class DiscoFloorAssetTests
         var asset = Read(data, IncrediblesSerializer.DefaultProfile);
 
         Assert.IsNotType<DiscoFloorAsset>(asset);
-        Assert.IsAssignableFrom<BaseAsset>(asset);
+        Assert.IsType<BaseAsset>(asset, exactMatch: false);
         // DiscoFloor is BaseAsset-shaped, so an unsupported game still parses the 8-byte
         // BaseAssetPrefix before falling back - only the bytes after it land in the unparsed tail.
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

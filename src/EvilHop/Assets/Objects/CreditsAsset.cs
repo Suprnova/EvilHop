@@ -238,7 +238,7 @@ public sealed class CreditsPreset
 // <see cref="Center"/> and <see cref="Texture"/> are confirmed by the render switch itself; only
 // <see cref="Center"/>, <see cref="Inner"/>, and <see cref="Texture"/> are ever observed in the
 // corpus.
- 
+
 /// <summary>
 /// Specifies text alignment and layout positioning for credits lines.
 /// </summary>

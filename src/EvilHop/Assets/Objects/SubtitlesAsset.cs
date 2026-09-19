@@ -77,11 +77,11 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
 
         for (int i = 0; i < numLines; i++)
         {
-            var desc = descriptors[i];
+            var (StartTime, StopTime, StringOffset) = descriptors[i];
             string text = string.Empty;
-            if (desc.StringOffset < stringPool.Length)
+            if (StringOffset < stringPool.Length)
             {
-                int start = (int)desc.StringOffset;
+                int start = (int)StringOffset;
                 int nullIndex = Array.IndexOf(stringPool, (byte)0, start);
                 int length = nullIndex >= 0 ? nullIndex - start : stringPool.Length - start;
                 text = Encoding.Latin1.GetString(stringPool, start, length);
@@ -89,8 +89,8 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
 
             asset.Lines.Add(new SubtitleLine
             {
-                StartTime = desc.StartTime,
-                StopTime = desc.StopTime,
+                StartTime = StartTime,
+                StopTime = StopTime,
                 Text = text,
             });
         }

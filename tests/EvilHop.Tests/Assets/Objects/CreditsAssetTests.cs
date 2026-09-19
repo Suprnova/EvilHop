@@ -289,9 +289,10 @@ public class CreditsAssetTests
     [InlineData(false, CreditsState.NotEncrypted)]
     public void IsEncrypted_Set_UpdatesPhysicalState(bool isEncrypted, CreditsState expectedState)
     {
-        var asset = new CreditsAsset();
-
-        asset.IsEncrypted = isEncrypted;
+        var asset = new CreditsAsset
+        {
+            IsEncrypted = isEncrypted
+        };
 
         Assert.Equal(expectedState, asset.Physical.State);
     }

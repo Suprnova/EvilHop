@@ -58,7 +58,7 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
 
     private byte _pad0 = 0x53;
     byte IPhysicalSplinePathAsset.Pad0 { get => _pad0; set => _pad0 = value; }
-    
+
     private byte _isExclusive;
     byte IPhysicalSplinePathAsset.IsExclusive { get => _isExclusive; set => _isExclusive = value; }
 

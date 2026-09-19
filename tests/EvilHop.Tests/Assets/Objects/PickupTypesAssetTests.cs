@@ -4,7 +4,6 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
-using System.IO;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -345,7 +344,7 @@ public class PickupTypesAssetTests
         var asset = Read(data, profile);
 
         Assert.IsNotType<PickupTypesAsset>(asset);
-        Assert.IsAssignableFrom<BaseAsset>(asset);
+        Assert.IsType<BaseAsset>(asset, exactMatch: false);
     }
 
     [Theory]
@@ -403,7 +402,7 @@ public class PickupTypesAssetTests
         Assert.Equal(new AssetId(0x11111111), asset.Entries[0].TypeHash);
         Assert.Equal(default, asset.Entries[0].PulseModelId);
         Assert.Equal(0f, asset.Entries[0].PulseTime);
-        Assert.Equal(default(Rgb), asset.Entries[0].ColorMultiplier);
+        Assert.Equal(default, asset.Entries[0].ColorMultiplier);
         Assert.Equal((byte)10, asset.Entries[0].HealthGain);
 
         Assert.Equal(data, Write(asset, profile));

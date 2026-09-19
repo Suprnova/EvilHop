@@ -176,9 +176,10 @@ public class SoundGroupAssetTests
     [InlineData(1.0f)]
     public void Volume_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry();
-
-        entry.Volume = value;
+        var entry = new SoundGroupEntry
+        {
+            Volume = value
+        };
 
         Assert.Equal(value, entry.Volume);
     }
@@ -189,9 +190,10 @@ public class SoundGroupAssetTests
     [InlineData(2.0f)]
     public void MinPitchMultiplier_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry();
-
-        entry.MinPitchMultiplier = value;
+        var entry = new SoundGroupEntry
+        {
+            MinPitchMultiplier = value
+        };
 
         Assert.Equal(value, entry.MinPitchMultiplier);
     }
@@ -202,9 +204,10 @@ public class SoundGroupAssetTests
     [InlineData(2.0f)]
     public void MaxPitchMultiplier_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry();
-
-        entry.MaxPitchMultiplier = value;
+        var entry = new SoundGroupEntry
+        {
+            MaxPitchMultiplier = value
+        };
 
         Assert.Equal(value, entry.MaxPitchMultiplier);
     }

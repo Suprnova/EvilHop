@@ -107,7 +107,7 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseTy
         return asset;
     }
 
-    internal static void Write(CameraCurveAsset asset, EndianWriter writer, FormatProfile profile)
+    internal static void Write(CameraCurveAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
 
