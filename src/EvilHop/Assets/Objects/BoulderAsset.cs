@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -95,19 +96,24 @@ public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder, base
 
     /// <summary>
     /// The downward velocity at and above which <see cref="BounceSoundId"/> plays at full
-    /// <see cref="Volume"/>.
+    /// <see cref="Volume"/>. Not present - per <see cref="FormatProfile.BoulderHasSoundFalloff"/> -
+    /// in BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public float MaxSoundVelocity { get; set; }
 
     /// <summary>
     /// The distance from this boulder at which <see cref="BounceSoundId"/> is at full volume.
-    /// Only present in <see cref="GameVersion.BFBB"/>.
+    /// Only present in <see cref="GameVersion.BFBB"/>, and not there either - per
+    /// <see cref="FormatProfile.BoulderHasSoundFalloff"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public float InnerRadius { get; set; }
 
     /// <summary>
-    /// The distance from this boulder beyond which <see cref="BounceSoundId"/> is inaudible.
-    /// Only present in <see cref="GameVersion.BFBB"/>.
+    /// The distance from this boulder beyond which <see cref="BounceSoundId"/> is inaudible. Only
+    /// present in <see cref="GameVersion.BFBB"/>, and not there either - per
+    /// <see cref="FormatProfile.BoulderHasSoundFalloff"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public float OuterRadius { get; set; }
 

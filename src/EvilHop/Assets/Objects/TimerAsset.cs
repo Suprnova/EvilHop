@@ -22,7 +22,9 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
 
     /// <summary>
     /// The maximum random variation added to or subtracted from <see cref="Seconds"/>, in seconds.
-    /// Not present in <see cref="GameVersion.N100F"/>.
+    /// Not present in <see cref="GameVersion.N100F"/>, nor - per
+    /// <see cref="FormatProfile.TimerHasRandomRange"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public float RandomRange { get; set; }
 
@@ -46,7 +48,7 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
         BaseAssetPrefix.Read(asset, reader);
 
         asset.Seconds = reader.ReadSingle();
-        if (profile.Game is not GameVersion.N100F) asset.RandomRange = reader.ReadSingle();
+        if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) asset.RandomRange = reader.ReadSingle();
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -58,7 +60,7 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
     {
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.Seconds);
-        if (profile.Game is not GameVersion.N100F) writer.Write(asset.RandomRange);
+        if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) writer.Write(asset.RandomRange);
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }

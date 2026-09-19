@@ -44,7 +44,7 @@ public class DestructibleObjectAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding) =>
+    private static byte[] EntityPrefix(bool hasPadding, bool hasAnimListId = true) =>
     [
         0x01, 0x00, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -53,7 +53,7 @@ public class DestructibleObjectAssetTests
         .. new byte[16],          // ColorMultiplier
         0x43, 0x7F, 0x00, 0x00,   // SeeThroughSpeed = 255
         0x00, 0x00, 0x00, 0x00,   // ModelId
-        0x00, 0x00, 0x00, 0x00,   // AnimListId
+        .. hasAnimListId ? new byte[4] : [], // AnimListId
     ];
 
     private static byte[] DstrFields(float animSpeed, uint initAnimState, uint health, uint spawnItemId, uint hitFlags, byte collType, byte fxType, float blastRadius, float blastStrength) =>
@@ -172,6 +172,35 @@ public class DestructibleObjectAssetTests
         var profile = N100FSerializer.DefaultProfile;
 
         Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_DestructibleObjectWithoutAnimListIdOrSwapEffects_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId and
+        // HitSfxId/HitModelId/DestroyModelId - see BuildProfiles.json's "bfbb/**/gl/Working/**"/
+        // "bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Prefix(linkCount: 1),
+            .. EntityPrefix(hasPadding: true, hasAnimListId: false),
+            .. DstrFields(1.5f, 2, 1, 0xAABBCCDD, 0xC00, 2, 1, 4.0f, 2.5f),
+            .. BitConverter.GetBytes(0x11111111u).Reverse(), // DestroyShrapnelId
+            .. BitConverter.GetBytes(0x22222222u).Reverse(), // HitShrapnelId
+            .. BitConverter.GetBytes(0x33333333u).Reverse(), // DestroySfxId
+            .. LinkBytes(1, 2, 0xAABBCCDD),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false, DestructibleObjectHasSwapEffects = false };
+
+        var asset = (DestructibleObjectAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0x11111111), asset.DestroyShrapnelId);
+        Assert.Equal(new AssetId(0x22222222), asset.HitShrapnelId);
+        Assert.Equal(new AssetId(0x33333333), asset.DestroySfxId);
+        Assert.Equal(default, asset.HitSfxId);
+        Assert.Equal(default, asset.HitModelId);
+        Assert.Equal(default, asset.DestroyModelId);
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

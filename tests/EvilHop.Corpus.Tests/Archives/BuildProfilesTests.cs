@@ -13,7 +13,7 @@ public class BuildProfilesTests
     public void Resolve_MatchingPrefix_AppliesOverride()
     {
         var manifest = BuildProfiles.Load(
-            """[{ "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
+            """[{ "pathPattern": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
 
         var resolved = manifest.Resolve(DefaultProfile, "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP");
 
@@ -24,7 +24,7 @@ public class BuildProfilesTests
     public void Resolve_NonMatchingPath_ReturnsDefaultUnchanged()
     {
         var manifest = BuildProfiles.Load(
-            """[{ "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
+            """[{ "pathPattern": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
 
         var resolved = manifest.Resolve(DefaultProfile, "n100f/release/GC/NTSC-U/US/B0/b001.HIP");
 
@@ -37,8 +37,8 @@ public class BuildProfilesTests
         var manifest = BuildProfiles.Load(
             """
             [
-              { "pathPrefix": "n100f/prototype", "profile": { "streamDataHasPaddingField": false } },
-              { "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "platformFieldOrder": "LanguageRegion" } }
+              { "pathPattern": "n100f/prototype", "profile": { "streamDataHasPaddingField": false } },
+              { "pathPattern": "n100f/prototype_2001-06-11", "profile": { "platformFieldOrder": "LanguageRegion" } }
             ]
             """);
 
@@ -52,7 +52,7 @@ public class BuildProfilesTests
     public void Resolve_PartialOverride_LeavesOtherSwitchesIntact()
     {
         var manifest = BuildProfiles.Load(
-            """[{ "pathPrefix": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
+            """[{ "pathPattern": "n100f/prototype_2001-06-11", "profile": { "streamDataHasPaddingField": false } }]""");
 
         var resolved = manifest.Resolve(DefaultProfile, "n100f/prototype_2001-06-11/PS2/NTSC-U/US/FOO1.HIP");
 
@@ -68,7 +68,7 @@ public class BuildProfilesTests
     public void Resolve_PlatformOverride_ChangesPlatformAndTheEndiannessDerivedFromIt()
     {
         var manifest = BuildProfiles.Load(
-            """[{ "pathPrefix": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } }]""");
+            """[{ "pathPattern": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } }]""");
 
         var resolved = manifest.Resolve(DefaultProfile, "n100f/release/PS2/NTSC-U/US/B0/B001.HIP");
 
@@ -77,9 +77,46 @@ public class BuildProfilesTests
     }
 
     [Fact]
-    public void Load_EmptyPathPrefix_Throws()
+    public void Load_EmptyPathPattern_Throws()
     {
         Assert.Throws<ArgumentException>(() => BuildProfiles.Load(
-            """[{ "pathPrefix": "", "profile": { "streamDataHasPaddingField": false } }]"""));
+            """[{ "pathPattern": "", "profile": { "streamDataHasPaddingField": false } }]"""));
+    }
+
+    [Fact]
+    public void Resolve_DoubleStarGlob_MatchesAcrossVaryingBuildDirectories()
+    {
+        var manifest = BuildProfiles.Load(
+            """[{ "pathPattern": "bfbb/**/b3/b301.hip", "profile": { "surfaceHasDamageFields": false } }]""");
+
+        var release = manifest.Resolve(DefaultProfile, "bfbb/release/GC/NTSC-U/US/b3/b301.HIP");
+        var prototype = manifest.Resolve(DefaultProfile, "bfbb/prototype_2003-10-01/GC/NTSC-U/US/b3/b301.HIP");
+
+        Assert.False(release.SurfaceHasDamageFields);
+        Assert.False(prototype.SurfaceHasDamageFields);
+    }
+
+    [Fact]
+    public void Resolve_DoubleStarGlob_DoesNotMatchADifferentFileInTheSameGame()
+    {
+        var manifest = BuildProfiles.Load(
+            """[{ "pathPattern": "bfbb/**/b3/b301.hip", "profile": { "surfaceHasDamageFields": false } }]""");
+
+        var resolved = manifest.Resolve(DefaultProfile, "bfbb/release/GC/NTSC-U/US/b3/b302.HIP");
+
+        Assert.Equal(DefaultProfile, resolved);
+    }
+
+    [Fact]
+    public void Resolve_SingleStarGlob_MatchesExactlyOnePathSegment()
+    {
+        var manifest = BuildProfiles.Load(
+            """[{ "pathPattern": "n100f/release/*/NTSC-U/**", "profile": { "streamDataHasPaddingField": false } }]""");
+
+        var matches = manifest.Resolve(DefaultProfile, "n100f/release/GC/NTSC-U/US/B0/b001.HIP");
+        var doesNotMatch = manifest.Resolve(DefaultProfile, "n100f/release/GC/PS2/NTSC-U/US/B0/b001.HIP");
+
+        Assert.False(matches.StreamDataHasPaddingField);
+        Assert.Equal(DefaultProfile, doesNotMatch);
     }
 }

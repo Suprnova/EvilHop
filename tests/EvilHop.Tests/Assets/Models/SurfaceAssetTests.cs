@@ -206,6 +206,22 @@ public class SurfaceAssetTests
     }
 
     [Fact]
+    public void Read_ThenWrite_SurfaceWithoutDamageFields_ReproducesInputBytes()
+    {
+        // BFBB's unused b301 has one leftover SURF asset frozen at a layout that predates
+        // DamageTimer/DamageBounce - see BuildProfiles.json's "bfbb/**/b3/b301.hip" entry.
+        byte[] core = Core(gameDamageType: 6, phys_flags: 0x10, friction: 1.0f, on: 1);
+        byte[] data = [.. Prefix(linkCount: 0), .. core[..^8]];
+        var profile = BFBBSerializer.DefaultProfile with { SurfaceHasDamageFields = false };
+
+        var asset = (SurfaceAsset)Read(data, profile);
+
+        Assert.Equal(0f, asset.DamageTimer);
+        Assert.Equal(0f, asset.DamageBounce);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_Surface_UnderN100F_DegradesToGenericAsset()
     {
         byte[] data = BfbbData();

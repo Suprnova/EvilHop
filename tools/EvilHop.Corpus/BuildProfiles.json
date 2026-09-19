@@ -1,7 +1,10 @@
 [
-  { "pathPrefix": "n100f/prototype_2001-06-11/PS2", "profile": { "streamDataHasPaddingField": false, "entityHasExtendedFields": false, "linkHasExtendedFields": false, "triggerHasDirectionAndFlags": false, "environmentHasExtendedFields": false, "npcHasExtendedFields": false, "platform": "PlayStation2" } },
-  { "pathPrefix": "n100f/prototype_2003-07-08/XBOX", "profile": { "platform": "Xbox" } },
-  { "pathPrefix": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } },
-  { "pathPrefix": "n100f/release/XBOX", "profile": { "platform": "Xbox" } },
-  { "pathPrefix": "incredibles/prototype_2004-07-19", "profile": { "pickupTypesHasPulseFields": false } }
+  { "pathPattern": "n100f/prototype_2001-06-11/PS2", "profile": { "streamDataHasPaddingField": false, "entityHasExtendedFields": false, "linkHasExtendedFields": false, "triggerHasDirectionAndFlags": false, "environmentHasExtendedFields": false, "npcHasExtendedFields": false, "platform": "PlayStation2" } },
+  { "pathPattern": "n100f/prototype_2003-07-08/XBOX", "profile": { "platform": "Xbox" } },
+  { "pathPattern": "n100f/release/PS2", "profile": { "platform": "PlayStation2" } },
+  { "pathPattern": "n100f/release/XBOX", "profile": { "platform": "Xbox" } },
+  { "pathPattern": "incredibles/prototype_2004-07-19", "profile": { "pickupTypesHasPulseFields": false } },
+  { "pathPattern": "bfbb/**/b3/b301.hip", "profile": { "surfaceHasDamageFields": false } },
+  { "pathPattern": "bfbb/**/gl/New Folder/**", "profile": { "entityHasAnimListId": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false } },
+  { "pathPattern": "bfbb/**/gl/Working/**", "profile": { "entityHasAnimListId": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false } }
 ]

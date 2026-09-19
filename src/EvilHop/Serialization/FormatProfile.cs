@@ -34,6 +34,13 @@ namespace EvilHop.Serialization;
 /// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose entities are just flags, angle,
 /// position, scale, and a model ID; true everywhere else, including every later N100F build.
 /// </param>
+/// <param name="EntityHasAnimListId">
+/// Whether an <see cref="EntityAsset"/> on-disk layout includes <c>AnimListId</c> after <c>ModelId</c> -
+/// independent of <see cref="EntityHasExtendedFields"/>, which must be true for this to apply at all.
+/// True for every real build; false only via a <c>BuildProfiles.json</c> override for BFBB's leftover
+/// <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose entities are frozen at a layout that predates
+/// the field.
+/// </param>
 /// <param name="PickupTypesHasPulseFields">
 /// Whether a <see cref="PickupTypeEntry"/> carries <see cref="PickupTypeEntry.PulseModelId"/>,
 /// <see cref="PickupTypeEntry.PulseTime"/>, <see cref="PickupTypeEntry.PulseAddScale"/>,
@@ -67,6 +74,44 @@ namespace EvilHop.Serialization;
 /// boundaries can't be determined from the identical placeholder data every observed instance has, so
 /// it's preserved as <see cref="Asset.GetUnparsedTail"/> instead of being decoded. True everywhere else.
 /// </param>
+/// <param name="SurfaceHasDamageFields">
+/// Whether a <see cref="SurfaceAsset"/> carries <see cref="SurfaceAsset.DamageTimer"/> and
+/// <see cref="SurfaceAsset.DamageBounce"/> after <see cref="SurfaceAsset.WallJumpScaleY"/>. True for
+/// every real build; false only via a <c>BuildProfiles.json</c> override for BFBB's unused <c>b301</c>
+/// level and its leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose <c>SURF</c>s are
+/// frozen at a layout that predates those two fields.
+/// </param>
+/// <param name="VillainHasTaskWidgetSecondId">
+/// Whether a <see cref="VillainAsset"/> carries <see cref="VillainAsset.TaskWidgetSecondId"/> after
+/// <see cref="VillainAsset.TaskWidgetPrimeId"/>. True for every real build; false only via a
+/// <c>BuildProfiles.json</c> override for BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c>
+/// archives, whose <c>VILN</c>s are frozen at a layout that predates the field.
+/// </param>
+/// <param name="TimerHasRandomRange">
+/// Whether a <see cref="TimerAsset"/> carries <see cref="TimerAsset.RandomRange"/> after
+/// <see cref="TimerAsset.Seconds"/>. Independent of <see cref="GameVersion.N100F"/>, which never has
+/// it regardless of this switch. True for every real build; false only via a
+/// <c>BuildProfiles.json</c> override for BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c>
+/// archives, whose <c>TIMR</c>s are frozen at a layout that predates the field.
+/// </param>
+/// <param name="DestructibleObjectHasSwapEffects">
+/// Whether a <see cref="DestructibleObjectAsset"/> carries <see cref="DestructibleObjectAsset.HitSfxId"/>,
+/// <see cref="DestructibleObjectAsset.HitModelId"/>, and <see cref="DestructibleObjectAsset.DestroyModelId"/>
+/// after <see cref="DestructibleObjectAsset.DestroySfxId"/> - independent of
+/// <see cref="GameVersion.BFBB"/>, which must be the active game for any of the six BFBB-only fields
+/// to be read at all. True for every real build; false only via a <c>BuildProfiles.json</c> override
+/// for BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose <c>DSTR</c>s are frozen
+/// at a layout that predates the three fields.
+/// </param>
+/// <param name="BoulderHasSoundFalloff">
+/// Whether a <see cref="BoulderAsset"/> carries <see cref="BoulderAsset.MaxSoundVelocity"/>,
+/// <see cref="BoulderAsset.InnerRadius"/>, and <see cref="BoulderAsset.OuterRadius"/> after
+/// <see cref="BoulderAsset.MinSoundVelocity"/> - independent of <see cref="GameVersion.BFBB"/>, which
+/// must be the active game for <see cref="BoulderAsset.InnerRadius"/>/<see cref="BoulderAsset.OuterRadius"/>
+/// to be read at all. True for every real build; false only via a <c>BuildProfiles.json</c> override
+/// for BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose <c>BOUL</c>s are frozen
+/// at a layout that predates the three fields.
+/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
 /// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
@@ -78,11 +123,17 @@ public sealed record FormatProfile(
     bool StreamDataHasPaddingField,
     bool EntityHasPadding = false,
     bool EntityHasExtendedFields = true,
+    bool EntityHasAnimListId = true,
     bool PickupTypesHasPulseFields = true,
     bool LinkHasExtendedFields = true,
     bool TriggerHasDirectionAndFlags = true,
     bool EnvironmentHasExtendedFields = true,
-    bool NPCHasExtendedFields = true)
+    bool NPCHasExtendedFields = true,
+    bool SurfaceHasDamageFields = true,
+    bool VillainHasTaskWidgetSecondId = true,
+    bool TimerHasRandomRange = true,
+    bool DestructibleObjectHasSwapEffects = true,
+    bool BoulderHasSoundFalloff = true)
 {
     /// <summary>
     /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always

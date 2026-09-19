@@ -318,6 +318,26 @@ public class TimerAssetTests
     }
 
     [Fact]
+    public void Read_ThenWrite_TimerWithoutRandomRange_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate RandomRange - see
+        // BuildProfiles.json's "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Prefix(linkCount: 1),
+            .. F32(5.0f),
+            .. LinkBytes(20, 10, 0xAABBCCDD),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { TimerHasRandomRange = false };
+
+        var asset = (TimerAsset)Read(data, profile);
+
+        Assert.Equal(5.0f, asset.Seconds);
+        Assert.Equal(0.0f, asset.RandomRange);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
     public void Read_TruncatedData_ThrowsEndOfStreamException()
     {
         byte[] truncated =

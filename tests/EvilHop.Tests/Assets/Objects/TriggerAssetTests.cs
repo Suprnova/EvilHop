@@ -45,7 +45,7 @@ public class TriggerAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding, byte subtype) =>
+    private static byte[] EntityPrefix(bool hasPadding, byte subtype, bool hasAnimListId = true) =>
     [
         0x01, subtype, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -54,7 +54,7 @@ public class TriggerAssetTests
         .. new byte[16],             // ColorMultiplier
         0x00, 0x00, 0x00, 0x00,      // SeeThroughSpeed
         0x00, 0x00, 0x00, 0x00,      // ModelId
-        0x00, 0x00, 0x00, 0x00,      // AnimListId
+        .. hasAnimListId ? new byte[4] : [], // AnimListId
     ];
 
     private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
@@ -201,6 +201,27 @@ public class TriggerAssetTests
         Assert.Equal(new AssetId(0), asset.Links[0].ParamWidgetAssetId);
         Assert.Equal(new AssetId(0), asset.Links[0].CheckAssetId);
 
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_TriggerWithoutAnimListId_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId. See
+        // BuildProfiles.json's "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Prefix(linkCount: 1),
+            .. EntityPrefix(hasPadding: true, subtype: 0, hasAnimListId: false),
+            .. TrigFields(new Vector3(1, 2, 3), new Vector3(4, 5, 6), new Vector3(7, 8, 9), new Vector3(10, 11, 12), UsualDirection, flags: 0),
+            .. LinkBytes(1, 2, 0xAABBCCDD),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false };
+
+        var asset = (TriggerAsset)Read(data, profile);
+
+        Assert.Equal(UsualDirection, asset.Direction);
+        Assert.Equal(TriggerFlags.None, asset.Flags);
         Assert.Equal(data, Write(asset, profile));
     }
 

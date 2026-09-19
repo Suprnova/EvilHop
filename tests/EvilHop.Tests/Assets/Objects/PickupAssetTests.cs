@@ -46,7 +46,7 @@ public class PickupAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(byte subtype, bool hasPadding) =>
+    private static byte[] EntityPrefix(byte subtype, bool hasPadding, bool hasAnimListId = true) =>
     [
         0x01, subtype, 0x00, 0x02, // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -55,7 +55,7 @@ public class PickupAssetTests
         .. new byte[16],          // ColorMultiplier
         0x43, 0x7F, 0x00, 0x00,   // SeeThroughSpeed = 255
         0x94, 0xE2, 0x54, 0x63,   // ModelId = pickups.MINF
-        0x00, 0x00, 0x00, 0x00,   // AnimListId
+        .. hasAnimListId ? new byte[4] : [], // AnimListId
     ];
 
     private static byte[] LinkBytes(short sourceEvent, short destinationEvent, uint destinationAssetId) =>
@@ -68,10 +68,10 @@ public class PickupAssetTests
         .. new byte[4],  // CheckAssetId
     ];
 
-    private static byte[] Data(byte subtype, uint pickupHash, short flags, short pickupValue, byte linkCount = 0, bool hasPadding = true) =>
+    private static byte[] Data(byte subtype, uint pickupHash, short flags, short pickupValue, byte linkCount = 0, bool hasPadding = true, bool hasAnimListId = true) =>
     [
         .. Prefix(linkCount),
-        .. EntityPrefix(subtype, hasPadding),
+        .. EntityPrefix(subtype, hasPadding, hasAnimListId),
         (byte)(pickupHash >> 24), (byte)(pickupHash >> 16), (byte)(pickupHash >> 8), (byte)pickupHash,
         (byte)(flags >> 8), (byte)flags,
         (byte)(pickupValue >> 8), (byte)pickupValue,
@@ -124,6 +124,26 @@ public class PickupAssetTests
         var profile = TSSMSerializer.DefaultProfile;
 
         Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_PickupWithoutAnimListId_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId - see
+        // BuildProfiles.json's "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Data(0x13, 0x28F55613, 2, 4, linkCount: 1, hasAnimListId: false),
+            .. LinkBytes(1, 2, 0x55667788),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false };
+
+        var asset = (PickupAsset)Read(data, profile);
+
+        Assert.Equal(0x28F55613u, asset.PickupHash);
+        Assert.Equal(PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(4, asset.PickupValue);
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

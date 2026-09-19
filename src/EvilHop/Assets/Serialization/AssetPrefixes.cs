@@ -48,8 +48,9 @@ internal static class EntityAssetPrefix
     /// <param name="asset">The <see cref="EntityAsset"/> to populate.</param>
     /// <param name="reader">The reader to read from.</param>
     /// <param name="profile">
-    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
-    /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout.
+    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/>,
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/>, and
+    /// <see cref="FormatProfile.EntityHasAnimListId"/> control this build's exact layout.
     /// </param>
     public static void Read(EntityAsset asset, EndianReader reader, FormatProfile profile)
     {
@@ -71,7 +72,7 @@ internal static class EntityAssetPrefix
             asset.Physical.SeeThroughSpeed = reader.ReadSingle();
         }
         asset.Physical.ModelId = reader.ReadAssetId();
-        if (profile.EntityHasExtendedFields) asset.Physical.AnimListId = reader.ReadAssetId();
+        if (profile.EntityHasExtendedFields && profile.EntityHasAnimListId) asset.Physical.AnimListId = reader.ReadAssetId();
     }
 
     /// <summary>
@@ -80,9 +81,10 @@ internal static class EntityAssetPrefix
     /// <param name="asset">The <see cref="EntityAsset"/> to read from.</param>
     /// <param name="writer">The writer to write to.</param>
     /// <param name="profile">
-    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
-    /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout. Padding
-    /// is written as zero where it applies.
+    /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/>,
+    /// <see cref="FormatProfile.EntityHasExtendedFields"/>, and
+    /// <see cref="FormatProfile.EntityHasAnimListId"/> control this build's exact layout. Padding is
+    /// written as zero where it applies.
     /// </param>
     public static void Write(EntityAsset asset, EndianWriter writer, FormatProfile profile)
     {
@@ -103,7 +105,7 @@ internal static class EntityAssetPrefix
             writer.Write(asset.Physical.SeeThroughSpeed);
         }
         writer.Write(asset.Physical.ModelId);
-        if (profile.EntityHasExtendedFields) writer.Write(asset.Physical.AnimListId);
+        if (profile.EntityHasExtendedFields && profile.EntityHasAnimListId) writer.Write(asset.Physical.AnimListId);
     }
 }
 

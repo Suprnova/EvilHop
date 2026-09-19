@@ -47,7 +47,7 @@ public class VillainAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding) =>
+    private static byte[] EntityPrefix(bool hasPadding, bool hasAnimListId = true) =>
     [
         0x01, 0x00, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -56,7 +56,7 @@ public class VillainAssetTests
         .. new byte[16],          // ColorMultiplier
         0x43, 0x7F, 0x00, 0x00,   // SeeThroughSpeed = 255
         0xAA, 0xBB, 0xCC, 0xDD,   // ModelId
-        0x00, 0x00, 0x00, 0x00,   // AnimListId
+        .. hasAnimListId ? new byte[4] : [], // AnimListId
     ];
 
     private static byte[] U32(uint value) => [.. BitConverter.GetBytes(value).Reverse()];
@@ -180,6 +180,31 @@ public class VillainAssetTests
         var profile = IncrediblesSerializer.DefaultProfile;
 
         Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_VillainWithoutAnimListIdOrTaskWidgetSecondId_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId and
+        // TaskWidgetSecondId - see BuildProfiles.json's "bfbb/**/gl/Working/**"/
+        // "bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Prefix(linkCount: 0),
+            .. EntityPrefix(hasPadding: true, hasAnimListId: false),
+            .. I32(0x00000001),     // NpcFlags
+            .. U32(0x11111111),     // NpcModelId
+            .. U32(0x22222222),     // NpcSettingsId
+            .. U32(0x33333333),     // MovePointId
+            .. U32(0x44444444),     // TaskWidgetPrimeId
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false, VillainHasTaskWidgetSecondId = false };
+
+        var asset = (VillainAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0x44444444), asset.TaskWidgetPrimeId);
+        Assert.Equal(default, asset.TaskWidgetSecondId);
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

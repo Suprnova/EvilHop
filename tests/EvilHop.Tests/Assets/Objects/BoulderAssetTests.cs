@@ -44,7 +44,7 @@ public class BoulderAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding) =>
+    private static byte[] EntityPrefix(bool hasPadding, bool hasAnimListId = true) =>
     [
         0x01, 0x00, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -53,7 +53,7 @@ public class BoulderAssetTests
         .. new byte[16],          // ColorMultiplier
         0x43, 0x7F, 0x00, 0x00,   // SeeThroughSpeed = 255
         0x11, 0x11, 0x11, 0x11,   // ModelId
-        0x00, 0x00, 0x00, 0x00,   // AnimListId
+        .. hasAnimListId ? new byte[4] : [], // AnimListId
     ];
 
     private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
@@ -208,6 +208,32 @@ public class BoulderAssetTests
         var profile = ROTUSerializer.DefaultProfile;
 
         Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_BoulderWithoutAnimListIdOrSoundFalloff_ReproducesInputBytes()
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId and
+        // MaxSoundVelocity/InnerRadius/OuterRadius - see BuildProfiles.json's
+        // "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
+        byte[] data =
+        [
+            .. Prefix(linkCount: 0),
+            .. EntityPrefix(hasPadding: true, hasAnimListId: false),
+            .. F32(10.0f), .. F32(1.0f), .. F32(1.0f), .. F32(0.15f), .. F32(0.0f), // gravity, mass, bounce, friction, statFric
+            .. F32(40.0f), .. F32(18.849556f), .. F32(0.15f), .. F32(0.0f), // maxVel, maxAngVel, stickiness, bounceDamp
+            .. U32(0x222), .. F32(5.0f), .. U32(1u), .. U32(0), // flags, killtimer, hitpoints, soundId
+            .. F32(1.0f), .. F32(2.0f), // volume, minSoundVel
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false, BoulderHasSoundFalloff = false };
+
+        var asset = (BoulderAsset)Read(data, profile);
+
+        Assert.Equal(2.0f, asset.MinSoundVelocity);
+        Assert.Equal(default, asset.MaxSoundVelocity);
+        Assert.Equal(default, asset.InnerRadius);
+        Assert.Equal(default, asset.OuterRadius);
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]

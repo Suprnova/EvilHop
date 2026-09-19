@@ -80,19 +80,25 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
 
     /// <summary>
     /// The <see cref="AssetId"/> of the sound effect played when this object is hit but not
-    /// destroyed, if any. Not present in <see cref="GameVersion.N100F"/>.
+    /// destroyed, if any. Not present in <see cref="GameVersion.N100F"/>, nor - per
+    /// <see cref="FormatProfile.DestructibleObjectHasSwapEffects"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public AssetId HitSfxId { get; set; }
 
     /// <summary>
     /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this object swaps to when hit
-    /// but not destroyed, if any. Not present in <see cref="GameVersion.N100F"/>.
+    /// but not destroyed, if any. Not present in <see cref="GameVersion.N100F"/>, nor - per
+    /// <see cref="FormatProfile.DestructibleObjectHasSwapEffects"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public AssetId HitModelId { get; set; }
 
     /// <summary>
     /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this object swaps to when
-    /// destroyed, if any. Not present in <see cref="GameVersion.N100F"/>.
+    /// destroyed, if any. Not present in <see cref="GameVersion.N100F"/>, nor - per
+    /// <see cref="FormatProfile.DestructibleObjectHasSwapEffects"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public AssetId DestroyModelId { get; set; }
 
@@ -132,9 +138,13 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
             asset.DestroyShrapnelId = reader.ReadAssetId();
             asset.HitShrapnelId = reader.ReadAssetId();
             asset.DestroySfxId = reader.ReadAssetId();
-            asset.HitSfxId = reader.ReadAssetId();
-            asset.HitModelId = reader.ReadAssetId();
-            asset.DestroyModelId = reader.ReadAssetId();
+
+            if (profile.DestructibleObjectHasSwapEffects)
+            {
+                asset.HitSfxId = reader.ReadAssetId();
+                asset.HitModelId = reader.ReadAssetId();
+                asset.DestroyModelId = reader.ReadAssetId();
+            }
         }
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
@@ -164,9 +174,13 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
             writer.Write(asset.DestroyShrapnelId);
             writer.Write(asset.HitShrapnelId);
             writer.Write(asset.DestroySfxId);
-            writer.Write(asset.HitSfxId);
-            writer.Write(asset.HitModelId);
-            writer.Write(asset.DestroyModelId);
+
+            if (profile.DestructibleObjectHasSwapEffects)
+            {
+                writer.Write(asset.HitSfxId);
+                writer.Write(asset.HitModelId);
+                writer.Write(asset.DestroyModelId);
+            }
         }
 
         LinkSerialization.Write(asset, writer);

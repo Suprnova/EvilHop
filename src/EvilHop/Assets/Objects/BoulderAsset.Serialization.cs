@@ -30,12 +30,15 @@ public sealed partial class BoulderAsset
         asset.BounceSoundId = reader.ReadAssetId();
         if (profile.Game is GameVersion.BFBB) asset.Volume = reader.ReadSingle();
         asset.MinSoundVelocity = reader.ReadSingle();
-        asset.MaxSoundVelocity = reader.ReadSingle();
+        if (profile.BoulderHasSoundFalloff) asset.MaxSoundVelocity = reader.ReadSingle();
 
         if (profile.Game is GameVersion.BFBB)
         {
-            asset.InnerRadius = reader.ReadSingle();
-            asset.OuterRadius = reader.ReadSingle();
+            if (profile.BoulderHasSoundFalloff)
+            {
+                asset.InnerRadius = reader.ReadSingle();
+                asset.OuterRadius = reader.ReadSingle();
+            }
         }
         else
         {
@@ -71,12 +74,15 @@ public sealed partial class BoulderAsset
         writer.Write(asset.BounceSoundId);
         if (profile.Game is GameVersion.BFBB) writer.Write(asset.Volume);
         writer.Write(asset.MinSoundVelocity);
-        writer.Write(asset.MaxSoundVelocity);
+        if (profile.BoulderHasSoundFalloff) writer.Write(asset.MaxSoundVelocity);
 
         if (profile.Game is GameVersion.BFBB)
         {
-            writer.Write(asset.InnerRadius);
-            writer.Write(asset.OuterRadius);
+            if (profile.BoulderHasSoundFalloff)
+            {
+                writer.Write(asset.InnerRadius);
+                writer.Write(asset.OuterRadius);
+            }
         }
         else
         {

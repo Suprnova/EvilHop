@@ -40,7 +40,9 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
     public AssetId TaskWidgetPrimeId { get; set; }
 
     /// <summary>
-    /// The <see cref="AssetId"/> of the secondary task widget (e.g. taskbox), if any.
+    /// The <see cref="AssetId"/> of the secondary task widget (e.g. taskbox), if any. Not present -
+    /// per <see cref="FormatProfile.VillainHasTaskWidgetSecondId"/> - in BFBB's leftover
+    /// <c>gl/Working</c>/<c>gl/New Folder</c> archives.
     /// </summary>
     public AssetId TaskWidgetSecondId { get; set; }
 
@@ -86,8 +88,10 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
         asset.NpcModelId = reader.ReadAssetId();
         asset.NpcSettingsId = reader.ReadAssetId();
         asset.MovePointId = reader.ReadAssetId();
+
         asset.TaskWidgetPrimeId = reader.ReadAssetId();
-        asset.TaskWidgetSecondId = reader.ReadAssetId();
+        if (profile.VillainHasTaskWidgetSecondId)
+            asset.TaskWidgetSecondId = reader.ReadAssetId();
 
         if (profile.Game is GameVersion.Incredibles)
         {
@@ -110,8 +114,10 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
         writer.Write(asset.NpcModelId);
         writer.Write(asset.NpcSettingsId);
         writer.Write(asset.MovePointId);
+
         writer.Write(asset.TaskWidgetPrimeId);
-        writer.Write(asset.TaskWidgetSecondId);
+        if (profile.VillainHasTaskWidgetSecondId)
+            writer.Write(asset.TaskWidgetSecondId);
 
         if (profile.Game is GameVersion.Incredibles)
         {
