@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/NPC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC), IHasModel, IPhysicalNPCAsset
+public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC, baseType: 0x02), IHasModel, IPhysicalNPCAsset
 {
     /// <summary>The distance from this NPC within which the player must be for it to activate.</summary>
     public float ActivateRadius { get; set; }
@@ -51,8 +51,7 @@ public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC), IHasModel, 
     public byte Hitpoints { get; set; }
 
     /// <summary>This NPC's initial behavior state.</summary>
-    /// TODO: validate against decompiled source
-    public NPCBehaviorState BehaviorState { get; set; }
+    public byte BehaviorState { get; set; }
 
     /// <summary>The speed a projectile lobbed by this NPC travels at.</summary>
     public float LobSpeed { get; set; }
@@ -97,16 +96,13 @@ public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC), IHasModel, 
     public AssetId MovePointId { get; set; }
 
     /// <summary>
-    /// The minimum number of powerups the player must have collected for this NPC to spawn. Every
-    /// real archive checked uses 0.
+    /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     public int MinPlayerPowerups { get; set; }
 
     /// <summary>
-    /// The minimum game difficulty for this NPC to spawn. Every real archive checked uses 0.
+    /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     public int MinGameDifficulty { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
@@ -140,29 +136,7 @@ public interface IPhysicalNPCAsset : IPhysicalEntityAsset
     uint VillFlags { get; set; }
 
     /// <summary>
-    /// Unknown. Every archive observed stores the platform's uninitialized-memory fill pattern
-    /// (<c>0xCDCDCDCD</c>) here, suggesting this field is never actually populated by the shipped
-    /// game.
+    /// Unknown.
     /// </summary>
     AssetId PathAssetId { get; set; }
-}
-
-/// <summary>
-/// Represents all known values for <see cref="NPCAsset.BehaviorState"/>.
-/// </summary>
-/// TODO: validate against decompiled source; names are placeholders for the raw values observed in
-/// the N100F corpus
-public enum NPCBehaviorState : byte
-{
-    /// <summary>Unknown.</summary>
-    Unknown0 = 0,
-
-    /// <summary>Unknown.</summary>
-    Unknown1 = 1,
-
-    /// <summary>Unknown.</summary>
-    Unknown2 = 2,
-
-    /// <summary>Unknown.</summary>
-    Unknown3 = 3,
 }

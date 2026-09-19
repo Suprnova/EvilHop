@@ -34,7 +34,7 @@ public sealed partial class ParticleSystemAsset
         return asset;
     }
 
-    internal static void Write(ParticleSystemAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(ParticleSystemAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -43,10 +43,10 @@ public sealed partial class ParticleSystemAsset
         writer.Write(asset.TextureId);
         writer.Write((byte)asset.Flags);
         writer.Write(asset.Priority);
-        writer.Write((short)asset.MaxParticles);
+        writer.Write(asset.MaxParticles);
         writer.Write((byte)asset.RenderFunction);
-        writer.Write((byte)((byte)asset.SourceBlend - 1));
-        writer.Write((byte)((byte)asset.DestinationBlend - 1));
+        writer.Write((byte)(asset.SourceBlend - 1));
+        writer.Write((byte)(asset.DestinationBlend - 1));
         writer.Write(asset.Physical.CommandCount);
 
         writer.Write(asset.Physical.CommandData.Length);

@@ -12,10 +12,10 @@ public sealed partial class AttackTableAsset
         var asset = new AttackTableAsset();
         AssetFields.Populate(asset, header, debug);
 
-        int sectionCount = reader.ReadUInt16();
-        int entryCount = reader.ReadUInt16();
-        int transitionCount = reader.ReadUInt16();
-        int stateCount = reader.ReadUInt16();
+        ushort sectionCount = reader.ReadUInt16();
+        ushort entryCount = reader.ReadUInt16();
+        ushort transitionCount = reader.ReadUInt16();
+        ushort stateCount = reader.ReadUInt16();
 
         for (int i = 0; i < sectionCount; i++)
         {
@@ -63,10 +63,10 @@ public sealed partial class AttackTableAsset
 
         for (int i = 0; i < stateCount; i++) asset.States.Add(ReadState(reader));
 
-        asset.Physical.SectionCount = (ushort)asset.Sections.Count;
-        asset.Physical.EntryCount = (ushort)asset.Entries.Count;
-        asset.Physical.TransitionCount = (ushort)asset.Transitions.Count;
-        asset.Physical.StateCount = (ushort)asset.States.Count;
+        asset.Physical.SectionCount = sectionCount;
+        asset.Physical.EntryCount = entryCount;
+        asset.Physical.TransitionCount = transitionCount;
+        asset.Physical.StateCount = stateCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -152,31 +152,31 @@ public sealed partial class AttackTableAsset
 
     internal static void Write(AttackTableAsset asset, EndianWriter writer, FormatProfile _)
     {
-        writer.Write((short)asset.Physical.SectionCount);
-        writer.Write((short)asset.Physical.EntryCount);
-        writer.Write((short)asset.Physical.TransitionCount);
-        writer.Write((short)asset.Physical.StateCount);
+        writer.Write(asset.Physical.SectionCount);
+        writer.Write(asset.Physical.EntryCount);
+        writer.Write(asset.Physical.TransitionCount);
+        writer.Write(asset.Physical.StateCount);
 
         foreach (var section in asset.Sections)
         {
             writer.Write(section.SectionId);
-            writer.Write((short)section.Start);
-            writer.Write((short)section.Count);
+            writer.Write(section.Start);
+            writer.Write(section.Count);
         }
 
         foreach (var entry in asset.Entries)
         {
             writer.Write(entry.AnimationStateId);
             writer.Write(0u); // runtime-resolved
-            writer.Write((short)entry.AnimationStart);
-            writer.Write((short)entry.AnimationCount);
-            writer.Write((short)entry.Start);
-            writer.Write((short)entry.Count);
-            writer.Write((short)entry.OnFlags);
-            writer.Write((short)entry.OffFlags);
+            writer.Write(entry.AnimationStart);
+            writer.Write(entry.AnimationCount);
+            writer.Write(entry.Start);
+            writer.Write(entry.Count);
+            writer.Write(entry.OnFlags);
+            writer.Write(entry.OffFlags);
             writer.Write(entry.Input);
             writer.Write(entry.Power);
-            writer.Write((short)0); // padding
+            writer.Write((ushort)0); // padding
             writer.Write(entry.StartTime);
         }
 
@@ -208,9 +208,9 @@ public sealed partial class AttackTableAsset
         foreach (var hitBone in state.HitBones) WriteHitBone(writer, hitBone);
 
         writer.Write(state.Damage);
-        writer.Write((short)state.Source);
-        writer.Write((short)state.Effect);
-        writer.Write((short)state.HitEffect);
+        writer.Write(state.Source);
+        writer.Write(state.Effect);
+        writer.Write(state.HitEffect);
         writer.Write(state.EffectStart);
         writer.Write(state.EffectEnd);
         foreach (var bone in state.EffectBonesOutside) WriteEffectBone(writer, bone);
@@ -249,7 +249,7 @@ public sealed partial class AttackTableAsset
 
     private static void WriteHitBone(EndianWriter writer, HitBoneInfo hitBone)
     {
-        writer.Write((short)hitBone.Bone);
+        writer.Write(hitBone.Bone);
         writer.Write((short)0); // padding
         writer.Write(hitBone.Offset);
         writer.Write(hitBone.Atomic);
@@ -258,7 +258,7 @@ public sealed partial class AttackTableAsset
 
     private static void WriteEffectBone(EndianWriter writer, ushort bone)
     {
-        writer.Write((short)bone);
+        writer.Write(bone);
         writer.Write((short)0); // padding
         writer.Write(0u); // runtime-resolved
     }

@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/GRUP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class GroupAsset() : BaseAsset(AssetType.Group), IPhysicalGroupAsset
+public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), IPhysicalGroupAsset
 {
     /// <summary>The assets an event received by this group is forwarded to.</summary>
     public Collection<AssetId> Items { get; } = [];
@@ -32,13 +32,26 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group), IPhysicalGroupAss
         set => _overriddenItemCount = value == (ushort)Items.Count ? null : value;
     }
 
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Group"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
+
     internal static GroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {
         var asset = new GroupAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        int itemCount = reader.ReadInt16();
+        ushort itemCount = reader.ReadUInt16();
         asset.GroupFlags = (GroupEventMode)reader.ReadInt16();
 
         for (int i = 0; i < itemCount; i++)
@@ -55,7 +68,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group), IPhysicalGroupAss
     internal static void Write(GroupAsset asset, EndianWriter writer, FormatProfile _)
     {
         BaseAssetPrefix.Write(asset, writer);
-        writer.Write((short)asset.Physical.ItemCount);
+        writer.Write(asset.Physical.ItemCount);
         writer.Write((short)asset.GroupFlags);
 
         foreach (var item in asset.Items)

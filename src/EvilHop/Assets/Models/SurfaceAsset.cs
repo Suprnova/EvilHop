@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SURF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhysicalSurfaceAsset
+public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseType: 0x1A), IPhysicalSurfaceAsset
 {
     /// <summary>
     /// What touching this surface does to the player.
@@ -20,9 +20,16 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     public SurfaceGameDamageType GameDamageType { get; set; }
 
     /// <summary>
-    /// Flags controlling how this surface's damage is applied.
+    /// Whether the player passes through this surface instead of colliding with it, while still
+    /// taking its <see cref="GameDamageType"/> damage on contact.
     /// </summary>
-    public SurfaceGameDamageFlags GameDamageFlags { get; set; }
+    public bool DamagePassthrough
+    {
+        get => Physical.GameDamageFlags.HasFlag(SurfaceGameDamageFlags.DamagePassthrough);
+        set => Physical.GameDamageFlags = value
+            ? Physical.GameDamageFlags | SurfaceGameDamageFlags.DamagePassthrough
+            : Physical.GameDamageFlags & ~SurfaceGameDamageFlags.DamagePassthrough;
+    }
 
     /// <summary>
     /// The time, in seconds, the player is immune to this surface's damage after being hit by it.
@@ -102,8 +109,8 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     /// </summary>
     public bool IsEnabled
     {
-        get => Physical.OnValue != 0;
-        set => Physical.OnValue = (byte)(value ? 1 : 0);
+        get => Physical.IsEnabled != 0;
+        set => Physical.IsEnabled = (byte)(value ? 1 : 0);
     }
 
     /// <summary>
@@ -113,7 +120,6 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     /// <remarks>
     /// -1 defers to the game ini's <c>player.state.out_of_bounds.out_time</c>.
     /// </remarks>
-    /// TODO: probably all non-positive values tbh
     public float OutOfBoundsDelay { get; set; }
 
     /// <summary>
@@ -139,34 +145,39 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalSurfaceAsset Physical => this;
 
+    private SurfaceGameDamageFlags _gameDamageFlags;
+    SurfaceGameDamageFlags IPhysicalSurfaceAsset.GameDamageFlags { get => _gameDamageFlags; set => _gameDamageFlags = value; }
+
     private byte _surfType;
     byte IPhysicalSurfaceAsset.SurfType { get => _surfType; set => _surfType = value; }
 
     private byte _gameSticky;
     byte IPhysicalSurfaceAsset.GameSticky { get => _gameSticky; set => _gameSticky = value; }
 
-    private byte _on;
-    byte IPhysicalSurfaceAsset.OnValue { get => _on; set => _on = value; }
+    private byte _isEnabled = 1;
+    byte IPhysicalSurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
 
-    private uint? _overriddenTextureAnimFlags;
-    uint IPhysicalSurfaceAsset.TextureAnimFlags
+    private SurfaceTextureAnimFlags? _overriddenTextureAnimFlags;
+    SurfaceTextureAnimFlags IPhysicalSurfaceAsset.TextureAnimFlags
     {
         get => _overriddenTextureAnimFlags ?? DerivedTextureAnimFlags;
         set => _overriddenTextureAnimFlags = value == DerivedTextureAnimFlags ? null : value;
     }
 
-    private uint DerivedTextureAnimFlags =>
-        (TextureAnims[0].IsEnabled ? 1u << 0 : 0u) | (TextureAnims[1].IsEnabled ? 1u << 1 : 0u);
+    private SurfaceTextureAnimFlags DerivedTextureAnimFlags =>
+        (TextureAnims[0].IsEnabled ? SurfaceTextureAnimFlags.Slot0 : SurfaceTextureAnimFlags.None) |
+        (TextureAnims[1].IsEnabled ? SurfaceTextureAnimFlags.Slot1 : SurfaceTextureAnimFlags.None);
 
-    private uint? _overriddenUvfxFlags;
-    uint IPhysicalSurfaceAsset.UvfxFlags
+    private SurfaceUvfxFlags? _overriddenUvfxFlags;
+    SurfaceUvfxFlags IPhysicalSurfaceAsset.UvfxFlags
     {
         get => _overriddenUvfxFlags ?? DerivedUvfxFlags;
         set => _overriddenUvfxFlags = value == DerivedUvfxFlags ? null : value;
     }
 
-    private uint DerivedUvfxFlags =>
-        (Uvfxs[0].IsEnabled ? 1u << 0 : 0u) | (Uvfxs[1].IsEnabled ? 1u << 1 : 0u);
+    private SurfaceUvfxFlags DerivedUvfxFlags =>
+        (Uvfxs[0].IsEnabled ? SurfaceUvfxFlags.Slot0 : SurfaceUvfxFlags.None) |
+        (Uvfxs[1].IsEnabled ? SurfaceUvfxFlags.Slot1 : SurfaceUvfxFlags.None);
 
     private static ImmutableArray<SurfaceTextureAnim> DefaultTextureAnims() => [new(), new()];
     private static ImmutableArray<SurfaceUvfx> DefaultUvfxs() => [new(), new()];
@@ -178,6 +189,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
     /// <see cref="GameVersion.N100F"/>'s <c>SURF</c> layout is substantially smaller than every
     /// other game's and does not match decompiled source; it is not modelled here.
     /// </remarks>
+    // TODO: Partial implementation - N100F uses a smaller SURF layout not modeled here.
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
         GameVersion.BFBB,
@@ -194,6 +206,15 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface), IPhys
 public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
 {
     /// <summary>
+    /// Flags controlling how this surface's damage is applied, read directly from disk.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
+    /// <see cref="SurfaceAsset.DamagePassthrough"/>.
+    /// </remarks>
+    SurfaceGameDamageFlags GameDamageFlags { get; set; }
+
+    /// <summary>
     /// Unknown.
     /// </summary>
     /// TODO: decomp's zFeetStepVillainCB calls zFeetGetIDs (which calls zSurfaceGetName), maybe
@@ -205,12 +226,14 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// </summary>
     /// TODO: decomp's zThrown has a copy of this field, maybe it controls whether thrown objects
     /// (i.e. melons, tikis) stick to the surface? might also affect Friction?
+    /// TODO: 1 for "sticky" surfaces (where you can't jump without the boots) in n100f, unclear
+    /// if it does stuff in other games.
     byte GameSticky { get; set; }
 
     /// <summary>
     /// Backs <see cref="SurfaceAsset.IsEnabled"/>.
     /// </summary>
-    byte OnValue { get; set; }
+    byte IsEnabled { get; set; }
 
     /// <summary>
     /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
@@ -220,8 +243,7 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// <remarks>
     /// When disagreements with the derived value exist, this field wins during serialization.
     /// </remarks>
-    /// TODO: i know this is in Physical, but we could still use a flag enum
-    uint TextureAnimFlags { get; set; }
+    SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
 
     /// <summary>
     /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceUvfx.IsEnabled"/>
@@ -230,13 +252,11 @@ public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
     /// <remarks>
     /// When disagreements with the derived value exist, this field wins during serialization.
     /// </remarks>
-    /// TODO: ditto w/ TextureAnimFlags
-    uint UvfxFlags { get; set; }
+    SurfaceUvfxFlags UvfxFlags { get; set; }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.GameDamageType"/>. Any other value
-/// leaves the surface harmless.
+/// Defines the damage and hazard behavior applied to the player upon contacting a surface.
 /// </summary>
 /// <remarks>
 /// Each value is a category every consumer interprets for itself, so values the player cannot tell
@@ -277,7 +297,7 @@ public enum SurfaceGameDamageType : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.GameDamageFlags"/>.
+/// Flags controlling collision and pass-through behavior when applying surface damage.
 /// </summary>
 [Flags]
 public enum SurfaceGameDamageFlags : byte
@@ -294,7 +314,7 @@ public enum SurfaceGameDamageFlags : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceAsset.PhysFlags"/>.
+/// Flags governing player physics and mobility interactions with a surface.
 /// </summary>
 [Flags]
 public enum SurfacePhysicsFlags : byte

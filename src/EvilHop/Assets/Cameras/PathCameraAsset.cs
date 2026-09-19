@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="CameraAsset"/> that moves along a fixed path over time.
 /// </summary>
-public sealed class PathCameraAsset : CameraAsset, IPhysicalPathCameraAsset
+public sealed class PathCameraAsset() : CameraAsset, IPhysicalPathCameraAsset
 {
     /// <summary>
     /// The <see cref="AssetId"/> of the path this camera follows.

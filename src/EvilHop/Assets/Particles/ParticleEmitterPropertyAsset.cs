@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PARP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class ParticleEmitterPropertyAsset() : BaseAsset(AssetType.ParticleEmitterProperty)
+public sealed partial class ParticleEmitterPropertyAsset() : BaseAsset(AssetType.ParticleEmitterProperty, baseType: 0x2E)
 {
     /// <summary>The <see cref="AssetType.ParticleSystem"/> this emitter's particles use.</summary>
     public AssetId ParSysId { get; set; }

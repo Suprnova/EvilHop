@@ -46,7 +46,7 @@ public abstract class EntityMotion : Motion
         using var block = ReadBlock(reader, BlockSize(game));
         var type = (MotionType)block.ReadByte();
         byte useBanking = block.ReadByte();
-        var flags = (MotionFlags)block.ReadInt16();
+        var flags = (MotionFlags)block.ReadUInt16();
 
         EntityMotion motion = type switch
         {
@@ -72,7 +72,7 @@ public abstract class EntityMotion : Motion
         {
             block.Write((byte)Type);
             block.Write((byte)(this is MovePointMotion { UseBanking: true } ? 1 : 0));
-            block.Write((short)Flags);
+            block.Write((ushort)Flags);
             WriteFields(block, game);
         });
 
@@ -81,7 +81,6 @@ public abstract class EntityMotion : Motion
     /// <see cref="PlatformMotion"/>, returning the only thing it holds - its flags.
     /// </summary>
     /// <exception cref="InvalidDataException">The block's type isn't <see cref="MotionType.None"/>.</exception>
-    /// TODO: do we really need this defense against MotionType?
     internal static MotionFlags ReadEmpty(EndianReader reader, GameVersion game)
     {
         using var block = ReadBlock(reader, BlockSize(game));
@@ -90,7 +89,7 @@ public abstract class EntityMotion : Motion
             throw new InvalidDataException($"Expected an empty Motion block, found motion type 0x{(byte)type:X2}.");
 
         block.ReadByte(); // use_banking, always zero
-        return (MotionFlags)block.ReadInt16();
+        return (MotionFlags)block.ReadUInt16();
     }
 
     /// <summary>
@@ -101,7 +100,7 @@ public abstract class EntityMotion : Motion
         {
             block.Write((byte)MotionType.None);
             block.Write((byte)0); // use_banking
-            block.Write((short)flags);
+            block.Write((ushort)flags);
         });
 }
 

@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that moves forward, then returns.
 /// </summary>
-public sealed class ForwardReturnMotion : PlatformMotion
+public sealed class ForwardReturnMotion() : PlatformMotion
 {
     /// <summary>The speed to move forward at.</summary>
     public float ForwardSpeed { get; set; }

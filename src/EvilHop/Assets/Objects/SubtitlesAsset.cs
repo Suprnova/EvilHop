@@ -14,17 +14,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SUBT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SubtitlesAsset : BaseAsset, IPhysicalSubtitlesAsset
+public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 0x00), IPhysicalSubtitlesAsset
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="SubtitlesAsset"/>.
-    /// </summary>
-    public SubtitlesAsset() : base(AssetType.Subtitles)
-    {
-        _baseType = 0x00;
-        BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows;
-    }
-
     /// <summary>
     /// The subtitle lines in this asset, displayed in sequence.
     /// </summary>
@@ -153,7 +144,7 @@ public interface IPhysicalSubtitlesAsset : IPhysicalBaseAsset
     /// The number of subtitle lines stored in this asset.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="SubtitlesAsset.Lines"/> count unless explicitly overridden.
+    /// When disagreements with <see cref="SubtitlesAsset.Lines"/>.Count exist, this field wins during serialization.
     /// </remarks>
     ushort NumLines { get; set; }
 
@@ -161,8 +152,7 @@ public interface IPhysicalSubtitlesAsset : IPhysicalBaseAsset
     /// The byte count of this asset following the 12-byte header (line descriptors and string pool).
     /// </summary>
     /// <remarks>
-    /// Defaults to the calculated size of the lines and string pool, padded with trailing nulls to a
-    /// 4-byte boundary, unless explicitly overridden.
+    /// When disagreements with <see cref="SubtitlesAsset.Lines"/> exist, this field wins during serialization.
     /// </remarks>
     ushort ByteCount { get; set; }
 }

@@ -58,15 +58,15 @@ public class LayerHeader : Block
     internal LayerHeader() { }
 }
 
-#pragma warning disable CS1591 // Missing XML comment
-
 /// <summary>
-/// Represents all known values for <see cref="AssetHeader.Flags"/>.
-/// Communicates information about an <c>Asset</c>'s data and how it should be handled by the game.
+/// Flags communicating how an asset's data was authored and should be loaded by the game.
 /// </summary>
 [Flags]
 public enum AssetFlags : uint
 {
+    /// <summary>
+    /// None.
+    /// </summary>
     None = 0U,
     /// <summary>
     /// The <c>Asset</c>'s data was sourced from an external file.
@@ -94,5 +94,4 @@ public enum AssetFlags : uint
     /// binary format.
     /// </summary>
     WriteTransform = 1U << 3,
-    UnknownScooby = 1U << 31
 }

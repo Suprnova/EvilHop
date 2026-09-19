@@ -14,13 +14,12 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PRJT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysicalProjectileAsset
+public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType: 0x22), IPhysicalProjectileAsset
 {
     /// <summary>
     /// Unknown. Selects some effect - likely a trail or impact particle effect - played by this
     /// projectile.
     /// </summary>
-    /// TODO: validate against decompiled source
     public int EffectType { get; set; }
 
     /// <summary>The <see cref="AssetType.Model"/> or <see cref="AssetType.ModelInfo"/> this projectile displays as while in flight.</summary>
@@ -36,7 +35,11 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysic
     public AssetId AtRestAnimId { get; set; }
 
     /// <summary>Whether this projectile destroys itself after <see cref="DestructTime"/> or <see cref="DestructDistance"/>.</summary>
-    public bool DestructEnabled { get; set; }
+    public bool DestructEnabled
+    {
+        get => Physical.DestructEnabled != 0;
+        set => Physical.DestructEnabled = value ? 1 : 0;
+    }
 
     /// <summary>The time, in seconds, after which this projectile destroys itself, if <see cref="DestructEnabled"/>.</summary>
     public float DestructTime { get; set; }
@@ -45,10 +48,20 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysic
     public float DestructDistance { get; set; }
 
     /// <summary>Whether this projectile orients itself to face its direction of travel.</summary>
-    public bool Oriented { get; set; }
+    public bool Oriented
+    {
+        get => Physical.Oriented != 0;
+        set => Physical.Oriented = value ? 1 : 0;
+    }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalProjectileAsset Physical => this;
+
+    private int _destructEnabled;
+    int IPhysicalProjectileAsset.DestructEnabled { get => _destructEnabled; set => _destructEnabled = value; }
+
+    private int _oriented;
+    int IPhysicalProjectileAsset.Oriented { get => _oriented; set => _oriented = value; }
 
     private byte[] _reserved = new byte[ReservedSize];
     byte[] IPhysicalProjectileAsset.Reserved { get => _reserved; set => _reserved = value; }
@@ -74,10 +87,10 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysic
         asset.AnimId = reader.ReadAssetId();
         asset.AtRestModelId = reader.ReadAssetId();
         asset.AtRestAnimId = reader.ReadAssetId();
-        asset.DestructEnabled = reader.ReadInt32() != 0;
+        asset.Physical.DestructEnabled = reader.ReadInt32();
         asset.DestructTime = reader.ReadSingle();
         asset.DestructDistance = reader.ReadSingle();
-        asset.Oriented = reader.ReadInt32() != 0;
+        asset.Physical.Oriented = reader.ReadInt32();
         asset.Physical.Reserved = reader.ReadBytes(ReservedSize);
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
@@ -95,10 +108,10 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysic
         writer.Write(asset.AnimId);
         writer.Write(asset.AtRestModelId);
         writer.Write(asset.AtRestAnimId);
-        writer.Write(asset.DestructEnabled ? 1 : 0);
+        writer.Write(asset.Physical.DestructEnabled);
         writer.Write(asset.DestructTime);
         writer.Write(asset.DestructDistance);
-        writer.Write(asset.Oriented ? 1 : 0);
+        writer.Write(asset.Physical.Oriented);
         writer.Write(asset.Physical.Reserved);
 
         LinkSerialization.Write(asset, writer);
@@ -112,7 +125,18 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile), IPhysic
 public interface IPhysicalProjectileAsset : IPhysicalBaseAsset
 {
     /// <summary>
-    /// Unknown. Always 0 in every sample checked so far.
+    /// Whether this projectile destroys itself after <see cref="ProjectileAsset.DestructTime"/> or
+    /// <see cref="ProjectileAsset.DestructDistance"/>, as stored on disk.
+    /// </summary>
+    int DestructEnabled { get; set; }
+
+    /// <summary>
+    /// Whether this projectile orients itself to face its direction of travel, as stored on disk.
+    /// </summary>
+    int Oriented { get; set; }
+
+    /// <summary>
+    /// Unknown.
     /// </summary>
     [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
     byte[] Reserved { get; set; }

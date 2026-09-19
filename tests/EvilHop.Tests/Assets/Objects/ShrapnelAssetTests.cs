@@ -121,12 +121,6 @@ public class ShrapnelAssetTests
     }
 
     [Fact]
-    public void Physical_InitCallbackPointer_DefaultsToZero()
-    {
-        Assert.Equal(0u, _asset.Physical.InitCallbackPointer);
-    }
-
-    [Fact]
     public void Physical_FragCount_WhenOverridden_DoesNotTrackFragsCountUntilCleared()
     {
         _asset.Physical.FragCount = 10;
@@ -156,16 +150,6 @@ public class ShrapnelAssetTests
 
         _asset.Id = new AssetId(0x33333333);
         Assert.Equal(new AssetId(0x33333333), _asset.Physical.ShrapnelId);
-    }
-
-    [Theory]
-    [InlineData(0u)]
-    [InlineData(0x80001234u)]
-    [InlineData(0xFFFFFFFFu)]
-    public void Physical_InitCallbackPointer_WhenAssigned_SetsValue(uint value)
-    {
-        _asset.Physical.InitCallbackPointer = value;
-        Assert.Equal(value, _asset.Physical.InitCallbackPointer);
     }
 
     [Fact]
@@ -201,7 +185,6 @@ public class ShrapnelAssetTests
         Assert.Empty(asset.Frags);
         Assert.Equal(0, asset.Physical.FragCount);
         Assert.Equal(new AssetId(0x12345678), asset.Physical.ShrapnelId);
-        Assert.Equal(0u, asset.Physical.InitCallbackPointer);
         Assert.Empty(asset.GetUnparsedTail().ToArray());
 
         Assert.Equal(data, Write(asset));

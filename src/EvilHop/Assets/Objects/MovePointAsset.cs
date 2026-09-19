@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MVPT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint), IPhysicalMovePointAsset
+public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, baseType: 0x0D), IPhysicalMovePointAsset
 {
     /// <summary>This move point's position in the game world.</summary>
     public Vector3 Position { get; set; }
@@ -62,6 +62,19 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint), I
         get => _overriddenNumPoints ?? (ushort)SiblingIds.Count;
         set => _overriddenNumPoints = value == (ushort)SiblingIds.Count ? null : value;
     }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.MovePoint"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 }
 
 /// <summary>
@@ -86,7 +99,7 @@ public interface IPhysicalMovePointAsset : IPhysicalBaseAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MovePointAsset.Kind"/>.
+/// Defines whether an occupant moves along or patrols within the area of a <see cref="MovePointAsset"/>.
 /// </summary>
 public enum MovePointKind : byte
 {
@@ -107,10 +120,8 @@ public enum MovePointKind : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MovePointAsset.BezierRole"/>.
+/// Defines how a <see cref="MovePointAsset"/> participates in a bezier curve path.
 /// </summary>
-/// TODO: validate against decompiled source; the distinct effect of <see cref="Unknown2"/> versus
-/// <see cref="Curve"/> is not confirmed
 public enum MovePointBezierRole : byte
 {
     /// <summary>This move point is not part of a bezier curve.</summary>
@@ -122,6 +133,8 @@ public enum MovePointBezierRole : byte
     /// </summary>
     Curve = 1,
 
-    /// <summary>Unknown.</summary>
-    Unknown2 = 2,
+    /// <summary>
+    /// This move point serves as a secondary control point along the bezier curve.
+    /// </summary>
+    ControlPoint = 2,
 }

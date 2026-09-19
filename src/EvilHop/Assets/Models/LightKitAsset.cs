@@ -15,14 +15,12 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LKIT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// TODO: evaluate asset category (environment?)
 public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightKitAsset
 {
     /// <summary>
     /// The <see cref="AssetType.Group"/> of entities this light kit is applied to, in addition to
     /// whichever single object referenced it directly, if any.
     /// </summary>
-    /// TODO: what does that second half mean
     public AssetId GroupId { get; set; }
 
     /// <summary>
@@ -67,7 +65,6 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
 
         if (profile.Game is GameVersion.ROTU or GameVersion.Ratatouille)
             reader.ReadUInt32(); // "blended" - always 0xCDCDCDCD (uninitialized) on disk, reset to false at load
-                                 // TODO: validate against decompiled source. what data type is this really?
 
         for (int i = 0; i < lightCount; i++)
         {
@@ -78,7 +75,6 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
                 Right = reader.ReadVector3(),
             };
 
-            // TODO: definitely should store these homogeneous components, they count as data
             reader.ReadSingle(); // Right's homogeneous component; always 0
             light.Up = reader.ReadVector3();
             reader.ReadSingle(); // Up's homogeneous component; always 0
@@ -93,7 +89,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             asset.Lights.Add(light);
         }
 
-        asset.Physical.LightCount = (uint)asset.Lights.Count;
+        asset.Physical.LightCount = lightCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -159,8 +155,6 @@ public interface IPhysicalLightKitAsset : IPhysicalAsset
 /// negated in the process; <see cref="Position"/> becomes its world position. For an
 /// <see cref="LightKitLightType.Ambient"/> light, all four are <see cref="Vector3.Zero"/>.
 /// </remarks>
-/// TODO: elaborate on what this means. it seems archaic, can we abstract it?
-/// TODO: abstract LightKitLight into subclasses branching from LightKitLightType
 public sealed class LightKitLight
 {
     /// <summary>
@@ -216,7 +210,7 @@ public sealed class LightKitLight
 }
 
 /// <summary>
-/// Represents all known values for <see cref="LightKitLight.Type"/>.
+/// Defines the lighting type of a <see cref="LightKitLight"/>.
 /// </summary>
 public enum LightKitLightType : uint
 {

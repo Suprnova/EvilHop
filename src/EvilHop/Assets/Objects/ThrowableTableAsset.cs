@@ -13,16 +13,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TRWT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ThrowableTableAsset : BaseAsset, IPhysicalThrowableTableAsset
+public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, baseType: 0x00), IPhysicalThrowableTableAsset
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="ThrowableTableAsset"/>.
-    /// </summary>
-    public ThrowableTableAsset() : base(AssetType.ThrowableTable)
-    {
-        _baseType = 0x00;
-    }
-
     /// <summary>
     /// The table's format version. Version 3 includes <see cref="ThrowableTableRow.DamageRadius"/>,
     /// while version 2 (used in prototypes) omits it.

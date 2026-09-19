@@ -15,7 +15,7 @@ public sealed partial class NPCAsset
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        // todo: we should try to actually parse these eventually
+        // TODO: Partial implementation - N100F Prototype fields not yet parsed
         if (profile.NPCHasExtendedFields)
         {
             asset.ActivateRadius = reader.ReadSingle();
@@ -31,7 +31,7 @@ public sealed partial class NPCAsset
             asset.GummedDuration = reader.ReadInt16();
             asset.BubbleDuration = reader.ReadInt16();
             asset.Hitpoints = reader.ReadByte();
-            asset.BehaviorState = (NPCBehaviorState)reader.ReadByte();
+            asset.BehaviorState = reader.ReadByte();
             reader.ReadInt16(); // pad, always zero
             asset.Physical.VillFlags = reader.ReadUInt32();
             asset.LobSpeed = reader.ReadSingle();
@@ -80,7 +80,7 @@ public sealed partial class NPCAsset
             writer.Write(asset.GummedDuration);
             writer.Write(asset.BubbleDuration);
             writer.Write(asset.Hitpoints);
-            writer.Write((byte)asset.BehaviorState);
+            writer.Write(asset.BehaviorState);
             writer.Write((short)0); // pad
             writer.Write(asset.Physical.VillFlags);
             writer.Write(asset.LobSpeed);

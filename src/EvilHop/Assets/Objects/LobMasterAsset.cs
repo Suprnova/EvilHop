@@ -14,10 +14,9 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LOBM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
+public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster, baseType: 0x23)
 {
     /// <summary>This launcher's type.</summary>
-    /// TODO: validate against decompiled source; every real archive checked uses 0
     public int LobMasterType { get; set; }
 
     /// <summary>The <see cref="AssetType.Projectile"/> this launcher lobs.</summary>
@@ -39,7 +38,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
     public Vector3 ModelScale { get; set; }
 
     /// <summary>Toggles this launcher's optional behaviors.</summary>
-    public LobMasterEnablers Enablers { get; set; }
+    public int Enablers { get; set; }
 
     /// <summary>How long, in seconds, a launched projectile lives before expiring.</summary>
     public float MaxLifetime { get; set; }
@@ -71,8 +70,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
     public int BounceCount { get; set; }
 
     /// <summary>Which powerup, if any, a launched projectile drops.</summary>
-    /// TODO: validate against decompiled source
-    public PowerupType PowerupType { get; set; }
+    public int PowerupType { get; set; }
 
     /// <summary>Scales how heavily a launched projectile behaves once at rest.</summary>
     public float HeavyFactor { get; set; }
@@ -87,7 +85,6 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
     public float AtRestPeriod { get; set; }
 
     /// <summary>This launcher's mode.</summary>
-    /// TODO: validate against decompiled source; every real archive checked uses 0 or 2
     public uint Mode { get; set; }
 
     /// <summary>
@@ -111,7 +108,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
         asset.LaunchSpeed = reader.ReadSingle();
         asset.LaunchSpeedVariance = reader.ReadSingle();
         asset.ModelScale = reader.ReadVector3();
-        asset.Enablers = (LobMasterEnablers)reader.ReadInt32();
+        asset.Enablers = reader.ReadInt32();
         asset.MaxLifetime = reader.ReadSingle();
         asset.MaxDistance = reader.ReadSingle();
         asset.MovePointId = reader.ReadAssetId();
@@ -120,7 +117,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
         asset.ArcCoefficient = reader.ReadSingle();
         asset.DebrisConeAngle = reader.ReadInt32();
         asset.BounceCount = reader.ReadInt32();
-        asset.PowerupType = (PowerupType)reader.ReadInt32();
+        asset.PowerupType = reader.ReadInt32();
         asset.HeavyFactor = reader.ReadSingle();
         asset.TumbleRotation = reader.ReadVector3();
         asset.CollideDelay = reader.ReadSingle();
@@ -144,7 +141,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
         writer.Write(asset.LaunchSpeed);
         writer.Write(asset.LaunchSpeedVariance);
         writer.Write(asset.ModelScale);
-        writer.Write((int)asset.Enablers);
+        writer.Write(asset.Enablers);
         writer.Write(asset.MaxLifetime);
         writer.Write(asset.MaxDistance);
         writer.Write(asset.MovePointId);
@@ -153,7 +150,7 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
         writer.Write(asset.ArcCoefficient);
         writer.Write(asset.DebrisConeAngle);
         writer.Write(asset.BounceCount);
-        writer.Write((int)asset.PowerupType);
+        writer.Write(asset.PowerupType);
         writer.Write(asset.HeavyFactor);
         writer.Write(asset.TumbleRotation);
         writer.Write(asset.CollideDelay);
@@ -163,60 +160,4 @@ public sealed class LobMasterAsset() : BaseAsset(AssetType.LobMaster)
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
     }
-}
-
-/// <summary>Toggles a <see cref="LobMasterAsset"/>'s optional behaviors.</summary>
-[Flags]
-public enum LobMasterEnablers
-{
-    /// <summary>No optional behaviors are enabled.</summary>
-    None = 0,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown1 = 1 << 0,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown2 = 1 << 1,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown4 = 1 << 2,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown8 = 1 << 3,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown16 = 1 << 4,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown32 = 1 << 5,
-}
-
-/// <summary>Which powerup, if any, a <see cref="LobMasterAsset"/>'s projectile drops.</summary>
-/// TODO: validate against decompiled source; names are placeholders for the raw values observed in
-/// the N100F corpus
-public enum PowerupType
-{
-    /// <summary>No powerup.</summary>
-    None = 0,
-
-    /// <summary>Unknown.</summary>
-    Unknown1 = 1,
-
-    /// <summary>Unknown.</summary>
-    Unknown3 = 3,
-
-    /// <summary>Unknown.</summary>
-    Unknown4 = 4,
-
-    /// <summary>Unknown.</summary>
-    Unknown5 = 5,
-
-    /// <summary>Unknown.</summary>
-    Unknown6 = 6,
 }

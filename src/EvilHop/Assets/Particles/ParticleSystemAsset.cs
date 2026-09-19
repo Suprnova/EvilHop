@@ -11,7 +11,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PARS">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.ParticleSystem), IPhysicalParticleSystemAsset
+// TODO: Partial implementation - particle commands are undecoded and stored as raw bytes
+public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.ParticleSystem, baseType: 0x27), IPhysicalParticleSystemAsset
 {
     /// <summary>
     /// The <see cref="AssetType.ParticleSystem"/> this one inherits unset fields from, usually
@@ -71,8 +72,7 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
 public interface IPhysicalParticleSystemAsset : IPhysicalBaseAsset
 {
     /// <summary>
-    /// Unknown. Always 0 across every <see cref="AssetType.ParticleSystem"/> in the corpus, and not
-    /// referenced anywhere in the decompiled particle system code.
+    /// Unknown.
     /// </summary>
     int SystemType { get; set; }
 
@@ -85,7 +85,6 @@ public interface IPhysicalParticleSystemAsset : IPhysicalBaseAsset
     /// unlike most counts elsewhere in this library, this one cannot be derived and does not
     /// override-clear against anything.
     /// </remarks>
-    /// TODO: decode into individual xParCmd entries once their per-game field layouts are confirmed
     byte CommandCount { get; set; }
 
     /// <summary>
@@ -94,13 +93,12 @@ public interface IPhysicalParticleSystemAsset : IPhysicalBaseAsset
     /// 1-byte enabled flag, 1-byte mode, and 2 bytes of padding, followed by a type-specific payload
     /// whose size is not stored on disk and is not yet modelled here.
     /// </summary>
-    /// TODO: decode into individual xParCmd entries once their per-game field layouts are confirmed
     [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Packed, variable-length, and not yet decoded into individual particle commands; a byte[] is the natural representation.")]
     byte[] CommandData { get; set; }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ParticleSystemAsset.Flags"/>.
+/// Flags controlling particle system simulation, rendering mode, and lifecycle.
 /// </summary>
 [Flags]
 public enum ParticleSystemFlags : byte
@@ -149,7 +147,7 @@ public enum ParticleSystemFlags : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ParticleSystemAsset.RenderFunction"/>.
+/// Identifies the rendering pipeline function used to draw the particle system.
 /// </summary>
 public enum ParticleSystemRenderFunction : byte
 {

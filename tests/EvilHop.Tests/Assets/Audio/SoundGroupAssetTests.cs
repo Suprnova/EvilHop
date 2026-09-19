@@ -209,41 +209,6 @@ public class SoundGroupAssetTests
         Assert.Equal(value, entry.MaxPitchMultiplier);
     }
 
-    [Fact]
-    public void IsEnvironmentalStream_WhenBit2Set_ReturnsTrue()
-    {
-        _asset.Physical.SoundGroupFlags = 0x02;
-
-        Assert.True(_asset.IsEnvironmentalStream);
-    }
-
-    [Fact]
-    public void IsEnvironmentalStream_WhenBit2NotSet_ReturnsFalse()
-    {
-        _asset.Physical.SoundGroupFlags = 0xFD;
-
-        Assert.False(_asset.IsEnvironmentalStream);
-    }
-
-    [Fact]
-    public void IsEnvironmentalStream_SetTrue_SetsBit2AndPreservesOtherBits()
-    {
-        _asset.Physical.SoundGroupFlags = 0x05;
-
-        _asset.IsEnvironmentalStream = true;
-
-        Assert.Equal((byte)0x07, _asset.Physical.SoundGroupFlags);
-    }
-
-    [Fact]
-    public void IsEnvironmentalStream_SetFalse_ClearsBit2AndPreservesOtherBits()
-    {
-        _asset.Physical.SoundGroupFlags = 0x07;
-
-        _asset.IsEnvironmentalStream = false;
-
-        Assert.Equal((byte)0x05, _asset.Physical.SoundGroupFlags);
-    }
 
     [Fact]
     public void EntryCount_WhenNotOverridden_DerivesFromEntriesCount()
@@ -392,7 +357,6 @@ public class SoundGroupAssetTests
         Assert.Equal((sbyte)3, asset.MaxPlays);
         Assert.Equal((byte)128, asset.Priority);
         Assert.Equal((byte)0x02, asset.Physical.SoundGroupFlags);
-        Assert.True(asset.IsEnvironmentalStream);
         Assert.Equal((byte)0x05, asset.Physical.SoundCategory);
         Assert.Equal((byte)0x01, asset.Physical.PlayRule);
         Assert.Equal((byte)0x09, asset.Physical.InfoPad0);

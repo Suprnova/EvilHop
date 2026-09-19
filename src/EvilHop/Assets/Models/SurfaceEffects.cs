@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -100,7 +101,6 @@ public sealed class SurfaceUvfx
     /// <summary>
     /// How this animation drives <see cref="Translation"/>/<see cref="Scale"/>.
     /// </summary>
-    /// TODO: extract this into subclasses?
     public SurfaceUvfxMode Mode { get; set; }
 
     /// <summary>
@@ -112,9 +112,6 @@ public sealed class SurfaceUvfx
     /// The speed <see cref="Rotation"/> advances at, in degrees per second.
     /// </summary>
     public float RotationSpeed { get; set; }
-
-    // TODO: if Vector3.Z is always 0, then Vector2 seems more apt. Though this would require
-    // a physical layer for an Asset's internal struct, which we haven't done yet.
 
     /// <summary>
     /// The current UV translation. <see cref="Vector3.Z"/> is always 0.
@@ -154,10 +151,8 @@ public sealed class SurfaceUvfx
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceMaterialFx.Flags"/>.
+/// Flags governing material shader and texture mapping effects applied to a surface.
 /// </summary>
-/// TODO: i don't think there's a point modelling these if we both don't know what they mean and
-/// we don't know of a specific set of flags that are always set (like SurfaceColorFxFlags).
 [Flags]
 public enum SurfaceMaterialFxFlags : uint
 {
@@ -165,19 +160,12 @@ public enum SurfaceMaterialFxFlags : uint
     /// No flags are set.
     /// </summary>
     None = 0,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    UnknownBit0 = 1 << 0,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    UnknownBit3 = 1 << 3,
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceColorFx.Flags"/>.
+/// Flags governing color animation effects applied to a surface.
 /// </summary>
+[SuppressMessage("Design", "CA2217:Do not mark enums with FlagsAttribute", Justification = "Only the composite Valid mask is currently confirmed.")]
 [Flags]
 public enum SurfaceColorFxFlags : ushort
 {
@@ -185,26 +173,15 @@ public enum SurfaceColorFxFlags : ushort
     /// No flags are set.
     /// </summary>
     None = 0,
+
     /// <summary>
-    /// Unknown.
+    /// Always set on active color effects.
     /// </summary>
-    UnknownBit1 = 1 << 1,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    UnknownBit2 = 1 << 2,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    UnknownBit3 = 1 << 3,
-    /// <summary>
-    /// Always set. Meaning otherwise undocumented.
-    /// </summary>
-    Valid = UnknownBit1 | UnknownBit2 | UnknownBit3,
+    Valid = (1 << 1) | (1 << 2) | (1 << 3),
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceTextureAnim.Mode"/>.
+/// Defines how a surface texture animation advances through its target group of models.
 /// </summary>
 public enum SurfaceTextureAnimMode : ushort
 {
@@ -223,7 +200,29 @@ public enum SurfaceTextureAnimMode : ushort
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SurfaceUvfx.Mode"/>.
+/// Flags governing active texture animations on a surface.
+/// </summary>
+[Flags]
+public enum SurfaceTextureAnimFlags : uint
+{
+    /// <summary>
+    /// Neither texture animation is active.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// The first texture animation (<see cref="SurfaceAsset.TextureAnims"/>[0]) is active.
+    /// </summary>
+    Slot0 = 1 << 0,
+
+    /// <summary>
+    /// The second texture animation (<see cref="SurfaceAsset.TextureAnims"/>[1]) is active.
+    /// </summary>
+    Slot1 = 1 << 1,
+}
+
+/// <summary>
+/// Defines the animation mode governing UV coordinate scrolling and scaling on a surface.
 /// </summary>
 public enum SurfaceUvfxMode
 {
@@ -244,3 +243,26 @@ public enum SurfaceUvfxMode
     /// </summary>
     MinMaxOscillate = 2,
 }
+
+/// <summary>
+/// Flags governing active UV coordinate animation effects on a surface.
+/// </summary>
+[Flags]
+public enum SurfaceUvfxFlags : uint
+{
+    /// <summary>
+    /// Neither UV animation is active.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// The first UV animation (<see cref="SurfaceAsset.Uvfxs"/>[0]) is active.
+    /// </summary>
+    Slot0 = 1 << 0,
+
+    /// <summary>
+    /// The second UV animation (<see cref="SurfaceAsset.Uvfxs"/>[1]) is active.
+    /// </summary>
+    Slot1 = 1 << 1,
+}
+

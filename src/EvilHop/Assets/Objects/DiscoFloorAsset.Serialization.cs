@@ -128,12 +128,13 @@ public sealed partial class DiscoFloorAsset
         writer.Write(transitionPrefixBytes);
         writer.Write(onPrefixBytes);
 
-        for (int i = 0; i < asset.States.Count; i++)
+        for (int i = 0; i < stateCount; i++)
             writer.Write(bitmaskRegionStart + (uint)(i * maskByteSize));
 
         int totalMaskBytes = 0;
-        foreach (var state in asset.States)
+        for (int i = 0; i < stateCount; i++)
         {
+            var state = i < asset.States.Count ? asset.States[i] : new DiscoFloorState();
             writer.Write(EncodeStateMask(state, tileCount, maskByteSize));
             totalMaskBytes += maskByteSize;
         }
@@ -206,7 +207,7 @@ public sealed partial class DiscoFloorAsset
     private static string DecodeNullTerminated(byte[] bytes)
     {
         int nullIndex = Array.IndexOf(bytes, (byte)0);
-        return Encoding.Latin1.GetString(bytes, 0, nullIndex >= 0 ? nullIndex : bytes.Length); // todo: latin?
+        return Encoding.Latin1.GetString(bytes, 0, nullIndex >= 0 ? nullIndex : bytes.Length);
     }
 
     /// <summary>

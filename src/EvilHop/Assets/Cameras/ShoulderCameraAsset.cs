@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// A <see cref="CameraAsset"/> that hovers just behind and to the side of its target, realigning
 /// itself as the target moves.
 /// </summary>
-public sealed class ShoulderCameraAsset : CameraAsset, IPhysicalShoulderCameraAsset
+public sealed class ShoulderCameraAsset() : CameraAsset, IPhysicalShoulderCameraAsset
 {
     /// <summary>The camera's distance from its target.</summary>
     public float Distance { get; set; }

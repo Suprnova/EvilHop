@@ -12,8 +12,21 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DPAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DispatcherAsset() : BaseAsset(AssetType.Dispatcher)
+public sealed class DispatcherAsset() : BaseAsset(AssetType.Dispatcher, baseType: 0x1E)
 {
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Dispatcher"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
+
     internal static DispatcherAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {
         var asset = new DispatcherAsset();

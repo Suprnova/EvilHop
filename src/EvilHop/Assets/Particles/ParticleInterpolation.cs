@@ -30,7 +30,7 @@ public sealed class ParticleInterpolation
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ParticleInterpolation.Mode"/>.
+/// Defines the interpolation curve used to transition particle properties over their lifetime.
 /// </summary>
 /// <remarks>
 /// Real archives almost always store this as a BKDR hash of the mode's name; a raw value below 8

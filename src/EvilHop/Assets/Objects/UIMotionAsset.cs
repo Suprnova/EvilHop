@@ -11,7 +11,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/UIM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion), IPhysicalUIMotionAsset
+public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, baseType: 0x53), IPhysicalUIMotionAsset
 {
     /// <summary>
     /// How long, in seconds, the motion lasts. The motion ends at this point, so any
@@ -100,6 +100,5 @@ public interface IPhysicalUIMotionAsset : IPhysicalBaseAsset
     /// <summary>
     /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     byte InFlag { get; set; }
 }

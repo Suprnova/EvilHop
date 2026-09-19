@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/PLAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
+public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 0x06), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
 {
     /// <summary>
     /// This platform's behavior flags.
@@ -24,6 +24,19 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
     /// How this platform moves or reacts. Determines <see cref="IPhysicalPlatformAsset.PlatformType"/>.
     /// </summary>
     public Motion Motion { get; set; } = new FullyManipulableMotion();
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Platform"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalPlatformAsset Physical => this;
@@ -68,8 +81,8 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
         // Subtype derives from PlatformType, which derives from Motion - reassigned once both are read.
         byte subtype = asset.Physical.Subtype;
         var platformType = (PlatformType)reader.ReadByte();
-        reader.ReadByte(); // padding, always zero
-        asset.Flags = (PlatformFlags)reader.ReadInt16();
+        reader.ReadByte(); // padding
+        asset.Flags = (PlatformFlags)reader.ReadUInt16();
 
         if (platformType <= PlatformType.Pendulum)
         {
@@ -99,7 +112,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform), IHasModel
 
         writer.Write((byte)asset.Physical.PlatformType);
         writer.Write((byte)0); // padding
-        writer.Write((short)asset.Flags);
+        writer.Write((ushort)asset.Flags);
 
         switch (asset.Motion)
         {
@@ -136,8 +149,7 @@ public interface IPhysicalPlatformAsset : IPhysicalEntityAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="IPhysicalPlatformAsset.PlatformType"/>, each named for
-/// the <see cref="Motion"/> that determines it.
+/// Defines the movement mechanism or behavior type used by a <see cref="PlatformAsset"/>.
 /// </summary>
 public enum PlatformType : byte
 {
@@ -172,15 +184,8 @@ public enum PlatformType : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="PlatformAsset.Flags"/>.
+/// Flags controlling physical solidity, shake reaction, and player collision for a <see cref="PlatformAsset"/>.
 /// </summary>
-/// <remarks>
-/// Per <see cref="GameVersion.BFBB"/>. <see cref="GameVersion.TSSM"/> is documented as storing a
-/// collision type here instead, and <see cref="GameVersion.ROTU"/> sets bits whose meaning is unknown.
-/// </remarks>
-/// TODO: not sure what the "storing a collision type here instead" matters to the documentation of
-/// the enum itself. The enum should be game-agnostic (see LayerType), matters like that are a job
-/// for the serialization method.
 [Flags]
 public enum PlatformFlags : ushort
 {

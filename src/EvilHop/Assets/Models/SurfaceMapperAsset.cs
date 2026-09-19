@@ -67,7 +67,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), IPhys
             });
         }
 
-        asset.Physical.Count = (uint)asset.Entries.Count;
+        asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }

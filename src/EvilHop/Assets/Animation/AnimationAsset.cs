@@ -44,7 +44,8 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
     /// row of <see cref="IPhysicalAnimationAsset.BoneCount"/> entries per time. Index as
     /// <c>Offsets[timeIndex * BoneCount + boneIndex]</c>.
     /// </summary>
-    /// TODO: should be a 2D array?
+    /// TODO: indexing this is weird, probably an indication that we should extract it into another
+    /// format
     public Collection<ushort> Offsets { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
@@ -80,6 +81,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
     /// <see cref="GameVersion.ROTU"/> and <see cref="GameVersion.Ratatouille"/> use a revised SKB
     /// layout not modeled here; both degrade to the generic shape.
     /// </remarks>
+    // TODO: Partial implementation - ROTU and Ratatouille use a revised SKB layout not modeled here.
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
         GameVersion.N100F,
@@ -96,11 +98,11 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         asset.Physical.Magic = reader.ReadUInt32();
         asset.Physical.AnimationFlags = reader.ReadUInt32();
         asset.Physical.BoneCount = reader.ReadUInt16();
-        int timeCount = reader.ReadUInt16();
-        int keyCount = (int)reader.ReadUInt32();
+        ushort timeCount = reader.ReadUInt16();
+        uint keyCount = reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
 
-        for (int i = 0; i < keyCount; i++)
+        for (uint i = 0; i < keyCount; i++)
         {
             asset.Keys.Add(new AnimationKey
             {
@@ -115,8 +117,8 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         int offsetCount = Math.Max(timeCount - 1, 0) * asset.Physical.BoneCount;
         for (int i = 0; i < offsetCount; i++) asset.Offsets.Add(reader.ReadUInt16());
 
-        asset.Physical.KeyCount = (uint)asset.Keys.Count;
-        asset.Physical.TimeCount = (ushort)asset.Times.Count;
+        asset.Physical.KeyCount = keyCount;
+        asset.Physical.TimeCount = timeCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -125,20 +127,20 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
     {
         writer.Write(asset.Physical.Magic);
         writer.Write(asset.Physical.AnimationFlags);
-        writer.Write((short)asset.Physical.BoneCount);
-        writer.Write((short)asset.Physical.TimeCount);
+        writer.Write(asset.Physical.BoneCount);
+        writer.Write(asset.Physical.TimeCount);
         writer.Write(asset.Physical.KeyCount);
         writer.Write(asset.Scale);
 
         foreach (var key in asset.Keys)
         {
-            writer.Write((short)key.TimeIndex);
+            writer.Write(key.TimeIndex);
             writer.Write((short)key.Quat.X); writer.Write((short)key.Quat.Y); writer.Write((short)key.Quat.Z); writer.Write((short)key.Quat.W);
             writer.Write((short)key.Tran.X); writer.Write((short)key.Tran.Y); writer.Write((short)key.Tran.Z);
         }
 
         foreach (float time in asset.Times) writer.Write(time);
-        foreach (ushort offset in asset.Offsets) writer.Write((short)offset);
+        foreach (ushort offset in asset.Offsets) writer.Write(offset);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -198,13 +200,12 @@ public sealed class AnimationKey
     /// <summary>
     /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W).
     /// </summary>
-    /// TODO: we really should be storing these as shorts, not floats. UX is one thing, but we can't
-    /// appear to guarantee that float precision is supported when it's not.
+    /// TODO: we serialize these as shorts, losing precision, that should be communicated somehow,
+    /// in the type or in the comments.
     public Vector4 Quat { get; set; }
 
     /// <summary>
     /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
     /// </summary>
-    /// TODO: ditto
     public Vector3 Tran { get; set; }
 }

@@ -55,15 +55,15 @@ public sealed partial class UIFontAsset
         EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write((uint)asset.Flags);
-        writer.Write((short)asset.Width);
-        writer.Write((short)asset.Height);
+        writer.Write(asset.Width);
+        writer.Write(asset.Height);
         writer.Write(asset.TextureId);
         WriteVector2(writer, asset.TopLeftUV);
         WriteVector2(writer, asset.TopRightUV);
         WriteVector2(writer, asset.BottomRightUV);
         WriteVector2(writer, asset.BottomLeftUV);
 
-        writer.Write((short)(ushort)asset.FontFlags);
+        writer.Write((ushort)asset.FontFlags);
         writer.Write((byte)asset.Mode);
         writer.Write(asset.FontId);
         writer.Write(asset.TextId);

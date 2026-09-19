@@ -76,7 +76,7 @@ public interface IPhysicalBaseAsset : IPhysicalAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="BaseAsset.BaseFlags"/>.
+/// Flags controlling the initial lifecycle, visibility, and scene persistence of a <see cref="BaseAsset"/>.
 /// </summary>
 [Flags]
 public enum BaseAssetFlags : short

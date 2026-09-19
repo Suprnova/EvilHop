@@ -19,7 +19,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/UIFT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont)
+public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont, baseType: 0x21)
 {
     /// <summary>
     /// Behavior flags shared with <see cref="AssetType.UI"/>.
@@ -104,7 +104,6 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont)
     /// <summary>
     /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     public short SpaceY { get; set; }
 
     /// <summary>The width of a single character, in pixels.</summary>
@@ -130,9 +129,8 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont)
 }
 
 /// <summary>
-/// Represents all known values for <see cref="UIFontAsset.FontFlags"/>.
+/// Flags controlling font alignment, backdrop rendering, text dimming, and dynamic bounds expansion.
 /// </summary>
-/// TODO: validate AlignCenter/AlignRight against decompiled xtextbox source
 [Flags]
 public enum UIFontFlags : ushort
 {
@@ -180,9 +178,8 @@ public enum UIFontFlags : ushort
 }
 
 /// <summary>
-/// Represents all known values for <see cref="UIFontAsset.Mode"/>.
+/// Specifies the built-in text rendering layout and formatting mode.
 /// </summary>
-/// TODO: validate against decompiled source; only the numbering is confirmed
 public enum UIFontMode : byte
 {
     /// <summary>Unknown.</summary>

@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LITE">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LightAsset() : BaseAsset(AssetType.Light)
+public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
 {
     /// <summary>This light's type.</summary>
     public LightType LightType { get; set; }
@@ -31,9 +31,6 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light)
     public Vector3 Direction { get; set; }
 
     /// <summary>The cone angle of a <see cref="LightType.Spot"/> light.</summary>
-    /// TODO: the wiki claims radians, but every value observed in the N100F corpus is 45 or 90 -
-    /// round numbers for degrees, not radians. Unconfirmed either way: every real archive checked
-    /// uses a non-Spot LightType, for which this field goes unused.
     public float ConeAngle { get; set; }
 
     /// <summary>This light's position, ignored while attached to <see cref="AttachedEntityId"/>.</summary>
@@ -112,12 +109,10 @@ public enum LightType : byte
     /// </summary>
     Spot = 1,
 
-    /// <summary>Functionally identical to <see cref="Point"/> in decompiled source.</summary>
-    /// TODO: validate against decompiled source; never observed in the N100F corpus
+    /// <summary>Functionally identical to <see cref="Point"/>.</summary>
     Point2 = 2,
 
-    /// <summary>Functionally identical to <see cref="Point"/> in decompiled source.</summary>
-    /// TODO: validate against decompiled source; the only value observed in the N100F corpus
+    /// <summary>Functionally identical to <see cref="Point"/>.</summary>
     Point3 = 3,
 }
 
@@ -126,10 +121,6 @@ public enum LightEffect : byte
 {
     /// <summary>No effect.</summary>
     None = 0,
-
-    /// <summary>Unknown. The wiki also labels this the same as <see cref="None"/>.</summary>
-    /// TODO: validate against decompiled source
-    Unknown1 = 1,
 
     /// <summary>Flickers slowly.</summary>
     FlickerSlow = 2,
@@ -180,31 +171,17 @@ public enum LightEffect : byte
     Cauldron = 17,
 }
 
-/// <summary>Toggles a <see cref="LightAsset"/> on or off, and whether it affects level geometry.</summary>
+/// <summary>
+/// Flags toggling light state and scene interaction behavior for a <see cref="LightAsset"/>.
+/// </summary>
 [Flags]
 public enum LightFlags : uint
 {
     /// <summary>The light is turned off.</summary>
     None = 0,
 
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown1 = 1 << 0,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown2 = 1 << 1,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown4 = 1 << 2,
-
     /// <summary>The light affects level geometry, not just entities.</summary>
     Environment = 1 << 3,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown16 = 1 << 4,
 
     /// <summary>The light is turned on.</summary>
     On = 1 << 5,

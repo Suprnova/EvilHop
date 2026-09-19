@@ -82,7 +82,7 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
             writer.Write(entry.PickupHash);
             writer.Write(entry.PickupType);
             writer.Write(entry.PickupIndex);
-            writer.Write((short)entry.Flags);
+            writer.Write(entry.Flags);
             writer.Write(entry.Quantity);
             writer.Write(entry.ModelId);
             writer.Write(entry.AnimId);
@@ -124,24 +124,22 @@ public sealed class PickupTableEntry
     public uint PickupHash { get; set; }
 
     /// <summary>
-    /// Unknown. Usually 0xCD (uninitialized) on disk - the retail game overwrites it at load for
-    /// every entry whose <see cref="PickupHash"/> matches one of its own hardcoded pickup names.
+    /// Unknown.
     /// </summary>
     public byte PickupType { get; set; }
 
     /// <summary>
-    /// Unknown. Usually 0xCD (uninitialized) on disk, overwritten the same way as
-    /// <see cref="PickupType"/>.
+    /// Unknown.
     /// </summary>
     public byte PickupIndex { get; set; }
 
     /// <summary>
-    /// Unknown. Usually 0.
+    /// Unknown.
     /// </summary>
     public ushort Flags { get; set; }
 
     /// <summary>
-    /// How many of this pickup are granted at once. Usually 1.
+    /// How many of this pickup are granted at once.
     /// </summary>
     public uint Quantity { get; set; }
 
@@ -152,7 +150,7 @@ public sealed class PickupTableEntry
 
     /// <summary>
     /// The <see cref="AssetType.Animation"/> or <see cref="AssetType.AnimationList"/> this pickup
-    /// plays, if any. Usually <see cref="AssetId.None"/>.
+    /// plays, if any.
     /// </summary>
     public AssetId AnimId { get; set; }
 }

@@ -16,7 +16,7 @@ public sealed partial class SurfaceAsset
 
         asset.GameDamageType = (SurfaceGameDamageType)reader.ReadByte();
         asset.Physical.GameSticky = reader.ReadByte();
-        asset.GameDamageFlags = (SurfaceGameDamageFlags)reader.ReadByte();
+        asset.Physical.GameDamageFlags = (SurfaceGameDamageFlags)reader.ReadByte();
         asset.Physical.SurfType = reader.ReadByte();
         reader.ReadByte(); // padding, always zero
         asset.SlideStartAngle = reader.ReadByte();
@@ -36,29 +36,28 @@ public sealed partial class SurfaceAsset
 
         asset.ColorFx = new SurfaceColorFx
         {
-            // TODO: double cast? why?
             Flags = (SurfaceColorFxFlags)reader.ReadUInt16(),
             Mode = reader.ReadUInt16(),
             Speed = reader.ReadSingle(),
         };
 
-        uint textureAnimFlags = reader.ReadUInt32();
+        var textureAnimFlags = (SurfaceTextureAnimFlags)reader.ReadUInt32();
         var textureAnim0 = ReadTextureAnim(reader);
         var textureAnim1 = ReadTextureAnim(reader);
-        textureAnim0.IsEnabled = (textureAnimFlags & 1 << 0) != 0;
-        textureAnim1.IsEnabled = (textureAnimFlags & 1 << 1) != 0;
+        textureAnim0.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot0);
+        textureAnim1.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot1);
         asset.TextureAnims = [textureAnim0, textureAnim1];
         asset.Physical.TextureAnimFlags = textureAnimFlags;
 
-        uint uvfxFlags = reader.ReadUInt32();
+        var uvfxFlags = (SurfaceUvfxFlags)reader.ReadUInt32();
         var uvfx0 = ReadUvfx(reader);
         var uvfx1 = ReadUvfx(reader);
-        uvfx0.IsEnabled = (uvfxFlags & 1 << 0) != 0;
-        uvfx1.IsEnabled = (uvfxFlags & 1 << 1) != 0;
+        uvfx0.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot0);
+        uvfx1.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot1);
         asset.Uvfxs = [uvfx0, uvfx1];
         asset.Physical.UvfxFlags = uvfxFlags;
 
-        asset.Physical.OnValue = reader.ReadByte();
+        asset.Physical.IsEnabled = reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
         asset.OutOfBoundsDelay = reader.ReadSingle();
         asset.WallJumpScaleXZ = reader.ReadSingle();
@@ -83,7 +82,7 @@ public sealed partial class SurfaceAsset
 
         writer.Write((byte)asset.GameDamageType);
         writer.Write(asset.Physical.GameSticky);
-        writer.Write((byte)asset.GameDamageFlags);
+        writer.Write((byte)asset.Physical.GameDamageFlags);
         writer.Write(asset.Physical.SurfType);
         writer.Write((byte)0); // padding
         writer.Write(asset.SlideStartAngle);
@@ -98,20 +97,19 @@ public sealed partial class SurfaceAsset
         writer.Write(asset.MaterialFx.Bumpiness);
         writer.Write(asset.MaterialFx.DualMapId);
 
-        // TODO: ditto; double cast?
-        writer.Write((short)(ushort)asset.ColorFx.Flags);
-        writer.Write((short)asset.ColorFx.Mode);
+        writer.Write((ushort)asset.ColorFx.Flags);
+        writer.Write(asset.ColorFx.Mode);
         writer.Write(asset.ColorFx.Speed);
 
-        writer.Write(asset.Physical.TextureAnimFlags);
+        writer.Write((uint)asset.Physical.TextureAnimFlags);
         WriteTextureAnim(writer, asset.TextureAnims[0]);
         WriteTextureAnim(writer, asset.TextureAnims[1]);
 
-        writer.Write(asset.Physical.UvfxFlags);
+        writer.Write((uint)asset.Physical.UvfxFlags);
         WriteUvfx(writer, asset.Uvfxs[0]);
         WriteUvfx(writer, asset.Uvfxs[1]);
 
-        writer.Write(asset.Physical.OnValue);
+        writer.Write(asset.Physical.IsEnabled);
         writer.Write(new byte[3]); // padding
         writer.Write(asset.OutOfBoundsDelay);
         writer.Write(asset.WallJumpScaleXZ);
@@ -127,7 +125,7 @@ public sealed partial class SurfaceAsset
 
     private static SurfaceTextureAnim ReadTextureAnim(EndianReader reader)
     {
-        reader.ReadInt16(); // padding, always zero
+        reader.ReadUInt16(); // padding, always zero
         var mode = (SurfaceTextureAnimMode)reader.ReadUInt16();
         return new SurfaceTextureAnim
         {
@@ -139,8 +137,8 @@ public sealed partial class SurfaceAsset
 
     private static void WriteTextureAnim(EndianWriter writer, SurfaceTextureAnim anim)
     {
-        writer.Write((short)0); // padding
-        writer.Write((short)(ushort)anim.Mode);
+        writer.Write((ushort)0); // padding
+        writer.Write((ushort)anim.Mode);
         writer.Write(anim.Group);
         writer.Write(anim.Speed);
     }

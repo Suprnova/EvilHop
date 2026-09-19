@@ -116,9 +116,7 @@ public class LobMasterAssetTests
         Assert.Equal(10.0f, asset.LaunchSpeed);
         Assert.Equal(20.0f, asset.LaunchSpeedVariance);
         Assert.Equal(Vector3.One, asset.ModelScale);
-        Assert.Equal(
-            LobMasterEnablers.Unknown1 | LobMasterEnablers.Unknown2 | LobMasterEnablers.Unknown4 | LobMasterEnablers.Unknown16 | LobMasterEnablers.Unknown32,
-            asset.Enablers);
+        Assert.Equal(0x37, asset.Enablers);
         Assert.Equal(10.0f, asset.MaxLifetime);
         Assert.Equal(70.0f, asset.MaxDistance);
         Assert.Equal(AssetId.None, asset.MovePointId);
@@ -127,7 +125,7 @@ public class LobMasterAssetTests
         Assert.Equal(-1.0f, asset.ArcCoefficient);
         Assert.Equal(70, asset.DebrisConeAngle);
         Assert.Equal(1, asset.BounceCount);
-        Assert.Equal(PowerupType.Unknown4, asset.PowerupType);
+        Assert.Equal(4, asset.PowerupType);
         Assert.Equal(10.0f, asset.HeavyFactor);
         Assert.Equal(new Vector3(300.0f, 200.0f, 300.0f), asset.TumbleRotation);
         Assert.Equal(0.5f, asset.CollideDelay);

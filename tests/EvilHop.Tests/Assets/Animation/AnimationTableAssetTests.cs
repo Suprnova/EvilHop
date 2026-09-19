@@ -91,7 +91,7 @@ public class AnimationTableAssetTests
 
         Assert.Single(asset.Files);
         var file = asset.Files[0];
-        Assert.Equal(0xF0u, file.FileFlags);
+        Assert.Equal((FileFlags)0xF0, file.FileFlags);
         Assert.Equal(-1.0f, file.TimeOffset);
         Assert.Equal(1, file.NumAnimsX);
         Assert.Equal(1, file.NumAnimsY);
@@ -115,6 +115,18 @@ public class AnimationTableAssetTests
         asset.Raw.Add(AssetId.None);
 
         Assert.Equal(2u, asset.Physical.RawCount);
+    }
+
+    [Fact]
+    public void RawCount_DisagreeingWithRaw_IsStoredIndependently()
+    {
+        var asset = new AnimationTableAsset();
+        asset.Raw.Add(AssetId.None);
+
+        asset.Physical.RawCount = 5;
+
+        Assert.Equal(5u, asset.Physical.RawCount);
+        Assert.Single(asset.Raw);
     }
 
     [Fact]
@@ -171,5 +183,15 @@ public class AnimationTableAssetTests
 
         Assert.IsNotType<AnimationTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());
+    }
+
+    [Fact]
+    public void FileFlags_Values_MatchDocumentedBits()
+    {
+        Assert.Equal(0u, (uint)FileFlags.None);
+        Assert.Equal(0x1000u, (uint)FileFlags.Reverse);
+        Assert.Equal(0x2000u, (uint)FileFlags.ReverseSecondHalf);
+        Assert.Equal(0x4000u, (uint)FileFlags.Bilinear);
+        Assert.Equal(0x8000u, (uint)FileFlags.Morph);
     }
 }

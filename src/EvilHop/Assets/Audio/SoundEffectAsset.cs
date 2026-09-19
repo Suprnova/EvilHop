@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SDFX">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect), IPhysicalSoundEffectAsset
+public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseType: 0x4B), IPhysicalSoundEffectAsset
 {
     /// <summary>The <see cref="AssetType.SoundGroup"/> played by this sound.</summary>
     public AssetId SoundGroupId { get; set; }
@@ -31,15 +31,17 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect), IPhys
     /// </summary>
     public bool PlayFromEntity
     {
-        get => (Physical.SoundFlags & 0x4) != 0;
-        set => Physical.SoundFlags = value ? Physical.SoundFlags | 0x4u : Physical.SoundFlags & ~0x4u;
+        get => Physical.SoundFlags.HasFlag(SoundFlags.PlayFromEntity);
+        set => Physical.SoundFlags = value
+            ? Physical.SoundFlags | SoundFlags.PlayFromEntity
+            : Physical.SoundFlags & ~SoundFlags.PlayFromEntity;
     }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalSoundEffectAsset Physical => this;
 
-    private uint _soundFlags;
-    uint IPhysicalSoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
+    private SoundFlags _soundFlags;
+    SoundFlags IPhysicalSoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundEffect"/> is known to be read by.
@@ -61,7 +63,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect), IPhys
         asset.SoundGroupId = reader.ReadAssetId();
         asset.AttachId = reader.ReadAssetId();
         asset.Position = reader.ReadVector3();
-        asset.Physical.SoundFlags = reader.ReadUInt32();
+        asset.Physical.SoundFlags = (SoundFlags)reader.ReadUInt32();
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -76,7 +78,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect), IPhys
         writer.Write(asset.SoundGroupId);
         writer.Write(asset.AttachId);
         writer.Write(asset.Position);
-        writer.Write(asset.Physical.SoundFlags);
+        writer.Write((uint)asset.Physical.SoundFlags);
 
         LinkSerialization.Write(asset, writer);
         writer.Write(asset.GetUnparsedTail());
@@ -90,10 +92,23 @@ public interface IPhysicalSoundEffectAsset : IPhysicalBaseAsset
 {
     /// <summary>The sound's raw flags word, read directly from disk.</summary>
     /// <remarks>
-    /// Bit 0x4 is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>. The remaining
-    /// bits are pure runtime playback state - set once the sound starts or stops playing, sends its
-    /// Done event, or resolves <see cref="SoundEffectAsset.SoundGroupId"/> to a handle - never touched
-    /// at authoring time.
+    /// <see cref="SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
     /// </remarks>
-    uint SoundFlags { get; set; }
+    SoundFlags SoundFlags { get; set; }
+}
+
+/// <summary>
+/// Flags controlling playback behavior for a <see cref="SoundEffectAsset"/>.
+/// </summary>
+[Flags]
+public enum SoundFlags : uint
+{
+    /// <summary>No flags are set.</summary>
+    None = 0,
+
+    /// <summary>
+    /// The sound plays from <see cref="SoundEffectAsset.AttachId"/>'s live position, instead of
+    /// the fixed <see cref="SoundEffectAsset.Position"/>.
+    /// </summary>
+    PlayFromEntity = 1 << 2,
 }

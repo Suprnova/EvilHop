@@ -25,7 +25,7 @@ public class PackageFlags : Block
 #pragma warning disable CS1591 // Missing XML comment
 
 /// <summary>
-/// Represents all known values for <see cref="PackageFlags.Flags"/>.
+/// Flags identifying target platforms, regions, and languages for an archive package.
 /// </summary>
 [Flags]
 public enum PackFlags : uint

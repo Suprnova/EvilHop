@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PGRS">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript), IPhysicalProgressScriptAsset
+public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), IPhysicalProgressScriptAsset
 {
     /// <summary>
     /// This script's events, in ascending <see cref="ProgressScriptEvent.Percent"/> order.
@@ -171,7 +171,7 @@ public struct ProgressScriptEvent
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ProgressScriptEvent.Flags"/>.
+/// Flags controlling playback and dispatch behavior for a progress script event.
 /// </summary>
 [Flags]
 public enum ProgressScriptEventFlags

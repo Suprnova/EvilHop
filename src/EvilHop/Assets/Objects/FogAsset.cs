@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/FOG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
+public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhysicalFogAsset
 {
     /// <summary>
     /// The color the sky/background is drawn as while this fog is active.
@@ -111,9 +111,7 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog), IPhysicalFogAsset
 public interface IPhysicalFogAsset : IPhysicalBaseAsset
 {
     /// <summary>
-    /// Unknown. Not read by the decompiled fog activation logic, which always applies a linear fog
-    /// type regardless of this value.
+    /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     byte FogType { get; set; }
 }

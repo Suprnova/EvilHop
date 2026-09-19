@@ -10,11 +10,10 @@ namespace EvilHop.Assets;
 /// Does nothing in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>, which store
 /// only <see cref="SplineId"/>'s slot.
 /// </remarks>
-public sealed class SplineMotion : EntityMotion
+public sealed class SplineMotion() : EntityMotion
 {
     /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Spline"/> to follow. Named
-    /// <c>unknown</c> in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+    /// The <see cref="AssetId"/> of the <see cref="AssetType.Spline"/> to follow.
     /// </summary>
     public AssetId SplineId { get; set; }
 

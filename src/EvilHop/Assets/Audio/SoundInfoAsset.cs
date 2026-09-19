@@ -17,7 +17,6 @@ namespace EvilHop.Assets;
 /// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-/// TODO: i'm not an audio guy, this needs a comprehensive review at some point
 public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhysicalSoundInfoAsset
 {
     /// <summary>

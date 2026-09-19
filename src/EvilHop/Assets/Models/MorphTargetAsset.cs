@@ -91,8 +91,8 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
             asset.Targets.Add(target);
         }
 
-        asset.Physical.TargetCount = (ushort)asset.Targets.Count;
-        asset.Physical.VertexCount = (ushort)vertexCount;
+        asset.Physical.TargetCount = targetCount;
+        asset.Physical.VertexCount = vertexCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -100,8 +100,8 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
     internal static void Write(MorphTargetAsset asset, EndianWriter writer, FormatProfile _)
     {
         writer.Write(asset.Physical.Magic);
-        writer.Write((short)asset.Physical.TargetCount);
-        writer.Write((short)asset.Physical.VertexCount);
+        writer.Write(asset.Physical.TargetCount);
+        writer.Write(asset.Physical.VertexCount);
         writer.Write(asset.Physical.MorphFlags);
         writer.Write(asset.Scale);
         writer.Write(asset.Center);
@@ -173,8 +173,6 @@ public interface IPhysicalMorphTargetAsset : IPhysicalAsset
 /// One <see cref="MorphTargetAsset"/> target: one alternate position per vertex of the base mesh,
 /// in the same order.
 /// </summary>
-/// TODO: validate against decompiled source; unconfirmed whether each position is absolute or a
-/// delta from the base mesh's own vertex position
 public sealed class MorphTarget
 {
     /// <summary>This target's vertex positions.</summary>

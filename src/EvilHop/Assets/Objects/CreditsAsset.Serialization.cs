@@ -10,8 +10,7 @@ namespace EvilHop.Assets;
 public sealed partial class CreditsAsset
 {
     /// <summary>
-    /// The key an encrypted <see cref="CreditsAsset"/>'s body is XORed against, per the game's own
-    /// decrypt routine.
+    /// The key an encrypted <see cref="CreditsAsset"/>'s body is XORed against.
     /// </summary>
     private const string CipherKey = "xCMChunkHand";
 
@@ -125,8 +124,8 @@ public sealed partial class CreditsAsset
     {
         var preset = new CreditsPreset
         {
-            Index = unchecked((ushort)r.ReadInt16()),
-            Alignment = (CreditsPresetAlignment)unchecked((ushort)r.ReadInt16()),
+            Index = r.ReadUInt16(),
+            Alignment = (CreditsPresetAlignment)r.ReadUInt16(),
             Delay = r.ReadSingle(),
             InnerSpacing = r.ReadSingle(),
         };
@@ -147,8 +146,8 @@ public sealed partial class CreditsAsset
 
     private static void WritePreset(EndianWriter w, CreditsPreset preset)
     {
-        w.Write(unchecked((short)preset.Index));
-        w.Write(unchecked((short)(ushort)preset.Alignment));
+        w.Write(preset.Index);
+        w.Write((ushort)preset.Alignment);
         w.Write(preset.Delay);
         w.Write(preset.InnerSpacing);
 
@@ -208,10 +207,8 @@ public sealed partial class CreditsAsset
     }
 
     /// <remarks>
-    /// <paramref name="r"/>'s position is left where it started - a hunk header's text offsets are
-    /// absolute, addressing a null-terminated string that (per every hunk observed in the corpus)
-    /// lives immediately after the hunk header that references it, not necessarily right after this
-    /// particular read.
+    /// <paramref name="r"/>'s position is restored before returning; a hunk header's text offsets
+    /// are absolute.
     /// </remarks>
     private static CreditsHunk ReadHunk(EndianReader r)
     {
@@ -237,9 +234,7 @@ public sealed partial class CreditsAsset
     }
 
     /// <remarks>
-    /// Always reconstructs the self-referential layout observed for every hunk in the corpus: each
-    /// text immediately follows the hunk header (or the previous text), rather than any other
-    /// arrangement a hunk's raw offsets could in principle describe.
+    /// Each text immediately follows the hunk header.
     /// </remarks>
     private static void WriteHunk(EndianWriter w, CreditsHunk hunk)
     {
@@ -277,7 +272,7 @@ public sealed partial class CreditsAsset
             bytes.Add(next);
 
         r.BaseStream.Position = savedPosition;
-        return Encoding.Latin1.GetString([.. bytes]); // todo: latin?
+        return Encoding.Latin1.GetString([.. bytes]);
     }
 
     private static void WriteInlineText(EndianWriter w, string? text)

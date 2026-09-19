@@ -113,4 +113,17 @@ public class CollisionTableAssetTests
 
         Assert.Equal(TableBytes(EntryBytes(1, 0, 3)), Write(asset, N100FSerializer.DefaultProfile));
     }
+
+    [Fact]
+    public void Read_CollisionTable_CountKeepsDerivingAfterMutation()
+    {
+        byte[] data = TableBytes(EntryBytes(1, 2, 3));
+        var asset = (CollisionTableAsset)Read(data);
+
+        Assert.Equal(1u, asset.Physical.Count);
+
+        asset.Entries.Add(new CollisionTableEntry());
+
+        Assert.Equal(2u, asset.Physical.Count);
+    }
 }

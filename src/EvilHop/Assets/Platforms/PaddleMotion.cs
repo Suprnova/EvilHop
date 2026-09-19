@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// Not present in <see cref="GameVersion.N100F"/>.
 /// </remarks>
-public sealed class PaddleMotion : PlatformMotion
+public sealed class PaddleMotion() : PlatformMotion
 {
     /// <summary>
     /// The most <see cref="Orientations"/> a paddle can have.
@@ -72,7 +72,7 @@ public sealed class PaddleMotion : PlatformMotion
         if (count is < 0 or > MaxOrientations)
             throw new InvalidDataException($"Paddle orientation count {count} is outside 0-{MaxOrientations}.");
 
-        Orientations = [.. slots.Take(count)]; // unused slots are always zero
+        Orientations = [.. slots.Take(count)];
         PaddleFlags = (PaddleFlags)reader.ReadUInt32();
         RotateSpeed = reader.ReadSingle();
         AccelTime = reader.ReadSingle();
@@ -98,7 +98,7 @@ public sealed class PaddleMotion : PlatformMotion
 }
 
 /// <summary>
-/// Represents all known values for <see cref="PaddleMotion.PaddleFlags"/>.
+/// Flags controlling paddle collision, oscillation, wrapping, and cruise bubble reactions.
 /// </summary>
 [Flags]
 public enum PaddleFlags : uint

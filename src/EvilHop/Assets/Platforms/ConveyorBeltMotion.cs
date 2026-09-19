@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that carries the player along while they stand on it.
 /// </summary>
-public sealed class ConveyorBeltMotion : PlatformMotion
+public sealed class ConveyorBeltMotion() : PlatformMotion
 {
     /// <summary>
     /// The speed, in units per second, the player slides along the platform's X axis while

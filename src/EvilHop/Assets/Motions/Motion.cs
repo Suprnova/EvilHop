@@ -59,10 +59,8 @@ public abstract class Motion
 }
 
 /// <summary>
-/// Represents all known values for <see cref="Motion.Flags"/>.
+/// Flags controlling motion playback, entity orientation, and initial stopped state for a <see cref="Motion"/>.
 /// </summary>
-/// TODO: sweeping change that applies everywhere: we need to stop writing that template summary
-/// for Flag enums where we know the general meaning of the flags, like here.
 [Flags]
 public enum MotionFlags : ushort
 {

@@ -18,6 +18,7 @@ public sealed partial class OneLinerAsset
             asset.Entries.Add(ReadEntry(reader));
 
         asset.Physical.EntryCount = (uint)asset.Entries.Count;
+        // TODO: Partial implementation - trailing 67-byte trailer is not modeled
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }

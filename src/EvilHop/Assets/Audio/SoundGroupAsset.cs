@@ -15,13 +15,12 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SGRP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup), IPhysicalSoundGroupAsset
+public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType: 0x4A), IPhysicalSoundGroupAsset
 {
     /// <summary>This group's entries, one of which is chosen to play at a time.</summary>
     public Collection<SoundGroupEntry> Entries { get; } = [];
 
     /// <summary>The maximum number of plays permitted for this group, passed directly to the sound engine.</summary>
-    /// TODO: whether this counts concurrent voices or total plays over the group's lifetime is unconfirmed.
     public sbyte MaxPlays { get; set; }
 
     /// <summary>This group's playback priority, passed directly to the sound engine.</summary>
@@ -32,17 +31,6 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup), IPhysic
 
     /// <summary>The radius beyond which this group stops playing.</summary>
     public float OuterRadius { get; set; }
-
-    /// <summary>
-    /// Whether every instance of this group anywhere in the scene shares one play state, so only the
-    /// nearest or highest-priority instance ever actually plays - the group-level counterpart to
-    /// <see cref="SoundFXAsset.IsEnvironmental"/>.
-    /// </summary>
-    public bool IsEnvironmentalStream
-    {
-        get => (Physical.SoundGroupFlags & 0x2) != 0;
-        set => Physical.SoundGroupFlags = (byte)(value ? Physical.SoundGroupFlags | 0x2 : Physical.SoundGroupFlags & ~0x2);
-    }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalSoundGroupAsset Physical => this;
@@ -95,7 +83,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup), IPhysic
         asset.Physical.PlayedMask = reader.ReadUInt32();
         byte entryCount = reader.ReadByte();
         asset.Physical.SetBits = reader.ReadByte();
-        asset.MaxPlays = (sbyte)reader.ReadByte();
+        asset.MaxPlays = reader.ReadSByte();
         asset.Priority = reader.ReadByte();
         asset.Physical.SoundGroupFlags = reader.ReadByte();
         asset.Physical.SoundCategory = reader.ReadByte();
@@ -115,7 +103,6 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup), IPhysic
                 MaxPitchMultiplier = reader.ReadSingle(),
             });
         }
-        asset.Physical.EntryCount = (byte)asset.Entries.Count;
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -130,7 +117,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup), IPhysic
         writer.Write(asset.Physical.PlayedMask);
         writer.Write(asset.Physical.EntryCount);
         writer.Write(asset.Physical.SetBits);
-        writer.Write((byte)asset.MaxPlays);
+        writer.Write(asset.MaxPlays);
         writer.Write(asset.Priority);
         writer.Write(asset.Physical.SoundGroupFlags);
         writer.Write(asset.Physical.SoundCategory);
@@ -163,31 +150,20 @@ public interface IPhysicalSoundGroupAsset : IPhysicalBaseAsset
     /// its leading count field.
     /// </summary>
     /// <remarks>
-    /// When disagreements with <see cref="SoundGroupAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
+    /// When disagreements with <see cref="SoundGroupAsset.Entries"/>.Count exist, this field wins during serialization.
     /// </remarks>
     byte EntryCount { get; set; }
 
-    /// <summary>Unknown.</summary>
-    /// <remarks>
-    /// Per decompiled source, a runtime bitmask tracking which <see cref="SoundGroupAsset.Entries"/>
-    /// have already played, used to avoid repeats. Every archive checked so far has this zero.
-    /// </remarks>
+    /// <summary>A runtime bitmask tracking which entries have already played.</summary>
     uint PlayedMask { get; set; }
 
     /// <summary>Unknown.</summary>
     byte SetBits { get; set; }
 
     /// <summary>The group's raw flags byte, read directly from disk.</summary>
-    /// <remarks>
-    /// Bit 0x2 is exposed logically as <see cref="SoundGroupAsset.IsEnvironmentalStream"/>. The
-    /// remaining bits have no confirmed meaning.
-    /// </remarks>
     byte SoundGroupFlags { get; set; }
 
-    /// <summary>Unknown.</summary>
-    /// TODO: the wiki suggests this selects between hardcoded playback categories (e.g. dialogue vs.
-    /// music), but no decompiled source confirms this specific field's meaning.
+    /// <summary>The sound's playback category.</summary>
     byte SoundCategory { get; set; }
 
     /// <summary>Unknown.</summary>

@@ -69,7 +69,7 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
             asset.Entries.Add(entry);
         }
 
-        asset.Physical.Count = asset.Entries.Count;
+        asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -127,7 +127,6 @@ public sealed class PipeInfoEntry
     /// and ending with its first atomic as the most significant bit. 0xFFFFFFFF applies the entry to
     /// every atomic.
     /// </summary>
-    /// TODO: obviously should be a flags enum
     public uint SubObjectBits { get; set; }
 
     /// <summary>
@@ -152,7 +151,6 @@ public sealed class PipeInfoEntry
 /// Packed rendering flags for a <see cref="PipeInfoEntry"/>. Wraps the raw 32-bit value so bits with
 /// no known meaning round-trip untouched alongside the named fields.
 /// </summary>
-/// TODO: this is very complex and depends on the wiki being correct, needs validation
 public readonly record struct PipeRenderFlags(uint Value)
 {
     /// <summary>
@@ -202,8 +200,7 @@ public readonly record struct PipeRenderFlags(uint Value)
 }
 
 /// <summary>
-/// An RW blend function, used by <see cref="PipeRenderFlags.SourceBlend"/> and
-/// <see cref="PipeRenderFlags.DestinationBlend"/>.
+/// Defines the RenderWare blend function applied to source or destination pixels.
 /// </summary>
 public enum RwBlendFunction : byte
 {
@@ -233,7 +230,9 @@ public enum RwBlendFunction : byte
     SourceAlphaSaturated = 11,
 }
 
-/// <summary>How a <see cref="PipeInfoEntry"/>'s selected atomics are lit.</summary>
+/// <summary>
+/// Defines the lighting mode applied to a model's selected atomics.
+/// </summary>
 public enum PipeLightingMode : byte
 {
     /// <summary>Lit by the level's light kit only.</summary>
@@ -246,7 +245,9 @@ public enum PipeLightingMode : byte
     Unknown = 3,
 }
 
-/// <summary>Which faces of a <see cref="PipeInfoEntry"/>'s selected atomics are culled.</summary>
+/// <summary>
+/// Defines the face culling mode applied to a model's selected atomics.
+/// </summary>
 public enum PipeCullMode : byte
 {
     /// <summary>Unknown.</summary>
@@ -259,7 +260,9 @@ public enum PipeCullMode : byte
     Dual = 3,
 }
 
-/// <summary>How a <see cref="PipeInfoEntry"/>'s selected atomics write to the z-buffer.</summary>
+/// <summary>
+/// Defines the depth-buffer write behavior applied to a model's selected atomics.
+/// </summary>
 public enum PipeZWriteMode : byte
 {
     /// <summary>Z-write is enabled.</summary>
@@ -273,7 +276,7 @@ public enum PipeZWriteMode : byte
 }
 
 /// <summary>
-/// Specifies when a <see cref="PipeInfoEntry"/>'s selected atomics are drawn relative to other
+/// Defines the rendering stage when a model's selected atomics are drawn relative to other
 /// transparent geometry, from earliest to latest.
 /// </summary>
 public enum PipeLayer : byte

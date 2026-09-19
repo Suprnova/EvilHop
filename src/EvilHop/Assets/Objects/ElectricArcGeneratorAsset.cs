@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EGEN">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.ElectricArcGenerator), IHasModel, IHasSurface
+public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.ElectricArcGenerator, baseType: 0x29), IHasModel, IHasSurface
 {
     /// <summary>
     /// The position, relative to this asset's own transform, the arc originates from.
@@ -23,7 +23,6 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
     /// <summary>
     /// The type of damage dealt by the arc's contact.
     /// </summary>
-    /// TODO: correlate against a damage type enum once decompiled source shows how this value is used
     public byte DamageType { get; set; }
 
     /// <summary>
@@ -94,7 +93,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ElectricArcGeneratorAsset.Flags"/>.
+/// Flags controlling the activation, visual style, and damage behavior of an electric arc generator.
 /// </summary>
 [Flags]
 public enum ElectricArcGeneratorFlags : byte

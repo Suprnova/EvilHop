@@ -113,4 +113,29 @@ public class SimpleShadowTableAssetTests
 
         Assert.Equal(TableBytes(EntryBytes(1, 2, 1)), Write(asset, N100FSerializer.DefaultProfile));
     }
+
+    [Fact]
+    public void Read_SimpleShadowTable_CountKeepsDerivingAfterMutation()
+    {
+        byte[] data = TableBytes(EntryBytes(1, 2, 0));
+        var asset = (SimpleShadowTableAsset)Read(data);
+
+        Assert.Equal(1u, asset.Physical.Count);
+
+        asset.Entries.Add(new SimpleShadowTableEntry());
+
+        Assert.Equal(2u, asset.Physical.Count);
+    }
+
+    [Fact]
+    public void Count_DisagreeingWithEntries_IsStoredIndependently()
+    {
+        var asset = new SimpleShadowTableAsset();
+        asset.Entries.Add(new SimpleShadowTableEntry());
+
+        asset.Physical.Count = 5;
+
+        Assert.Equal(5u, asset.Physical.Count);
+        Assert.Single(asset.Entries);
+    }
 }

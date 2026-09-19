@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// An <see cref="EntityMotion"/> that slides along and/or rotates around an axis, easing in and out
 /// of each movement.
 /// </summary>
-public sealed class MechanismMotion : EntityMotion
+public sealed class MechanismMotion() : EntityMotion
 {
     /// <summary>Which movements this mechanism makes, and in what order.</summary>
     public MechanismMovement Movement { get; set; }
@@ -77,7 +77,7 @@ public sealed class MechanismMotion : EntityMotion
         if (!IsBFBBOrEarlier(game))
         {
             ScaleAxis = reader.ReadByte();
-            reader.ReadBytes(3); // padding, always zero
+            reader.ReadBytes(3); // padding
         }
 
         SlideDistance = reader.ReadSingle();
@@ -126,12 +126,8 @@ public sealed class MechanismMotion : EntityMotion
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MechanismMotion.Movement"/>.
+/// Defines the motion movement sequence, axis operation, and mechanical execution order for a <see cref="MechanismMotion"/>.
 /// </summary>
-/// <remarks>
-/// <see cref="GameVersion.BFBB"/> treats any other value as <see cref="Rotate"/>. Later games store
-/// further values whose meaning is unknown.
-/// </remarks>
 public enum MechanismMovement : byte
 {
     /// <summary>Slides only.</summary>
@@ -147,7 +143,7 @@ public enum MechanismMovement : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MechanismMotion.MechanismFlags"/>.
+/// Flags controlling looping, repetition, and return-to-start behavior for a <see cref="MechanismMotion"/>.
 /// </summary>
 [Flags]
 public enum MechanismFlags : byte
@@ -167,8 +163,7 @@ public enum MechanismFlags : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MechanismMotion.SlideAxis"/> and
-/// <see cref="MechanismMotion.RotateAxis"/>.
+/// Defines the motion movement axis and mechanical travel path for a <see cref="MechanismMotion"/>.
 /// </summary>
 public enum MotionAxis : byte
 {

@@ -15,6 +15,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CSN">Heavy Iron Modding documentation</seealso>
 /// </remarks>
+// TODO: Partial implementation - chunked media data is unmodelled and preserved in unparsed tail
 public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader, IPhysicalCutsceneAsset
 {
     /// <summary>
@@ -92,6 +93,7 @@ public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsce
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,
+        GameVersion.ROTU,
     };
 }
 
@@ -130,7 +132,7 @@ public record struct CutsceneDataEntry
 }
 
 /// <summary>
-/// Represents all known values for <see cref="CutsceneDataEntry.DataType"/>.
+/// Identifies the media or animation stream type contained in a cutscene data chunk.
 /// </summary>
 public enum CutsceneDataType : uint
 {

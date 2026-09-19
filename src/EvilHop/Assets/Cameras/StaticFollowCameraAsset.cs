@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// A <see cref="CameraAsset"/> that does not move but eases its framing toward its target, unlike
 /// <see cref="StaticCameraAsset"/>.
 /// </summary>
-public sealed class StaticFollowCameraAsset : CameraAsset, IPhysicalStaticFollowCameraAsset
+public sealed class StaticFollowCameraAsset() : CameraAsset, IPhysicalStaticFollowCameraAsset
 {
     /// <summary>How much the camera's framing lags behind its target before catching up.</summary>
     public float RubberBand { get; set; }

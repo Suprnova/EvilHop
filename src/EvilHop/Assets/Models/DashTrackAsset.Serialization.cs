@@ -33,8 +33,8 @@ public sealed partial class DashTrackAsset
         while (portalBytes.Length - portalReader.BaseStream.Position >= 6)
             asset.Portals.Add(ReadPortal(portalReader));
 
-        asset.Physical.VertexCount = asset.Vertices.Count;
-        asset.Physical.TriangleCount = asset.Triangles.Count;
+        asset.Physical.VertexCount = vertexCount;
+        asset.Physical.TriangleCount = triangleCount;
         asset.SetUnparsedTail(portalReader.ReadRemainingBytes());
         return asset;
     }
@@ -74,10 +74,10 @@ public sealed partial class DashTrackAsset
 
     private static void WriteTriangle(EndianWriter writer, DashTrackTriangle triangle)
     {
-        writer.Write((short)triangle.VertexA);
-        writer.Write((short)triangle.VertexB);
-        writer.Write((short)triangle.VertexC);
-        writer.Write((short)triangle.Flags);
+        writer.Write(triangle.VertexA);
+        writer.Write(triangle.VertexB);
+        writer.Write(triangle.VertexC);
+        writer.Write(triangle.Flags);
         writer.Write(triangle.U);
         writer.Write(triangle.V);
     }
@@ -91,8 +91,8 @@ public sealed partial class DashTrackAsset
 
     private static void WritePortal(EndianWriter writer, DashTrackPortal portal)
     {
-        writer.Write((short)portal.Neighbor0);
-        writer.Write((short)portal.Neighbor1);
-        writer.Write((short)portal.Neighbor2);
+        writer.Write(portal.Neighbor0);
+        writer.Write(portal.Neighbor1);
+        writer.Write(portal.Neighbor2);
     }
 }

@@ -13,18 +13,18 @@ public sealed partial class AnimationTableAsset
         AssetFields.Populate(asset, header, debug);
 
         reader.ReadUInt32(); // Magic
-        int rawCount = (int)reader.ReadUInt32();
-        int fileCount = (int)reader.ReadUInt32();
-        int stateCount = (int)reader.ReadUInt32();
+        uint rawCount = reader.ReadUInt32();
+        uint fileCount = reader.ReadUInt32();
+        uint stateCount = reader.ReadUInt32();
         asset.ConstructFunc = reader.ReadUInt32();
 
-        for (int i = 0; i < rawCount; i++) asset.Raw.Add(reader.ReadAssetId());
+        for (uint i = 0; i < rawCount; i++) asset.Raw.Add(reader.ReadAssetId());
 
-        for (int i = 0; i < fileCount; i++)
+        for (uint i = 0; i < fileCount; i++)
         {
             asset.Files.Add(new AnimationTableFile
             {
-                FileFlags = reader.ReadUInt32(),
+                FileFlags = (FileFlags)reader.ReadUInt32(),
                 Duration = reader.ReadSingle(),
                 TimeOffset = reader.ReadSingle(),
                 NumAnimsX = reader.ReadUInt16(),
@@ -36,7 +36,7 @@ public sealed partial class AnimationTableAsset
             });
         }
 
-        for (int i = 0; i < stateCount; i++)
+        for (uint i = 0; i < stateCount; i++)
         {
             asset.States.Add(new AnimationTableState
             {
@@ -50,9 +50,9 @@ public sealed partial class AnimationTableAsset
             });
         }
 
-        asset.Physical.RawCount = (uint)asset.Raw.Count;
-        asset.Physical.FileCount = (uint)asset.Files.Count;
-        asset.Physical.StateCount = (uint)asset.States.Count;
+        asset.Physical.RawCount = rawCount;
+        asset.Physical.FileCount = fileCount;
+        asset.Physical.StateCount = stateCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -69,11 +69,11 @@ public sealed partial class AnimationTableAsset
 
         foreach (var file in asset.Files)
         {
-            writer.Write(file.FileFlags);
+            writer.Write((uint)file.FileFlags);
             writer.Write(file.Duration);
             writer.Write(file.TimeOffset);
-            writer.Write((short)file.NumAnimsX);
-            writer.Write((short)file.NumAnimsY);
+            writer.Write(file.NumAnimsX);
+            writer.Write(file.NumAnimsY);
             writer.Write(file.RawDataOffset);
             writer.Write(file.Physics);
             writer.Write(file.StartPose);

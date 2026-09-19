@@ -16,7 +16,8 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CAM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera), IPhysicalCameraAsset
+// TODO: Partial implementation - N100F stores a shorter, differently laid out format and is not yet modelled
+public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseType: 0x07), IPhysicalCameraAsset
 {
     /// <summary>The camera's position.</summary>
     public Vector3 Position { get; set; }
@@ -49,11 +50,9 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera), IPhys
     public CameraTransitionType TransitionType { get; set; }
 
     /// <summary>Unknown.</summary>
-    /// TODO: probably controls a fade from black
     public float FadeUp { get; set; }
 
     /// <summary>Unknown.</summary>
-    /// TODO: probably controls a fade to black
     public float FadeDown { get; set; }
 
     /// <summary>
@@ -121,7 +120,7 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera), IPhys
 /// </summary>
 public interface IPhysicalCameraAsset : IPhysicalBaseAsset
 {
-    /// <summary>Unknown. Usually 0.</summary>
+    /// <summary>Unknown.</summary>
     uint CameraFlags { get; set; }
 
     /// <summary>
@@ -131,7 +130,7 @@ public interface IPhysicalCameraAsset : IPhysicalBaseAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="CameraAsset.Kind"/>.
+/// Defines the behavior style and tracking algorithm used by a <see cref="CameraAsset"/>.
 /// </summary>
 public enum CameraKind : byte
 {
@@ -148,8 +147,7 @@ public enum CameraKind : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="CameraAsset.TransitionType"/> and
-/// <see cref="CameraCurveAsset.TransitionType"/>.
+/// Defines how a camera interpolates its view when transitioning between cameras.
 /// </summary>
 public enum CameraTransitionType
 {

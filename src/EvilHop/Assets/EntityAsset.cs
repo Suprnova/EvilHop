@@ -127,7 +127,7 @@ public interface IPhysicalEntityAsset : IPhysicalBaseAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="EntityAsset.EntityFlags"/>.
+/// Flags governing the rendering, visibility, and shadow behavior of an <see cref="EntityAsset"/>.
 /// </summary>
 [Flags]
 public enum EntityFlags : byte
@@ -182,7 +182,7 @@ public enum EntityFlags : byte
 }
 
 /// <summary>
-/// Represents all known values for <see cref="IPhysicalEntityAsset.CollisionFlags"/>.
+/// Flags governing the physical collision, hit detection, and interaction properties of an <see cref="EntityAsset"/>.
 /// </summary>
 [Flags]
 public enum CollisionFlags : byte

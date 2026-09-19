@@ -45,7 +45,7 @@ public abstract class UIMotionCommand
 }
 
 /// <summary>
-/// Represents all known values for <see cref="UIMotionCommand.Type"/>.
+/// Defines the type of animated property transformation applied to a UI element.
 /// </summary>
 public enum UIMotionCommandType : uint
 {
@@ -243,7 +243,6 @@ public sealed class AbsoluteScaleCommand : UIMotionCommand
     /// <summary>
     /// Unknown.
     /// </summary>
-    /// TODO: validate against decompiled source
     public byte TextScale { get; set; }
 
     /// <inheritdoc/>
@@ -278,9 +277,6 @@ public sealed class AbsoluteScaleCommand : UIMotionCommand
 /// Changes the UI's brightness from <see cref="StartBrightness"/> to <see cref="EndBrightness"/>,
 /// overwriting its previous brightness.
 /// </summary>
-/// <remarks>
-/// Unknown. Might be related to bloom on Xbox.
-/// </remarks>
 public sealed class BrightnessCommand : UIMotionCommand
 {
     /// <summary>The starting brightness (0-255).</summary>

@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that tilts under the player's weight.
 /// </summary>
-public sealed class TeeterTotterMotion : PlatformMotion
+public sealed class TeeterTotterMotion() : PlatformMotion
 {
     /// <summary>The platform's initial tilt, in radians.</summary>
     public float InitialTilt { get; set; }

@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityMotion"/> that swings from side to side.
 /// </summary>
-public sealed class PendulumMotion : EntityMotion
+public sealed class PendulumMotion() : EntityMotion
 {
     /// <summary>Unknown.</summary>
     public byte PendulumFlags { get; set; }
@@ -32,7 +32,7 @@ public sealed class PendulumMotion : EntityMotion
     {
         PendulumFlags = reader.ReadByte();
         Plane = reader.ReadByte();
-        reader.ReadBytes(2); // padding, always 0
+        reader.ReadBytes(2); // padding
         Length = reader.ReadSingle();
         Range = reader.ReadSingle();
         Period = reader.ReadSingle();

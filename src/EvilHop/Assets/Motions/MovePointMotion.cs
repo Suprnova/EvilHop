@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityMotion"/> that travels along a path of <see cref="AssetType.MovePoint"/>s.
 /// </summary>
-public sealed class MovePointMotion : EntityMotion
+public sealed class MovePointMotion() : EntityMotion
 {
     /// <summary>
     /// Flags controlling how this motion travels between move points.
@@ -46,7 +46,7 @@ public sealed class MovePointMotion : EntityMotion
 }
 
 /// <summary>
-/// Represents all known values for <see cref="MovePointMotion.MovePointFlags"/>.
+/// Flags controlling movement pacing and stopping behavior between move points.
 /// </summary>
 [Flags]
 public enum MovePointFlags : uint

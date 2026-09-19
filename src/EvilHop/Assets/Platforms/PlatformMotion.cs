@@ -60,7 +60,7 @@ public abstract class PlatformMotion : Motion
     /// Reads the empty type-specific block stored alongside an <see cref="EntityMotion"/>.
     /// </summary>
     internal static void ReadEmpty(EndianReader reader, GameVersion game) =>
-        reader.ReadBytes(BlockSize(game)); // always zero
+        reader.ReadBytes(BlockSize(game)); // padding
 
     /// <summary>
     /// Writes the empty type-specific block stored alongside an <see cref="EntityMotion"/>.

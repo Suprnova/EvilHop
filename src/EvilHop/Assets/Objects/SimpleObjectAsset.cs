@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SIMP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), IHasModel, IHasAnimList, IHasSurface, IPhysicalSimpleObjectAsset
+public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, baseType: 0x0B), IHasModel, IHasAnimList, IHasSurface, IPhysicalSimpleObjectAsset
 {
     /// <summary>
     /// The playback speed of the animation referenced by <see cref="IHasAnimList.AnimListId"/>.
@@ -42,6 +42,19 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), I
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
     AssetId IHasSurface.SurfaceId { get => Physical.SurfaceId; set => Physical.SurfaceId = value; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.SimpleObject"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal static SimpleObjectAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -84,17 +97,14 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject), I
 public interface IPhysicalSimpleObjectAsset : IPhysicalEntityAsset
 {
     /// <summary>
-    /// Unknown. Always 0 in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>;
-    /// from <see cref="GameVersion.TSSM"/> onward, contains real, unknown data.
+    /// Unknown.
     /// </summary>
     byte SimpleFlags { get; set; }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SimpleObjectAsset.CollisionType"/>. Shared with every
-/// other entity type's own collision type field.
+/// Defines the collision classification and interaction behavior for a simple object.
 /// </summary>
-/// TODO: if most of these are non-functional and never observed, why define them as flags at all?
 [Flags]
 public enum SimpleObjectCollisionType : byte
 {

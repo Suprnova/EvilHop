@@ -110,20 +110,16 @@ public class SoundFXAssetTests
     }
 
     [Theory]
-    [InlineData((ushort)0x2, true, false, false, false, false)]
-    [InlineData((ushort)0x4, false, true, false, false, false)]
-    [InlineData((ushort)0x8, false, false, true, false, false)]
-    [InlineData((ushort)0x200, false, false, false, true, false)]
-    [InlineData((ushort)0x400, false, false, false, false, true)]
-    public void Read_SoundFX_PopulatesFlags(ushort flags, bool positional, bool loop, bool playFromEntity, bool isEnvironmental, bool notifiesPlayer)
+    [InlineData((ushort)0x2, true, false, false)]
+    [InlineData((ushort)0x4, false, true, false)]
+    [InlineData((ushort)0x8, false, false, true)]
+    public void Read_SoundFX_PopulatesFlags(ushort flags, bool positional, bool loop, bool playFromEntity)
     {
         var asset = (SoundFXAsset)Read(Data(flags: flags));
 
         Assert.Equal(positional, asset.Positional);
         Assert.Equal(loop, asset.Loop);
         Assert.Equal(playFromEntity, asset.PlayFromEntity);
-        Assert.Equal(isEnvironmental, asset.IsEnvironmental);
-        Assert.Equal(notifiesPlayer, asset.NotifiesPlayer);
     }
 
     [Fact]
@@ -133,7 +129,7 @@ public class SoundFXAssetTests
 
         asset.Positional = true;
 
-        Assert.Equal((ushort)0x402, ((IPhysicalSoundFXAsset)asset).SFXFlags);
+        Assert.Equal((SFXFlags)0x402, ((IPhysicalSoundFXAsset)asset).SFXFlags);
     }
 
     [Fact]
@@ -143,7 +139,16 @@ public class SoundFXAssetTests
 
         asset.Positional = false;
 
-        Assert.Equal((ushort)0x400, ((IPhysicalSoundFXAsset)asset).SFXFlags);
+        Assert.Equal((SFXFlags)0x400, ((IPhysicalSoundFXAsset)asset).SFXFlags);
+    }
+
+    [Fact]
+    public void SFXFlags_Values_MatchDocumentedBits()
+    {
+        Assert.Equal((ushort)0, (ushort)SFXFlags.None);
+        Assert.Equal((ushort)0x2, (ushort)SFXFlags.Positional);
+        Assert.Equal((ushort)0x4, (ushort)SFXFlags.Loop);
+        Assert.Equal((ushort)0x8, (ushort)SFXFlags.PlayFromEntity);
     }
 
     [Fact]

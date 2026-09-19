@@ -66,7 +66,7 @@ public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTab
             asset.Entries.Add(entry);
         }
 
-        asset.Physical.Count = asset.Entries.Count;
+        asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }

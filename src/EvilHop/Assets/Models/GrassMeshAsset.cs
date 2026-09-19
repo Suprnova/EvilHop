@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/GRSM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh), IPhysicalGrassMeshAsset
+public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 0xCD), IPhysicalGrassMeshAsset
 {
     /// <summary>The mesh's vertices, indexed by <see cref="GrassMeshFace"/>.</summary>
     public Collection<GrassMeshVertex> Vertices { get; } = [];
@@ -71,8 +71,8 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh), IPhysical
         for (int i = 0; i < faceCount; i++)
             asset.Faces.Add(ReadFace(reader));
 
-        asset.Physical.VertexCount = asset.Vertices.Count;
-        asset.Physical.FaceCount = asset.Faces.Count;
+        asset.Physical.VertexCount = vertexCount;
+        asset.Physical.FaceCount = faceCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -119,9 +119,9 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh), IPhysical
 
     private static void WriteFace(EndianWriter writer, GrassMeshFace face)
     {
-        writer.Write((short)face.VertexA);
-        writer.Write((short)face.VertexB);
-        writer.Write((short)face.VertexC);
+        writer.Write(face.VertexA);
+        writer.Write(face.VertexB);
+        writer.Write(face.VertexC);
     }
 }
 
@@ -158,7 +158,6 @@ public sealed class GrassMeshVertex
     public Vector3 Position { get; set; }
 
     /// <summary>The vertex's height along the blade, used to weight how much wind sway displaces it.</summary>
-    /// TODO: validate against decompiled source
     public float Height { get; set; }
 
     /// <summary>The vertex's normal, used for lighting.</summary>

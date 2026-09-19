@@ -12,16 +12,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/VIL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class VillainAsset : EntityAsset, IHasModel, IGrabbable
+public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x2B), IHasModel, IGrabbable
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="VillainAsset"/>.
-    /// </summary>
-    public VillainAsset() : base(AssetType.Villain)
-    {
-        _baseType = 0x2B;
-    }
-
     /// <summary>
     /// Flags configuring this NPC's behavior. Bit 0x1 indicates inactive.
     /// </summary>

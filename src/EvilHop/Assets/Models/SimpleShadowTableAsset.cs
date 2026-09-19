@@ -13,12 +13,22 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SHDW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable)
+public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable), IPhysicalSimpleShadowTableAsset
 {
     /// <summary>
     /// The table's entries.
     /// </summary>
     public Collection<SimpleShadowTableEntry> Entries { get; } = [];
+
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override IPhysicalSimpleShadowTableAsset Physical => this;
+
+    private uint? _overriddenCount;
+    uint IPhysicalSimpleShadowTableAsset.Count
+    {
+        get => _overriddenCount ?? (uint)Entries.Count;
+        set => _overriddenCount = value == (uint)Entries.Count ? null : value;
+    }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SimpleShadowTable"/> is known to be read by.
@@ -44,13 +54,14 @@ public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable
             });
         }
 
+        asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
     internal static void Write(SimpleShadowTableAsset asset, EndianWriter writer, FormatProfile _)
     {
-        writer.Write((uint)asset.Entries.Count);
+        writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
         {
             writer.Write(entry.ModelId);
@@ -60,6 +71,21 @@ public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable
 
         writer.Write(asset.GetUnparsedTail());
     }
+}
+
+/// <summary>
+/// An explicit interface used to interact with <see cref="SimpleShadowTableAsset"/>'s underlying values.
+/// </summary>
+public interface IPhysicalSimpleShadowTableAsset : IPhysicalAsset
+{
+    /// <summary>
+    /// The number of <see cref="SimpleShadowTableAsset.Entries"/> stored for this asset, read directly from
+    /// its leading count field.
+    /// </summary>
+    /// <remarks>
+    /// When disagreements with <see cref="SimpleShadowTableAsset.Entries"/>.Count exist, this field wins during serialization.
+    /// </remarks>
+    uint Count { get; set; }
 }
 
 /// <summary>

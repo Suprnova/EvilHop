@@ -12,14 +12,9 @@ namespace EvilHop.Assets;
 /// or leave the track.
 /// </summary>
 /// <remarks>
-/// <para>
-/// TODO:
-/// This asset has no decompiled source, and most fields on the wiki are undocumented. These
-/// field definitions should be treated as assumptions, not yet validated against the game.
-/// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/DTRK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack), IPhysicalDashTrackAsset
+public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), IPhysicalDashTrackAsset
 {
     /// <summary>
     /// The mesh's vertices, indexed by <see cref="DashTrackTriangle.VertexA"/>/<see cref="DashTrackTriangle.VertexB"/>/<see cref="DashTrackTriangle.VertexC"/>.
@@ -102,9 +97,6 @@ public interface IPhysicalDashTrackAsset : IPhysicalBaseAsset
     int TriangleCount { get; set; }
 
     /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source; this and the two fields below occupy the same 12
-    /// bytes as <c>track_asset</c>'s <c>vertex</c>/<c>triangle_list</c>/<c>portal</c> pointers, and
-    /// may just be their leftover in-memory values.
     uint Unknown1 { get; set; }
 
     /// <summary>Unknown.</summary>

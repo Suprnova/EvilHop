@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// Superseded by <see cref="SoundEffectAsset"/> from <see cref="GameVersion.TSSM"/> onward.
 /// <seealso href="https://heavyironmodding.org/wiki/SFX">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoundFXAsset
+public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13), IPhysicalSoundFXAsset
 {
     /// <summary>
     /// A base pitch value, multiplied by <see cref="FrequencyMultiplier"/> and passed to the sound
@@ -54,8 +54,8 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoun
     /// </summary>
     public bool Positional
     {
-        get => (Physical.SFXFlags & 0x2) != 0;
-        set => SetFlag(0x2, value);
+        get => Physical.SFXFlags.HasFlag(SFXFlags.Positional);
+        set => SetFlag(SFXFlags.Positional, value);
     }
 
     /// <summary>
@@ -64,46 +64,25 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoun
     /// </summary>
     public bool PlayFromEntity
     {
-        get => (Physical.SFXFlags & 0x8) != 0;
-        set => SetFlag(0x8, value);
+        get => Physical.SFXFlags.HasFlag(SFXFlags.PlayFromEntity);
+        set => SetFlag(SFXFlags.PlayFromEntity, value);
     }
 
     /// <summary>Whether this sound loops.</summary>
     public bool Loop
     {
-        get => (Physical.SFXFlags & 0x4) != 0;
-        set => SetFlag(0x4, value);
+        get => Physical.SFXFlags.HasFlag(SFXFlags.Loop);
+        set => SetFlag(SFXFlags.Loop, value);
     }
 
-    /// <summary>
-    /// Whether this sound is managed by the environmental stream system, which plays only the
-    /// highest-priority, nearest sound among every <see cref="IsEnvironmental"/> <see cref="SoundFXAsset"/>
-    /// in range, rather than playing as soon as it receives its play event.
-    /// </summary>
-    public bool IsEnvironmental
-    {
-        get => (Physical.SFXFlags & 0x200) != 0;
-        set => SetFlag(0x200, value);
-    }
-
-    /// <summary>
-    /// Whether the player entity tracks this sound as its current voice stream once it starts playing,
-    /// so it won't be played over by the player's own lines and can be stopped alongside them.
-    /// </summary>
-    public bool NotifiesPlayer
-    {
-        get => (Physical.SFXFlags & 0x400) != 0;
-        set => SetFlag(0x400, value);
-    }
-
-    private void SetFlag(ushort bit, bool value) =>
-        Physical.SFXFlags = (ushort)(value ? Physical.SFXFlags | bit : Physical.SFXFlags & ~bit);
+    private void SetFlag(SFXFlags bit, bool value) =>
+        Physical.SFXFlags = value ? Physical.SFXFlags | bit : Physical.SFXFlags & ~bit;
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override IPhysicalSoundFXAsset Physical => this;
 
-    private ushort _sfxFlags;
-    ushort IPhysicalSoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
+    private SFXFlags _sfxFlags;
+    SFXFlags IPhysicalSoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
 
     private byte _loopCount;
     byte IPhysicalSoundFXAsset.LoopCount { get => _loopCount; set => _loopCount = value; }
@@ -123,7 +102,7 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoun
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Physical.SFXFlags = reader.ReadUInt16();
+        asset.Physical.SFXFlags = (SFXFlags)reader.ReadUInt16();
         asset.Frequency = reader.ReadUInt16();
         asset.FrequencyMultiplier = reader.ReadSingle();
         asset.SoundId = reader.ReadAssetId();
@@ -146,8 +125,8 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX), IPhysicalSoun
     {
         BaseAssetPrefix.Write(asset, writer);
 
-        writer.Write((short)asset.Physical.SFXFlags);
-        writer.Write((short)asset.Frequency);
+        writer.Write((ushort)asset.Physical.SFXFlags);
+        writer.Write(asset.Frequency);
         writer.Write(asset.FrequencyMultiplier);
         writer.Write(asset.SoundId);
         writer.Write(asset.AttachId);
@@ -171,16 +150,38 @@ public interface IPhysicalSoundFXAsset : IPhysicalBaseAsset
 {
     /// <summary>The sound's raw flags word, read directly from disk.</summary>
     /// <remarks>
-    /// Bits 0x2, 0x4, 0x8, 0x200, and 0x400 are exposed logically as <see cref="SoundFXAsset.Positional"/>,
-    /// <see cref="SoundFXAsset.Loop"/>, <see cref="SoundFXAsset.PlayFromEntity"/>,
-    /// <see cref="SoundFXAsset.IsEnvironmental"/>, and <see cref="SoundFXAsset.NotifiesPlayer"/>
-    /// respectively. Bits 0x800 and 0x1000 are pure runtime playback state - set once the sound starts
-    /// playing and whether it will send its done event - never touched at authoring time. The
-    /// remaining bits have no confirmed meaning.
+    /// <see cref="SFXFlags.Positional"/>, <see cref="SFXFlags.Loop"/>, and
+    /// <see cref="SFXFlags.PlayFromEntity"/> are exposed logically as
+    /// <see cref="SoundFXAsset.Positional"/>, <see cref="SoundFXAsset.Loop"/>, and
+    /// <see cref="SoundFXAsset.PlayFromEntity"/> respectively.
     /// </remarks>
-    ushort SFXFlags { get; set; }
+    SFXFlags SFXFlags { get; set; }
 
     /// <summary>Unknown.</summary>
-    /// <remarks>Never read anywhere in the decompiled BFBB runtime.</remarks>
     byte LoopCount { get; set; }
+}
+
+/// <summary>
+/// Flags controlling playback and spatialization for a <see cref="SoundFXAsset"/>.
+/// </summary>
+[Flags]
+public enum SFXFlags : ushort
+{
+    /// <summary>No flags are set.</summary>
+    None = 0,
+
+    /// <summary>
+    /// The sound plays from a 3D position - <see cref="SoundFXAsset.AttachId"/>'s live position or
+    /// the fixed <see cref="SoundFXAsset.Position"/> - rather than flat.
+    /// </summary>
+    Positional = 1 << 1,
+
+    /// <summary>The sound loops.</summary>
+    Loop = 1 << 2,
+
+    /// <summary>
+    /// The sound plays from <see cref="SoundFXAsset.AttachId"/>'s live position, instead of the fixed
+    /// <see cref="SoundFXAsset.Position"/>, when <see cref="Positional"/> is set.
+    /// </summary>
+    PlayFromEntity = 1 << 3,
 }

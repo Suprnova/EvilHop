@@ -110,7 +110,7 @@ public interface IPhysicalCreditsAsset : IPhysicalAsset
 }
 
 /// <summary>
-/// Represents all known values for <see cref="IPhysicalCreditsAsset.State"/>.
+/// Defines the playback and display state of a credits entry.
 /// </summary>
 public enum CreditsState : uint
 {
@@ -231,18 +231,17 @@ public sealed class CreditsPreset
     public Collection<CreditsTexture> Textures { get; } = [];
 }
 
+// TODO: names for <see cref="Center"/>, <see cref="Left"/>, <see cref="Right"/>, and
+// <see cref="Inner"/> are inferred from a dead-stripped debug string list's declaration order
+// (<c>CM_ALIGN_CENTER</c>, <c>CM_ALIGN_LEFT</c>, <c>CM_ALIGN_RIGHT</c>, <c>CM_ALIGN_INNER</c>,
+// <c>CM_ALIGN_TEXTURE</c>), not confirmed against their numeric values directly. Only
+// <see cref="Center"/> and <see cref="Texture"/> are confirmed by the render switch itself; only
+// <see cref="Center"/>, <see cref="Inner"/>, and <see cref="Texture"/> are ever observed in the
+// corpus.
+ 
 /// <summary>
-/// Represents all known values for <see cref="CreditsPreset.Alignment"/>.
+/// Specifies text alignment and layout positioning for credits lines.
 /// </summary>
-/// <remarks>
-/// TODO: names for <see cref="Center"/>, <see cref="Left"/>, <see cref="Right"/>, and
-/// <see cref="Inner"/> are inferred from a dead-stripped debug string list's declaration order
-/// (<c>CM_ALIGN_CENTER</c>, <c>CM_ALIGN_LEFT</c>, <c>CM_ALIGN_RIGHT</c>, <c>CM_ALIGN_INNER</c>,
-/// <c>CM_ALIGN_TEXTURE</c>), not confirmed against their numeric values directly. Only
-/// <see cref="Center"/> and <see cref="Texture"/> are confirmed by the render switch itself; only
-/// <see cref="Center"/>, <see cref="Inner"/>, and <see cref="Texture"/> are ever observed in the
-/// corpus.
-/// </remarks>
 public enum CreditsPresetAlignment : ushort
 {
     /// <summary>A single, centered <see cref="CreditsTextbox"/>.</summary>
@@ -266,7 +265,6 @@ public sealed class CreditsTextbox
     /// <summary>
     /// Unknown.
     /// </summary>
-    /// TODO: UIFT assetID?
     public uint Font { get; set; }
 
     /// <summary>

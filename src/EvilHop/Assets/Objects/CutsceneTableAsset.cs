@@ -19,6 +19,7 @@ namespace EvilHop.Assets;
 /// <see cref="CutsceneAsset"/> keeps its chunked media there.
 /// <seealso href="https://heavyironmodding.org/wiki/CTOC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
+// TODO: Partial implementation - trailing TimeChunk-offset, visibility, and break tables are unmodelled and preserved in unparsed tail
 public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhysicalCutsceneTableAsset
 {
     /// <summary>
@@ -45,6 +46,7 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhys
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,
+        GameVersion.ROTU,
     };
 
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "HeaderReader's result never owns a resource worth disposing - see its remarks.")]

@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/COND">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional)
+public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseType: 0x1F)
 {
     /// <summary>
     /// The value <see cref="Variable"/> is compared against, using <see cref="Operation"/>.
@@ -36,6 +36,19 @@ public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional)
     /// <see cref="GameVersion.N100F"/>.
     /// </summary>
     public AssetId TargetId { get; set; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Conditional"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal static ConditionalAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -73,7 +86,7 @@ public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional)
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ConditionalAsset.Operation"/>.
+/// The comparison or evaluation operation used by a <see cref="ConditionalAsset"/> to test its variables.
 /// </summary>
 public enum ConditionalOperation : uint
 {

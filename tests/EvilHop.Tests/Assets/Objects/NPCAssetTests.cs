@@ -137,7 +137,7 @@ public class NPCAssetTests
         Assert.Equal(7, asset.GummedDuration);
         Assert.Equal(9, asset.BubbleDuration);
         Assert.Equal(4, asset.Hitpoints);
-        Assert.Equal(NPCBehaviorState.Unknown1, asset.BehaviorState);
+        Assert.Equal(1, asset.BehaviorState);
         Assert.Equal(0x7F000080u, asset.Physical.VillFlags);
         Assert.Equal(2.0f, asset.LobSpeed);
         Assert.Equal(1.0f, asset.LobDurReload);

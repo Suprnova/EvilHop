@@ -82,8 +82,6 @@ public sealed class FlyAsset() : Asset(AssetType.Fly)
         writer.Write(asset.GetUnparsedTail());
     }
 
-    // TODO: why don't we just temporarily override EndianReader/EndianWriter's Endianness property?
-
     /// <summary>
     /// Wraps <paramref name="reader"/> to force <see cref="Endianness.Little"/> - unlike every other
     /// asset type, a <see cref="FlyAsset"/>'s <see cref="FlyKey"/> entries are written little-endian on

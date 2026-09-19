@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PKUP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PickupAsset() : EntityAsset(AssetType.Pickup)
+public sealed class PickupAsset() : EntityAsset(AssetType.Pickup, baseType: 0x04)
 {
     /// <summary>
     /// Which kind of pickup this is.
@@ -38,7 +38,6 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup)
     /// A context-dependent value: the Scooby Snack count for a snack gate, or 4 for most other
     /// pickup kinds.
     /// </summary>
-    /// TODO: not referenced anywhere in the available decompiled source; validate against it
     public short PickupValue { get; set; }
 
     /// <summary>
@@ -83,7 +82,7 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup)
 }
 
 /// <summary>
-/// Represents all known values for <see cref="PickupAsset.Flags"/>.
+/// Flags controlling pickup spawning, persistence, and collection state.
 /// </summary>
 [Flags]
 public enum PickupFlags : short
@@ -99,7 +98,7 @@ public enum PickupFlags : short
 }
 
 /// <summary>
-/// Represents all known values for <see cref="PickupAsset.Kind"/>.
+/// Defines the collectible item type and reward behavior for a pickup.
 /// </summary>
 public enum PickupKind : byte
 {

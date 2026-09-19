@@ -44,12 +44,12 @@ public sealed partial class MovePointAsset
         BaseAssetPrefix.Write(asset, writer);
 
         writer.Write(asset.Position);
-        writer.Write((short)asset.Weight);
+        writer.Write(asset.Weight);
         writer.Write((byte)asset.Kind);
         writer.Write((byte)asset.BezierRole);
         writer.Write(asset.Physical.FlagsProps);
         writer.Write((byte)0); // pad
-        writer.Write((short)asset.Physical.NumPoints);
+        writer.Write(asset.Physical.NumPoints);
         writer.Write(asset.Delay);
 
         if (profile.Game is not GameVersion.N100F)

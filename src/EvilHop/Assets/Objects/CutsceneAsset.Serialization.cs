@@ -109,13 +109,10 @@ public sealed partial class CutsceneAsset
 
     /// <summary>
     /// Wraps <paramref name="reader"/> to force <see cref="Endianness.Little"/> under
-    /// <see cref="GameVersion.N100F"/>, whose <see cref="AssetType.Cutscene"/>/
-    /// <see cref="AssetType.CutsceneTable"/> payloads are written little-endian even in the GameCube
-    /// build - unlike every other asset type, which follows the platform's endianness. A real
-    /// GameCube archive's header reads as nonsense (a <c>NumData</c> in the tens of millions) under
-    /// the platform's own big-endian byte order, and exactly sane read little-endian instead. Shared
-    /// by <see cref="ReadHeader"/>/<see cref="WriteHeader"/> and <see cref="CutsceneTableAsset"/>'s
-    /// own leading count field, which carries the same quirk.
+    /// <see cref="GameVersion.N100F"/>, whose <see cref="AssetType.Cutscene"/> and
+    /// <see cref="AssetType.CutsceneTable"/> payloads are written little-endian across all platforms.
+    /// Shared by <see cref="ReadHeader"/>/<see cref="WriteHeader"/> and <see cref="CutsceneTableAsset"/>'s
+    /// own leading count field.
     /// </summary>
     /// <remarks>
     /// Never disposed: it shares <paramref name="reader"/>'s underlying stream with

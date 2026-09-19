@@ -13,15 +13,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TEXT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TextAsset : Asset, IPhysicalTextAsset
+public sealed class TextAsset() : Asset(AssetType.Text), IPhysicalTextAsset
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="TextAsset"/>.
-    /// </summary>
-    public TextAsset() : base(AssetType.Text)
-    {
-    }
-
     /// <summary>
     /// The text content stored in this asset.
     /// </summary>
@@ -36,6 +29,19 @@ public sealed class TextAsset : Asset, IPhysicalTextAsset
         get => _overriddenLength ?? CalculateLength();
         set => _overriddenLength = value == CalculateLength() ? null : value;
     }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Text"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal uint CalculateLength() => (uint)Encoding.Latin1.GetByteCount(Text ?? string.Empty);
 
@@ -95,10 +101,12 @@ public interface IPhysicalTextAsset : IPhysicalAsset
     /// The length of the text stored in this asset, in bytes (excluding the null terminator).
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="TextAsset.Text"/> length in bytes unless explicitly overridden.
+    /// When disagreements with <see cref="TextAsset.Text"/>.Length exist, this field wins during serialization.
+    /// <para>
     /// On disk, <see cref="GameVersion.N100F"/> stores this count including the null terminator;
     /// <see cref="TextAsset.Read"/> and <see cref="TextAsset.Write"/> adjust for that so this
     /// property means the same thing across every game.
+    /// </para>
     /// </remarks>
     uint Length { get; set; }
 }

@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/GUST">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class GustAsset() : BaseAsset(AssetType.Gust)
+public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
 {
     /// <summary>Whether the gust is turned on, and which kind of particles it emits.</summary>
     public GustFlags Flags { get; set; }

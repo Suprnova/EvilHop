@@ -31,14 +31,12 @@ public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IP
     /// A number of health points. Only present in <see cref="GameVersion.ROTU"/> and
     /// <see cref="GameVersion.Ratatouille"/>.
     /// </summary>
-    /// TODO: validate against decompiled source; unclear who or what receives this
     public uint HealthPoints { get; set; }
 
     /// <summary>
     /// A number of experience points. Only present in <see cref="GameVersion.ROTU"/> and
     /// <see cref="GameVersion.Ratatouille"/>.
     /// </summary>
-    /// TODO: validate against decompiled source; unclear who or what receives this
     public uint ExperiencePoints { get; set; }
 
     /// <summary>

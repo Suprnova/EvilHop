@@ -104,6 +104,30 @@ public class AnimationAssetTests
     }
 
     [Fact]
+    public void KeyCount_DisagreeingWithKeys_IsStoredIndependently()
+    {
+        var asset = new AnimationAsset();
+        asset.Keys.Add(new AnimationKey());
+
+        asset.Physical.KeyCount = 5;
+
+        Assert.Equal(5u, asset.Physical.KeyCount);
+        Assert.Single(asset.Keys);
+    }
+
+    [Fact]
+    public void TimeCount_DisagreeingWithTimes_IsStoredIndependently()
+    {
+        var asset = new AnimationAsset();
+        asset.Times.Add(0.5f);
+
+        asset.Physical.TimeCount = 4;
+
+        Assert.Equal((ushort)4, asset.Physical.TimeCount);
+        Assert.Single(asset.Times);
+    }
+
+    [Fact]
     public void Read_ThenWrite_Animation_ReproducesInputBytes()
     {
         byte[] data = OneBoneOneFrameData();

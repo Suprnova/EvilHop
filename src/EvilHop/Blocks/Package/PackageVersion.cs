@@ -38,7 +38,7 @@ public class PackageVersion : Block
 #pragma warning disable CS1591 // Missing XML comment
 
 /// <summary>
-/// Represents all known values for <see cref="PackageVersion.ClientVersion"/>.
+/// Defines the archive client engine version stored in <see cref="PackageVersion.ClientVersion"/>.
 /// </summary>
 public enum ClientVersion : uint
 {

@@ -13,6 +13,7 @@ public sealed partial class SoundInfoAsset
         var asset = new SoundInfoAsset();
         AssetFields.Populate(asset, header, debug);
 
+        // TODO: Partial implementation - non-GameCube platforms are not implemented
         if (profile.Platform is not Platform.GameCube)
         {
             asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -29,6 +30,7 @@ public sealed partial class SoundInfoAsset
 
     internal static void Write(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
+        // TODO: Partial implementation - non-GameCube platforms are not implemented
         if (profile.Platform is not Platform.GameCube)
         {
             writer.Write(asset.GetUnparsedTail());
@@ -80,7 +82,7 @@ public sealed partial class SoundInfoAsset
             SampleCount = reader.ReadUInt32(),
             NibbleCount = reader.ReadUInt32(),
             SampleRate = reader.ReadUInt32(),
-            IsLooped = reader.ReadInt16() != 0,
+            IsLooped = reader.ReadUInt16() != 0,
             Format = reader.ReadUInt16(),
             LoopStart = reader.ReadUInt32(),
             LoopEnd = reader.ReadUInt32(),
@@ -104,32 +106,31 @@ public sealed partial class SoundInfoAsset
         writer.Write(header.SampleCount);
         writer.Write(header.NibbleCount);
         writer.Write(header.SampleRate);
-        writer.Write((short)(header.IsLooped ? 1 : 0));
-        writer.Write((short)header.Format);
+        writer.Write((ushort)(header.IsLooped ? 1 : 0));
+        writer.Write(header.Format);
         writer.Write(header.LoopStart);
         writer.Write(header.LoopEnd);
         writer.Write(header.InitialOffset);
         foreach (short coefficient in header.Coefficients) writer.Write(coefficient);
-        writer.Write((short)header.Gain);
-        writer.Write((short)header.PredictorScale);
+        writer.Write(header.Gain);
+        writer.Write(header.PredictorScale);
         writer.Write(header.History1);
         writer.Write(header.History2);
-        writer.Write((short)header.LoopPredictorScale);
+        writer.Write(header.LoopPredictorScale);
         writer.Write(header.LoopHistory1);
         writer.Write(header.LoopHistory2);
         foreach (byte b in header.Unknown) writer.Write(b);
         writer.Write(header.SoundAssetId);
     }
 
-    // todo: we're discarding nSounds and nStreams and recomputing them. bad?
     private static void ReadFsb3(SoundInfoAsset asset, EndianReader reader)
     {
         asset.Physical.SoundInfoId = reader.ReadAssetId();
         uint footerOffset = reader.ReadUInt32(); // relative to the end of this header
         reader.ReadBytes(16); // runtime-resolved pFMusicMod/pFSBFileArray/pWavInfoArray/pCutsceneAudioHeaders, always null
         int soundCount = reader.ReadUInt16();
-        reader.ReadInt16(); // nSounds, a subset count of Sounds recomputed from Flags on write
-        reader.ReadInt16(); // nStreams, ditto
+        reader.ReadUInt16(); // nSounds, a subset count of Sounds recomputed from Flags on write
+        reader.ReadUInt16(); // nStreams, ditto
         int soundBankCount = reader.ReadByte();
         int cutsceneCount = reader.ReadByte();
 
@@ -187,9 +188,9 @@ public sealed partial class SoundInfoAsset
         writer.Write(asset.Physical.SoundInfoId);
         writer.Write(footerOffset);
         writer.Write(new byte[16]); // runtime-resolved
-        writer.Write((short)asset.Physical.SoundCount);
-        writer.Write((short)asset.Sounds.Count(sound => !sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nSounds
-        writer.Write((short)asset.Sounds.Count(sound => sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nStreams
+        writer.Write((ushort)asset.Physical.SoundCount);
+        writer.Write((ushort)asset.Sounds.Count(sound => !sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nSounds
+        writer.Write((ushort)asset.Sounds.Count(sound => sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nStreams
         writer.Write((byte)asset.Physical.SoundBankCount);
         writer.Write((byte)asset.Physical.CutsceneCount);
 

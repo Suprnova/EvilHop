@@ -38,13 +38,6 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
         set => _overriddenShrapnelId = value == Id ? null : value;
     }
 
-    private uint _initCallbackPointer;
-    uint IPhysicalShrapnelAsset.InitCallbackPointer
-    {
-        get => _initCallbackPointer;
-        set => _initCallbackPointer = value;
-    }
-
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Shrapnel"/> is known to be read by.
     /// </summary>
@@ -81,14 +74,6 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
     /// The on-disk size of an <see cref="ShrapnelFragType.Inactive"/> fragment, keyed by its
     /// otherwise-unused <see cref="ShrapnelFrag.Id"/> field.
     /// </summary>
-    /// <remarks>
-    /// The wiki does not document this fragment type's layout. When a fragment is deactivated in
-    /// the level editor, its <c>Id</c> field is repurposed to hold a small marker instead of an
-    /// asset ID, and the rest of the fragment's original bytes are left on disk unchanged - so its
-    /// size can't be derived from the type alone. These sizes were reverse-engineered from every
-    /// real occurrence of an inactive fragment in the TSSM corpus; an unrecognized marker still
-    /// fails loudly rather than guessing.
-    /// </remarks>
     internal static int GetInactiveFragSize(GameVersion game, uint id) => (game, id) switch
     {
         (GameVersion.TSSM, 3) => 0x1FC,
@@ -105,7 +90,7 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
 
         int fragCount = reader.ReadInt32();
         asset.Physical.ShrapnelId = reader.ReadAssetId();
-        asset.Physical.InitCallbackPointer = reader.ReadUInt32();
+        reader.ReadUInt32(); // initCB (runtime pointer, constant 0 on disk)
 
         for (int i = 0; i < fragCount; i++)
         {
@@ -148,7 +133,7 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
     {
         writer.Write(asset.Physical.FragCount);
         writer.Write(asset.Physical.ShrapnelId);
-        writer.Write(asset.Physical.InitCallbackPointer);
+        writer.Write(0u); // initCB (runtime pointer, constant 0 on disk)
 
         foreach (var frag in asset.Frags)
         {
@@ -175,7 +160,7 @@ public interface IPhysicalShrapnelAsset : IPhysicalAsset
     /// The number of fragments stored in this asset.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="ShrapnelAsset.Frags"/> count unless explicitly overridden.
+    /// When disagreements with <see cref="ShrapnelAsset.Frags"/>.Count exist, this field wins during serialization.
     /// </remarks>
     int FragCount { get; set; }
 
@@ -183,14 +168,9 @@ public interface IPhysicalShrapnelAsset : IPhysicalAsset
     /// The asset ID of this shrapnel asset as stored in the header.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="Asset.Id"/> unless explicitly overridden.
+    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
     /// </remarks>
     AssetId ShrapnelId { get; set; }
-
-    /// <summary>
-    /// A runtime callback function pointer. Always 0 on disk.
-    /// </summary>
-    uint InitCallbackPointer { get; set; }
 }
 
 /// <summary>

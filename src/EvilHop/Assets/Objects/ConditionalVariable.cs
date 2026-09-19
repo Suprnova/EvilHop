@@ -5,7 +5,7 @@ namespace EvilHop.Assets;
 #pragma warning disable CS1591 // Missing XML comment
 
 /// <summary>
-/// Represents all known values for <see cref="ConditionalAsset.Variable"/>.
+/// Identifies the game state variable evaluated by a <see cref="ConditionalAsset"/>.
 /// </summary>
 /// <remarks>
 /// Each value is the game variable's name, hashed the same way as an <see cref="AssetId"/> - but the

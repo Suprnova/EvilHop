@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> for a falling platform.
 /// </summary>
-public sealed class FallingMotion : PlatformMotion
+public sealed class FallingMotion() : PlatformMotion
 {
     /// <summary>Unknown.</summary>
     public float Speed { get; set; }

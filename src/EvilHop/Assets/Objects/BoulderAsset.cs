@@ -8,7 +8,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/BOUL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder), IHasModel, IHasAnimList
+public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder, baseType: 0x2F), IHasModel, IHasAnimList
 {
     /// <summary>
     /// The downward acceleration applied to this boulder.
@@ -67,14 +67,12 @@ public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder), IHa
     /// The lifetime, in seconds, before this boulder is destroyed, if
     /// <see cref="BoulderFlags.DieAfterKillTimer"/> is set. If 0, the lifetime is infinite.
     /// </summary>
-    /// TODO: should be a TimedBoulderAsset subclass?
     public float KillTimer { get; set; }
 
     /// <summary>
     /// The number of hits this boulder can take from a damaging surface (see
     /// <see cref="BoulderFlags.DieOnDamagingSurface"/>) before it is destroyed.
     /// </summary>
-    /// TODO: should be a FragileBoulder (name pending) subclass?
     public uint Hitpoints { get; set; }
 
     /// <summary>
@@ -147,7 +145,7 @@ public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder), IHa
 }
 
 /// <summary>
-/// Represents all known values for <see cref="BoulderAsset.Flags"/>.
+/// Flags controlling boulder collision, despawn, and rolling behavior.
 /// </summary>
 [Flags]
 public enum BoulderFlags : uint

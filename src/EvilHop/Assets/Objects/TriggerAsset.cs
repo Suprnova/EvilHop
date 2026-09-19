@@ -22,8 +22,21 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTriggerAsset
+public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x01), IPhysicalTriggerAsset
 {
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Trigger"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
+
     /// <summary>
     /// Which shape this trigger's volume is, and how <see cref="TriggerPosition0"/>/
     /// <see cref="TriggerPosition1"/> are interpreted.
@@ -114,24 +127,18 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger), IPhysicalTr
 public interface IPhysicalTriggerAsset : IPhysicalEntityAsset
 {
     /// <summary>
-    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
-    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
-    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
-    /// <see cref="GameVersion.TSSM"/> onward.
+    /// Unknown.
     /// </summary>
     Vector3 TriggerPosition2 { get; set; }
 
     /// <summary>
-    /// Unknown. Always <see cref="Vector3.Zero"/> for <see cref="TriggerShape.Sphere"/>. For
-    /// <see cref="TriggerShape.Box"/>, uninitialized garbage in <see cref="GameVersion.N100F"/>
-    /// through <see cref="GameVersion.BFBB"/>; real, varying (but unexplained) values from
-    /// <see cref="GameVersion.TSSM"/> onward.
+    /// Unknown.
     /// </summary>
     Vector3 TriggerPosition3 { get; set; }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="TriggerAsset.Shape"/>.
+/// Defines the geometric volume shape (box, sphere, or cylinder) used for trigger collision detection.
 /// </summary>
 public enum TriggerShape : byte
 {
@@ -150,14 +157,13 @@ public enum TriggerShape : byte
     /// </summary>
     Cylinder = 2,
     /// <summary>
-    /// Identical to <see cref="Sphere"/> in decompiled source. Never observed in any real archive.
+    /// Identical to <see cref="Sphere"/>.
     /// </summary>
-    /// TODO: if identical and never observed, should we even define it as a flag?
     VSphere = 3,
 }
 
 /// <summary>
-/// Represents all known values for <see cref="TriggerAsset.Flags"/>.
+/// Flags controlling trigger activation criteria, directionality, and player interaction.
 /// </summary>
 [Flags]
 public enum TriggerFlags : uint

@@ -13,16 +13,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TIMR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TimerAsset : BaseAsset
+public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="TimerAsset"/>.
-    /// </summary>
-    public TimerAsset() : base(AssetType.Timer)
-    {
-        _baseType = 0x0E;
-    }
-
     /// <summary>
     /// The base duration of the timer, in seconds.
     /// </summary>
@@ -33,6 +25,19 @@ public sealed class TimerAsset : BaseAsset
     /// Not present in <see cref="GameVersion.N100F"/>.
     /// </summary>
     public float RandomRange { get; set; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Timer"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal static TimerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CSNM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager), IPhysicalCutsceneManagerAsset
+public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager, baseType: 0x28), IPhysicalCutsceneManagerAsset
 {
     private const int EmitterCueSlotCount = 15;
 
@@ -27,8 +27,6 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
     /// <summary>
     /// The interpolation speed used during this cutscene's playback.
     /// </summary>
-    /// TODO: validate against decompiled source - declared but never referenced in the game code
-    /// available so far.
     public float InterpSpeed { get; set; }
 
     /// <summary>
@@ -64,6 +62,7 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,
+        GameVersion.ROTU,
     };
 
     internal static CutsceneManagerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
@@ -148,8 +147,6 @@ public record struct CutsceneEmitterCue
     /// <summary>
     /// The particle emitter this cue targets, or <see cref="AssetId.None"/> if this slot is unused.
     /// </summary>
-    /// TODO: confirm this targets an <see cref="AssetType.ParticleEmitter"/> instance - inferred from
-    /// decompiled source's zParEmitterFind lookup, which isn't yet a modelled asset type.
     public AssetId EmitterId { get; set; }
 
     /// <summary>

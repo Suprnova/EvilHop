@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PEND">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum), IHasModel
+public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 0x12), IHasModel
 {
     /// <summary>How this pendulum swings.</summary>
     public PendulumMotion Motion { get; set; } = new();

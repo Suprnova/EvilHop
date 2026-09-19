@@ -69,6 +69,7 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
     /// <see cref="GameVersion.N100F"/> uses a revised <see cref="States"/> layout not modeled
     /// here, degrading to the generic shape.
     /// </remarks>
+    // TODO: Partial implementation - N100F uses a revised States layout not modeled here.
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
         GameVersion.BFBB,
@@ -122,13 +123,9 @@ public interface IPhysicalAnimationTableAsset : IPhysicalAsset
 public sealed class AnimationTableFile
 {
     /// <summary>
-    /// Playback flags. Known bits, from decompiled source: 0x1000 plays the animation in reverse;
-    /// 0x2000 doubles the duration and plays the second half in reverse; 0x4000 marks
-    /// <see cref="NumAnimsX"/>/<see cref="NumAnimsY"/> as an active bilinear blend grid; 0x8000 marks
-    /// this as vertex/morph animation data rather than skeletal.
+    /// Playback and format flags for this file.
     /// </summary>
-    /// TODO: should be a real flags enum
-    public uint FileFlags { get; set; }
+    public FileFlags FileFlags { get; set; }
 
     /// <summary>
     /// The playback duration, in seconds.
@@ -221,3 +218,26 @@ public sealed class AnimationTableState
     /// </summary>
     public uint SubStateCount { get; set; }
 }
+
+/// <summary>
+/// Flags governing the playback and blending of an <see cref="AnimationTableFile"/>.
+/// </summary>
+[Flags]
+public enum FileFlags : uint
+{
+    /// <summary>No flags are set.</summary>
+    None = 0,
+
+    /// <summary>Plays the animation in reverse.</summary>
+    Reverse = 1 << 12,
+
+    /// <summary>Doubles the duration and plays the second half in reverse.</summary>
+    ReverseSecondHalf = 1 << 13,
+
+    /// <summary>Marks this file's blend dimensions as an active bilinear blend grid.</summary>
+    Bilinear = 1 << 14,
+
+    /// <summary>Marks this as vertex/morph animation data rather than skeletal.</summary>
+    Morph = 1 << 15,
+}
+

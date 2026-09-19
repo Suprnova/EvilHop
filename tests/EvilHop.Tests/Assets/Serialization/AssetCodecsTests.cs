@@ -149,7 +149,7 @@ public class AssetCodecsTests
         byte[] data = EntityBytes(100, zeroPadding: true);
         var profile = BFBBSerializer.DefaultProfile;
 
-        Assert.Equal(data, Write(Read(AssetType.Button, data, profile), profile));
+        Assert.Equal(data, Write(Read(AssetType.Hangable, data, profile), profile));
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class AssetCodecsTests
         byte[] data = EntityBytes(100, zeroPadding: false);
         var profile = BFBBSerializer.DefaultProfile;
 
-        byte[] written = Write(Read(AssetType.Button, data, profile), profile);
+        byte[] written = Write(Read(AssetType.Hangable, data, profile), profile);
 
         Assert.Equal<byte>([0, 0, 0, 0], written.AsSpan(12, 4).ToArray());
         Assert.Equal(data.AsSpan(16).ToArray(), written.AsSpan(16).ToArray());
@@ -171,10 +171,11 @@ public class AssetCodecsTests
     [Fact]
     public void Read_EntityWithPadding_ShiftsTheFieldsPastIt()
     {
-        byte[] data = [.. Enumerable.Range(1, 100).Select(i => (byte)i)];
+        byte[] data = [.. Enumerable.Range(1, 128).Select(i => (byte)i)];
+        data[5] = 0; // LinkCount = 0
 
-        var withPadding = (EntityAsset)Read(AssetType.Button, data, BFBBSerializer.DefaultProfile);
-        var without = (EntityAsset)Read(AssetType.Button, data, N100FSerializer.DefaultProfile);
+        var withPadding = (EntityAsset)Read(AssetType.Hangable, data, BFBBSerializer.DefaultProfile);
+        var without = (EntityAsset)Read(AssetType.Hangable, data, N100FSerializer.DefaultProfile);
 
         Assert.NotEqual(without.Physical.SurfaceId, withPadding.Physical.SurfaceId);
     }

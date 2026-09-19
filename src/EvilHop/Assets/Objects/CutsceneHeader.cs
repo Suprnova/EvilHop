@@ -11,8 +11,6 @@ namespace EvilHop.Assets;
 /// <see cref="CutsceneAsset.WriteHeader"/> can serve both without either type pretending to be the
 /// other.
 /// </summary>
-/// TODO: i don't like the physical layer here, i'd prefer the header having every field like
-/// normal and CutsceneAsset's Physical layer just binding to a private Header instance instead.
 internal interface ICutsceneHeader
 {
     /// <inheritdoc cref="CutsceneAsset.Data"/>
@@ -45,12 +43,16 @@ public interface IPhysicalCutsceneHeader
     /// <summary>
     /// The <see cref="Common.AssetId"/> stored in the header itself.
     /// </summary>
+    /// <remarks>
+    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+    /// </remarks>
     AssetId AssetId { get; set; }
     /// <summary>
     /// The number of <see cref="ICutsceneHeader.Data"/> entries, read directly from the header.
     /// </summary>
-    /// TODO: update to reflect the documentation pattern for other collection count fields in
-    /// Physical
+    /// <remarks>
+    /// When disagreements with <see cref="ICutsceneHeader.Data"/>.Count exist, this field wins during serialization.
+    /// </remarks>
     uint NumData { get; set; }
     /// <summary>
     /// The number of TimeChunk offsets following the (currently unparsed) region after

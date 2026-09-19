@@ -8,11 +8,6 @@ namespace EvilHop.Assets;
 /// game event, subject to a probability and replay cooldown.
 /// </summary>
 /// <remarks>
-/// <para>
-/// TODO:
-/// This asset has no decompiled source, and most fields on the wiki are undocumented. These
-/// field definitions should be treated as assumptions, not yet validated against the game.
-/// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ONEL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), IPhysicalOneLinerAsset
@@ -122,7 +117,7 @@ public sealed class OneLinerEntry
 }
 
 /// <summary>
-/// Represents all known values for <see cref="OneLinerEntry.PlayerType"/>.
+/// Identifies the type of criteria for which this <see cref="OneLinerEntry"/> will play.
 /// </summary>
 public enum OneLinerPlayerType
 {

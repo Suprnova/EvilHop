@@ -13,12 +13,25 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CNTR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CounterAsset() : BaseAsset(AssetType.Counter)
+public sealed class CounterAsset() : BaseAsset(AssetType.Counter, baseType: 0x16)
 {
     /// <summary>
     /// The counter's value when the level loads.
     /// </summary>
     public short InitialValue { get; set; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Counter"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
     {

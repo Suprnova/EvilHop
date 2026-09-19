@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CCRV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve), IPhysicalCameraCurveAsset
+public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseType: 0x8D), IPhysicalCameraCurveAsset
 {
     /// <summary>
     /// Which <see cref="CameraKind"/> this curve applies to.
@@ -99,7 +99,7 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve), IPhys
                 FarWallAdjust = reader.ReadSingle(),
             });
         }
-        asset.Physical.NumBeads = asset.Beads.Count;
+        asset.Physical.NumBeads = numBeads;
 
         LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -107,7 +107,7 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve), IPhys
         return asset;
     }
 
-    internal static void Write(CameraCurveAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(CameraCurveAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -156,8 +156,7 @@ public interface IPhysicalCameraCurveAsset : IPhysicalBaseAsset
     /// its leading count field.
     /// </summary>
     /// <remarks>
-    /// When disagreements with <see cref="CameraCurveAsset.Beads"/>.Count exist, this field wins
-    /// during serialization.
+    /// When disagreements with <see cref="CameraCurveAsset.Beads"/>.Count exist, this field wins during serialization.
     /// </remarks>
     int NumBeads { get; set; }
 }
@@ -165,7 +164,6 @@ public interface IPhysicalCameraCurveAsset : IPhysicalBaseAsset
 /// <summary>
 /// One tuning point along a <see cref="CameraCurveAsset"/>'s length.
 /// </summary>
-/// TODO: hallucinations? unless this info is in the decompiled source.
 public sealed class CameraCurveBead
 {
     /// <summary>The parameter along the first rail this bead sits at.</summary>

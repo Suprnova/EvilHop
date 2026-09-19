@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityMotion"/> that moves out to one position and back again, waiting at each end.
 /// </summary>
-public sealed class ExtendRetractMotion : EntityMotion
+public sealed class ExtendRetractMotion() : EntityMotion
 {
     /// <summary>The position the entity starts at, and retracts back to.</summary>
     public Vector3 RetractPosition { get; set; }

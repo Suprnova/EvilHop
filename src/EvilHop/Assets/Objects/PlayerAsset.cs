@@ -13,13 +13,26 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PLYR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PlayerAsset() : EntityAsset(AssetType.Player)
+public sealed class PlayerAsset() : EntityAsset(AssetType.Player, baseType: 0x03)
 {
     /// <summary>
     /// The <see cref="AssetType.LightKit"/> applied to the player. Not present in
     /// <see cref="GameVersion.N100F"/>.
     /// </summary>
     public AssetId LightKitId { get; set; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Player"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     internal static PlayerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {

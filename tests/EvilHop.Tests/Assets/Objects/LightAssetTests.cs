@@ -76,7 +76,7 @@ public class LightAssetTests
     private static byte[] SampleData() =>
     [
         .. Prefix(0),
-        .. Body(3, 4, 0x3A, 0.98f, 0.69f, 0.016f, 1.0f, new Vector3(0.0f, 0.0f, 1.0f), 45.0f, new Vector3(3.4f, 2.6f, -0.8f), 6.0f, 0),
+        .. Body(3, 4, 0x28, 0.98f, 0.69f, 0.016f, 1.0f, new Vector3(0.0f, 0.0f, 1.0f), 45.0f, new Vector3(3.4f, 2.6f, -0.8f), 6.0f, 0),
     ];
 
     [Fact]
@@ -90,7 +90,7 @@ public class LightAssetTests
 
         Assert.Equal(LightType.Point3, asset.LightType);
         Assert.Equal(LightEffect.FlickerErratic, asset.LightEffect);
-        Assert.Equal(LightFlags.On | LightFlags.Environment | LightFlags.Unknown16 | LightFlags.Unknown2, asset.Flags);
+        Assert.Equal(LightFlags.On | LightFlags.Environment, asset.Flags);
         Assert.Equal(new Rgba(0.98f, 0.69f, 0.016f, 1.0f), asset.Color);
         Assert.Equal(new Vector3(0.0f, 0.0f, 1.0f), asset.Direction);
         Assert.Equal(45.0f, asset.ConeAngle);

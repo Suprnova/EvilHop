@@ -103,7 +103,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
             asset.Parameters.Add(ModelInfoParameterSerialization.Read(reader));
         }
 
-        asset.Physical.ModelInstanceCount = (uint)asset.ModelInstances.Count;
+        asset.Physical.ModelInstanceCount = modelInstanceCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
@@ -144,7 +144,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
     private static void WriteInstance(EndianWriter writer, ModelInfoInstance instance)
     {
         writer.Write(instance.ModelId);
-        writer.Write((short)instance.Flags);
+        writer.Write(instance.Flags);
         writer.Write(instance.Parent);
         writer.Write(instance.Bone);
         writer.Write(instance.Right);
@@ -178,8 +178,8 @@ public interface IPhysicalModelInfoAsset : IPhysicalAsset
 /// <see cref="Bone"/>.
 /// </summary>
 /// <remarks>
-/// In decompiled source, <see cref="Flags"/>, <see cref="Parent"/>, and <see cref="Bone"/> are only
-/// read for every instance after the first - the root instance (index 0) ignores them entirely.
+/// <see cref="Flags"/>, <see cref="Parent"/>, and <see cref="Bone"/> are only read for every instance
+/// after the first - the root instance (index 0) ignores them entirely.
 /// </remarks>
 public sealed class ModelInfoInstance
 {

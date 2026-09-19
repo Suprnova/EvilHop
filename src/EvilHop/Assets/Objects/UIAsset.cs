@@ -21,7 +21,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/UI">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class UIAsset() : EntityAsset(AssetType.UI), IHasSurface, IHasModel, IHasAnimList
+public sealed class UIAsset() : EntityAsset(AssetType.UI, baseType: 0x20), IHasSurface, IHasModel, IHasAnimList
 {
     /// <summary>
     /// Behavior flags for this <see cref="UIAsset"/>.
@@ -97,8 +97,8 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI), IHasSurface, IHasMode
         EntityAssetPrefix.Write(asset, writer, profile);
 
         writer.Write((uint)asset.Flags);
-        writer.Write((short)asset.Width);
-        writer.Write((short)asset.Height);
+        writer.Write(asset.Width);
+        writer.Write(asset.Height);
         writer.Write(asset.TextureId);
         WriteVector2(writer, asset.TopLeftUV);
         WriteVector2(writer, asset.TopRightUV);
@@ -119,7 +119,7 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI), IHasSurface, IHasMode
 }
 
 /// <summary>
-/// Represents all known values for <see cref="UIAsset.Flags"/>.
+/// Flags controlling UI visibility, focus state, rendering, and interaction behavior.
 /// </summary>
 [Flags]
 public enum UIFlags : uint
@@ -129,10 +129,9 @@ public enum UIFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// Unknown. Tested alongside <see cref="Selected"/> to decide whether the <see cref="UIAsset"/>
-    /// takes input priority while focused, but never set or cleared by any known game logic.
+    /// Grants this UI asset input priority while focused.
     /// </summary>
-    Unknown1 = 1 << 0,
+    InputPriority = 1 << 0,
     /// <summary>
     /// The <see cref="UIAsset"/> starts selected.
     /// </summary>

@@ -11,7 +11,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PARE">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.ParticleEmitter)
+public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.ParticleEmitter, baseType: 0x26)
 {
     /// <summary>This emitter's flags.</summary>
     public ParticleEmitterFlags Flags { get; set; }
@@ -75,7 +75,7 @@ public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.Particl
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ParticleEmitterAsset.Flags"/>.
+/// Flags controlling particle emission timing, orientation, and simulation behavior.
 /// </summary>
 [Flags]
 public enum ParticleEmitterFlags : byte
@@ -85,26 +85,10 @@ public enum ParticleEmitterFlags : byte
 
     /// <summary>This emitter is active and emitting particles.</summary>
     On = 1 << 0,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown2 = 1 << 1,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown8 = 1 << 3,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown16 = 1 << 4,
-
-    /// <summary>Unknown.</summary>
-    /// TODO: validate against decompiled source
-    Unknown32 = 1 << 5,
 }
 
 /// <summary>
-/// Represents all known values for <see cref="ParticleEmitterAsset.Kind"/>.
+/// Defines the shape and volume geometry used by a <see cref="ParticleEmitterAsset"/> to spawn particles.
 /// </summary>
 public enum ParticleEmitterKind : byte
 {

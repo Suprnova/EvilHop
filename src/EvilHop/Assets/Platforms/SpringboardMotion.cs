@@ -8,10 +8,10 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that launches the player into the air.
 /// </summary>
-public sealed class SpringboardMotion : PlatformMotion
+public sealed class SpringboardMotion() : PlatformMotion
 {
     /// <summary>
-    /// Exactly 3 jump heights. <see cref="GameVersion.BFBB"/> appears to use the highest.
+    /// Exactly 3 jump heights for the springboard.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 3.</exception>
     public ImmutableArray<float> JumpHeights
@@ -57,9 +57,7 @@ public sealed class SpringboardMotion : PlatformMotion
         if (game is not GameVersion.N100F) BounceHeight = reader.ReadSingle();
         SpringAnimationId = reader.ReadAssetId();
         IdleAnimationId = reader.ReadAssetId();
-        reader.ReadAssetId(); // a third animation slot, never read by the game and always zero
-        // TODO: that should probably still be read. If we ever support Physical layers for
-        // internal asset structs, it should reside there.
+        reader.ReadAssetId(); // padding
         JumpDirection = reader.ReadVector3();
         if (game is not GameVersion.N100F) SpringFlags = (SpringboardFlags)reader.ReadUInt32();
     }
@@ -70,14 +68,14 @@ public sealed class SpringboardMotion : PlatformMotion
         if (game is not GameVersion.N100F) writer.Write(BounceHeight);
         writer.Write(SpringAnimationId);
         writer.Write(IdleAnimationId);
-        writer.Write(AssetId.None); // third animation slot
+        writer.Write(AssetId.None); // padding
         writer.Write(JumpDirection);
         if (game is not GameVersion.N100F) writer.Write((uint)SpringFlags);
     }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="SpringboardMotion.SpringFlags"/>.
+/// Flags controlling camera lock and player movement restrictions during a springboard launch.
 /// </summary>
 [Flags]
 public enum SpringboardFlags : uint

@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="CameraAsset"/> that does not move.
 /// </summary>
-public sealed class StaticCameraAsset : CameraAsset, IPhysicalStaticCameraAsset
+public sealed class StaticCameraAsset() : CameraAsset, IPhysicalStaticCameraAsset
 {
     /// <inheritdoc/>
     public override CameraKind Kind => CameraKind.Static;

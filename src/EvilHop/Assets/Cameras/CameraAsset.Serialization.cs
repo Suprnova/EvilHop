@@ -76,13 +76,13 @@ public abstract partial class CameraAsset
         asset.MarkerId1 = markerId1;
         asset.MarkerId2 = markerId2;
 
-        LinkSerialization.Read(asset, reader, linkCount);
+        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 

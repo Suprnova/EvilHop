@@ -15,13 +15,25 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ENV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhysicalEnvironmentAsset
+public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseType: 0x05), IPhysicalEnvironmentAsset
 {
     /// <summary>
     /// The <see cref="AssetType.JSP"/> this environment loads as its main level geometry.
     /// </summary>
-    /// TODO: pretty sure this is BSP in N100F, and BFBB might support both
     public AssetId BspId { get; set; }
+
+    /// <summary>
+    /// The <see cref="GameVersion"/>s <see cref="AssetType.Environment"/> is known to be read by.
+    /// </summary>
+    internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+    {
+        GameVersion.N100F,
+        GameVersion.BFBB,
+        GameVersion.TSSM,
+        GameVersion.Incredibles,
+        GameVersion.ROTU,
+        GameVersion.Ratatouille,
+    };
 
     /// <summary>
     /// The <see cref="AssetType.Camera"/> active when the level starts.
@@ -193,20 +205,18 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment), IPhys
 public interface IPhysicalEnvironmentAsset : IPhysicalBaseAsset
 {
     /// <summary>
-    /// Unknown. Called <c>padF1</c> in <see cref="GameVersion.BFBB"/>'s decompiled source, where it
-    /// is always 0; renamed <c>flags</c> from <see cref="GameVersion.TSSM"/> onward, where it is
-    /// occasionally 1.
+    /// Unknown.
     /// </summary>
     uint EnvironmentFlags { get; set; }
 
     /// <summary>
-    /// Unknown.. Not present in <see cref="GameVersion.N100F"/>.
+    /// Unknown. Not present in <see cref="GameVersion.N100F"/>.
     /// </summary>
     float LoldHeight { get; set; }
 }
 
 /// <summary>
-/// Represents all known values for <see cref="EnvironmentAsset.ClimateFlags"/>.
+/// Flags controlling weather and environmental effects such as rain, snow, or wind.
 /// </summary>
 [Flags]
 public enum ClimateFlags : uint
@@ -216,7 +226,7 @@ public enum ClimateFlags : uint
     /// </summary>
     None = 0,
     /// <summary>
-    /// Rain plays. Takes priority over <see cref="Snow"/>..
+    /// Rain plays. Takes priority over <see cref="Snow"/>.
     /// </summary>
     Rain = 1 << 0,
     /// <summary>

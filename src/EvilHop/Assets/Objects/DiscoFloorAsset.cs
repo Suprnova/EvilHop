@@ -13,12 +13,21 @@ namespace EvilHop.Assets;
 /// <see cref="OnPrefix"/> name against every <see cref="AssetType.SimpleObject"/> in the level.
 /// <seealso href="https://heavyironmodding.org/wiki/DSCO">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor), IPhysicalDiscoFloorAsset
+public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, baseType: 0x00), IPhysicalDiscoFloorAsset
 {
     /// <summary>
     /// Behavior flags for this <see cref="DiscoFloorAsset"/>.
     /// </summary>
     public DiscoFloorFlags Flags { get; set; }
+
+    /// <summary>
+    /// Whether the pattern loops back to its first step once it reaches the last, instead of pausing there.
+    /// </summary>
+    public bool Loop
+    {
+        get => (Flags & DiscoFloorFlags.Loop) != 0;
+        set => Flags = value ? Flags | DiscoFloorFlags.Loop : Flags & ~DiscoFloorFlags.Loop;
+    }
 
     /// <summary>
     /// The duration, in seconds, of the transition (yellow tile) period between <see cref="States"/>.
@@ -146,7 +155,7 @@ public sealed class DiscoFloorState
 }
 
 /// <summary>
-/// Represents all known values a <see cref="DiscoFloorState"/> can assign a tile.
+/// Defines the visual and active state assigned to an individual disco floor tile.
 /// </summary>
 public enum TileState : byte
 {
@@ -156,6 +165,4 @@ public enum TileState : byte
     On = 1,
     /// <summary>The tile is randomly either on or off, chosen independently each time it is reached.</summary>
     Random = 2,
-    /// <summary>Unknown.</summary>
-    Unknown3 = 3,
 }

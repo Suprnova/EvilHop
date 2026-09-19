@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityMotion"/> that circles around a center point.
 /// </summary>
-public sealed class OrbitMotion : EntityMotion
+public sealed class OrbitMotion() : EntityMotion
 {
     /// <summary>The point the entity orbits around.</summary>
     public Vector3 Center { get; set; }

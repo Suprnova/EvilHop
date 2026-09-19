@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DSTR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.DestructibleObject), IHasModel, IHasAnimList
+public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.DestructibleObject, baseType: 0x1B), IHasModel, IHasAnimList
 {
     /// <summary>
     /// The playback speed of the animation referenced by <see cref="IHasAnimList.AnimListId"/>.
@@ -42,9 +42,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
 
     /// <summary>
     /// This object's collision type, separate from <see cref="IPhysicalEntityAsset.CollisionFlags"/>.
-    /// Usually 0 (dynamic) or 2 (static) - bit 1 gates static collision checks in decompiled source.
     /// </summary>
-    /// TODO: should be Flags enum if we have the decompiled source
     public byte CollisionType { get; set; }
 
     /// <summary>
@@ -177,7 +175,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
 }
 
 /// <summary>
-/// Represents all known values for <see cref="DestructibleObjectAsset.HitFlags"/>.
+/// Flags determining which player attacks or physics impacts can damage this destructible object.
 /// </summary>
 [Flags]
 public enum DestructibleHitFlags : uint
@@ -210,7 +208,7 @@ public enum DestructibleHitFlags : uint
 }
 
 /// <summary>
-/// Represents all known values for <see cref="DestructibleObjectAsset.FxType"/>.
+/// Specifies the visual and sound effect spawned upon destruction.
 /// </summary>
 public enum DestructibleFxType : byte
 {

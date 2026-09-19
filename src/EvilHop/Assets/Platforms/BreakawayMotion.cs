@@ -6,7 +6,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// A <see cref="PlatformMotion"/> that falls a short while after the player stands on it, then resets.
 /// </summary>
-public sealed class BreakawayMotion : PlatformMotion
+public sealed class BreakawayMotion() : PlatformMotion
 {
     /// <summary>
     /// The time, in seconds, the platform takes to fall after the player stands on it.
@@ -73,7 +73,7 @@ public sealed class BreakawayMotion : PlatformMotion
 }
 
 /// <summary>
-/// Represents all known values for <see cref="BreakawayMotion.BreakFlags"/>.
+/// Flags governing certain behaviors of a <see cref="BreakawayMotion"/> platform.
 /// </summary>
 [Flags]
 public enum BreakawayFlags : uint
