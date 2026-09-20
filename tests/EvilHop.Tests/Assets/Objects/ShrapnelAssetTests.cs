@@ -460,6 +460,34 @@ public class ShrapnelAssetTests
         Assert.Equal(data, Write(asset, profile));
     }
 
+    [Fact]
+    public void Read_ThenWrite_ProjectileWithIntermediateFields_ReproducesInputBytes()
+    {
+        // BFBB's leftover Xbox db05 archive predates the full 0x90 projectile layout but includes
+        // intermediate fields making it 0x6C - see BuildProfiles.json's "bfbb/**/XBOX/**/db/db05.hip" entry.
+        byte[] payload = new byte[0x6C - 24];
+        for (int i = 0; i < payload.Length; i++)
+            payload[i] = (byte)(i & 0xFF);
+
+        byte[] data =
+        [
+            .. HeaderBytes(1, shrapnelId: 0x55667788),
+            .. FragBytes(ShrapnelFragType.Projectile, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with
+        {
+            ShrapnelHasExtendedFragFields = false,
+            ShrapnelProjectileHasIntermediateFields = true,
+        };
+
+        var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
+
+        Assert.Single(asset.Frags);
+        Assert.Equal(ShrapnelFragType.Projectile, asset.Frags[0].Type);
+        Assert.Equal(payload, asset.Frags[0].Data);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
     /// <summary>
     /// db05 pairs 0x40 sound fragments with full-size 0x90 projectiles, so the two switches have to
     /// move independently.

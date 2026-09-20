@@ -50,12 +50,17 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
         GameVersion.Ratatouille,
     };
 
-    internal static int GetFragSize(GameVersion game, ShrapnelFragType type, bool hasExtendedFragFields = true, bool soundHasExtendedFields = true) => type switch
+    internal static int GetFragSize(
+        GameVersion game,
+        ShrapnelFragType type,
+        bool hasExtendedFragFields = true,
+        bool soundHasExtendedFields = true,
+        bool projectileHasIntermediateFields = false) => type switch
     {
         ShrapnelFragType.Shrapnel => 0x20,
         ShrapnelFragType.Particle => game == GameVersion.BFBB ? (hasExtendedFragFields ? 0x1D4 : 0x1D0) : 0x1F4,
         ShrapnelFragType.Projectile => game == GameVersion.BFBB
-            ? (hasExtendedFragFields ? 0x90 : 0x58)
+            ? (hasExtendedFragFields ? 0x90 : (projectileHasIntermediateFields ? 0x6C : 0x58))
             : (game is GameVersion.ROTU or GameVersion.Ratatouille ? 0x158 : 0x110),
         ShrapnelFragType.Lightning => game == GameVersion.BFBB ? 0x68 : 0x70,
         ShrapnelFragType.Sound => game == GameVersion.BFBB ? (soundHasExtendedFields ? 0x4C : 0x40) : 0x44,
@@ -103,7 +108,7 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
 
             int totalFragSize = fragType == ShrapnelFragType.Inactive
                 ? GetInactiveFragSize(profile.Game, id.Value)
-                : GetFragSize(profile.Game, fragType, profile.ShrapnelHasExtendedFragFields, profile.ShrapnelSoundHasExtendedFields);
+                : GetFragSize(profile.Game, fragType, profile.ShrapnelHasExtendedFragFields, profile.ShrapnelSoundHasExtendedFields, profile.ShrapnelProjectileHasIntermediateFields);
             if (totalFragSize < 24)
             {
                 throw new InvalidDataException($"Unknown or unsupported fragment type {(uint)fragType} under {profile.Game}.");

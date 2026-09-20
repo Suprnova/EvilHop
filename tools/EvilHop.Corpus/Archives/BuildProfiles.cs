@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, bool? ShrapnelHasExtendedFragFields, bool? ShrapnelSoundHasExtendedFields, Platform? Platform)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, bool? ShrapnelHasExtendedFragFields, bool? ShrapnelSoundHasExtendedFields, bool? ShrapnelProjectileHasIntermediateFields, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
@@ -26,6 +26,7 @@ internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, Platform
         BoulderHasSoundFalloff = BoulderHasSoundFalloff ?? profile.BoulderHasSoundFalloff,
         ShrapnelHasExtendedFragFields = ShrapnelHasExtendedFragFields ?? profile.ShrapnelHasExtendedFragFields,
         ShrapnelSoundHasExtendedFields = ShrapnelSoundHasExtendedFields ?? profile.ShrapnelSoundHasExtendedFields,
+        ShrapnelProjectileHasIntermediateFields = ShrapnelProjectileHasIntermediateFields ?? profile.ShrapnelProjectileHasIntermediateFields,
         Platform = Platform ?? profile.Platform
     };
 }
