@@ -44,7 +44,7 @@ public class PlayerAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding, bool hasAnimListId = true) =>
+    private static byte[] EntityPrefix(bool hasPadding) =>
     [
         0x01, 0x00, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -53,7 +53,7 @@ public class PlayerAssetTests
         .. new byte[16],          // ColorMultiplier
         0x00, 0x00, 0x00, 0x00,   // SeeThroughSpeed
         0x00, 0x00, 0x00, 0x00,   // ModelId
-        .. hasAnimListId ? new byte[4] : [], // AnimListId
+        0x00, 0x00, 0x00, 0x00,   // AnimListId
     ];
 
     private static byte[] LinkBytes(short sourceEvent, short destinationEvent, uint destinationAssetId) =>
@@ -197,17 +197,17 @@ public class PlayerAssetTests
     }
 
     [Fact]
-    public void Read_ThenWrite_PlayerWithoutAnimListId_ReproducesInputBytes()
+    public void Read_ThenWrite_PlayerWithoutEntityPadding_ReproducesInputBytes()
     {
-        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId - see
+        // BFBB's leftover gl/Working and gl/New Folder archives predate the entity padding - see
         // BuildProfiles.json's "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
         byte[] data =
         [
             .. Prefix(linkCount: 0),
-            .. EntityPrefix(hasPadding: true, hasAnimListId: false),
+            .. EntityPrefix(hasPadding: false),
             .. LightKitId(0x4E24E022),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false };
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false };
 
         var asset = (PlayerAsset)Read(data, profile);
 

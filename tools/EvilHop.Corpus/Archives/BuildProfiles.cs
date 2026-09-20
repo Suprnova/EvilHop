@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? EntityHasAnimListId, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, Platform? Platform)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, bool? ShrapnelHasExtendedFragFields, bool? ShrapnelSoundHasExtendedFields, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
@@ -14,7 +14,6 @@ internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, Platform
         PlatformFieldOrder = PlatformFieldOrder ?? profile.PlatformFieldOrder,
         EntityHasPadding = EntityHasPadding ?? profile.EntityHasPadding,
         EntityHasExtendedFields = EntityHasExtendedFields ?? profile.EntityHasExtendedFields,
-        EntityHasAnimListId = EntityHasAnimListId ?? profile.EntityHasAnimListId,
         PickupTypesHasPulseFields = PickupTypesHasPulseFields ?? profile.PickupTypesHasPulseFields,
         LinkHasExtendedFields = LinkHasExtendedFields ?? profile.LinkHasExtendedFields,
         TriggerHasDirectionAndFlags = TriggerHasDirectionAndFlags ?? profile.TriggerHasDirectionAndFlags,
@@ -25,6 +24,8 @@ internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, Platform
         TimerHasRandomRange = TimerHasRandomRange ?? profile.TimerHasRandomRange,
         DestructibleObjectHasSwapEffects = DestructibleObjectHasSwapEffects ?? profile.DestructibleObjectHasSwapEffects,
         BoulderHasSoundFalloff = BoulderHasSoundFalloff ?? profile.BoulderHasSoundFalloff,
+        ShrapnelHasExtendedFragFields = ShrapnelHasExtendedFragFields ?? profile.ShrapnelHasExtendedFragFields,
+        ShrapnelSoundHasExtendedFields = ShrapnelSoundHasExtendedFields ?? profile.ShrapnelSoundHasExtendedFields,
         Platform = Platform ?? profile.Platform
     };
 }

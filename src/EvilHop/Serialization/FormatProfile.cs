@@ -26,20 +26,15 @@ namespace EvilHop.Serialization;
 /// <param name="EntityHasPadding">
 /// Whether a <see cref="EntityAsset"/> on-disk layout inserts four bytes of padding after its four
 /// flag bytes. True for <see cref="GameVersion.BFBB"/> release builds, false for every other game,
-/// including beta builds.
+/// including beta builds - and false, via a <c>BuildProfiles.json</c> override, for BFBB's leftover
+/// <c>gl/Working</c>/<c>gl/New Folder</c> archives, which predate the padding: the four bytes there
+/// are the entity's <c>SurfaceId</c>, which the padding later displaced.
 /// </param>
 /// <param name="EntityHasExtendedFields">
 /// Whether an <see cref="EntityAsset"/> on-disk layout includes <c>SurfaceId</c>, <c>ColorMultiplier</c>,
 /// <c>SeeThroughSpeed</c>, and <c>AnimListId</c> after <c>Scale</c>/before <c>ModelId</c>. False only for
 /// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose entities are just flags, angle,
 /// position, scale, and a model ID; true everywhere else, including every later N100F build.
-/// </param>
-/// <param name="EntityHasAnimListId">
-/// Whether an <see cref="EntityAsset"/> on-disk layout includes <c>AnimListId</c> after <c>ModelId</c> -
-/// independent of <see cref="EntityHasExtendedFields"/>, which must be true for this to apply at all.
-/// True for every real build; false only via a <c>BuildProfiles.json</c> override for BFBB's leftover
-/// <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose entities are frozen at a layout that predates
-/// the field.
 /// </param>
 /// <param name="PickupTypesHasPulseFields">
 /// Whether a <see cref="PickupTypeEntry"/> carries <see cref="PickupTypeEntry.PulseModelId"/>,
@@ -112,6 +107,23 @@ namespace EvilHop.Serialization;
 /// for BFBB's leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose <c>BOUL</c>s are frozen
 /// at a layout that predates the three fields.
 /// </param>
+/// <param name="ShrapnelHasExtendedFragFields">
+/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelFragType.Particle"/> and
+/// <see cref="ShrapnelFragType.Projectile"/> fragments are their full on-disk size (0x1D4/0x90). True
+/// for every real build; false only via a <c>BuildProfiles.json</c> override for BFBB's leftover
+/// <c>gl/Working</c>/<c>gl/New Folder</c> archives, whose <c>SHRP</c>s are frozen at a layout that
+/// predates several fields both types later grew - 0x1D0/0x58 there instead. The fragment payload is
+/// stored opaquely (<see cref="ShrapnelFrag.Data"/>), so only the smaller total size needs to be
+/// known, not which specific fields the size difference corresponds to.
+/// </param>
+/// <param name="ShrapnelSoundHasExtendedFields">
+/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelFragType.Sound"/> fragment is
+/// 0x4C rather than 0x40. True for every real build; false only via a <c>BuildProfiles.json</c>
+/// override for BFBB's <c>db05</c> and its leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives.
+/// Tracked separately from <see cref="ShrapnelHasExtendedFragFields"/> because the two do not move
+/// together: <c>db05</c> carries full-size 0x90 projectiles alongside 0x40 sounds, while <c>db01</c>
+/// and <c>db02</c> carry 0x4C sounds - so 0x4C is right by default and <c>db05</c> is the exception.
+/// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
 /// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
@@ -123,7 +135,6 @@ public sealed record FormatProfile(
     bool StreamDataHasPaddingField,
     bool EntityHasPadding = false,
     bool EntityHasExtendedFields = true,
-    bool EntityHasAnimListId = true,
     bool PickupTypesHasPulseFields = true,
     bool LinkHasExtendedFields = true,
     bool TriggerHasDirectionAndFlags = true,
@@ -133,7 +144,9 @@ public sealed record FormatProfile(
     bool VillainHasTaskWidgetSecondId = true,
     bool TimerHasRandomRange = true,
     bool DestructibleObjectHasSwapEffects = true,
-    bool BoulderHasSoundFalloff = true)
+    bool BoulderHasSoundFalloff = true,
+    bool ShrapnelHasExtendedFragFields = true,
+    bool ShrapnelSoundHasExtendedFields = true)
 {
     /// <summary>
     /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always

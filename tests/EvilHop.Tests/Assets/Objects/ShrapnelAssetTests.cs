@@ -433,6 +433,61 @@ public class ShrapnelAssetTests
         Assert.Equal(data, Write(asset, profile));
     }
 
+    [Theory]
+    [InlineData(ShrapnelFragType.Particle, 0x1D0)]
+    [InlineData(ShrapnelFragType.Projectile, 0x58)]
+    public void Read_ThenWrite_FragWithoutExtendedFields_ReproducesInputBytes(ShrapnelFragType type, int totalSize)
+    {
+        // BFBB's leftover gl/Working and gl/New Folder archives predate several fields both of
+        // these fragment types later grew - see BuildProfiles.json's
+        // "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
+        byte[] payload = new byte[totalSize - 24];
+        for (int i = 0; i < payload.Length; i++)
+            payload[i] = (byte)(i & 0xFF);
+
+        byte[] data =
+        [
+            .. HeaderBytes(1, shrapnelId: 0x55667788),
+            .. FragBytes(type, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { ShrapnelHasExtendedFragFields = false };
+
+        var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
+
+        Assert.Single(asset.Frags);
+        Assert.Equal(type, asset.Frags[0].Type);
+        Assert.Equal(payload, asset.Frags[0].Data);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    /// <summary>
+    /// db05 pairs 0x40 sound fragments with full-size 0x90 projectiles, so the two switches have to
+    /// move independently.
+    /// </summary>
+    [Fact]
+    public void Read_ThenWrite_ShortSoundFragAlongsideFullProjectile_ReproducesInputBytes()
+    {
+        byte[] soundPayload = new byte[0x40 - 24];
+        byte[] projectilePayload = new byte[0x90 - 24];
+        for (int i = 0; i < projectilePayload.Length; i++)
+            projectilePayload[i] = (byte)(i & 0xFF);
+
+        byte[] data =
+        [
+            .. HeaderBytes(2, shrapnelId: 0x55667788),
+            .. FragBytes(ShrapnelFragType.Projectile, 0x11223344, lifetime: 5.0f, payload: projectilePayload),
+            .. FragBytes(ShrapnelFragType.Sound, 0x22334455, lifetime: 2.25f, payload: soundPayload),
+        ];
+        var profile = BFBBSerializer.DefaultProfile with { ShrapnelSoundHasExtendedFields = false };
+
+        var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
+
+        Assert.Equal(2, asset.Frags.Count);
+        Assert.Equal(projectilePayload, asset.Frags[0].Data);
+        Assert.Equal(soundPayload, asset.Frags[1].Data);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
     [Fact]
     public void Write_GuardedNonShrapnelAsset_DoesNotThrow()
     {

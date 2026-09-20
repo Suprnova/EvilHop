@@ -107,6 +107,30 @@ public class BuildProfilesTests
         Assert.Equal(DefaultProfile, resolved);
     }
 
+    /// <summary>
+    /// db05 is the only db archive with the short sound-fragment layout - db01 and db02 carry
+    /// full-size 0x4C ones and break if the override reaches them.
+    /// </summary>
+    [Fact]
+    public void Resolve_CommittedManifest_AppliesDb05OverrideToDb05Only()
+    {
+        var manifest = BuildProfiles.LoadDefault();
+        var bfbb = BFBBSerializer.DefaultProfile;
+
+        var db05 = manifest.Resolve(bfbb, "bfbb/release/GC/NTSC-U/US/db/db05.HIP");
+        var db01 = manifest.Resolve(bfbb, "bfbb/release/GC/NTSC-U/US/db/db01.HIP");
+
+        Assert.False(db05.ShrapnelSoundHasExtendedFields);
+        Assert.False(db05.TimerHasRandomRange);
+        Assert.False(db05.BoulderHasSoundFalloff);
+        Assert.True(db05.ShrapnelHasExtendedFragFields);
+        Assert.True(db05.EntityHasPadding);
+
+        Assert.True(db01.ShrapnelSoundHasExtendedFields);
+        Assert.True(db01.TimerHasRandomRange);
+        Assert.True(db01.BoulderHasSoundFalloff);
+    }
+
     [Fact]
     public void Resolve_SingleStarGlob_MatchesExactlyOnePathSegment()
     {

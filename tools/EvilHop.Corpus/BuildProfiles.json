@@ -5,6 +5,7 @@
   { "pathPattern": "n100f/release/XBOX", "profile": { "platform": "Xbox" } },
   { "pathPattern": "incredibles/prototype_2004-07-19", "profile": { "pickupTypesHasPulseFields": false } },
   { "pathPattern": "bfbb/**/b3/b301.hip", "profile": { "surfaceHasDamageFields": false } },
-  { "pathPattern": "bfbb/**/gl/New Folder/**", "profile": { "entityHasAnimListId": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false } },
-  { "pathPattern": "bfbb/**/gl/Working/**", "profile": { "entityHasAnimListId": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false } }
+  { "pathPattern": "bfbb/**/db/db05.hip", "profile": { "timerHasRandomRange": false, "boulderHasSoundFalloff": false, "shrapnelSoundHasExtendedFields": false } },
+  { "pathPattern": "bfbb/**/gl/New Folder/**", "profile": { "entityHasPadding": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false, "shrapnelHasExtendedFragFields": false, "shrapnelSoundHasExtendedFields": false } },
+  { "pathPattern": "bfbb/**/gl/Working/**", "profile": { "entityHasPadding": false, "villainHasTaskWidgetSecondId": false, "timerHasRandomRange": false, "surfaceHasDamageFields": false, "destructibleObjectHasSwapEffects": false, "boulderHasSoundFalloff": false, "shrapnelHasExtendedFragFields": false, "shrapnelSoundHasExtendedFields": false } }
 ]

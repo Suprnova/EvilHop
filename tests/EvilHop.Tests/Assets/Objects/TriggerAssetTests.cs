@@ -45,7 +45,7 @@ public class TriggerAssetTests
         0x00, 0x1D,             // BaseFlags
     ];
 
-    private static byte[] EntityPrefix(bool hasPadding, byte subtype, bool hasAnimListId = true) =>
+    private static byte[] EntityPrefix(bool hasPadding, byte subtype) =>
     [
         0x01, subtype, 0x00, 0x00,   // EntityFlags, Subtype, PFlags, CollisionFlags
         .. hasPadding ? new byte[4] : [],
@@ -54,7 +54,7 @@ public class TriggerAssetTests
         .. new byte[16],             // ColorMultiplier
         0x00, 0x00, 0x00, 0x00,      // SeeThroughSpeed
         0x00, 0x00, 0x00, 0x00,      // ModelId
-        .. hasAnimListId ? new byte[4] : [], // AnimListId
+        0x00, 0x00, 0x00, 0x00,      // AnimListId
     ];
 
     private static byte[] F32(float value) => [.. BitConverter.GetBytes(value).Reverse()];
@@ -205,18 +205,18 @@ public class TriggerAssetTests
     }
 
     [Fact]
-    public void Read_ThenWrite_TriggerWithoutAnimListId_ReproducesInputBytes()
+    public void Read_ThenWrite_TriggerWithoutEntityPadding_ReproducesInputBytes()
     {
-        // BFBB's leftover gl/Working and gl/New Folder archives predate AnimListId. See
+        // BFBB's leftover gl/Working and gl/New Folder archives predate the entity padding. See
         // BuildProfiles.json's "bfbb/**/gl/Working/**"/"bfbb/**/gl/New Folder/**" entries.
         byte[] data =
         [
             .. Prefix(linkCount: 1),
-            .. EntityPrefix(hasPadding: true, subtype: 0, hasAnimListId: false),
+            .. EntityPrefix(hasPadding: false, subtype: 0),
             .. TrigFields(new Vector3(1, 2, 3), new Vector3(4, 5, 6), new Vector3(7, 8, 9), new Vector3(10, 11, 12), UsualDirection, flags: 0),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasAnimListId = false };
+        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false };
 
         var asset = (TriggerAsset)Read(data, profile);
 
