@@ -56,24 +56,24 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
         bool hasExtendedFragFields = true,
         bool soundHasExtendedFields = true,
         bool projectileHasIntermediateFields = false) => type switch
-    {
-        ShrapnelFragType.Shrapnel => 0x20,
-        ShrapnelFragType.Particle => game == GameVersion.BFBB ? (hasExtendedFragFields ? 0x1D4 : 0x1D0) : 0x1F4,
-        ShrapnelFragType.Projectile => game == GameVersion.BFBB
-            ? (hasExtendedFragFields ? 0x90 : (projectileHasIntermediateFields ? 0x6C : 0x58))
-            : (game is GameVersion.ROTU or GameVersion.Ratatouille ? 0x158 : 0x110),
-        ShrapnelFragType.Lightning => game == GameVersion.BFBB ? 0x68 : 0x70,
-        ShrapnelFragType.Sound => game == GameVersion.BFBB ? (soundHasExtendedFields ? 0x4C : 0x40) : 0x44,
-        ShrapnelFragType.Shockwave => 0x54,
-        ShrapnelFragType.Explosion when game != GameVersion.BFBB => 0x48,
-        ShrapnelFragType.Distortion when game != GameVersion.BFBB => 0x5C,
-        ShrapnelFragType.Fire when game != GameVersion.BFBB =>
-            game is GameVersion.ROTU or GameVersion.Ratatouille ? 0xB4 : 0x5C,
-        ShrapnelFragType.Light when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x60,
-        ShrapnelFragType.Smoke when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x50,
-        ShrapnelFragType.Goo when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x88,
-        _ => -1,
-    };
+        {
+            ShrapnelFragType.Shrapnel => 0x20,
+            ShrapnelFragType.Particle => game == GameVersion.BFBB ? (hasExtendedFragFields ? 0x1D4 : 0x1D0) : 0x1F4,
+            ShrapnelFragType.Projectile => game == GameVersion.BFBB
+                ? (hasExtendedFragFields ? 0x90 : (projectileHasIntermediateFields ? 0x6C : 0x58))
+                : (game is GameVersion.ROTU or GameVersion.Ratatouille ? 0x158 : 0x110),
+            ShrapnelFragType.Lightning => game == GameVersion.BFBB ? 0x68 : 0x70,
+            ShrapnelFragType.Sound => game == GameVersion.BFBB ? (soundHasExtendedFields ? 0x4C : 0x40) : 0x44,
+            ShrapnelFragType.Shockwave => 0x54,
+            ShrapnelFragType.Explosion when game != GameVersion.BFBB => 0x48,
+            ShrapnelFragType.Distortion when game != GameVersion.BFBB => 0x5C,
+            ShrapnelFragType.Fire when game != GameVersion.BFBB =>
+                game is GameVersion.ROTU or GameVersion.Ratatouille ? 0xB4 : 0x5C,
+            ShrapnelFragType.Light when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x60,
+            ShrapnelFragType.Smoke when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x50,
+            ShrapnelFragType.Goo when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x88,
+            _ => -1,
+        };
 
     /// <summary>
     /// The on-disk size of an <see cref="ShrapnelFragType.Inactive"/> fragment, keyed by its
