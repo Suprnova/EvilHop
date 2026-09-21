@@ -29,7 +29,7 @@ internal interface ICutsceneHeader
     Collection<CutsceneAudioTrack> AudioTracks { get; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    IPhysicalCutsceneHeader Physical { get; }
+    Physical.ICutsceneHeader Physical { get; }
 
     /// <inheritdoc cref="Asset.GetUnparsedTail"/>
     Span<byte> GetUnparsedTail();
@@ -135,7 +135,7 @@ internal interface ICutsceneHeader
     /// Derives the per-track sound-name field length from <paramref name="physical"/>'s header
     /// counts.
     /// </summary>
-    private static int AudioTrackSoundLength(IPhysicalCutsceneHeader physical)
+    private static int AudioTrackSoundLength(Physical.ICutsceneHeader physical)
     {
         uint fixedTotal = physical.HeaderSize
             - physical.NumData * 16u
@@ -193,46 +193,56 @@ internal interface ICutsceneHeader
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with an <see cref="ICutsceneHeader"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCutsceneHeader
+public static partial class Physical
 {
     /// <summary>
-    /// The <see cref="Common.AssetId"/> stored in the header itself.
+    /// An explicit interface used to interact with an <see cref="Assets.ICutsceneHeader"/>'s
+    /// underlying values.
     /// </summary>
     /// <remarks>
-    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+    /// Stays <see langword="public"/>, unlike <see cref="Assets.ICutsceneHeader"/> itself:
+    /// <see cref="ICutsceneAsset"/> extends this to expose these fields through
+    /// <see cref="CutsceneAsset"/>'s own public <see cref="Asset.Physical"/> surface, which a
+    /// public interface can't do to an internal base.
     /// </remarks>
-    AssetId AssetId { get; set; }
-    /// <summary>
-    /// The number of <see cref="ICutsceneHeader.Data"/> entries, read directly from the header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ICutsceneHeader.Data"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    uint NumData { get; set; }
-    /// <summary>
-    /// The number of TimeChunk offsets following the (currently unparsed) region after
-    /// <see cref="ICutsceneHeader.Data"/>.
-    /// </summary>
-    uint NumTime { get; set; }
-    /// <summary>The largest model, in bytes including padding, in the unparsed chunk data.</summary>
-    uint MaxModel { get; set; }
-    /// <summary>The largest TimeChunk with an even <c>ChunkIndex</c>, in bytes including padding.</summary>
-    uint MaxBufEven { get; set; }
-    /// <summary>The largest TimeChunk with an odd <c>ChunkIndex</c>, in bytes including padding.</summary>
-    uint MaxBufOdd { get; set; }
-    /// <summary>
-    /// The size, in bytes, of this header region - the fixed header, <see cref="ICutsceneHeader.Data"/>,
-    /// and the unparsed TimeChunk-offset/visibility/break tables that follow it, before a standalone
-    /// <see cref="CutsceneAsset"/>'s chunked model/animation/camera/sound data begins.
-    /// </summary>
-    uint HeaderSize { get; set; }
-    /// <summary>The number of visibility entries in the unparsed region.</summary>
-    uint VisCount { get; set; }
-    /// <summary>The total size, in 4-byte steps, of the visibility entries in the unparsed region.</summary>
-    uint VisSize { get; set; }
-    /// <summary>The number of break entries in the unparsed region.</summary>
-    uint BreakCount { get; set; }
+    public interface ICutsceneHeader
+    {
+        /// <summary>
+        /// The <see cref="Common.AssetId"/> stored in the header itself.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+        /// </remarks>
+        AssetId AssetId { get; set; }
+        /// <summary>
+        /// The number of <see cref="Assets.ICutsceneHeader.Data"/> entries, read directly from the header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="Assets.ICutsceneHeader.Data"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        uint NumData { get; set; }
+        /// <summary>
+        /// The number of TimeChunk offsets following the (currently unparsed) region after
+        /// <see cref="Assets.ICutsceneHeader.Data"/>.
+        /// </summary>
+        uint NumTime { get; set; }
+        /// <summary>The largest model, in bytes including padding, in the unparsed chunk data.</summary>
+        uint MaxModel { get; set; }
+        /// <summary>The largest TimeChunk with an even <c>ChunkIndex</c>, in bytes including padding.</summary>
+        uint MaxBufEven { get; set; }
+        /// <summary>The largest TimeChunk with an odd <c>ChunkIndex</c>, in bytes including padding.</summary>
+        uint MaxBufOdd { get; set; }
+        /// <summary>
+        /// The size, in bytes, of this header region - the fixed header, <see cref="Assets.ICutsceneHeader.Data"/>,
+        /// and the unparsed TimeChunk-offset/visibility/break tables that follow it, before a standalone
+        /// <see cref="CutsceneAsset"/>'s chunked model/animation/camera/sound data begins.
+        /// </summary>
+        uint HeaderSize { get; set; }
+        /// <summary>The number of visibility entries in the unparsed region.</summary>
+        uint VisCount { get; set; }
+        /// <summary>The total size, in 4-byte steps, of the visibility entries in the unparsed region.</summary>
+        uint VisSize { get; set; }
+        /// <summary>The number of break entries in the unparsed region.</summary>
+        uint BreakCount { get; set; }
+    }
 }

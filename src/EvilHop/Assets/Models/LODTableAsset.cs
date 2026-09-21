@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LODT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTableAsset
+public sealed class LODTableAsset() : Asset(AssetType.LODTable), Physical.ILODTableAsset
 {
     /// <summary>
     /// The table's entries, each mapping one base model to its levels of detail.
@@ -23,10 +23,10 @@ public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTab
     public Collection<LODTableEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalLODTableAsset Physical => this;
+    public override Physical.ILODTableAsset Physical => this;
 
     private int? _overriddenCount;
-    int IPhysicalLODTableAsset.Count
+    int Physical.ILODTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
         set => _overriddenCount = value == Entries.Count ? null : value;
@@ -66,18 +66,21 @@ public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTab
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="LODTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalLODTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="LODTableAsset.Entries"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="LODTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="LODTableAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int Count { get; set; }
+    public interface ILODTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="LODTableAsset.Entries"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="LODTableAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int Count { get; set; }
+    }
 }

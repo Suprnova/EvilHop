@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TPIK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseType: 0x00), IPhysicalPickupTypesAsset
+public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseType: 0x00), Physical.IPickupTypesAsset
 {
     /// <summary>
     /// The table's format version.
@@ -27,10 +27,10 @@ public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseTy
     public Collection<PickupTypeEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalPickupTypesAsset Physical => this;
+    public override Physical.IPickupTypesAsset Physical => this;
 
     private int? _overriddenRowCount;
-    int IPhysicalPickupTypesAsset.RowCount
+    int Physical.IPickupTypesAsset.RowCount
     {
         get => _overriddenRowCount ?? Entries.Count;
         set => _overriddenRowCount = value == Entries.Count ? null : value;
@@ -75,18 +75,21 @@ public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseTy
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="PickupTypesAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalPickupTypesAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="PickupTypesAsset.Entries"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="PickupTypesAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="PickupTypesAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int RowCount { get; set; }
+    public interface IPickupTypesAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="PickupTypesAsset.Entries"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="PickupTypesAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int RowCount { get; set; }
+    }
 }

@@ -150,7 +150,7 @@ public class PickupTableAssetTests
 
         var asset = (PickupTableAsset)Read(data);
 
-        Assert.Equal(0x4B434950u, ((IPhysicalPickupTableAsset)asset).Magic);
+        Assert.Equal(0x4B434950u, ((Physical.IPickupTableAsset)asset).Magic);
         Assert.Equal(3, asset.Entries.Count);
         Assert.Equal(0xFA607BCBu, asset.Entries[0].PickupHash);
         Assert.Equal(0xCD, asset.Entries[0].PickupType);

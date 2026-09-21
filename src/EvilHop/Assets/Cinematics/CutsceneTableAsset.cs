@@ -20,7 +20,7 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/CTOC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 // TODO: Partial implementation - trailing TimeChunk-offset, visibility, and break tables are unmodelled and preserved in unparsed tail
-public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhysicalCutsceneTableAsset
+public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), Physical.ICutsceneTableAsset
 {
     /// <summary>
     /// The listed cutscenes' headers.
@@ -28,10 +28,10 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhys
     public Collection<CutsceneTableEntry> Cutscenes { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCutsceneTableAsset Physical => this;
+    public override Physical.ICutsceneTableAsset Physical => this;
 
     private uint? _overriddenCount;
-    uint IPhysicalCutsceneTableAsset.Count
+    uint Physical.ICutsceneTableAsset.Count
     {
         get => _overriddenCount ?? (uint)Cutscenes.Count;
         set => _overriddenCount = value == (uint)Cutscenes.Count ? null : value;
@@ -86,18 +86,21 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhys
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CutsceneTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCutsceneTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="CutsceneTableAsset.Cutscenes"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="CutsceneTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="CutsceneTableAsset.Cutscenes"/>.Count exist, this field
-    /// wins during serialization.
-    /// </remarks>
-    uint Count { get; set; }
+    public interface ICutsceneTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="CutsceneTableAsset.Cutscenes"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="CutsceneTableAsset.Cutscenes"/>.Count exist, this field
+        /// wins during serialization.
+        /// </remarks>
+        uint Count { get; set; }
+    }
 }

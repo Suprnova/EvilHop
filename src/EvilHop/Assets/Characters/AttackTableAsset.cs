@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ATKT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), IPhysicalAttackTableAsset
+public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), Physical.IAttackTableAsset
 {
     /// <summary>
     /// The table's named categories, each grouping a contiguous range of <see cref="Entries"/>.
@@ -40,31 +40,31 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), I
     public Collection<AttackTableState> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalAttackTableAsset Physical => this;
+    public override Physical.IAttackTableAsset Physical => this;
 
     private ushort? _overriddenSectionCount;
-    ushort IPhysicalAttackTableAsset.SectionCount
+    ushort Physical.IAttackTableAsset.SectionCount
     {
         get => _overriddenSectionCount ?? (ushort)Sections.Count;
         set => _overriddenSectionCount = value == (ushort)Sections.Count ? null : value;
     }
 
     private ushort? _overriddenEntryCount;
-    ushort IPhysicalAttackTableAsset.EntryCount
+    ushort Physical.IAttackTableAsset.EntryCount
     {
         get => _overriddenEntryCount ?? (ushort)Entries.Count;
         set => _overriddenEntryCount = value == (ushort)Entries.Count ? null : value;
     }
 
     private ushort? _overriddenTransitionCount;
-    ushort IPhysicalAttackTableAsset.TransitionCount
+    ushort Physical.IAttackTableAsset.TransitionCount
     {
         get => _overriddenTransitionCount ?? (ushort)Transitions.Count;
         set => _overriddenTransitionCount = value == (ushort)Transitions.Count ? null : value;
     }
 
     private ushort? _overriddenStateCount;
-    ushort IPhysicalAttackTableAsset.StateCount
+    ushort Physical.IAttackTableAsset.StateCount
     {
         get => _overriddenStateCount ?? (ushort)States.Count;
         set => _overriddenStateCount = value == (ushort)States.Count ? null : value;
@@ -131,50 +131,53 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), I
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="AttackTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalAttackTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="AttackTableAsset.Sections"/> stored for this asset, read directly
-    /// from its header.
+    /// An explicit interface used to interact with <see cref="AttackTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AttackTableAsset.Sections"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    ushort SectionCount { get; set; }
+    public interface IAttackTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="AttackTableAsset.Sections"/> stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AttackTableAsset.Sections"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        ushort SectionCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AttackTableAsset.Entries"/> stored for this asset, read directly
-    /// from its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AttackTableAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    ushort EntryCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AttackTableAsset.Entries"/> stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AttackTableAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        ushort EntryCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AttackTableAsset.Transitions"/> stored for this asset, read directly
-    /// from its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AttackTableAsset.Transitions"/>.Count exist, this field
-    /// wins during serialization.
-    /// </remarks>
-    ushort TransitionCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AttackTableAsset.Transitions"/> stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AttackTableAsset.Transitions"/>.Count exist, this field
+        /// wins during serialization.
+        /// </remarks>
+        ushort TransitionCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AttackTableAsset.States"/> stored for this asset, read directly from
-    /// its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AttackTableAsset.States"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    ushort StateCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AttackTableAsset.States"/> stored for this asset, read directly from
+        /// its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AttackTableAsset.States"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        ushort StateCount { get; set; }
+    }
 }
 
 /// <summary>

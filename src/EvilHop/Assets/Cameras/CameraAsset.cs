@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/CAM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 // TODO: Partial implementation - N100F stores a shorter, differently laid out format and is not yet modelled
-public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseType: 0x07), IPhysicalCameraAsset
+public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseType: 0x07), Physical.ICameraAsset
 {
     /// <summary>The camera's position.</summary>
     public Vector3 Position { get; set; }
@@ -73,13 +73,13 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseTy
     public abstract CameraKind Kind { get; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCameraAsset Physical => this;
+    public override Physical.ICameraAsset Physical => this;
 
     private protected uint _cameraFlags;
-    uint IPhysicalCameraAsset.CameraFlags { get => _cameraFlags; set => _cameraFlags = value; }
+    uint Physical.ICameraAsset.CameraFlags { get => _cameraFlags; set => _cameraFlags = value; }
 
     private protected uint _validFlags;
-    uint IPhysicalCameraAsset.ValidFlags { get => _validFlags; set => _validFlags = value; }
+    uint Physical.ICameraAsset.ValidFlags { get => _validFlags; set => _validFlags = value; }
 
     /// <summary>
     /// The size, in bytes, of the type-specific region every <see cref="CameraKind"/> shares. Every
@@ -105,18 +105,21 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseTy
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CameraAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCameraAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
-    /// <summary>Unknown.</summary>
-    uint CameraFlags { get; set; }
-
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="CameraAsset"/>'s underlying values.
     /// </summary>
-    uint ValidFlags { get; set; }
+    public interface ICameraAsset : IBaseAsset
+    {
+        /// <summary>Unknown.</summary>
+        uint CameraFlags { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint ValidFlags { get; set; }
+    }
 }
 
 /// <summary>

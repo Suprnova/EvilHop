@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PICK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysicalPickupTableAsset
+public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), Physical.IPickupTableAsset
 {
     /// <summary>
     /// The table's entries, one per pickup kind.
@@ -22,13 +22,13 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
     public Collection<PickupTableEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalPickupTableAsset Physical => this;
+    public override Physical.IPickupTableAsset Physical => this;
 
     private uint _magic = 0x4B434950; // "KCIP"
-    uint IPhysicalPickupTableAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.IPickupTableAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint? _overriddenEntryCount;
-    uint IPhysicalPickupTableAsset.EntryCount
+    uint Physical.IPickupTableAsset.EntryCount
     {
         get => _overriddenEntryCount ?? (uint)Entries.Count;
         set => _overriddenEntryCount = value == (uint)Entries.Count ? null : value;
@@ -73,23 +73,26 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="PickupTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalPickupTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// A four-character magic number.
+    /// An explicit interface used to interact with <see cref="PickupTableAsset"/>'s underlying values.
     /// </summary>
-    uint Magic { get; set; }
+    public interface IPickupTableAsset : IAsset
+    {
+        /// <summary>
+        /// A four-character magic number.
+        /// </summary>
+        uint Magic { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="PickupTableAsset.Entries"/> stored for this asset, read directly
-    /// from its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="PickupTableAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint EntryCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="PickupTableAsset.Entries"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="PickupTableAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint EntryCount { get; set; }
+    }
 }

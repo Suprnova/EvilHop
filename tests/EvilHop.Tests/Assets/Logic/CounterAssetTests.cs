@@ -91,7 +91,7 @@ public class CounterAssetTests
     [Fact]
     public void Read_Counter_LinkCountKeepsDerivingAfterLinksAreMutated()
     {
-        // Regression test for IPhysicalBaseAsset.LinkCount: a codec that parses links into Links
+        // Regression test for Physical.IBaseAsset.LinkCount: a codec that parses links into Links
         // must hand LinkCount back to deriving rather than leaving it pinned at whatever BaseAssetPrefix
         // read from the fixed header, or a caller adding/removing links afterward would silently
         // serialize a stale count.

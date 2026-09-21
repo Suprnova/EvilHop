@@ -133,7 +133,7 @@ namespace EvilHop.Serialization;
 /// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
-/// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Common.Platform.GameCube"/>.
+/// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Platform.GameCube"/>.
 /// </remarks>
 public sealed record FormatProfile(
     GameVersion Game,

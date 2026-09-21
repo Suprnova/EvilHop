@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ENV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseType: 0x05), IPhysicalEnvironmentAsset
+public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseType: 0x05), Physical.IEnvironmentAsset
 {
     /// <summary>
     /// The <see cref="AssetType.JSP"/> this environment loads as its main level geometry.
@@ -110,13 +110,13 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
     public Vector3 MaxBounds { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalEnvironmentAsset Physical => this;
+    public override Physical.IEnvironmentAsset Physical => this;
 
     private uint _environmentFlags;
-    uint IPhysicalEnvironmentAsset.EnvironmentFlags { get => _environmentFlags; set => _environmentFlags = value; }
+    uint Physical.IEnvironmentAsset.EnvironmentFlags { get => _environmentFlags; set => _environmentFlags = value; }
 
     private float _loldHeight;
-    float IPhysicalEnvironmentAsset.LoldHeight { get => _loldHeight; set => _loldHeight = value; }
+    float Physical.IEnvironmentAsset.LoldHeight { get => _loldHeight; set => _loldHeight = value; }
 
     internal static EnvironmentAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -201,20 +201,23 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="EnvironmentAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalEnvironmentAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="EnvironmentAsset"/>'s underlying values.
     /// </summary>
-    uint EnvironmentFlags { get; set; }
+    public interface IEnvironmentAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint EnvironmentFlags { get; set; }
 
-    /// <summary>
-    /// Unknown. Not present in <see cref="GameVersion.N100F"/>.
-    /// </summary>
-    float LoldHeight { get; set; }
+        /// <summary>
+        /// Unknown. Not present in <see cref="GameVersion.N100F"/>.
+        /// </summary>
+        float LoldHeight { get; set; }
+    }
 }
 
 /// <summary>

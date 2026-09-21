@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 /// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhysicalSoundInfoAsset
+public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physical.ISoundInfoAsset
 {
     /// <summary>
     /// Headers for this level's sound effects, one per <see cref="AssetType.Sound"/> asset.
@@ -61,45 +61,45 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhys
     public Collection<SoundBankEntry> Sounds { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSoundInfoAsset Physical => this;
+    public override Physical.ISoundInfoAsset Physical => this;
 
     private AssetId? _overriddenSoundInfoId;
-    AssetId IPhysicalSoundInfoAsset.SoundInfoId
+    AssetId Physical.ISoundInfoAsset.SoundInfoId
     {
         get => _overriddenSoundInfoId ?? Id;
         set => _overriddenSoundInfoId = value == Id ? null : value;
     }
 
     private int? _overriddenEffectCount;
-    int IPhysicalSoundInfoAsset.EffectCount
+    int Physical.ISoundInfoAsset.EffectCount
     {
         get => _overriddenEffectCount ?? Effects.Count;
         set => _overriddenEffectCount = value == Effects.Count ? null : value;
     }
 
     private int? _overriddenStreamCount;
-    int IPhysicalSoundInfoAsset.StreamCount
+    int Physical.ISoundInfoAsset.StreamCount
     {
         get => _overriddenStreamCount ?? Streams.Count;
         set => _overriddenStreamCount = value == Streams.Count ? null : value;
     }
 
     private int? _overriddenCutsceneCount;
-    int IPhysicalSoundInfoAsset.CutsceneCount
+    int Physical.ISoundInfoAsset.CutsceneCount
     {
         get => _overriddenCutsceneCount ?? Cutscenes.Count;
         set => _overriddenCutsceneCount = value == Cutscenes.Count ? null : value;
     }
 
     private int? _overriddenSoundBankCount;
-    int IPhysicalSoundInfoAsset.SoundBankCount
+    int Physical.ISoundInfoAsset.SoundBankCount
     {
         get => _overriddenSoundBankCount ?? SoundBanks.Count;
         set => _overriddenSoundBankCount = value == SoundBanks.Count ? null : value;
     }
 
     private int? _overriddenSoundCount;
-    int IPhysicalSoundInfoAsset.SoundCount
+    int Physical.ISoundInfoAsset.SoundCount
     {
         get => _overriddenSoundCount ?? Sounds.Count;
         set => _overriddenSoundCount = value == Sounds.Count ? null : value;
@@ -124,67 +124,70 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), IPhys
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SoundInfoAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSoundInfoAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// This asset's own ID, read directly from its FSB3-embedded layout's header.
+    /// An explicit interface used to interact with <see cref="SoundInfoAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// Only meaningful for the FSB3-embedded layout. When disagreements with <see cref="Asset.Id"/>
-    /// exist, this field wins during serialization.
-    /// </remarks>
-    AssetId SoundInfoId { get; set; }
+    public interface ISoundInfoAsset : IAsset
+    {
+        /// <summary>
+        /// This asset's own ID, read directly from its FSB3-embedded layout's header.
+        /// </summary>
+        /// <remarks>
+        /// Only meaningful for the FSB3-embedded layout. When disagreements with <see cref="Asset.Id"/>
+        /// exist, this field wins during serialization.
+        /// </remarks>
+        AssetId SoundInfoId { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SoundInfoAsset.Effects"/> stored for this asset, read directly from
-    /// its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// Only meaningful for the header-table layout. When disagreements with
-    /// <see cref="SoundInfoAsset.Effects"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int EffectCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="SoundInfoAsset.Effects"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// Only meaningful for the header-table layout. When disagreements with
+        /// <see cref="SoundInfoAsset.Effects"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int EffectCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SoundInfoAsset.Streams"/> stored for this asset, read directly from
-    /// its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// Only meaningful for the header-table layout. When disagreements with
-    /// <see cref="SoundInfoAsset.Streams"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int StreamCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="SoundInfoAsset.Streams"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// Only meaningful for the header-table layout. When disagreements with
+        /// <see cref="SoundInfoAsset.Streams"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int StreamCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SoundInfoAsset.Cutscenes"/> stored for this asset, read directly from
-    /// its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SoundInfoAsset.Cutscenes"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int CutsceneCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="SoundInfoAsset.Cutscenes"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SoundInfoAsset.Cutscenes"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int CutsceneCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SoundInfoAsset.SoundBanks"/> stored for this asset, read directly
-    /// from its FSB3-embedded layout's header.
-    /// </summary>
-    /// <remarks>
-    /// Only meaningful for the FSB3-embedded layout. When disagreements with
-    /// <see cref="SoundInfoAsset.SoundBanks"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int SoundBankCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="SoundInfoAsset.SoundBanks"/> stored for this asset, read directly
+        /// from its FSB3-embedded layout's header.
+        /// </summary>
+        /// <remarks>
+        /// Only meaningful for the FSB3-embedded layout. When disagreements with
+        /// <see cref="SoundInfoAsset.SoundBanks"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int SoundBankCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SoundInfoAsset.Sounds"/> stored for this asset, read directly from
-    /// its FSB3-embedded layout's header.
-    /// </summary>
-    /// <remarks>
-    /// Only meaningful for the FSB3-embedded layout. When disagreements with
-    /// <see cref="SoundInfoAsset.Sounds"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int SoundCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="SoundInfoAsset.Sounds"/> stored for this asset, read directly from
+        /// its FSB3-embedded layout's header.
+        /// </summary>
+        /// <remarks>
+        /// Only meaningful for the FSB3-embedded layout. When disagreements with
+        /// <see cref="SoundInfoAsset.Sounds"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int SoundCount { get; set; }
+    }
 }

@@ -166,7 +166,7 @@ public class PickupTypesAssetTests
     public void Defaults_HaveExpectedValues()
     {
         Assert.Equal(AssetType.PickupTypes, _asset.Type);
-        Assert.Equal(0x00, ((IPhysicalBaseAsset)_asset).BaseType);
+        Assert.Equal(0x00, ((Physical.IBaseAsset)_asset).BaseType);
         Assert.Equal(0, _asset.Version);
         Assert.Empty(_asset.Entries);
         Assert.Equal(0, _asset.Physical.RowCount);
@@ -314,9 +314,9 @@ public class PickupTypesAssetTests
         {
             Version = 3,
         };
-        ((IPhysicalBaseAsset)asset).BaseId = new AssetId(0x12345678);
-        ((IPhysicalBaseAsset)asset).BaseType = 0x00;
-        ((IPhysicalBaseAsset)asset).LinkCount = 0;
+        ((Physical.IBaseAsset)asset).BaseId = new AssetId(0x12345678);
+        ((Physical.IBaseAsset)asset).BaseType = 0x00;
+        ((Physical.IBaseAsset)asset).LinkCount = 0;
         asset.BaseFlags = (BaseAssetFlags)0x001D;
         asset.Physical.RowCount = 42;
 

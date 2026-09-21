@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LKIT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightKitAsset
+public sealed class LightKitAsset() : Asset(AssetType.LightKit), Physical.ILightKitAsset
 {
     /// <summary>
     /// The <see cref="AssetType.Group"/> of entities this light kit is applied to, in addition to
@@ -29,13 +29,13 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
     public Collection<LightKitLight> Lights { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalLightKitAsset Physical => this;
+    public override Physical.ILightKitAsset Physical => this;
 
     private uint _magic = 0x54494B4C; // "TIKL"
-    uint IPhysicalLightKitAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.ILightKitAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint? _overriddenLightCount;
-    uint IPhysicalLightKitAsset.LightCount
+    uint Physical.ILightKitAsset.LightCount
     {
         get => _overriddenLightCount ?? (uint)Lights.Count;
         set => _overriddenLightCount = value == (uint)Lights.Count ? null : value;
@@ -91,23 +91,26 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="LightKitAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalLightKitAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// A four-character magic number.
+    /// An explicit interface used to interact with <see cref="LightKitAsset"/>'s underlying values.
     /// </summary>
-    uint Magic { get; set; }
+    public interface ILightKitAsset : IAsset
+    {
+        /// <summary>
+        /// A four-character magic number.
+        /// </summary>
+        uint Magic { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="LightKitAsset.Lights"/> stored for this asset, read directly from
-    /// its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="LightKitAsset.Lights"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    uint LightCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="LightKitAsset.Lights"/> stored for this asset, read directly from
+        /// its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="LightKitAsset.Lights"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        uint LightCount { get; set; }
+    }
 }

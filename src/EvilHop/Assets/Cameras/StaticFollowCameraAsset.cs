@@ -8,7 +8,7 @@ namespace EvilHop.Assets;
 /// A <see cref="CameraAsset"/> that does not move but eases its framing toward its target, unlike
 /// <see cref="StaticCameraAsset"/>.
 /// </summary>
-public sealed class StaticFollowCameraAsset() : CameraAsset, IPhysicalStaticFollowCameraAsset
+public sealed class StaticFollowCameraAsset() : CameraAsset, Physical.IStaticFollowCameraAsset
 {
     /// <summary>How much the camera's framing lags behind its target before catching up.</summary>
     public float RubberBand { get; set; }
@@ -17,10 +17,10 @@ public sealed class StaticFollowCameraAsset() : CameraAsset, IPhysicalStaticFoll
     public override CameraKind Kind => CameraKind.StaticFollow;
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalStaticFollowCameraAsset Physical => this;
+    public override Physical.IStaticFollowCameraAsset Physical => this;
 
     private byte[] _reserved = new byte[ReservedSize];
-    byte[] IPhysicalStaticFollowCameraAsset.Reserved { get => _reserved; set => _reserved = value; }
+    byte[] Physical.IStaticFollowCameraAsset.Reserved { get => _reserved; set => _reserved = value; }
 
     private const int ReservedSize = 20;
 
@@ -41,16 +41,19 @@ public sealed class StaticFollowCameraAsset() : CameraAsset, IPhysicalStaticFoll
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="StaticFollowCameraAsset"/>'s underlying
-/// values.
-/// </summary>
-public interface IPhysicalStaticFollowCameraAsset : IPhysicalCameraAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The unused 20-byte remainder of the type-specific storage this <see cref="CameraKind"/> shares
-    /// with every other one.
+    /// An explicit interface used to interact with <see cref="StaticFollowCameraAsset"/>'s underlying
+    /// values.
     /// </summary>
-    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
-    byte[] Reserved { get; set; }
+    public interface IStaticFollowCameraAsset : ICameraAsset
+    {
+        /// <summary>
+        /// The unused 20-byte remainder of the type-specific storage this <see cref="CameraKind"/> shares
+        /// with every other one.
+        /// </summary>
+        [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
+        byte[] Reserved { get; set; }
+    }
 }

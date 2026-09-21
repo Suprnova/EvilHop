@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SURF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseType: 0x1A), IPhysicalSurfaceAsset
+public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseType: 0x1A), Physical.ISurfaceAsset
 {
     /// <summary>
     /// What touching this surface does to the player.
@@ -143,22 +143,22 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     public ImmutableArray<byte> ExtendedData { get; set; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSurfaceAsset Physical => this;
+    public override Physical.ISurfaceAsset Physical => this;
 
     private SurfaceGameDamageFlags _gameDamageFlags;
-    SurfaceGameDamageFlags IPhysicalSurfaceAsset.GameDamageFlags { get => _gameDamageFlags; set => _gameDamageFlags = value; }
+    SurfaceGameDamageFlags Physical.ISurfaceAsset.GameDamageFlags { get => _gameDamageFlags; set => _gameDamageFlags = value; }
 
     private byte _surfType;
-    byte IPhysicalSurfaceAsset.SurfType { get => _surfType; set => _surfType = value; }
+    byte Physical.ISurfaceAsset.SurfType { get => _surfType; set => _surfType = value; }
 
     private byte _gameSticky;
-    byte IPhysicalSurfaceAsset.GameSticky { get => _gameSticky; set => _gameSticky = value; }
+    byte Physical.ISurfaceAsset.GameSticky { get => _gameSticky; set => _gameSticky = value; }
 
     private byte _isEnabled = 1;
-    byte IPhysicalSurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
+    byte Physical.ISurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
 
     private SurfaceTextureAnimFlags? _overriddenTextureAnimFlags;
-    SurfaceTextureAnimFlags IPhysicalSurfaceAsset.TextureAnimFlags
+    SurfaceTextureAnimFlags Physical.ISurfaceAsset.TextureAnimFlags
     {
         get => _overriddenTextureAnimFlags ?? DerivedTextureAnimFlags;
         set => _overriddenTextureAnimFlags = value == DerivedTextureAnimFlags ? null : value;
@@ -169,7 +169,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         (TextureAnims[1].IsEnabled ? SurfaceTextureAnimFlags.Slot1 : SurfaceTextureAnimFlags.None);
 
     private SurfaceUvfxFlags? _overriddenUvfxFlags;
-    SurfaceUvfxFlags IPhysicalSurfaceAsset.UvfxFlags
+    SurfaceUvfxFlags Physical.ISurfaceAsset.UvfxFlags
     {
         get => _overriddenUvfxFlags ?? DerivedUvfxFlags;
         set => _overriddenUvfxFlags = value == DerivedUvfxFlags ? null : value;
@@ -200,59 +200,62 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SurfaceAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSurfaceAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Flags controlling how this surface's damage is applied, read directly from disk.
+    /// An explicit interface used to interact with <see cref="SurfaceAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// <see cref="SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
-    /// <see cref="SurfaceAsset.DamagePassthrough"/>.
-    /// </remarks>
-    SurfaceGameDamageFlags GameDamageFlags { get; set; }
+    public interface ISurfaceAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Flags controlling how this surface's damage is applied, read directly from disk.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
+        /// <see cref="SurfaceAsset.DamagePassthrough"/>.
+        /// </remarks>
+        SurfaceGameDamageFlags GameDamageFlags { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    /// TODO: decomp's zFeetStepVillainCB calls zFeetGetIDs (which calls zSurfaceGetName), maybe
-    /// this field changes footstep sounds for NPCs?
-    byte SurfType { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// TODO: decomp's zFeetStepVillainCB calls zFeetGetIDs (which calls zSurfaceGetName), maybe
+        /// this field changes footstep sounds for NPCs?
+        byte SurfType { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    /// TODO: decomp's zThrown has a copy of this field, maybe it controls whether thrown objects
-    /// (i.e. melons, tikis) stick to the surface? might also affect Friction?
-    /// TODO: 1 for "sticky" surfaces (where you can't jump without the boots) in n100f, unclear
-    /// if it does stuff in other games.
-    byte GameSticky { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// TODO: decomp's zThrown has a copy of this field, maybe it controls whether thrown objects
+        /// (i.e. melons, tikis) stick to the surface? might also affect Friction?
+        /// TODO: 1 for "sticky" surfaces (where you can't jump without the boots) in n100f, unclear
+        /// if it does stuff in other games.
+        byte GameSticky { get; set; }
 
-    /// <summary>
-    /// Backs <see cref="SurfaceAsset.IsEnabled"/>.
-    /// </summary>
-    byte IsEnabled { get; set; }
+        /// <summary>
+        /// Backs <see cref="SurfaceAsset.IsEnabled"/>.
+        /// </summary>
+        byte IsEnabled { get; set; }
 
-    /// <summary>
-    /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
-    /// <see cref="SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
-    /// second).
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with the derived value exist, this field wins during serialization.
-    /// </remarks>
-    SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
+        /// <summary>
+        /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
+        /// <see cref="SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
+        /// second).
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with the derived value exist, this field wins during serialization.
+        /// </remarks>
+        SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
 
-    /// <summary>
-    /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceUvfx.IsEnabled"/>
-    /// (bit 0 for the first element, bit 1 for the second).
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with the derived value exist, this field wins during serialization.
-    /// </remarks>
-    SurfaceUvfxFlags UvfxFlags { get; set; }
+        /// <summary>
+        /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceUvfx.IsEnabled"/>
+        /// (bit 0 for the first element, bit 1 for the second).
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with the derived value exist, this field wins during serialization.
+        /// </remarks>
+        SurfaceUvfxFlags UvfxFlags { get; set; }
+    }
 }
 
 /// <summary>

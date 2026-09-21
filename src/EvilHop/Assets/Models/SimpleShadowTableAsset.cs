@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SHDW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable), IPhysicalSimpleShadowTableAsset
+public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable), Physical.ISimpleShadowTableAsset
 {
     /// <summary>
     /// The table's entries.
@@ -21,10 +21,10 @@ public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable
     public Collection<SimpleShadowTableEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSimpleShadowTableAsset Physical => this;
+    public override Physical.ISimpleShadowTableAsset Physical => this;
 
     private uint? _overriddenCount;
-    uint IPhysicalSimpleShadowTableAsset.Count
+    uint Physical.ISimpleShadowTableAsset.Count
     {
         get => _overriddenCount ?? (uint)Entries.Count;
         set => _overriddenCount = value == (uint)Entries.Count ? null : value;
@@ -62,19 +62,22 @@ public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SimpleShadowTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSimpleShadowTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="SimpleShadowTableAsset.Entries"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="SimpleShadowTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SimpleShadowTableAsset.Entries"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    uint Count { get; set; }
+    public interface ISimpleShadowTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="SimpleShadowTableAsset.Entries"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SimpleShadowTableAsset.Entries"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        uint Count { get; set; }
+    }
 }
 
 /// <summary>

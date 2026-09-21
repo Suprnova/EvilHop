@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SIMP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, baseType: 0x0B), IHasModel, IHasAnimList, IHasSurface, IPhysicalSimpleObjectAsset
+public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, baseType: 0x0B), IHasModel, IHasAnimList, IHasSurface, Physical.ISimpleObjectAsset
 {
     /// <summary>
     /// The playback speed of the animation referenced by <see cref="IHasAnimList.AnimListId"/>.
@@ -34,10 +34,10 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     public SimpleObjectCollisionType CollisionType { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSimpleObjectAsset Physical => this;
+    public override Physical.ISimpleObjectAsset Physical => this;
 
     private byte _flags;
-    byte IPhysicalSimpleObjectAsset.SimpleFlags { get => _flags; set => _flags = value; }
+    byte Physical.ISimpleObjectAsset.SimpleFlags { get => _flags; set => _flags = value; }
 
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
     AssetId IHasAnimList.AnimListId { get => Physical.AnimListId; set => Physical.AnimListId = value; }
@@ -93,15 +93,18 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SimpleObjectAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSimpleObjectAsset : IPhysicalEntityAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="SimpleObjectAsset"/>'s underlying values.
     /// </summary>
-    byte SimpleFlags { get; set; }
+    public interface ISimpleObjectAsset : IEntityAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        byte SimpleFlags { get; set; }
+    }
 }
 
 /// <summary>

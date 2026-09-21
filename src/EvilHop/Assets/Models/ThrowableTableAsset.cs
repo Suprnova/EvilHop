@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TRWT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, baseType: 0x00), IPhysicalThrowableTableAsset
+public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, baseType: 0x00), Physical.IThrowableTableAsset
 {
     /// <summary>
     /// The table's format version. Version 3 includes <see cref="ThrowableTableRow.DamageRadius"/>,
@@ -27,10 +27,10 @@ public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, 
     public Collection<ThrowableTableRow> Rows { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalThrowableTableAsset Physical => this;
+    public override Physical.IThrowableTableAsset Physical => this;
 
     private int? _overriddenRowCount;
-    int IPhysicalThrowableTableAsset.RowCount
+    int Physical.IThrowableTableAsset.RowCount
     {
         get => _overriddenRowCount ?? Rows.Count;
         set => _overriddenRowCount = value == Rows.Count ? null : value;
@@ -74,20 +74,23 @@ public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ThrowableTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalThrowableTableAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="ThrowableTableAsset.Rows"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="ThrowableTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ThrowableTableAsset.Rows"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int RowCount { get; set; }
+    public interface IThrowableTableAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="ThrowableTableAsset.Rows"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="ThrowableTableAsset.Rows"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int RowCount { get; set; }
+    }
 }
 
 /// <summary>

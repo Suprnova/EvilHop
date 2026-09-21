@@ -14,16 +14,16 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ONEL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), IPhysicalOneLinerAsset
+public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physical.IOneLinerAsset
 {
     /// <summary>The table's entries, each triggered independently.</summary>
     public Collection<OneLinerEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalOneLinerAsset Physical => this;
+    public override Physical.IOneLinerAsset Physical => this;
 
     private uint? _overriddenEntryCount;
-    uint IPhysicalOneLinerAsset.EntryCount
+    uint Physical.IOneLinerAsset.EntryCount
     {
         get => _overriddenEntryCount ?? (uint)Entries.Count;
         set => _overriddenEntryCount = value == (uint)Entries.Count ? null : value;
@@ -63,20 +63,23 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), IPhysic
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="OneLinerAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalOneLinerAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="OneLinerAsset.Entries"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="OneLinerAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="OneLinerAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint EntryCount { get; set; }
+    public interface IOneLinerAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="OneLinerAsset.Entries"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="OneLinerAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint EntryCount { get; set; }
+    }
 }
 
 /// <summary>

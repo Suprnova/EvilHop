@@ -5,7 +5,6 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace EvilHop.Assets;
 
@@ -16,23 +15,23 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SHRP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapnelAsset
+public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physical.IShrapnelAsset
 {
     /// <summary>This shrapnel asset's fragments.</summary>
     public Collection<ShrapnelFrag> Frags { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalShrapnelAsset Physical => this;
+    public override Physical.IShrapnelAsset Physical => this;
 
     private int? _overriddenFragCount;
-    int IPhysicalShrapnelAsset.FragCount
+    int Physical.IShrapnelAsset.FragCount
     {
         get => _overriddenFragCount ?? Frags.Count;
         set => _overriddenFragCount = value == Frags.Count ? null : value;
     }
 
     private AssetId? _overriddenShrapnelId;
-    AssetId IPhysicalShrapnelAsset.ShrapnelId
+    AssetId Physical.IShrapnelAsset.ShrapnelId
     {
         get => _overriddenShrapnelId ?? Id;
         set => _overriddenShrapnelId = value == Id ? null : value;
@@ -118,26 +117,29 @@ public sealed class ShrapnelAsset() : Asset(AssetType.Shrapnel), IPhysicalShrapn
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ShrapnelAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalShrapnelAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of fragments stored in this asset.
+    /// An explicit interface used to interact with <see cref="ShrapnelAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ShrapnelAsset.Frags"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int FragCount { get; set; }
+    public interface IShrapnelAsset : IAsset
+    {
+        /// <summary>
+        /// The number of fragments stored in this asset.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="ShrapnelAsset.Frags"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int FragCount { get; set; }
 
-    /// <summary>
-    /// The asset ID of this shrapnel asset as stored in the header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
-    /// </remarks>
-    AssetId ShrapnelId { get; set; }
+        /// <summary>
+        /// The asset ID of this shrapnel asset as stored in the header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+        /// </remarks>
+        AssetId ShrapnelId { get; set; }
+    }
 }
 
 /// <summary>

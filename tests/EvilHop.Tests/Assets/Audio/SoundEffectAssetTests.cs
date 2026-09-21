@@ -112,7 +112,7 @@ public class SoundEffectAssetTests
 
         asset.PlayFromEntity = true;
 
-        Assert.Equal((SoundFlags)0x5, ((IPhysicalSoundEffectAsset)asset).SoundFlags);
+        Assert.Equal((SoundFlags)0x5, ((Physical.ISoundEffectAsset)asset).SoundFlags);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class SoundEffectAssetTests
 
         asset.PlayFromEntity = false;
 
-        Assert.Equal((SoundFlags)0x1, ((IPhysicalSoundEffectAsset)asset).SoundFlags);
+        Assert.Equal((SoundFlags)0x1, ((Physical.ISoundEffectAsset)asset).SoundFlags);
     }
 
     [Fact]

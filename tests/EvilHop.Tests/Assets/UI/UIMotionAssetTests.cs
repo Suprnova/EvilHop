@@ -89,7 +89,7 @@ public class UIMotionAssetTests
 
         Assert.Equal(1.0f, asset.TotalTime);
         Assert.Equal(0.0f, asset.LoopTime);
-        Assert.Equal((byte)1, ((IPhysicalUIMotionAsset)asset).InFlag);
+        Assert.Equal((byte)1, ((Physical.IUIMotionAsset)asset).InFlag);
         Assert.Single(asset.Commands);
     }
 
@@ -252,7 +252,7 @@ public class UIMotionAssetTests
 
         asset.Commands.Add(new MoveCommand());
 
-        Assert.Equal((byte)2, ((IPhysicalUIMotionAsset)asset).CommandCount);
+        Assert.Equal((byte)2, ((Physical.IUIMotionAsset)asset).CommandCount);
     }
 
     [Fact]
@@ -262,6 +262,6 @@ public class UIMotionAssetTests
 
         asset.Commands.Add(new ScaleCommand());
 
-        Assert.Equal((uint)(32 + 44), ((IPhysicalUIMotionAsset)asset).CommandsSize);
+        Assert.Equal((uint)(32 + 44), ((Physical.IUIMotionAsset)asset).CommandsSize);
     }
 }

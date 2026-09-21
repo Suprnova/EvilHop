@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MINF">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalModelInfoAsset
+public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), Physical.IModelInfoAsset
 {
     /// <summary>The <see cref="AssetType.AnimationTable"/> driving this model's animations.</summary>
     public AssetId AnimTableId { get; set; }
@@ -43,13 +43,13 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
     public Collection<ModelInfoParameter> Parameters { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalModelInfoAsset Physical => this;
+    public override Physical.IModelInfoAsset Physical => this;
 
     private uint _magic = 0x464E494D; // "FNIM"
-    uint IPhysicalModelInfoAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.IModelInfoAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint? _overriddenModelInstanceCount;
-    uint IPhysicalModelInfoAsset.ModelInstanceCount
+    uint Physical.IModelInfoAsset.ModelInstanceCount
     {
         get => _overriddenModelInstanceCount ?? (uint)ModelInstances.Count;
         set => _overriddenModelInstanceCount = value == (uint)ModelInstances.Count ? null : value;
@@ -130,23 +130,26 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ModelInfoAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalModelInfoAsset : IPhysicalAsset
+public static partial class Physical
 {
-    /// <summary>A four-character magic number.</summary>
-    uint Magic { get; set; }
-
     /// <summary>
-    /// The number of <see cref="ModelInfoAsset.ModelInstances"/> stored for this asset, read
-    /// directly from its leading count field.
+    /// An explicit interface used to interact with <see cref="ModelInfoAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ModelInfoAsset.ModelInstances"/>.Count exist, this field
-    /// wins during serialization.
-    /// </remarks>
-    uint ModelInstanceCount { get; set; }
+    public interface IModelInfoAsset : IAsset
+    {
+        /// <summary>A four-character magic number.</summary>
+        uint Magic { get; set; }
+
+        /// <summary>
+        /// The number of <see cref="ModelInfoAsset.ModelInstances"/> stored for this asset, read
+        /// directly from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="ModelInfoAsset.ModelInstances"/>.Count exist, this field
+        /// wins during serialization.
+        /// </remarks>
+        uint ModelInstanceCount { get; set; }
+    }
 }
 
 /// <summary>

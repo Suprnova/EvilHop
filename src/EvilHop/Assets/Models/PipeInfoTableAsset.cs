@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PIPT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhysicalPipeInfoTableAsset
+public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), Physical.IPipeInfoTableAsset
 {
     /// <summary>
     /// The table's entries, each applying rendering information to one <see cref="AssetType.Model"/>
@@ -23,10 +23,10 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
     public Collection<PipeInfoEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalPipeInfoTableAsset Physical => this;
+    public override Physical.IPipeInfoTableAsset Physical => this;
 
     private int? _overriddenCount;
-    int IPhysicalPipeInfoTableAsset.Count
+    int Physical.IPipeInfoTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
         set => _overriddenCount = value == Entries.Count ? null : value;
@@ -67,20 +67,23 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="PipeInfoTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalPipeInfoTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="PipeInfoTableAsset.Entries"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="PipeInfoTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="PipeInfoTableAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int Count { get; set; }
+    public interface IPipeInfoTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="PipeInfoTableAsset.Entries"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="PipeInfoTableAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int Count { get; set; }
+    }
 }
 
 /// <summary>

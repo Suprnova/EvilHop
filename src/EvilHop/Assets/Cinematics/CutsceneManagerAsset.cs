@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CSNM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager, baseType: 0x28), IPhysicalCutsceneManagerAsset
+public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager, baseType: 0x28), Physical.ICutsceneManagerAsset
 {
     private const int EmitterCueSlotCount = 15;
 
@@ -48,10 +48,10 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
     } = [.. new CutsceneEmitterCue[EmitterCueSlotCount]];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCutsceneManagerAsset Physical => this;
+    public override Physical.ICutsceneManagerAsset Physical => this;
 
     private uint _managerFlags;
-    uint IPhysicalCutsceneManagerAsset.ManagerFlags { get => _managerFlags; set => _managerFlags = value; }
+    uint Physical.ICutsceneManagerAsset.ManagerFlags { get => _managerFlags; set => _managerFlags = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.CutsceneManager"/> is known to be read by.
@@ -129,15 +129,18 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CutsceneManagerAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCutsceneManagerAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="CutsceneManagerAsset"/>'s underlying values.
     /// </summary>
-    uint ManagerFlags { get; set; }
+    public interface ICutsceneManagerAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint ManagerFlags { get; set; }
+    }
 }
 
 /// <summary>

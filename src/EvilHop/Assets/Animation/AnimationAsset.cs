@@ -20,7 +20,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ANIM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnimationAsset
+public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAnimationAsset
 {
     /// <summary>
     /// A per-axis scale applied when decoding <see cref="AnimationKey.Quat"/>/<see cref="AnimationKey.Tran"/>'s
@@ -41,7 +41,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
 
     /// <summary>
     /// For every time except the last, one <see cref="Keys"/> start index per bone - row-major, one
-    /// row of <see cref="IPhysicalAnimationAsset.BoneCount"/> entries per time. Index as
+    /// row of <see cref="Physical.IAnimationAsset.BoneCount"/> entries per time. Index as
     /// <c>Offsets[timeIndex * BoneCount + boneIndex]</c>.
     /// </summary>
     /// TODO: indexing this is weird, probably an indication that we should extract it into another
@@ -49,26 +49,26 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
     public Collection<ushort> Offsets { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalAnimationAsset Physical => this;
+    public override Physical.IAnimationAsset Physical => this;
 
     private uint _magic = 0x31424B53;
-    uint IPhysicalAnimationAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.IAnimationAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint _flags;
-    uint IPhysicalAnimationAsset.AnimationFlags { get => _flags; set => _flags = value; }
+    uint Physical.IAnimationAsset.AnimationFlags { get => _flags; set => _flags = value; }
 
     private ushort _boneCount;
-    ushort IPhysicalAnimationAsset.BoneCount { get => _boneCount; set => _boneCount = value; }
+    ushort Physical.IAnimationAsset.BoneCount { get => _boneCount; set => _boneCount = value; }
 
     private uint? _overriddenKeyCount;
-    uint IPhysicalAnimationAsset.KeyCount
+    uint Physical.IAnimationAsset.KeyCount
     {
         get => _overriddenKeyCount ?? (uint)Keys.Count;
         set => _overriddenKeyCount = value == (uint)Keys.Count ? null : value;
     }
 
     private ushort? _overriddenTimeCount;
-    ushort IPhysicalAnimationAsset.TimeCount
+    ushort Physical.IAnimationAsset.TimeCount
     {
         get => _overriddenTimeCount ?? (ushort)Times.Count;
         set => _overriddenTimeCount = value == (ushort)Times.Count ? null : value;
@@ -133,45 +133,48 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="AnimationAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalAnimationAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// A four-character magic number.
+    /// An explicit interface used to interact with <see cref="AnimationAsset"/>'s underlying values.
     /// </summary>
-    uint Magic { get; set; }
+    public interface IAnimationAsset : IAsset
+    {
+        /// <summary>
+        /// A four-character magic number.
+        /// </summary>
+        uint Magic { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    uint AnimationFlags { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint AnimationFlags { get; set; }
 
-    /// <summary>
-    /// The number of bones this animation drives, and the row length of <see cref="AnimationAsset.Offsets"/>.
-    /// </summary>
-    ushort BoneCount { get; set; }
+        /// <summary>
+        /// The number of bones this animation drives, and the row length of <see cref="AnimationAsset.Offsets"/>.
+        /// </summary>
+        ushort BoneCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AnimationAsset.Keys"/> stored for this asset, read directly from its
-    /// header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AnimationAsset.Keys"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    uint KeyCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AnimationAsset.Keys"/> stored for this asset, read directly from its
+        /// header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AnimationAsset.Keys"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        uint KeyCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AnimationAsset.Times"/> stored for this asset, read directly from its
-    /// header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AnimationAsset.Times"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    ushort TimeCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AnimationAsset.Times"/> stored for this asset, read directly from its
+        /// header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AnimationAsset.Times"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        ushort TimeCount { get; set; }
+    }
 }
 
 /// <summary>

@@ -99,7 +99,7 @@ public class SoundFXAssetTests
         Assert.Equal(2.0f, asset.FrequencyMultiplier);
         Assert.Equal(new AssetId(0x11223344), asset.SoundId);
         Assert.Equal(new AssetId(0x55667788), asset.AttachId);
-        Assert.Equal(3, ((IPhysicalSoundFXAsset)asset).LoopCount);
+        Assert.Equal(3, ((Physical.ISoundFXAsset)asset).LoopCount);
         Assert.Equal(128, asset.Priority);
         Assert.Equal(75, asset.Volume);
         Assert.Equal(1.0f, asset.Position.X);
@@ -129,7 +129,7 @@ public class SoundFXAssetTests
 
         asset.Positional = true;
 
-        Assert.Equal((SFXFlags)0x402, ((IPhysicalSoundFXAsset)asset).SFXFlags);
+        Assert.Equal((SFXFlags)0x402, ((Physical.ISoundFXAsset)asset).SFXFlags);
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class SoundFXAssetTests
 
         asset.Positional = false;
 
-        Assert.Equal((SFXFlags)0x400, ((IPhysicalSoundFXAsset)asset).SFXFlags);
+        Assert.Equal((SFXFlags)0x400, ((Physical.ISoundFXAsset)asset).SFXFlags);
     }
 
     [Fact]

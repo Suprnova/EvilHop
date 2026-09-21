@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DEST">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IPhysicalDestructibleAsset
+public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), Physical.IDestructibleAsset
 {
     /// <summary>
     /// The <see cref="AssetType.ModelInfo"/> this destructible is associated with.
@@ -72,34 +72,34 @@ public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IP
     public Collection<DestructibleAssetState> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalDestructibleAsset Physical => this;
+    public override Physical.IDestructibleAsset Physical => this;
 
     private uint? _overriddenStateCount;
-    uint IPhysicalDestructibleAsset.StateCount
+    uint Physical.IDestructibleAsset.StateCount
     {
         get => _overriddenStateCount ?? (uint)States.Count;
         set => _overriddenStateCount = value == (uint)States.Count ? null : value;
     }
 
     private byte[] _padding = new byte[PaddingSize];
-    byte[] IPhysicalDestructibleAsset.Padding { get => _padding; set => _padding = value; }
+    byte[] Physical.IDestructibleAsset.Padding { get => _padding; set => _padding = value; }
 
     private const int PaddingSize = 3;
 
     private uint _hitFilter;
-    uint IPhysicalDestructibleAsset.HitFilter { get => _hitFilter; set => _hitFilter = value; }
+    uint Physical.IDestructibleAsset.HitFilter { get => _hitFilter; set => _hitFilter = value; }
 
     private uint _excludedHitFilter;
-    uint IPhysicalDestructibleAsset.ExcludedHitFilter { get => _excludedHitFilter; set => _excludedHitFilter = value; }
+    uint Physical.IDestructibleAsset.ExcludedHitFilter { get => _excludedHitFilter; set => _excludedHitFilter = value; }
 
     private uint _launchFlag;
-    uint IPhysicalDestructibleAsset.LaunchFlag { get => _launchFlag; set => _launchFlag = value; }
+    uint Physical.IDestructibleAsset.LaunchFlag { get => _launchFlag; set => _launchFlag = value; }
 
     private uint _behaviour;
-    uint IPhysicalDestructibleAsset.Behaviour { get => _behaviour; set => _behaviour = value; }
+    uint Physical.IDestructibleAsset.Behaviour { get => _behaviour; set => _behaviour = value; }
 
     private uint _unknownFlags;
-    uint IPhysicalDestructibleAsset.DestructibleFlags { get => _unknownFlags; set => _unknownFlags = value; }
+    uint Physical.IDestructibleAsset.DestructibleFlags { get => _unknownFlags; set => _unknownFlags = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.DestructibleAsset"/> is known to be read
@@ -179,51 +179,54 @@ public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IP
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="DestructibleAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalDestructibleAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="DestructibleAsset.States"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="DestructibleAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="DestructibleAsset.States"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint StateCount { get; set; }
+    public interface IDestructibleAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="DestructibleAsset.States"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="DestructibleAsset.States"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint StateCount { get; set; }
 
-    /// <summary>
-    /// The 3 bytes following <see cref="DestructibleAsset.TargetPriority"/>, reserved for struct
-    /// alignment. Observed non-zero in some builds, so it is preserved rather than assumed zero.
-    /// </summary>
-    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
-    byte[] Padding { get; set; }
+        /// <summary>
+        /// The 3 bytes following <see cref="DestructibleAsset.TargetPriority"/>, reserved for struct
+        /// alignment. Observed non-zero in some builds, so it is preserved rather than assumed zero.
+        /// </summary>
+        [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
+        byte[] Padding { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    uint HitFilter { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint HitFilter { get; set; }
 
-    /// <summary>
-    /// Unknown. Only present in <see cref="GameVersion.ROTU"/> and
-    /// <see cref="GameVersion.Ratatouille"/>.
-    /// </summary>
-    uint ExcludedHitFilter { get; set; }
+        /// <summary>
+        /// Unknown. Only present in <see cref="GameVersion.ROTU"/> and
+        /// <see cref="GameVersion.Ratatouille"/>.
+        /// </summary>
+        uint ExcludedHitFilter { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    uint LaunchFlag { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint LaunchFlag { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    uint Behaviour { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint Behaviour { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    uint DestructibleFlags { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint DestructibleFlags { get; set; }
+    }
 }

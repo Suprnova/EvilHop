@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MPHT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysicalMorphTargetAsset
+public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), Physical.IMorphTargetAsset
 {
     /// <summary>
     /// Scales each <see cref="MorphTarget.Vertices"/> component when they're packed as 16-bit
@@ -35,23 +35,23 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
     public Collection<MorphTarget> Targets { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalMorphTargetAsset Physical => this;
+    public override Physical.IMorphTargetAsset Physical => this;
 
     private uint _magic = 0x31484D50; // "MPH1"
-    uint IPhysicalMorphTargetAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.IMorphTargetAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint _flags;
-    uint IPhysicalMorphTargetAsset.MorphFlags { get => _flags; set => _flags = value; }
+    uint Physical.IMorphTargetAsset.MorphFlags { get => _flags; set => _flags = value; }
 
     private ushort? _overriddenTargetCount;
-    ushort IPhysicalMorphTargetAsset.TargetCount
+    ushort Physical.IMorphTargetAsset.TargetCount
     {
         get => _overriddenTargetCount ?? (ushort)Targets.Count;
         set => _overriddenTargetCount = value == (ushort)Targets.Count ? null : value;
     }
 
     private ushort? _overriddenVertexCount;
-    ushort IPhysicalMorphTargetAsset.VertexCount
+    ushort Physical.IMorphTargetAsset.VertexCount
     {
         get => _overriddenVertexCount ?? (ushort)(Targets.Count > 0 ? Targets[0].Vertices.Count : 0);
         set => _overriddenVertexCount = value == (ushort)(Targets.Count > 0 ? Targets[0].Vertices.Count : 0) ? null : value;
@@ -112,36 +112,39 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="MorphTargetAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalMorphTargetAsset : IPhysicalAsset
+public static partial class Physical
 {
-    /// <summary>A four-character magic number.</summary>
-    uint Magic { get; set; }
-
-    /// <summary>Unknown.</summary>
-    uint MorphFlags { get; set; }
-
     /// <summary>
-    /// The number of <see cref="MorphTargetAsset.Targets"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="MorphTargetAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="MorphTargetAsset.Targets"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    ushort TargetCount { get; set; }
+    public interface IMorphTargetAsset : IAsset
+    {
+        /// <summary>A four-character magic number.</summary>
+        uint Magic { get; set; }
 
-    /// <summary>
-    /// The number of vertices each <see cref="MorphTargetAsset.Targets"/> entry holds, read
-    /// directly from its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with the first <see cref="MorphTargetAsset.Targets"/> entry's
-    /// <see cref="MorphTarget.Vertices"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    ushort VertexCount { get; set; }
+        /// <summary>Unknown.</summary>
+        uint MorphFlags { get; set; }
+
+        /// <summary>
+        /// The number of <see cref="MorphTargetAsset.Targets"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="MorphTargetAsset.Targets"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        ushort TargetCount { get; set; }
+
+        /// <summary>
+        /// The number of vertices each <see cref="MorphTargetAsset.Targets"/> entry holds, read
+        /// directly from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with the first <see cref="MorphTargetAsset.Targets"/> entry's
+        /// <see cref="MorphTarget.Vertices"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        ushort VertexCount { get; set; }
+    }
 }
 
 /// <summary>

@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SPLP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType: 0xE5), IPhysicalSplinePathAsset
+public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType: 0xE5), Physical.ISplinePathAsset
 {
     /// <summary>Whether this spline path is exclusive to a single actor.</summary>
     public bool IsExclusive
@@ -51,39 +51,39 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
     public Collection<AssetId> BackwardAssetIds { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSplinePathAsset Physical => this;
+    public override Physical.ISplinePathAsset Physical => this;
 
     private byte _used = 0x4D;
-    byte IPhysicalSplinePathAsset.Used { get => _used; set => _used = value; }
+    byte Physical.ISplinePathAsset.Used { get => _used; set => _used = value; }
 
     private byte _pad0 = 0x53;
-    byte IPhysicalSplinePathAsset.Pad0 { get => _pad0; set => _pad0 = value; }
+    byte Physical.ISplinePathAsset.Pad0 { get => _pad0; set => _pad0 = value; }
 
     private byte _isExclusive;
-    byte IPhysicalSplinePathAsset.IsExclusive { get => _isExclusive; set => _isExclusive = value; }
+    byte Physical.ISplinePathAsset.IsExclusive { get => _isExclusive; set => _isExclusive = value; }
 
     private byte _hasHover;
-    byte IPhysicalSplinePathAsset.HasHover { get => _hasHover; set => _hasHover = value; }
+    byte Physical.ISplinePathAsset.HasHover { get => _hasHover; set => _hasHover = value; }
 
     private ushort? _overriddenForwardCount;
-    ushort IPhysicalSplinePathAsset.ForwardCount
+    ushort Physical.ISplinePathAsset.ForwardCount
     {
         get => _overriddenForwardCount ?? (ushort)ForwardAssetIds.Count;
         set => _overriddenForwardCount = value == (ushort)ForwardAssetIds.Count ? null : value;
     }
 
     private ushort? _overriddenBackwardCount;
-    ushort IPhysicalSplinePathAsset.BackwardCount
+    ushort Physical.ISplinePathAsset.BackwardCount
     {
         get => _overriddenBackwardCount ?? (ushort)BackwardAssetIds.Count;
         set => _overriddenBackwardCount = value == (ushort)BackwardAssetIds.Count ? null : value;
     }
 
     private uint _forwardIdsPointer;
-    uint IPhysicalSplinePathAsset.ForwardIdsPointer { get => _forwardIdsPointer; set => _forwardIdsPointer = value; }
+    uint Physical.ISplinePathAsset.ForwardIdsPointer { get => _forwardIdsPointer; set => _forwardIdsPointer = value; }
 
     private uint _backwardIdsPointer;
-    uint IPhysicalSplinePathAsset.BackwardIdsPointer { get => _backwardIdsPointer; set => _backwardIdsPointer = value; }
+    uint Physical.ISplinePathAsset.BackwardIdsPointer { get => _backwardIdsPointer; set => _backwardIdsPointer = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SplinePath"/> is known to be read by.
@@ -160,54 +160,57 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SplinePathAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSplinePathAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Runtime flag indicating whether the path is exclusive to a single actor.
+    /// An explicit interface used to interact with <see cref="SplinePathAsset"/>'s underlying values.
     /// </summary>
-    byte IsExclusive { get; set; }
+    public interface ISplinePathAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Runtime flag indicating whether the path is exclusive to a single actor.
+        /// </summary>
+        byte IsExclusive { get; set; }
 
-    /// <summary>
-    /// Runtime flag indicating whether the path is in use. Preserved from disk.
-    /// </summary>
-    byte Used { get; set; }
+        /// <summary>
+        /// Runtime flag indicating whether the path is in use. Preserved from disk.
+        /// </summary>
+        byte Used { get; set; }
 
-    /// <summary>
-    /// Runtime flag indicating whether the path has a hover point.
-    /// </summary>
-    byte HasHover { get; set; }
+        /// <summary>
+        /// Runtime flag indicating whether the path has a hover point.
+        /// </summary>
+        byte HasHover { get; set; }
 
-    /// <summary>
-    /// Padding byte after <see cref="SplinePathAsset.HasHover"/>. Preserved from disk.
-    /// </summary>
-    byte Pad0 { get; set; }
+        /// <summary>
+        /// Padding byte after <see cref="SplinePathAsset.HasHover"/>. Preserved from disk.
+        /// </summary>
+        byte Pad0 { get; set; }
 
-    /// <summary>
-    /// The number of forward <see cref="AssetType.SplinePath"/> references stored for this asset.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SplinePathAsset.ForwardAssetIds"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    ushort ForwardCount { get; set; }
+        /// <summary>
+        /// The number of forward <see cref="AssetType.SplinePath"/> references stored for this asset.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SplinePathAsset.ForwardAssetIds"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        ushort ForwardCount { get; set; }
 
-    /// <summary>
-    /// The number of backward <see cref="AssetType.SplinePath"/> references stored for this asset.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SplinePathAsset.BackwardAssetIds"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    ushort BackwardCount { get; set; }
+        /// <summary>
+        /// The number of backward <see cref="AssetType.SplinePath"/> references stored for this asset.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SplinePathAsset.BackwardAssetIds"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        ushort BackwardCount { get; set; }
 
-    /// <summary>
-    /// Runtime pointer to the forward IDs array. Preserved from disk.
-    /// </summary>
-    uint ForwardIdsPointer { get; set; }
+        /// <summary>
+        /// Runtime pointer to the forward IDs array. Preserved from disk.
+        /// </summary>
+        uint ForwardIdsPointer { get; set; }
 
-    /// <summary>
-    /// Runtime pointer to the backward IDs array. Preserved from disk.
-    /// </summary>
-    uint BackwardIdsPointer { get; set; }
+        /// <summary>
+        /// Runtime pointer to the backward IDs array. Preserved from disk.
+        /// </summary>
+        uint BackwardIdsPointer { get; set; }
+    }
 }

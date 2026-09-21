@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/NPC">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC, baseType: 0x02), IHasModel, IPhysicalNPCAsset
+public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC, baseType: 0x02), IHasModel, Physical.INPCAsset
 {
     /// <summary>The distance from this NPC within which the player must be for it to activate.</summary>
     public float ActivateRadius { get; set; }
@@ -106,13 +106,13 @@ public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC, baseType: 0x
     public int MinGameDifficulty { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalNPCAsset Physical => this;
+    public override Physical.INPCAsset Physical => this;
 
     private uint _villFlags;
-    uint IPhysicalNPCAsset.VillFlags { get => _villFlags; set => _villFlags = value; }
+    uint Physical.INPCAsset.VillFlags { get => _villFlags; set => _villFlags = value; }
 
     private AssetId _pathAssetId;
-    AssetId IPhysicalNPCAsset.PathAssetId { get => _pathAssetId; set => _pathAssetId = value; }
+    AssetId Physical.INPCAsset.PathAssetId { get => _pathAssetId; set => _pathAssetId = value; }
 
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
 
@@ -125,18 +125,21 @@ public sealed partial class NPCAsset() : EntityAsset(AssetType.NPC, baseType: 0x
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="NPCAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalNPCAsset : IPhysicalEntityAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="NPCAsset"/>'s underlying values.
     /// </summary>
-    uint VillFlags { get; set; }
+    public interface INPCAsset : IEntityAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint VillFlags { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    AssetId PathAssetId { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        AssetId PathAssetId { get; set; }
+    }
 }

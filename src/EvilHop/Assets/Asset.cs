@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class Asset(AssetType type) : IPhysicalAsset
+public abstract class Asset(AssetType type) : Physical.IAsset
 {
     /// <summary>
     /// The <see cref="Asset"/>'s ID.
@@ -47,26 +47,26 @@ public abstract class Asset(AssetType type) : IPhysicalAsset
     /// authoring deliberately malformed data, and the library's own codecs - anything that has to
     /// address the format as stored rather than as modelled.
     /// </remarks>
-    public virtual IPhysicalAsset Physical => this;
+    public virtual Physical.IAsset Physical => this;
 
     internal byte[] UnparsedTail { get; set; } = [];
 
     private AssetType? _overriddenType;
-    AssetType IPhysicalAsset.Type
+    AssetType Physical.IAsset.Type
     {
-        get => _overriddenType ?? this.Type;
+        get => _overriddenType ?? Type;
         set => _overriddenType = value == Type ? null : value;
     }
 
     private int _alignment;
-    int IPhysicalAsset.Alignment
+    int Physical.IAsset.Alignment
     {
         get => _alignment;
         set => _alignment = value;
     }
 
     private AssetFlags _flags;
-    AssetFlags IPhysicalAsset.Flags
+    AssetFlags Physical.IAsset.Flags
     {
         get => _flags;
         set => _flags = value;
@@ -74,16 +74,16 @@ public abstract class Asset(AssetType type) : IPhysicalAsset
 
     /// <summary>
     /// The CRC-32/MPEG-2 of this <see cref="Asset"/>'s data as last read or serialized - the value
-    /// <see cref="IPhysicalAsset.Checksum"/> reports when nothing overrides it.
+    /// <see cref="Physical.IAsset.Checksum"/> reports when nothing overrides it.
     /// </summary>
     /// <remarks>
-    /// When overridden with <see cref="IPhysicalAsset.Checksum"/>, that value will have priority,
+    /// When overridden with <see cref="Physical.IAsset.Checksum"/>, that value will have priority,
     /// even when the <see cref="Asset"/> has been modified.
     /// </remarks>
     internal uint ComputedChecksum { get; set; }
 
     private uint? _overriddenChecksum;
-    uint IPhysicalAsset.Checksum
+    uint Physical.IAsset.Checksum
     {
         get => _overriddenChecksum ?? ComputedChecksum;
         set => _overriddenChecksum = value == ComputedChecksum ? null : value;
@@ -112,35 +112,41 @@ public abstract class Asset(AssetType type) : IPhysicalAsset
     /// </summary>
     /// <remarks>
     /// Does not modify fields under <see cref="Physical"/>, such as
-    /// <see cref="IPhysicalBaseAsset.BaseId"/>.
+    /// <see cref="Physical.IBaseAsset.BaseId"/>.
     /// </remarks>
     public void CalculateId() => Id = AssetId.FromName(Name, Type);
 }
 
 /// <summary>
-/// An explicit interface used to interact with <see cref="Asset"/>'s underlying values.
+/// Gathers every <see cref="Asset"/> subclass's on-disk physical surface into one container.
 /// </summary>
-public interface IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The <see cref="Asset"/>'s type, retrieved from <see cref="AssetHeader.Type"/>.
+    /// An explicit interface used to interact with <see cref="Asset"/>'s underlying values.
     /// </summary>
-    AssetType Type { get; set; }
-    /// <summary>
-    /// The <see cref="Asset"/>'s alignment, retrieved from <see cref="AssetDebug.Alignment"/>.
-    /// </summary>
-    int Alignment { get; set; }
-    /// <summary>
-    /// The <see cref="Asset"/>'s <see cref="AssetFlags"/>, retrieved from <see cref="AssetHeader.Flags"/>.
-    /// </summary>
-    AssetFlags Flags { get; set; }
-    /// <summary>
-    /// The <see cref="Asset"/>'s CRC-32/MPEG-2 checksum, retrieved from
-    /// <see cref="AssetDebug.Checksum"/> and derived from the asset's own data unless overridden.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with the <see cref="Asset"/>'s data exist, this field wins during
-    /// serialization. 
-    /// </remarks>
-    uint Checksum { get; set; }
+    public interface IAsset
+    {
+        /// <summary>
+        /// The <see cref="Asset"/>'s type, retrieved from <see cref="AssetHeader.Type"/>.
+        /// </summary>
+        AssetType Type { get; set; }
+        /// <summary>
+        /// The <see cref="Asset"/>'s alignment, retrieved from <see cref="AssetDebug.Alignment"/>.
+        /// </summary>
+        int Alignment { get; set; }
+        /// <summary>
+        /// The <see cref="Asset"/>'s <see cref="AssetFlags"/>, retrieved from <see cref="AssetHeader.Flags"/>.
+        /// </summary>
+        AssetFlags Flags { get; set; }
+        /// <summary>
+        /// The <see cref="Asset"/>'s CRC-32/MPEG-2 checksum, retrieved from
+        /// <see cref="AssetDebug.Checksum"/> and derived from the asset's own data unless overridden.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with the <see cref="Asset"/>'s data exist, this field wins during
+        /// serialization. 
+        /// </remarks>
+        uint Checksum { get; set; }
+    }
 }

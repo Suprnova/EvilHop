@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CCRV">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseType: 0x8D), IPhysicalCameraCurveAsset
+public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseType: 0x8D), Physical.ICameraCurveAsset
 {
     /// <summary>
     /// Which <see cref="CameraKind"/> this curve applies to.
@@ -43,16 +43,16 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseTy
     public Collection<CameraCurveBead> Beads { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCameraCurveAsset Physical => this;
+    public override Physical.ICameraCurveAsset Physical => this;
 
     private byte _version;
-    byte IPhysicalCameraCurveAsset.Version { get => _version; set => _version = value; }
+    byte Physical.ICameraCurveAsset.Version { get => _version; set => _version = value; }
 
     private uint _cameraFlags;
-    uint IPhysicalCameraCurveAsset.CameraFlags { get => _cameraFlags; set => _cameraFlags = value; }
+    uint Physical.ICameraCurveAsset.CameraFlags { get => _cameraFlags; set => _cameraFlags = value; }
 
     private int? _overriddenNumBeads;
-    int IPhysicalCameraCurveAsset.NumBeads
+    int Physical.ICameraCurveAsset.NumBeads
     {
         get => _overriddenNumBeads ?? Beads.Count;
         set => _overriddenNumBeads = value == Beads.Count ? null : value;
@@ -117,23 +117,26 @@ public sealed class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve, baseTy
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CameraCurveAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCameraCurveAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
-    /// <summary>The internal version of the <see cref="CameraCurveAsset"/> struct.</summary>
-    byte Version { get; set; }
-
-    /// <summary>Unknown.</summary>
-    uint CameraFlags { get; set; }
-
     /// <summary>
-    /// The number of <see cref="CameraCurveAsset.Beads"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="CameraCurveAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="CameraCurveAsset.Beads"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    int NumBeads { get; set; }
+    public interface ICameraCurveAsset : IBaseAsset
+    {
+        /// <summary>The internal version of the <see cref="CameraCurveAsset"/> struct.</summary>
+        byte Version { get; set; }
+
+        /// <summary>Unknown.</summary>
+        uint CameraFlags { get; set; }
+
+        /// <summary>
+        /// The number of <see cref="CameraCurveAsset.Beads"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="CameraCurveAsset.Beads"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        int NumBeads { get; set; }
+    }
 }

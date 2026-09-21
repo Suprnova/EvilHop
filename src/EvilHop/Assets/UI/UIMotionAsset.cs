@@ -11,7 +11,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/UIM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, baseType: 0x53), IPhysicalUIMotionAsset
+public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, baseType: 0x53), Physical.IUIMotionAsset
 {
     /// <summary>
     /// How long, in seconds, the motion lasts. The motion ends at this point, so any
@@ -31,17 +31,17 @@ public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, base
     public Collection<UIMotionCommand> Commands { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalUIMotionAsset Physical => this;
+    public override Physical.IUIMotionAsset Physical => this;
 
     private byte? _overriddenCommandCount;
-    byte IPhysicalUIMotionAsset.CommandCount
+    byte Physical.IUIMotionAsset.CommandCount
     {
         get => _overriddenCommandCount ?? (byte)Commands.Count;
         set => _overriddenCommandCount = value == (byte)Commands.Count ? null : value;
     }
 
     private uint? _overriddenCommandsSize;
-    uint IPhysicalUIMotionAsset.CommandsSize
+    uint Physical.IUIMotionAsset.CommandsSize
     {
         get => _overriddenCommandsSize ?? ComputedCommandsSize;
         set => _overriddenCommandsSize = value == ComputedCommandsSize ? null : value;
@@ -58,7 +58,7 @@ public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, base
     }
 
     private byte _inFlag;
-    byte IPhysicalUIMotionAsset.InFlag { get => _inFlag; set => _inFlag = value; }
+    byte Physical.IUIMotionAsset.InFlag { get => _inFlag; set => _inFlag = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.UIMotion"/> is known to be read by.
@@ -72,33 +72,36 @@ public sealed partial class UIMotionAsset() : BaseAsset(AssetType.UIMotion, base
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="UIMotionAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalUIMotionAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="UIMotionAsset.Commands"/> stored for this asset, read directly from
-    /// its stored field.
+    /// An explicit interface used to interact with <see cref="UIMotionAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="UIMotionAsset.Commands"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    byte CommandCount { get; set; }
+    public interface IUIMotionAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="UIMotionAsset.Commands"/> stored for this asset, read directly from
+        /// its stored field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="UIMotionAsset.Commands"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        byte CommandCount { get; set; }
 
-    /// <summary>
-    /// The combined serialized size, in bytes, of <see cref="UIMotionAsset.Commands"/>, read directly
-    /// from its stored field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="UIMotionAsset.Commands"/>' actual serialized size exist,
-    /// this field wins during serialization.
-    /// </remarks>
-    uint CommandsSize { get; set; }
+        /// <summary>
+        /// The combined serialized size, in bytes, of <see cref="UIMotionAsset.Commands"/>, read directly
+        /// from its stored field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="UIMotionAsset.Commands"/>' actual serialized size exist,
+        /// this field wins during serialization.
+        /// </remarks>
+        uint CommandsSize { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    byte InFlag { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        byte InFlag { get; set; }
+    }
 }

@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PRJT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType: 0x22), IPhysicalProjectileAsset
+public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType: 0x22), Physical.IProjectileAsset
 {
     /// <summary>
     /// Unknown. Selects some effect - likely a trail or impact particle effect - played by this
@@ -55,16 +55,16 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType
     }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalProjectileAsset Physical => this;
+    public override Physical.IProjectileAsset Physical => this;
 
     private int _destructEnabled;
-    int IPhysicalProjectileAsset.DestructEnabled { get => _destructEnabled; set => _destructEnabled = value; }
+    int Physical.IProjectileAsset.DestructEnabled { get => _destructEnabled; set => _destructEnabled = value; }
 
     private int _oriented;
-    int IPhysicalProjectileAsset.Oriented { get => _oriented; set => _oriented = value; }
+    int Physical.IProjectileAsset.Oriented { get => _oriented; set => _oriented = value; }
 
     private byte[] _reserved = new byte[ReservedSize];
-    byte[] IPhysicalProjectileAsset.Reserved { get => _reserved; set => _reserved = value; }
+    byte[] Physical.IProjectileAsset.Reserved { get => _reserved; set => _reserved = value; }
 
     private const int ReservedSize = 24;
 
@@ -121,25 +121,28 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ProjectileAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalProjectileAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Whether this projectile destroys itself after <see cref="ProjectileAsset.DestructTime"/> or
-    /// <see cref="ProjectileAsset.DestructDistance"/>, as stored on disk.
+    /// An explicit interface used to interact with <see cref="ProjectileAsset"/>'s underlying values.
     /// </summary>
-    int DestructEnabled { get; set; }
+    public interface IProjectileAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Whether this projectile destroys itself after <see cref="ProjectileAsset.DestructTime"/> or
+        /// <see cref="ProjectileAsset.DestructDistance"/>, as stored on disk.
+        /// </summary>
+        int DestructEnabled { get; set; }
 
-    /// <summary>
-    /// Whether this projectile orients itself to face its direction of travel, as stored on disk.
-    /// </summary>
-    int Oriented { get; set; }
+        /// <summary>
+        /// Whether this projectile orients itself to face its direction of travel, as stored on disk.
+        /// </summary>
+        int Oriented { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
-    byte[] Reserved { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
+        byte[] Reserved { get; set; }
+    }
 }

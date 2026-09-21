@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SGRP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType: 0x4A), IPhysicalSoundGroupAsset
+public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType: 0x4A), Physical.ISoundGroupAsset
 {
     /// <summary>This group's entries, one of which is chosen to play at a time.</summary>
     public Collection<SoundGroupEntry> Entries { get; } = [];
@@ -33,35 +33,35 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
     public float OuterRadius { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSoundGroupAsset Physical => this;
+    public override Physical.ISoundGroupAsset Physical => this;
 
     private byte? _overriddenEntryCount;
-    byte IPhysicalSoundGroupAsset.EntryCount
+    byte Physical.ISoundGroupAsset.EntryCount
     {
         get => _overriddenEntryCount ?? (byte)Entries.Count;
         set => _overriddenEntryCount = value == (byte)Entries.Count ? null : value;
     }
 
     private uint _playedMask;
-    uint IPhysicalSoundGroupAsset.PlayedMask { get => _playedMask; set => _playedMask = value; }
+    uint Physical.ISoundGroupAsset.PlayedMask { get => _playedMask; set => _playedMask = value; }
 
     private byte _setBits;
-    byte IPhysicalSoundGroupAsset.SetBits { get => _setBits; set => _setBits = value; }
+    byte Physical.ISoundGroupAsset.SetBits { get => _setBits; set => _setBits = value; }
 
     private byte _soundGroupFlags;
-    byte IPhysicalSoundGroupAsset.SoundGroupFlags { get => _soundGroupFlags; set => _soundGroupFlags = value; }
+    byte Physical.ISoundGroupAsset.SoundGroupFlags { get => _soundGroupFlags; set => _soundGroupFlags = value; }
 
     private byte _soundCategory;
-    byte IPhysicalSoundGroupAsset.SoundCategory { get => _soundCategory; set => _soundCategory = value; }
+    byte Physical.ISoundGroupAsset.SoundCategory { get => _soundCategory; set => _soundCategory = value; }
 
     private byte _playRule;
-    byte IPhysicalSoundGroupAsset.PlayRule { get => _playRule; set => _playRule = value; }
+    byte Physical.ISoundGroupAsset.PlayRule { get => _playRule; set => _playRule = value; }
 
     private byte _infoPad0;
-    byte IPhysicalSoundGroupAsset.InfoPad0 { get => _infoPad0; set => _infoPad0 = value; }
+    byte Physical.ISoundGroupAsset.InfoPad0 { get => _infoPad0; set => _infoPad0 = value; }
 
     private uint _groupNamePointer;
-    uint IPhysicalSoundGroupAsset.GroupNamePointer { get => _groupNamePointer; set => _groupNamePointer = value; }
+    uint Physical.ISoundGroupAsset.GroupNamePointer { get => _groupNamePointer; set => _groupNamePointer = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundGroup"/> is known to be read by.
@@ -129,44 +129,47 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SoundGroupAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSoundGroupAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="SoundGroupAsset.Entries"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="SoundGroupAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SoundGroupAsset.Entries"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    byte EntryCount { get; set; }
+    public interface ISoundGroupAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="SoundGroupAsset.Entries"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SoundGroupAsset.Entries"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        byte EntryCount { get; set; }
 
-    /// <summary>A runtime bitmask tracking which entries have already played.</summary>
-    uint PlayedMask { get; set; }
+        /// <summary>A runtime bitmask tracking which entries have already played.</summary>
+        uint PlayedMask { get; set; }
 
-    /// <summary>Unknown.</summary>
-    byte SetBits { get; set; }
+        /// <summary>Unknown.</summary>
+        byte SetBits { get; set; }
 
-    /// <summary>The group's raw flags byte, read directly from disk.</summary>
-    byte SoundGroupFlags { get; set; }
+        /// <summary>The group's raw flags byte, read directly from disk.</summary>
+        byte SoundGroupFlags { get; set; }
 
-    /// <summary>The sound's playback category.</summary>
-    byte SoundCategory { get; set; }
+        /// <summary>The sound's playback category.</summary>
+        byte SoundCategory { get; set; }
 
-    /// <summary>Unknown.</summary>
-    byte PlayRule { get; set; }
+        /// <summary>Unknown.</summary>
+        byte PlayRule { get; set; }
 
-    /// <summary>Unknown.</summary>
-    byte InfoPad0 { get; set; }
+        /// <summary>Unknown.</summary>
+        byte InfoPad0 { get; set; }
 
-    /// <summary>Unknown.</summary>
-    /// <remarks>
-    /// Per decompiled source, a runtime pointer to this group's name string, resolved after loading.
-    /// Every archive checked so far has this zero.
-    /// </remarks>
-    uint GroupNamePointer { get; set; }
+        /// <summary>Unknown.</summary>
+        /// <remarks>
+        /// Per decompiled source, a runtime pointer to this group's name string, resolved after loading.
+        /// Every archive checked so far has this zero.
+        /// </remarks>
+        uint GroupNamePointer { get; set; }
+    }
 }
 
 /// <summary>

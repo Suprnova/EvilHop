@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <see cref="OnPrefix"/> name against every <see cref="AssetType.SimpleObject"/> in the level.
 /// <seealso href="https://heavyironmodding.org/wiki/DSCO">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, baseType: 0x00), IPhysicalDiscoFloorAsset
+public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, baseType: 0x00), Physical.IDiscoFloorAsset
 {
     /// <summary>
     /// Behavior flags for this <see cref="DiscoFloorAsset"/>.
@@ -66,10 +66,10 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     public Collection<DiscoFloorState> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalDiscoFloorAsset Physical => this;
+    public override Physical.IDiscoFloorAsset Physical => this;
 
     private uint? _overriddenTileCount;
-    uint IPhysicalDiscoFloorAsset.TileCount
+    uint Physical.IDiscoFloorAsset.TileCount
     {
         get => _overriddenTileCount ?? ComputedTileCount;
         set => _overriddenTileCount = value == ComputedTileCount ? null : value;
@@ -78,7 +78,7 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     private uint ComputedTileCount => States.Count > 0 ? (uint)States[0].Tiles.Count : 0;
 
     private uint? _overriddenStateCount;
-    uint IPhysicalDiscoFloorAsset.StateCount
+    uint Physical.IDiscoFloorAsset.StateCount
     {
         get => _overriddenStateCount ?? (uint)States.Count;
         set => _overriddenStateCount = value == (uint)States.Count ? null : value;
@@ -94,30 +94,33 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     };
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="DiscoFloorAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalDiscoFloorAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of tiles each of <see cref="DiscoFloorAsset.States"/>' bitmasks describes, read
-    /// directly from its stored field.
+    /// An explicit interface used to interact with <see cref="DiscoFloorAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="DiscoFloorAsset.States"/>' actual tile counts exist, this
-    /// field wins during serialization.
-    /// </remarks>
-    uint TileCount { get; set; }
+    public interface IDiscoFloorAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of tiles each of <see cref="DiscoFloorAsset.States"/>' bitmasks describes, read
+        /// directly from its stored field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="DiscoFloorAsset.States"/>' actual tile counts exist, this
+        /// field wins during serialization.
+        /// </remarks>
+        uint TileCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="DiscoFloorAsset.States"/> stored for this asset, read directly from
-    /// its stored field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="DiscoFloorAsset.States"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint StateCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="DiscoFloorAsset.States"/> stored for this asset, read directly from
+        /// its stored field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="DiscoFloorAsset.States"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint StateCount { get; set; }
+    }
 }
 
 /// <summary>

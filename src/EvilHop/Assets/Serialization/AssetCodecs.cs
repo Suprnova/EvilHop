@@ -250,7 +250,7 @@ internal static class AssetCodecs
     /// starts with, regardless of what follows.
     /// </summary>
     /// <remarks>
-    /// <see cref="BaseAssetPrefix.Read"/> always sets <see cref="IPhysicalBaseAsset.LinkCount"/> as
+    /// <see cref="BaseAssetPrefix.Read"/> always sets <see cref="Physical.IBaseAsset.LinkCount"/> as
     /// an override, since none of the shapes below parse links into <see cref="BaseAsset.Links"/> - a
     /// future codec that does must not treat this helper's LinkCount as final.
     /// </remarks>

@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SUBT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 0x00), IPhysicalSubtitlesAsset
+public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 0x00), Physical.ISubtitlesAsset
 {
     /// <summary>
     /// The subtitle lines in this asset, displayed in sequence.
@@ -22,17 +22,17 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
     public Collection<SubtitleLine> Lines { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSubtitlesAsset Physical => this;
+    public override Physical.ISubtitlesAsset Physical => this;
 
     private ushort? _overriddenNumLines;
-    ushort IPhysicalSubtitlesAsset.NumLines
+    ushort Physical.ISubtitlesAsset.NumLines
     {
         get => _overriddenNumLines ?? (ushort)Lines.Count;
         set => _overriddenNumLines = value == (ushort)Lines.Count ? null : value;
     }
 
     private ushort? _overriddenByteCount;
-    ushort IPhysicalSubtitlesAsset.ByteCount
+    ushort Physical.ISubtitlesAsset.ByteCount
     {
         get => _overriddenByteCount ?? CalculateByteCount();
         set => _overriddenByteCount = value == CalculateByteCount() ? null : value;
@@ -136,26 +136,29 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SubtitlesAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSubtitlesAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of subtitle lines stored in this asset.
+    /// An explicit interface used to interact with <see cref="SubtitlesAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SubtitlesAsset.Lines"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    ushort NumLines { get; set; }
+    public interface ISubtitlesAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of subtitle lines stored in this asset.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SubtitlesAsset.Lines"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        ushort NumLines { get; set; }
 
-    /// <summary>
-    /// The byte count of this asset following the 12-byte header (line descriptors and string pool).
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SubtitlesAsset.Lines"/> exist, this field wins during serialization.
-    /// </remarks>
-    ushort ByteCount { get; set; }
+        /// <summary>
+        /// The byte count of this asset following the 12-byte header (line descriptors and string pool).
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SubtitlesAsset.Lines"/> exist, this field wins during serialization.
+        /// </remarks>
+        ushort ByteCount { get; set; }
+    }
 }
 
 /// <summary>

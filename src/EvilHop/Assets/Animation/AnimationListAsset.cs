@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/ALST">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationListAsset() : Asset(AssetType.AnimationList), IPhysicalAnimationListAsset
+public sealed class AnimationListAsset() : Asset(AssetType.AnimationList), Physical.IAnimationListAsset
 {
     /// <summary>
     /// The list's 10 animation slots. An unused slot is <see cref="AssetId.None"/>.
@@ -42,15 +42,15 @@ public sealed class AnimationListAsset() : Asset(AssetType.AnimationList), IPhys
     } = [.. new bool[10]];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalAnimationListAsset Physical => this;
+    public override Physical.IAnimationListAsset Physical => this;
 
     private ImmutableArray<uint> _stateHashes = [.. new uint[10]];
-    ImmutableArray<uint> IPhysicalAnimationListAsset.StateHashes
+    ImmutableArray<uint> Physical.IAnimationListAsset.StateHashes
     {
         get => _stateHashes;
         set => _stateHashes = value.Length == 10
             ? value
-            : throw new ArgumentException($"{nameof(IPhysicalAnimationListAsset.StateHashes)} must contain exactly 10 elements.");
+            : throw new ArgumentException($"{nameof(Physical.StateHashes)} must contain exactly 10 elements.");
     }
 
     /// <summary>
@@ -99,15 +99,18 @@ public sealed class AnimationListAsset() : Asset(AssetType.AnimationList), IPhys
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="AnimationListAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalAnimationListAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// An unknown hash paired with each of <see cref="AnimationListAsset.Ids"/>' slots.
-    /// Only present in <see cref="GameVersion.ROTU"/> and <see cref="GameVersion.Ratatouille"/>.
+    /// An explicit interface used to interact with <see cref="AnimationListAsset"/>'s underlying values.
     /// </summary>
-    /// <exception cref="ArgumentException">The assigned value's length isn't 10.</exception>
-    ImmutableArray<uint> StateHashes { get; set; }
+    public interface IAnimationListAsset : IAsset
+    {
+        /// <summary>
+        /// An unknown hash paired with each of <see cref="AnimationListAsset.Ids"/>' slots.
+        /// Only present in <see cref="GameVersion.ROTU"/> and <see cref="GameVersion.Ratatouille"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException">The assigned value's length isn't 10.</exception>
+        ImmutableArray<uint> StateHashes { get; set; }
+    }
 }

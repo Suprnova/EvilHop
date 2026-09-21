@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/GRSM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 0xCD), IPhysicalGrassMeshAsset
+public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 0xCD), Physical.IGrassMeshAsset
 {
     /// <summary>The mesh's vertices, indexed by <see cref="GrassMeshFace"/>.</summary>
     public Collection<GrassMeshVertex> Vertices { get; } = [];
@@ -30,17 +30,17 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
     public Vector3 MaxBounds { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalGrassMeshAsset Physical => this;
+    public override Physical.IGrassMeshAsset Physical => this;
 
     private int? _overriddenVertexCount;
-    int IPhysicalGrassMeshAsset.VertexCount
+    int Physical.IGrassMeshAsset.VertexCount
     {
         get => _overriddenVertexCount ?? Vertices.Count;
         set => _overriddenVertexCount = value == Vertices.Count ? null : value;
     }
 
     private int? _overriddenFaceCount;
-    int IPhysicalGrassMeshAsset.FaceCount
+    int Physical.IGrassMeshAsset.FaceCount
     {
         get => _overriddenFaceCount ?? Faces.Count;
         set => _overriddenFaceCount = value == Faces.Count ? null : value;
@@ -95,30 +95,33 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="GrassMeshAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalGrassMeshAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="GrassMeshAsset.Vertices"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="GrassMeshAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="GrassMeshAsset.Vertices"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int VertexCount { get; set; }
+    public interface IGrassMeshAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="GrassMeshAsset.Vertices"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="GrassMeshAsset.Vertices"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int VertexCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="GrassMeshAsset.Faces"/> stored for this asset, read directly from its
-    /// leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="GrassMeshAsset.Faces"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    int FaceCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="GrassMeshAsset.Faces"/> stored for this asset, read directly from its
+        /// leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="GrassMeshAsset.Faces"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        int FaceCount { get; set; }
+    }
 }
 
 /// <summary>One <see cref="GrassMeshAsset"/> vertex.</summary>

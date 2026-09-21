@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TEXT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TextAsset() : Asset(AssetType.Text), IPhysicalTextAsset
+public sealed class TextAsset() : Asset(AssetType.Text), Physical.ITextAsset
 {
     /// <summary>
     /// The text content stored in this asset.
@@ -21,10 +21,10 @@ public sealed class TextAsset() : Asset(AssetType.Text), IPhysicalTextAsset
     public string Text { get; set; } = string.Empty;
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalTextAsset Physical => this;
+    public override Physical.ITextAsset Physical => this;
 
     private uint? _overriddenLength;
-    uint IPhysicalTextAsset.Length
+    uint Physical.ITextAsset.Length
     {
         get => _overriddenLength ?? CalculateLength();
         set => _overriddenLength = value == CalculateLength() ? null : value;
@@ -92,21 +92,24 @@ public sealed class TextAsset() : Asset(AssetType.Text), IPhysicalTextAsset
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="TextAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalTextAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The length of the text stored in this asset, in bytes (excluding the null terminator).
+    /// An explicit interface used to interact with <see cref="TextAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="TextAsset.Text"/>.Length exist, this field wins during serialization.
-    /// <para>
-    /// On disk, <see cref="GameVersion.N100F"/> stores this count including the null terminator;
-    /// <see cref="TextAsset.Read"/> and <see cref="TextAsset.Write"/> adjust for that so this
-    /// property means the same thing across every game.
-    /// </para>
-    /// </remarks>
-    uint Length { get; set; }
+    public interface ITextAsset : IAsset
+    {
+        /// <summary>
+        /// The length of the text stored in this asset, in bytes (excluding the null terminator).
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="TextAsset.Text"/>.Length exist, this field wins during serialization.
+        /// <para>
+        /// On disk, <see cref="GameVersion.N100F"/> stores this count including the null terminator;
+        /// <see cref="TextAsset.Read"/> and <see cref="TextAsset.Write"/> adjust for that so this
+        /// property means the same thing across every game.
+        /// </para>
+        /// </remarks>
+        uint Length { get; set; }
+    }
 }

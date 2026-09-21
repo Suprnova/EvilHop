@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/JAW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysicalJawDataTableAsset
+public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), Physical.IJawDataTableAsset
 {
     /// <summary>
     /// The table's entries, each holding one sound's jaw data.
@@ -24,10 +24,10 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
     public Collection<JawDataTableEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalJawDataTableAsset Physical => this;
+    public override Physical.IJawDataTableAsset Physical => this;
 
     private int? _overriddenCount;
-    int IPhysicalJawDataTableAsset.Count
+    int Physical.IJawDataTableAsset.Count
     {
         get => _overriddenCount ?? Entries.Count;
         set => _overriddenCount = value == Entries.Count ? null : value;
@@ -88,20 +88,23 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
     private static int Align4(int value) => (value + 3) & ~3;
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="JawDataTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalJawDataTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="JawDataTableAsset.Entries"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="JawDataTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="JawDataTableAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int Count { get; set; }
+    public interface IJawDataTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="JawDataTableAsset.Entries"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="JawDataTableAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int Count { get; set; }
+    }
 }
 
 /// <summary>

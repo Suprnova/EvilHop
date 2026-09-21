@@ -10,10 +10,10 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// Unlike <see cref="CutsceneAsset"/>, this is not an <see cref="Asset"/> - it has no AHDR/ADBG block
 /// of its own, and (since it is never followed by the chunked media a header's
-/// <see cref="IPhysicalCutsceneHeader.HeaderSize"/> and <c>xCutsceneData</c> offsets describe) never
+/// <see cref="Physical.ICutsceneHeader.HeaderSize"/> and <c>xCutsceneData</c> offsets describe) never
 /// will.
 /// </remarks>
-public sealed class CutsceneTableEntry : ICutsceneHeader, IPhysicalCutsceneHeader
+public sealed class CutsceneTableEntry : ICutsceneHeader, Physical.ICutsceneHeader
 {
     /// <inheritdoc cref="CutsceneAsset.Data"/>
     public Collection<CutsceneDataEntry> Data { get; } = [];
@@ -28,41 +28,41 @@ public sealed class CutsceneTableEntry : ICutsceneHeader, IPhysicalCutsceneHeade
     public Collection<CutsceneAudioTrack> AudioTracks { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public IPhysicalCutsceneHeader Physical => this;
+    public Physical.ICutsceneHeader Physical => this;
 
     private AssetId _assetId;
-    AssetId IPhysicalCutsceneHeader.AssetId { get => _assetId; set => _assetId = value; }
+    AssetId Physical.ICutsceneHeader.AssetId { get => _assetId; set => _assetId = value; }
 
     private uint? _overriddenNumData;
-    uint IPhysicalCutsceneHeader.NumData
+    uint Physical.ICutsceneHeader.NumData
     {
         get => _overriddenNumData ?? (uint)Data.Count;
         set => _overriddenNumData = value == (uint)Data.Count ? null : value;
     }
 
     private uint _numTime;
-    uint IPhysicalCutsceneHeader.NumTime { get => _numTime; set => _numTime = value; }
+    uint Physical.ICutsceneHeader.NumTime { get => _numTime; set => _numTime = value; }
 
     private uint _maxModel;
-    uint IPhysicalCutsceneHeader.MaxModel { get => _maxModel; set => _maxModel = value; }
+    uint Physical.ICutsceneHeader.MaxModel { get => _maxModel; set => _maxModel = value; }
 
     private uint _maxBufEven;
-    uint IPhysicalCutsceneHeader.MaxBufEven { get => _maxBufEven; set => _maxBufEven = value; }
+    uint Physical.ICutsceneHeader.MaxBufEven { get => _maxBufEven; set => _maxBufEven = value; }
 
     private uint _maxBufOdd;
-    uint IPhysicalCutsceneHeader.MaxBufOdd { get => _maxBufOdd; set => _maxBufOdd = value; }
+    uint Physical.ICutsceneHeader.MaxBufOdd { get => _maxBufOdd; set => _maxBufOdd = value; }
 
     private uint _headerSize;
-    uint IPhysicalCutsceneHeader.HeaderSize { get => _headerSize; set => _headerSize = value; }
+    uint Physical.ICutsceneHeader.HeaderSize { get => _headerSize; set => _headerSize = value; }
 
     private uint _visCount;
-    uint IPhysicalCutsceneHeader.VisCount { get => _visCount; set => _visCount = value; }
+    uint Physical.ICutsceneHeader.VisCount { get => _visCount; set => _visCount = value; }
 
     private uint _visSize;
-    uint IPhysicalCutsceneHeader.VisSize { get => _visSize; set => _visSize = value; }
+    uint Physical.ICutsceneHeader.VisSize { get => _visSize; set => _visSize = value; }
 
     private uint _breakCount;
-    uint IPhysicalCutsceneHeader.BreakCount { get => _breakCount; set => _breakCount = value; }
+    uint Physical.ICutsceneHeader.BreakCount { get => _breakCount; set => _breakCount = value; }
 
     private byte[] _unparsedTail = [];
 

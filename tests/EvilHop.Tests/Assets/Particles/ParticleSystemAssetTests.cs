@@ -97,8 +97,8 @@ public class ParticleSystemAssetTests
         Assert.Equal(ParticleSystemRenderFunction.QuadStreak, asset.RenderFunction);
         Assert.Equal(RwBlendFunction.SourceAlpha, asset.SourceBlend);
         Assert.Equal(RwBlendFunction.Zero, asset.DestinationBlend);
-        Assert.Equal(2, ((IPhysicalParticleSystemAsset)asset).CommandCount);
-        Assert.Equal<byte[]>([0x01, 0x02, 0x03, 0x04], ((IPhysicalParticleSystemAsset)asset).CommandData);
+        Assert.Equal(2, ((Physical.IParticleSystemAsset)asset).CommandCount);
+        Assert.Equal<byte[]>([0x01, 0x02, 0x03, 0x04], ((Physical.IParticleSystemAsset)asset).CommandData);
     }
 
     [Fact]
@@ -163,8 +163,8 @@ public class ParticleSystemAssetTests
         Assert.Equal(ParticleSystemRenderFunction.Sprite, asset.RenderFunction);
         Assert.Equal(RwBlendFunction.SourceAlpha, asset.SourceBlend);
         Assert.Equal(RwBlendFunction.One, asset.DestinationBlend);
-        Assert.Equal(4, ((IPhysicalParticleSystemAsset)asset).CommandCount);
-        Assert.Equal(0x74, ((IPhysicalParticleSystemAsset)asset).CommandData.Length);
+        Assert.Equal(4, ((Physical.IParticleSystemAsset)asset).CommandCount);
+        Assert.Equal(0x74, ((Physical.IParticleSystemAsset)asset).CommandData.Length);
 
         Assert.Equal(data, Write(asset));
     }

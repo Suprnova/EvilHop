@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/GRUP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), IPhysicalGroupAsset
+public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), Physical.IGroupAsset
 {
     /// <summary>The assets an event received by this group is forwarded to.</summary>
     public Collection<AssetId> Items { get; } = [];
@@ -23,10 +23,10 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
     public GroupEventMode GroupFlags { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalGroupAsset Physical => this;
+    public override Physical.IGroupAsset Physical => this;
 
     private ushort? _overriddenItemCount;
-    ushort IPhysicalGroupAsset.ItemCount
+    ushort Physical.IGroupAsset.ItemCount
     {
         get => _overriddenItemCount ?? (ushort)Items.Count;
         set => _overriddenItemCount = value == (ushort)Items.Count ? null : value;
@@ -81,20 +81,23 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="GroupAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalGroupAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="GroupAsset.Items"/> stored for this asset, read directly from its
-    /// leading count field.
+    /// An explicit interface used to interact with <see cref="GroupAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="GroupAsset.Items"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    ushort ItemCount { get; set; }
+    public interface IGroupAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="GroupAsset.Items"/> stored for this asset, read directly from its
+        /// leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="GroupAsset.Items"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        ushort ItemCount { get; set; }
+    }
 }
 
 /// <summary>Which of a <see cref="GroupAsset"/>'s <see cref="GroupAsset.Items"/> a received event is forwarded to.</summary>

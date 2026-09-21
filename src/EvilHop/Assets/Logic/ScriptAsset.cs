@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SCRP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A), IPhysicalScriptAsset
+public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A), Physical.IScriptAsset
 {
     /// <summary>
     /// The starting time offset in seconds, or playback speed multiplier.
@@ -42,13 +42,13 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A),
     public Collection<ScriptEvent> Events { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalScriptAsset Physical => this;
+    public override Physical.IScriptAsset Physical => this;
 
     private byte _loop;
-    byte IPhysicalScriptAsset.Loop { get => _loop; set => _loop = value; }
+    byte Physical.IScriptAsset.Loop { get => _loop; set => _loop = value; }
 
     private uint? _overriddenEventCount;
-    uint IPhysicalScriptAsset.EventCount
+    uint Physical.IScriptAsset.EventCount
     {
         get => _overriddenEventCount ?? (uint)Events.Count;
         set => _overriddenEventCount = value == (uint)Events.Count ? null : value;
@@ -117,24 +117,27 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A),
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ScriptAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalScriptAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Whether this script runs again from the start once it finishes, as stored on disk.
+    /// An explicit interface used to interact with <see cref="ScriptAsset"/>'s underlying values.
     /// </summary>
-    [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches on-disk property and logical asset member name.")]
-    byte Loop { get; set; }
+    public interface IScriptAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Whether this script runs again from the start once it finishes, as stored on disk.
+        /// </summary>
+        [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches on-disk property and logical asset member name.")]
+        byte Loop { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="ScriptAsset.Events"/> stored for this asset, read directly from its
-    /// leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ScriptAsset.Events"/>.Count exist, this field wins during
-    /// serialization.
-    /// </remarks>
-    uint EventCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="ScriptAsset.Events"/> stored for this asset, read directly from its
+        /// leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="ScriptAsset.Events"/>.Count exist, this field wins during
+        /// serialization.
+        /// </remarks>
+        uint EventCount { get; set; }
+    }
 }

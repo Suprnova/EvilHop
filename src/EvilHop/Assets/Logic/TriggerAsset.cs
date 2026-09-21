@@ -22,7 +22,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x01), IPhysicalTriggerAsset
+public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x01), Physical.ITriggerAsset
 {
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Trigger"/> is known to be read by.
@@ -70,13 +70,13 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
     public TriggerFlags Flags { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalTriggerAsset Physical => this;
+    public override Physical.ITriggerAsset Physical => this;
 
     private Vector3 _triggerPosition2;
-    Vector3 IPhysicalTriggerAsset.TriggerPosition2 { get => _triggerPosition2; set => _triggerPosition2 = value; }
+    Vector3 Physical.ITriggerAsset.TriggerPosition2 { get => _triggerPosition2; set => _triggerPosition2 = value; }
 
     private Vector3 _triggerPosition3;
-    Vector3 IPhysicalTriggerAsset.TriggerPosition3 { get => _triggerPosition3; set => _triggerPosition3 = value; }
+    Vector3 Physical.ITriggerAsset.TriggerPosition3 { get => _triggerPosition3; set => _triggerPosition3 = value; }
 
     internal static TriggerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -123,20 +123,23 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="TriggerAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalTriggerAsset : IPhysicalEntityAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="TriggerAsset"/>'s underlying values.
     /// </summary>
-    Vector3 TriggerPosition2 { get; set; }
+    public interface ITriggerAsset : IEntityAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        Vector3 TriggerPosition2 { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Vector3 TriggerPosition3 { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        Vector3 TriggerPosition3 { get; set; }
+    }
 }
 
 /// <summary>

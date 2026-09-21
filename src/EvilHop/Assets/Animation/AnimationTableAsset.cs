@@ -19,7 +19,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ATBL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPhysicalAnimationTableAsset
+public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), Physical.IAnimationTableAsset
 {
     /// <summary>
     /// Selects which game-specific "constructor" function builds this table's runtime
@@ -43,24 +43,24 @@ public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPh
     public Collection<AnimationTableState> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalAnimationTableAsset Physical => this;
+    public override Physical.IAnimationTableAsset Physical => this;
 
     private uint? _overriddenRawCount;
-    uint IPhysicalAnimationTableAsset.RawCount
+    uint Physical.IAnimationTableAsset.RawCount
     {
         get => _overriddenRawCount ?? (uint)Raw.Count;
         set => _overriddenRawCount = value == (uint)Raw.Count ? null : value;
     }
 
     private uint? _overriddenFileCount;
-    uint IPhysicalAnimationTableAsset.FileCount
+    uint Physical.IAnimationTableAsset.FileCount
     {
         get => _overriddenFileCount ?? (uint)Files.Count;
         set => _overriddenFileCount = value == (uint)Files.Count ? null : value;
     }
 
     private uint? _overriddenStateCount;
-    uint IPhysicalAnimationTableAsset.StateCount
+    uint Physical.IAnimationTableAsset.StateCount
     {
         get => _overriddenStateCount ?? (uint)States.Count;
         set => _overriddenStateCount = value == (uint)States.Count ? null : value;
@@ -124,38 +124,41 @@ public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPh
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="AnimationTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalAnimationTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="AnimationTableAsset.Raw"/> ids stored for this asset, read directly
-    /// from its header.
+    /// An explicit interface used to interact with <see cref="AnimationTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AnimationTableAsset.Raw"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint RawCount { get; set; }
+    public interface IAnimationTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="AnimationTableAsset.Raw"/> ids stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AnimationTableAsset.Raw"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint RawCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AnimationTableAsset.Files"/> stored for this asset, read directly
-    /// from its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AnimationTableAsset.Files"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint FileCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AnimationTableAsset.Files"/> stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AnimationTableAsset.Files"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint FileCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="AnimationTableAsset.States"/> stored for this asset, read directly
-    /// from its header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="AnimationTableAsset.States"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint StateCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="AnimationTableAsset.States"/> stored for this asset, read directly
+        /// from its header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="AnimationTableAsset.States"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint StateCount { get; set; }
+    }
 }

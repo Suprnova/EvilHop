@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Entity_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset(type, baseType), IPhysicalEntityAsset
+public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset(type, baseType), Physical.IEntityAsset
 {
     /// <summary>
     /// Information about the <see cref="EntityAsset"/>'s properties in-game.
@@ -38,33 +38,33 @@ public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset
     public Rgba ColorMultiplier { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalEntityAsset Physical => this;
+    public override Physical.IEntityAsset Physical => this;
 
-    byte IPhysicalEntityAsset.Subtype { get => Subtype; set => Subtype = value; }
+    byte Physical.IEntityAsset.Subtype { get => Subtype; set => Subtype = value; }
 
     /// <summary>
-    /// Backs <see cref="IPhysicalEntityAsset.Subtype"/>, for a derived type whose subtype follows
+    /// Backs <see cref="Physical.IEntityAsset.Subtype"/>, for a derived type whose subtype follows
     /// from its own data.
     /// </summary>
     private protected virtual byte Subtype { get; set; }
 
     private protected CollisionFlags _collisionFlags;
-    CollisionFlags IPhysicalEntityAsset.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
+    CollisionFlags Physical.IEntityAsset.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
 
     private protected byte _pFlags;
-    byte IPhysicalEntityAsset.PFlags { get => _pFlags; set => _pFlags = value; }
+    byte Physical.IEntityAsset.PFlags { get => _pFlags; set => _pFlags = value; }
 
     private protected AssetId _surfaceId;
-    AssetId IPhysicalEntityAsset.SurfaceId { get => _surfaceId; set => _surfaceId = value; }
+    AssetId Physical.IEntityAsset.SurfaceId { get => _surfaceId; set => _surfaceId = value; }
 
     private protected AssetId _modelId;
-    AssetId IPhysicalEntityAsset.ModelId { get => _modelId; set => _modelId = value; }
+    AssetId Physical.IEntityAsset.ModelId { get => _modelId; set => _modelId = value; }
 
     private protected AssetId _animListId;
-    AssetId IPhysicalEntityAsset.AnimListId { get => _animListId; set => _animListId = value; }
+    AssetId Physical.IEntityAsset.AnimListId { get => _animListId; set => _animListId = value; }
 
     private protected float _seeThroughSpeed;
-    float IPhysicalEntityAsset.SeeThroughSpeed { get => _seeThroughSpeed; set => _seeThroughSpeed = value; }
+    float Physical.IEntityAsset.SeeThroughSpeed { get => _seeThroughSpeed; set => _seeThroughSpeed = value; }
 
     /// <summary>
     /// Reads a single <see cref="CollisionFlags"/> bit, for a derived type projecting it as a
@@ -79,51 +79,54 @@ public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset
         _collisionFlags = value ? _collisionFlags | flag : _collisionFlags & ~flag;
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="EntityAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalEntityAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The <see cref="EntityAsset"/>'s subtype, if applicable.
+    /// An explicit interface used to interact with <see cref="EntityAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// <para>Used by:</para>
-    /// <list type="bullet">
-    /// <item><see cref="AssetType.NPC"/></item>
-    /// <item><see cref="AssetType.Pickup"/></item>
-    /// <item><see cref="AssetType.Platform"/></item>
-    /// <item><see cref="AssetType.Trigger"/></item>
-    /// </list>
-    /// </remarks>
-    byte Subtype { get; set; }
-    /// <summary>
-    /// Unknown. Always 0.
-    /// </summary>
-    byte PFlags { get; set; }
-    /// <summary>
-    /// Flags relating to this <see cref="EntityAsset"/>'s collision.
-    /// </summary>
-    CollisionFlags CollisionFlags { get; set; }
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Surface"/> asset this
-    /// <see cref="EntityAsset"/> uses, if any.
-    /// </summary>
-    AssetId SurfaceId { get; set; }
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> or <see cref="AssetType.ModelInfo"/>
-    /// that this <see cref="EntityAsset"/> uses, if any.
-    /// </summary>
-    AssetId ModelId { get; set; }
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Animation"/> or
-    /// <see cref="AssetType.AnimationList"/> that this <see cref="EntityAsset"/> uses, if any.
-    /// </summary>
-    AssetId AnimListId { get; set; }
-    /// <summary>
-    /// Always 255. Unused.
-    /// </summary>
-    float SeeThroughSpeed { get; set; }
+    public interface IEntityAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The <see cref="EntityAsset"/>'s subtype, if applicable.
+        /// </summary>
+        /// <remarks>
+        /// <para>Used by:</para>
+        /// <list type="bullet">
+        /// <item><see cref="AssetType.NPC"/></item>
+        /// <item><see cref="AssetType.Pickup"/></item>
+        /// <item><see cref="AssetType.Platform"/></item>
+        /// <item><see cref="AssetType.Trigger"/></item>
+        /// </list>
+        /// </remarks>
+        byte Subtype { get; set; }
+        /// <summary>
+        /// Unknown. Always 0.
+        /// </summary>
+        byte PFlags { get; set; }
+        /// <summary>
+        /// Flags relating to this <see cref="EntityAsset"/>'s collision.
+        /// </summary>
+        CollisionFlags CollisionFlags { get; set; }
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Surface"/> asset this
+        /// <see cref="EntityAsset"/> uses, if any.
+        /// </summary>
+        AssetId SurfaceId { get; set; }
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> or <see cref="AssetType.ModelInfo"/>
+        /// that this <see cref="EntityAsset"/> uses, if any.
+        /// </summary>
+        AssetId ModelId { get; set; }
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Animation"/> or
+        /// <see cref="AssetType.AnimationList"/> that this <see cref="EntityAsset"/> uses, if any.
+        /// </summary>
+        AssetId AnimListId { get; set; }
+        /// <summary>
+        /// Always 255. Unused.
+        /// </summary>
+        float SeeThroughSpeed { get; set; }
+    }
 }
 
 /// <summary>

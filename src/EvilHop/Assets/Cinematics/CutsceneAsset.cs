@@ -20,7 +20,7 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/CSN">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 // TODO: Partial implementation - chunked media data is unmodelled and preserved in unparsed tail
-public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader, IPhysicalCutsceneAsset
+public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader, Physical.ICutsceneAsset
 {
     /// <summary>
     /// The models this cutscene needs loaded before playback.
@@ -46,47 +46,47 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     public Collection<CutsceneAudioTrack> AudioTracks { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCutsceneAsset Physical => this;
+    public override Physical.ICutsceneAsset Physical => this;
 
-    IPhysicalCutsceneHeader ICutsceneHeader.Physical => this;
+    Physical.ICutsceneHeader ICutsceneHeader.Physical => this;
 
     private AssetId? _overriddenAssetId;
-    AssetId IPhysicalCutsceneHeader.AssetId
+    AssetId Physical.ICutsceneHeader.AssetId
     {
         get => _overriddenAssetId ?? Id;
         set => _overriddenAssetId = value == Id ? null : value;
     }
 
     private uint? _overriddenNumData;
-    uint IPhysicalCutsceneHeader.NumData
+    uint Physical.ICutsceneHeader.NumData
     {
         get => _overriddenNumData ?? (uint)Data.Count;
         set => _overriddenNumData = value == (uint)Data.Count ? null : value;
     }
 
     private uint _numTime;
-    uint IPhysicalCutsceneHeader.NumTime { get => _numTime; set => _numTime = value; }
+    uint Physical.ICutsceneHeader.NumTime { get => _numTime; set => _numTime = value; }
 
     private uint _maxModel;
-    uint IPhysicalCutsceneHeader.MaxModel { get => _maxModel; set => _maxModel = value; }
+    uint Physical.ICutsceneHeader.MaxModel { get => _maxModel; set => _maxModel = value; }
 
     private uint _maxBufEven;
-    uint IPhysicalCutsceneHeader.MaxBufEven { get => _maxBufEven; set => _maxBufEven = value; }
+    uint Physical.ICutsceneHeader.MaxBufEven { get => _maxBufEven; set => _maxBufEven = value; }
 
     private uint _maxBufOdd;
-    uint IPhysicalCutsceneHeader.MaxBufOdd { get => _maxBufOdd; set => _maxBufOdd = value; }
+    uint Physical.ICutsceneHeader.MaxBufOdd { get => _maxBufOdd; set => _maxBufOdd = value; }
 
     private uint _headerSize;
-    uint IPhysicalCutsceneHeader.HeaderSize { get => _headerSize; set => _headerSize = value; }
+    uint Physical.ICutsceneHeader.HeaderSize { get => _headerSize; set => _headerSize = value; }
 
     private uint _visCount;
-    uint IPhysicalCutsceneHeader.VisCount { get => _visCount; set => _visCount = value; }
+    uint Physical.ICutsceneHeader.VisCount { get => _visCount; set => _visCount = value; }
 
     private uint _visSize;
-    uint IPhysicalCutsceneHeader.VisSize { get => _visSize; set => _visSize = value; }
+    uint Physical.ICutsceneHeader.VisSize { get => _visSize; set => _visSize = value; }
 
     private uint _breakCount;
-    uint IPhysicalCutsceneHeader.BreakCount { get => _breakCount; set => _breakCount = value; }
+    uint Physical.ICutsceneHeader.BreakCount { get => _breakCount; set => _breakCount = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Cutscene"/> is known to be read by.
@@ -116,16 +116,19 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CutsceneAsset"/>'s underlying values.
-/// </summary>
-/// <remarks>
-/// Adds nothing beyond <see cref="IPhysicalCutsceneHeader"/> - it exists purely so
-/// <see cref="Asset.Physical"/> can be covariantly overridden with <see cref="IPhysicalAsset"/>
-/// included, which <see cref="IPhysicalCutsceneHeader"/> itself deliberately omits so it can also be
-/// implemented by the non-<see cref="Asset"/> <see cref="CutsceneTableEntry"/>.
-/// </remarks>
-public interface IPhysicalCutsceneAsset : IPhysicalAsset, IPhysicalCutsceneHeader;
+public static partial class Physical
+{
+    /// <summary>
+    /// An explicit interface used to interact with <see cref="CutsceneAsset"/>'s underlying values.
+    /// </summary>
+    /// <remarks>
+    /// Adds nothing beyond <see cref="ICutsceneHeader"/> - it exists purely so
+    /// <see cref="Asset.Physical"/> can be covariantly overridden with <see cref="IAsset"/>
+    /// included, which <see cref="ICutsceneHeader"/> itself deliberately omits so it can also be
+    /// implemented by the non-<see cref="Asset"/> <see cref="CutsceneTableEntry"/>.
+    /// </remarks>
+    public interface ICutsceneAsset : IAsset, ICutsceneHeader;
+}
 
 /// <summary>
 /// One entry in a <see cref="CutsceneAsset.Data"/> table, referencing a model this cutscene needs

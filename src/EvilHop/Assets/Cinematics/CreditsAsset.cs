@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CRDT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysicalCreditsAsset
+public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.ICreditsAsset
 {
     /// <summary>
     /// The key an encrypted <see cref="CreditsAsset"/>'s body is XORed against.
@@ -46,22 +46,22 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysical
     public Collection<CreditsSection> Sections { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCreditsAsset Physical => this;
+    public override Physical.ICreditsAsset Physical => this;
 
     private uint _magic = 0xBEEEEEEF;
-    uint IPhysicalCreditsAsset.Magic { get => _magic; set => _magic = value; }
+    uint Physical.ICreditsAsset.Magic { get => _magic; set => _magic = value; }
 
     private uint _version;
-    uint IPhysicalCreditsAsset.Version { get => _version; set => _version = value; }
+    uint Physical.ICreditsAsset.Version { get => _version; set => _version = value; }
 
     private AssetId _creditsId;
-    AssetId IPhysicalCreditsAsset.CreditsId { get => _creditsId; set => _creditsId = value; }
+    AssetId Physical.ICreditsAsset.CreditsId { get => _creditsId; set => _creditsId = value; }
 
     private CreditsState _state;
-    CreditsState IPhysicalCreditsAsset.State { get => _state; set => _state = value; }
+    CreditsState Physical.ICreditsAsset.State { get => _state; set => _state = value; }
 
     private uint? _overriddenTotalSize;
-    uint IPhysicalCreditsAsset.TotalSize
+    uint Physical.ICreditsAsset.TotalSize
     {
         get => _overriddenTotalSize ?? ComputedTotalSize;
         set => _overriddenTotalSize = value == ComputedTotalSize ? null : value;
@@ -153,40 +153,43 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysical
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CreditsAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCreditsAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// A magic number used to validate the payload.
+    /// An explicit interface used to interact with <see cref="CreditsAsset"/>'s underlying values.
     /// </summary>
-    uint Magic { get; set; }
+    public interface ICreditsAsset : IAsset
+    {
+        /// <summary>
+        /// A magic number used to validate the payload.
+        /// </summary>
+        uint Magic { get; set; }
 
-    /// <summary>
-    /// The credits format version. 256 (1.0) in <see cref="GameVersion.BFBB"/> and
-    /// <see cref="GameVersion.Incredibles"/>; 512 (2.0) from <see cref="GameVersion.TSSM"/> onward.
-    /// </summary>
-    uint Version { get; set; }
+        /// <summary>
+        /// The credits format version. 256 (1.0) in <see cref="GameVersion.BFBB"/> and
+        /// <see cref="GameVersion.Incredibles"/>; 512 (2.0) from <see cref="GameVersion.TSSM"/> onward.
+        /// </summary>
+        uint Version { get; set; }
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    AssetId CreditsId { get; set; }
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        AssetId CreditsId { get; set; }
 
-    /// <summary>
-    /// Whether the body following this header is encrypted.
-    /// </summary>
-    CreditsState State { get; set; }
+        /// <summary>
+        /// Whether the body following this header is encrypted.
+        /// </summary>
+        CreditsState State { get; set; }
 
-    /// <summary>
-    /// The total size, in bytes, of this <see cref="CreditsAsset"/>'s entire on-disk representation,
-    /// including this header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with the actual encoded size exist, this field wins during serialization.
-    /// </remarks>
-    uint TotalSize { get; set; }
+        /// <summary>
+        /// The total size, in bytes, of this <see cref="CreditsAsset"/>'s entire on-disk representation,
+        /// including this header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with the actual encoded size exist, this field wins during serialization.
+        /// </remarks>
+        uint TotalSize { get; set; }
+    }
 }
 
 /// <summary>

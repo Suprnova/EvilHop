@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/PARS">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 // TODO: Partial implementation - particle commands are undecoded and stored as raw bytes
-public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.ParticleSystem, baseType: 0x27), IPhysicalParticleSystemAsset
+public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.ParticleSystem, baseType: 0x27), Physical.IParticleSystemAsset
 {
     /// <summary>
     /// The <see cref="AssetType.ParticleSystem"/> this one inherits unset fields from, usually
@@ -46,16 +46,16 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
     public RwBlendFunction DestinationBlend { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalParticleSystemAsset Physical => this;
+    public override Physical.IParticleSystemAsset Physical => this;
 
     private int _systemType;
-    int IPhysicalParticleSystemAsset.SystemType { get => _systemType; set => _systemType = value; }
+    int Physical.IParticleSystemAsset.SystemType { get => _systemType; set => _systemType = value; }
 
     private byte _commandCount;
-    byte IPhysicalParticleSystemAsset.CommandCount { get => _commandCount; set => _commandCount = value; }
+    byte Physical.IParticleSystemAsset.CommandCount { get => _commandCount; set => _commandCount = value; }
 
     private byte[] _commandData = [];
-    byte[] IPhysicalParticleSystemAsset.CommandData { get => _commandData; set => _commandData = value; }
+    byte[] Physical.IParticleSystemAsset.CommandData { get => _commandData; set => _commandData = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.ParticleSystem"/> is known to be read by.
@@ -120,35 +120,38 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ParticleSystemAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalParticleSystemAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="ParticleSystemAsset"/>'s underlying values.
     /// </summary>
-    int SystemType { get; set; }
+    public interface IParticleSystemAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        int SystemType { get; set; }
 
-    /// <summary>
-    /// The number of particle commands packed in <see cref="CommandData"/>, read directly from its
-    /// leading count field.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="CommandData"/> is stored raw rather than decoded into individual commands, so
-    /// unlike most counts elsewhere in this library, this one cannot be derived and does not
-    /// override-clear against anything.
-    /// </remarks>
-    byte CommandCount { get; set; }
+        /// <summary>
+        /// The number of particle commands packed in <see cref="CommandData"/>, read directly from its
+        /// leading count field.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="CommandData"/> is stored raw rather than decoded into individual commands, so
+        /// unlike most counts elsewhere in this library, this one cannot be derived and does not
+        /// override-clear against anything.
+        /// </remarks>
+        byte CommandCount { get; set; }
 
-    /// <summary>
-    /// This system's particle commands - move, accelerate, fade, and similar per-particle behaviors -
-    /// packed back-to-back as raw, undecoded bytes. Each command starts with a shared 4-byte type,
-    /// 1-byte enabled flag, 1-byte mode, and 2 bytes of padding, followed by a type-specific payload
-    /// whose size is not stored on disk and is not yet modelled here.
-    /// </summary>
-    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Packed, variable-length, and not yet decoded into individual particle commands; a byte[] is the natural representation.")]
-    byte[] CommandData { get; set; }
+        /// <summary>
+        /// This system's particle commands - move, accelerate, fade, and similar per-particle behaviors -
+        /// packed back-to-back as raw, undecoded bytes. Each command starts with a shared 4-byte type,
+        /// 1-byte enabled flag, 1-byte mode, and 2 bytes of padding, followed by a type-specific payload
+        /// whose size is not stored on disk and is not yet modelled here.
+        /// </summary>
+        [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Packed, variable-length, and not yet decoded into individual particle commands; a byte[] is the natural representation.")]
+        byte[] CommandData { get; set; }
+    }
 }
 
 /// <summary>

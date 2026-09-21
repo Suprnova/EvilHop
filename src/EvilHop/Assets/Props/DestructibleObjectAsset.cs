@@ -41,7 +41,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     public DestructibleHitFlags HitFlags { get; set; }
 
     /// <summary>
-    /// This object's collision type, separate from <see cref="IPhysicalEntityAsset.CollisionFlags"/>.
+    /// This object's collision type, separate from <see cref="Physical.IEntityAsset.CollisionFlags"/>.
     /// </summary>
     public byte CollisionType { get; set; }
 

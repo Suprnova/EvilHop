@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MVPT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, baseType: 0x0D), IPhysicalMovePointAsset
+public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, baseType: 0x0D), Physical.IMovePointAsset
 {
     /// <summary>This move point's position in the game world.</summary>
     public Vector3 Position { get; set; }
@@ -55,13 +55,13 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
     public Collection<AssetId> SiblingIds { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalMovePointAsset Physical => this;
+    public override Physical.IMovePointAsset Physical => this;
 
     private byte _flagsProps;
-    byte IPhysicalMovePointAsset.FlagsProps { get => _flagsProps; set => _flagsProps = value; }
+    byte Physical.IMovePointAsset.FlagsProps { get => _flagsProps; set => _flagsProps = value; }
 
     private ushort? _overriddenNumPoints;
-    ushort IPhysicalMovePointAsset.NumPoints
+    ushort Physical.IMovePointAsset.NumPoints
     {
         get => _overriddenNumPoints ?? (ushort)SiblingIds.Count;
         set => _overriddenNumPoints = value == (ushort)SiblingIds.Count ? null : value;
@@ -140,25 +140,28 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="MovePointAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalMovePointAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="MovePointAsset"/>'s underlying values.
     /// </summary>
-    byte FlagsProps { get; set; }
+    public interface IMovePointAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        byte FlagsProps { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="MovePointAsset.SiblingIds"/> stored for this asset, read directly
-    /// from its fixed header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="MovePointAsset.SiblingIds"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    ushort NumPoints { get; set; }
+        /// <summary>
+        /// The number of <see cref="MovePointAsset.SiblingIds"/> stored for this asset, read directly
+        /// from its fixed header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="MovePointAsset.SiblingIds"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        ushort NumPoints { get; set; }
+    }
 }
 
 /// <summary>

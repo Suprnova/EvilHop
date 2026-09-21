@@ -8,7 +8,7 @@ namespace EvilHop.Assets;
 /// A <see cref="CameraAsset"/> that hovers just behind and to the side of its target, realigning
 /// itself as the target moves.
 /// </summary>
-public sealed class ShoulderCameraAsset() : CameraAsset, IPhysicalShoulderCameraAsset
+public sealed class ShoulderCameraAsset() : CameraAsset, Physical.IShoulderCameraAsset
 {
     /// <summary>The camera's distance from its target.</summary>
     public float Distance { get; set; }
@@ -26,10 +26,10 @@ public sealed class ShoulderCameraAsset() : CameraAsset, IPhysicalShoulderCamera
     public override CameraKind Kind => CameraKind.Shoulder;
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalShoulderCameraAsset Physical => this;
+    public override Physical.IShoulderCameraAsset Physical => this;
 
     private byte[] _reserved = new byte[ReservedSize];
-    byte[] IPhysicalShoulderCameraAsset.Reserved { get => _reserved; set => _reserved = value; }
+    byte[] Physical.IShoulderCameraAsset.Reserved { get => _reserved; set => _reserved = value; }
 
     private const int ReservedSize = 8;
 
@@ -56,15 +56,18 @@ public sealed class ShoulderCameraAsset() : CameraAsset, IPhysicalShoulderCamera
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ShoulderCameraAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalShoulderCameraAsset : IPhysicalCameraAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The unused 8-byte remainder of the type-specific storage this <see cref="CameraKind"/> shares
-    /// with every other one.
+    /// An explicit interface used to interact with <see cref="ShoulderCameraAsset"/>'s underlying values.
     /// </summary>
-    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
-    byte[] Reserved { get; set; }
+    public interface IShoulderCameraAsset : ICameraAsset
+    {
+        /// <summary>
+        /// The unused 8-byte remainder of the type-specific storage this <see cref="CameraKind"/> shares
+        /// with every other one.
+        /// </summary>
+        [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Fixed-size raw padding with no field structure of its own; a byte[] is the natural representation.")]
+        byte[] Reserved { get; set; }
+    }
 }

@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Base_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type), IPhysicalBaseAsset
+public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type), Physical.IBaseAsset
 {
     /// <summary>
     /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.
@@ -22,57 +22,60 @@ public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type)
     public Collection<Link> Links { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalBaseAsset Physical => this;
+    public override Physical.IBaseAsset Physical => this;
 
     private AssetId? _overriddenBaseId;
-    AssetId IPhysicalBaseAsset.BaseId
+    AssetId Physical.IBaseAsset.BaseId
     {
         get => _overriddenBaseId ?? Id;
         set => _overriddenBaseId = value == Id ? null : value;
     }
 
     private protected byte _baseType = baseType;
-    byte IPhysicalBaseAsset.BaseType
+    byte Physical.IBaseAsset.BaseType
     {
         get => _baseType;
         set => _baseType = value;
     }
 
     private byte? _overriddenLinkCount;
-    byte IPhysicalBaseAsset.LinkCount
+    byte Physical.IBaseAsset.LinkCount
     {
         get => _overriddenLinkCount ?? (byte)Links.Count;
         set => _overriddenLinkCount = value == (byte)Links.Count ? null : value;
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="BaseAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalBaseAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The <see cref="Asset"/>'s ID, as stored in the <see cref="BaseAsset"/> header.
-    /// This field is stored independently from <see cref="Asset.Id"/>, within the
-    /// asset's own data.
+    /// An explicit interface used to interact with <see cref="BaseAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
-    /// </remarks>
-    AssetId BaseId { get; set; }
-    /// <summary>
-    /// The <see cref="BaseAsset"/>'s base type.
-    /// </summary>
-    byte BaseType { get; set; }
-    /// <summary>
-    /// The number of links stored for this <see cref="BaseAsset"/>, read directly from its fixed
-    /// header.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="BaseAsset.Links"/>.Count exist, this field wins during
-    /// serialization. 
-    /// </remarks>
-    byte LinkCount { get; set; }
+    public interface IBaseAsset : IAsset
+    {
+        /// <summary>
+        /// The <see cref="Asset"/>'s ID, as stored in the <see cref="BaseAsset"/> header.
+        /// This field is stored independently from <see cref="Asset.Id"/>, within the
+        /// asset's own data.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+        /// </remarks>
+        AssetId BaseId { get; set; }
+        /// <summary>
+        /// The <see cref="BaseAsset"/>'s base type.
+        /// </summary>
+        byte BaseType { get; set; }
+        /// <summary>
+        /// The number of links stored for this <see cref="BaseAsset"/>, read directly from its fixed
+        /// header.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="BaseAsset.Links"/>.Count exist, this field wins during
+        /// serialization. 
+        /// </remarks>
+        byte LinkCount { get; set; }
+    }
 }
 
 /// <summary>

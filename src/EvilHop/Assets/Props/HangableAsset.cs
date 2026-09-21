@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/HANG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class HangableAsset() : EntityAsset(AssetType.Hangable, baseType: 0x17), IHasModel, IPhysicalHangableAsset
+public sealed class HangableAsset() : EntityAsset(AssetType.Hangable, baseType: 0x17), IHasModel, Physical.IHangableAsset
 {
     /// <summary>
     /// The vertical offset from <see cref="EntityAsset.Position"/> up to the pivot the object swings
@@ -53,10 +53,10 @@ public sealed class HangableAsset() : EntityAsset(AssetType.Hangable, baseType: 
     public float StopDecel { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalHangableAsset Physical => this;
+    public override Physical.IHangableAsset Physical => this;
 
     private uint _hangFlags;
-    uint IPhysicalHangableAsset.HangFlags { get => _hangFlags; set => _hangFlags = value; }
+    uint Physical.IHangableAsset.HangFlags { get => _hangFlags; set => _hangFlags = value; }
 
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
 
@@ -112,13 +112,16 @@ public sealed class HangableAsset() : EntityAsset(AssetType.Hangable, baseType: 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="HangableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalHangableAsset : IPhysicalEntityAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="HangableAsset"/>'s underlying values.
     /// </summary>
-    uint HangFlags { get; set; }
+    public interface IHangableAsset : IEntityAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        uint HangFlags { get; set; }
+    }
 }

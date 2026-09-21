@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DTRK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), IPhysicalDashTrackAsset
+public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), Physical.IDashTrackAsset
 {
     /// <summary>
     /// The mesh's vertices, indexed by <see cref="DashTrackTriangle.VertexA"/>/<see cref="DashTrackTriangle.VertexB"/>/<see cref="DashTrackTriangle.VertexC"/>.
@@ -41,30 +41,30 @@ public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 
     public int LeavableStart { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalDashTrackAsset Physical => this;
+    public override Physical.IDashTrackAsset Physical => this;
 
     private int? _overriddenVertexCount;
-    int IPhysicalDashTrackAsset.VertexCount
+    int Physical.IDashTrackAsset.VertexCount
     {
         get => _overriddenVertexCount ?? Vertices.Count;
         set => _overriddenVertexCount = value == Vertices.Count ? null : value;
     }
 
     private int? _overriddenTriangleCount;
-    int IPhysicalDashTrackAsset.TriangleCount
+    int Physical.IDashTrackAsset.TriangleCount
     {
         get => _overriddenTriangleCount ?? Triangles.Count;
         set => _overriddenTriangleCount = value == Triangles.Count ? null : value;
     }
 
     private uint _unknown1;
-    uint IPhysicalDashTrackAsset.Unknown1 { get => _unknown1; set => _unknown1 = value; }
+    uint Physical.IDashTrackAsset.Unknown1 { get => _unknown1; set => _unknown1 = value; }
 
     private uint _unknown2;
-    uint IPhysicalDashTrackAsset.Unknown2 { get => _unknown2; set => _unknown2 = value; }
+    uint Physical.IDashTrackAsset.Unknown2 { get => _unknown2; set => _unknown2 = value; }
 
     private uint _unknown3;
-    uint IPhysicalDashTrackAsset.Unknown3 { get => _unknown3; set => _unknown3 = value; }
+    uint Physical.IDashTrackAsset.Unknown3 { get => _unknown3; set => _unknown3 = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.DashTrack"/> is known to be read by.
@@ -130,39 +130,42 @@ public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 
     }
 };
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="DashTrackAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalDashTrackAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="DashTrackAsset.Vertices"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="DashTrackAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="DashTrackAsset.Vertices"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int VertexCount { get; set; }
+    public interface IDashTrackAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="DashTrackAsset.Vertices"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="DashTrackAsset.Vertices"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int VertexCount { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="DashTrackAsset.Triangles"/> stored for this asset, read directly
-    /// from its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="DashTrackAsset.Triangles"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    int TriangleCount { get; set; }
+        /// <summary>
+        /// The number of <see cref="DashTrackAsset.Triangles"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="DashTrackAsset.Triangles"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        int TriangleCount { get; set; }
 
-    /// <summary>Unknown.</summary>
-    uint Unknown1 { get; set; }
+        /// <summary>Unknown.</summary>
+        uint Unknown1 { get; set; }
 
-    /// <summary>Unknown.</summary>
-    uint Unknown2 { get; set; }
+        /// <summary>Unknown.</summary>
+        uint Unknown2 { get; set; }
 
-    /// <summary>Unknown.</summary>
-    uint Unknown3 { get; set; }
+        /// <summary>Unknown.</summary>
+        uint Unknown3 { get; set; }
+    }
 }
 
 /// <summary>

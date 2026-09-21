@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/COLL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), IPhysicalCollisionTableAsset
+public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Physical.ICollisionTableAsset
 {
     /// <summary>
     /// The table's entries.
@@ -26,10 +26,10 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), IPh
     public Collection<CollisionTableEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalCollisionTableAsset Physical => this;
+    public override Physical.ICollisionTableAsset Physical => this;
 
     private uint? _overriddenCount;
-    uint IPhysicalCollisionTableAsset.Count
+    uint Physical.ICollisionTableAsset.Count
     {
         get => _overriddenCount ?? (uint)Entries.Count;
         set => _overriddenCount = value == (uint)Entries.Count ? null : value;
@@ -71,19 +71,22 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), IPh
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="CollisionTableAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalCollisionTableAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="CollisionTableAsset.Entries"/> stored for this asset, read directly from
-    /// its leading count field.
+    /// An explicit interface used to interact with <see cref="CollisionTableAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="CollisionTableAsset.Entries"/>.Count exist, this field wins during serialization.
-    /// </remarks>
-    uint Count { get; set; }
+    public interface ICollisionTableAsset : IAsset
+    {
+        /// <summary>
+        /// The number of <see cref="CollisionTableAsset.Entries"/> stored for this asset, read directly from
+        /// its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="CollisionTableAsset.Entries"/>.Count exist, this field wins during serialization.
+        /// </remarks>
+        uint Count { get; set; }
+    }
 }
 
 /// <summary>

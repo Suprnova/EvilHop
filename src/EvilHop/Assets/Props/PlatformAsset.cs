@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/PLAT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 0x06), IHasModel, IHasSurface, IHasAnimList, IPhysicalPlatformAsset
+public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 0x06), IHasModel, IHasSurface, IHasAnimList, Physical.IPlatformAsset
 {
     /// <summary>
     /// This platform's behavior flags.
@@ -21,7 +21,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     public PlatformFlags Flags { get; set; }
 
     /// <summary>
-    /// How this platform moves or reacts. Determines <see cref="IPhysicalPlatformAsset.PlatformType"/>.
+    /// How this platform moves or reacts. Determines <see cref="Physical.IPlatformAsset.PlatformType"/>.
     /// </summary>
     public Motion Motion { get; set; } = new FullyManipulableMotion();
 
@@ -39,10 +39,10 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     };
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalPlatformAsset Physical => this;
+    public override Physical.IPlatformAsset Physical => this;
 
     private PlatformType? _overriddenPlatformType;
-    PlatformType IPhysicalPlatformAsset.PlatformType
+    PlatformType Physical.IPlatformAsset.PlatformType
     {
         get => _overriddenPlatformType ?? Motion.PlatformType;
         set => _overriddenPlatformType = value == Motion.PlatformType ? null : value;
@@ -56,7 +56,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     }
 
     /// <summary>
-    /// The subtype paired with <see cref="IPhysicalPlatformAsset.PlatformType"/>: 0 for the types
+    /// The subtype paired with <see cref="Physical.IPlatformAsset.PlatformType"/>: 0 for the types
     /// grouped together as a plain "Platform", and the type itself for every other.
     /// </summary>
     private byte DerivedSubtype => Physical.PlatformType is PlatformType.ExtendRetract or PlatformType.Orbit
@@ -133,21 +133,24 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="PlatformAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalPlatformAsset : IPhysicalEntityAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The platform's type, selecting how its type-specific block is read. Follows
-    /// <see cref="PlatformAsset.Motion"/>, and is followed in turn by
-    /// <see cref="IPhysicalEntityAsset.Subtype"/>.
+    /// An explicit interface used to interact with <see cref="PlatformAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="PlatformAsset.Motion"/> exist, this field wins during
-    /// serialization. Both blocks are still written from <see cref="PlatformAsset.Motion"/>.
-    /// </remarks>
-    PlatformType PlatformType { get; set; }
+    public interface IPlatformAsset : IEntityAsset
+    {
+        /// <summary>
+        /// The platform's type, selecting how its type-specific block is read. Follows
+        /// <see cref="PlatformAsset.Motion"/>, and is followed in turn by
+        /// <see cref="IEntityAsset.Subtype"/>.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="PlatformAsset.Motion"/> exist, this field wins during
+        /// serialization. Both blocks are still written from <see cref="PlatformAsset.Motion"/>.
+        /// </remarks>
+        PlatformType PlatformType { get; set; }
+    }
 }
 
 /// <summary>

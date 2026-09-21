@@ -15,23 +15,23 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MAPR">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), IPhysicalSurfaceMapperAsset
+public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physical.ISurfaceMapperAsset
 {
     /// <summary>The asset's entries, each assigning one surface to a JSP material index.</summary>
     public Collection<SurfaceMapperEntry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSurfaceMapperAsset Physical => this;
+    public override Physical.ISurfaceMapperAsset Physical => this;
 
     private AssetId? _overriddenSelfId;
-    AssetId IPhysicalSurfaceMapperAsset.SelfId
+    AssetId Physical.ISurfaceMapperAsset.SelfId
     {
         get => _overriddenSelfId ?? Id;
         set => _overriddenSelfId = value == Id ? null : value;
     }
 
     private uint? _overriddenCount;
-    uint IPhysicalSurfaceMapperAsset.Count
+    uint Physical.ISurfaceMapperAsset.Count
     {
         get => _overriddenCount ?? (uint)Entries.Count;
         set => _overriddenCount = value == (uint)Entries.Count ? null : value;
@@ -78,28 +78,31 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), IPhys
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SurfaceMapperAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSurfaceMapperAsset : IPhysicalAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The asset's own ID, stored a second time within its own data.
+    /// An explicit interface used to interact with <see cref="SurfaceMapperAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
-    /// </remarks>
-    AssetId SelfId { get; set; }
+    public interface ISurfaceMapperAsset : IAsset
+    {
+        /// <summary>
+        /// The asset's own ID, stored a second time within its own data.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+        /// </remarks>
+        AssetId SelfId { get; set; }
 
-    /// <summary>
-    /// The number of <see cref="SurfaceMapperAsset.Entries"/> stored for this asset, read directly
-    /// from its leading count field.
-    /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="SurfaceMapperAsset.Entries"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint Count { get; set; }
+        /// <summary>
+        /// The number of <see cref="SurfaceMapperAsset.Entries"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="SurfaceMapperAsset.Entries"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint Count { get; set; }
+    }
 }
 
 /// <summary>

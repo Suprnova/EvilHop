@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SDFX">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseType: 0x4B), IPhysicalSoundEffectAsset
+public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseType: 0x4B), Physical.ISoundEffectAsset
 {
     /// <summary>The <see cref="AssetType.SoundGroup"/> played by this sound.</summary>
     public AssetId SoundGroupId { get; set; }
@@ -38,10 +38,10 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
     }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSoundEffectAsset Physical => this;
+    public override Physical.ISoundEffectAsset Physical => this;
 
     private SoundFlags _soundFlags;
-    SoundFlags IPhysicalSoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
+    SoundFlags Physical.ISoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundEffect"/> is known to be read by.
@@ -87,16 +87,19 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SoundEffectAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSoundEffectAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
-    /// <summary>The sound's raw flags word, read directly from disk.</summary>
-    /// <remarks>
-    /// <see cref="SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
-    /// </remarks>
-    SoundFlags SoundFlags { get; set; }
+    /// <summary>
+    /// An explicit interface used to interact with <see cref="SoundEffectAsset"/>'s underlying values.
+    /// </summary>
+    public interface ISoundEffectAsset : IBaseAsset
+    {
+        /// <summary>The sound's raw flags word, read directly from disk.</summary>
+        /// <remarks>
+        /// <see cref="SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
+        /// </remarks>
+        SoundFlags SoundFlags { get; set; }
+    }
 }
 
 /// <summary>

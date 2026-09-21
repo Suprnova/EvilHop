@@ -263,7 +263,7 @@ public abstract partial class Serializer
     /// <summary>
     /// Best-effort inference of the <see cref="GameVersion"/>/<see cref="FormatProfile"/> a HIP/HOP
     /// stream needs, from its bytes alone - no serializer required up front. See
-    /// <see cref="Sniffing.Sniffer.Sniff"/> for the full scanning/scoring behavior.
+    /// <see cref="Sniffer.Sniff"/> for the full scanning/scoring behavior.
     /// </summary>
     /// <param name="stream">
     /// The stream to sniff. Its <see cref="Stream.Position"/> is restored afterward when

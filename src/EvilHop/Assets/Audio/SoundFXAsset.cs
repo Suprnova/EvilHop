@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 /// Superseded by <see cref="SoundEffectAsset"/> from <see cref="GameVersion.TSSM"/> onward.
 /// <seealso href="https://heavyironmodding.org/wiki/SFX">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13), IPhysicalSoundFXAsset
+public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13), Physical.ISoundFXAsset
 {
     /// <summary>
     /// A base pitch value, multiplied by <see cref="FrequencyMultiplier"/> and passed to the sound
@@ -79,13 +79,13 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
         Physical.SFXFlags = value ? Physical.SFXFlags | bit : Physical.SFXFlags & ~bit;
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalSoundFXAsset Physical => this;
+    public override Physical.ISoundFXAsset Physical => this;
 
     private SFXFlags _sfxFlags;
-    SFXFlags IPhysicalSoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
+    SFXFlags Physical.ISoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
 
     private byte _loopCount;
-    byte IPhysicalSoundFXAsset.LoopCount { get => _loopCount; set => _loopCount = value; }
+    byte Physical.ISoundFXAsset.LoopCount { get => _loopCount; set => _loopCount = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundFX"/> is known to be read by.
@@ -145,22 +145,25 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="SoundFXAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalSoundFXAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
-    /// <summary>The sound's raw flags word, read directly from disk.</summary>
-    /// <remarks>
-    /// <see cref="SFXFlags.Positional"/>, <see cref="SFXFlags.Loop"/>, and
-    /// <see cref="SFXFlags.PlayFromEntity"/> are exposed logically as
-    /// <see cref="SoundFXAsset.Positional"/>, <see cref="SoundFXAsset.Loop"/>, and
-    /// <see cref="SoundFXAsset.PlayFromEntity"/> respectively.
-    /// </remarks>
-    SFXFlags SFXFlags { get; set; }
+    /// <summary>
+    /// An explicit interface used to interact with <see cref="SoundFXAsset"/>'s underlying values.
+    /// </summary>
+    public interface ISoundFXAsset : IBaseAsset
+    {
+        /// <summary>The sound's raw flags word, read directly from disk.</summary>
+        /// <remarks>
+        /// <see cref="SFXFlags.Positional"/>, <see cref="SFXFlags.Loop"/>, and
+        /// <see cref="SFXFlags.PlayFromEntity"/> are exposed logically as
+        /// <see cref="SoundFXAsset.Positional"/>, <see cref="SoundFXAsset.Loop"/>, and
+        /// <see cref="SoundFXAsset.PlayFromEntity"/> respectively.
+        /// </remarks>
+        SFXFlags SFXFlags { get; set; }
 
-    /// <summary>Unknown.</summary>
-    byte LoopCount { get; set; }
+        /// <summary>Unknown.</summary>
+        byte LoopCount { get; set; }
+    }
 }
 
 /// <summary>

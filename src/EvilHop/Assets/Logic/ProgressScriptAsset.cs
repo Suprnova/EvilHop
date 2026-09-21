@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PGRS">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), IPhysicalProgressScriptAsset
+public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), Physical.IProgressScriptAsset
 {
     /// <summary>
     /// This script's events, in ascending <see cref="ProgressScriptEvent.Percent"/> order.
@@ -22,10 +22,10 @@ public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, 
     public Collection<ProgressScriptEvent> Events { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalProgressScriptAsset Physical => this;
+    public override Physical.IProgressScriptAsset Physical => this;
 
     private uint? _overriddenEventCount;
-    uint IPhysicalProgressScriptAsset.EventCount
+    uint Physical.IProgressScriptAsset.EventCount
     {
         get => _overriddenEventCount ?? (uint)Events.Count;
         set => _overriddenEventCount = value == (uint)Events.Count ? null : value;
@@ -72,18 +72,21 @@ public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, 
     }
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="ProgressScriptAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalProgressScriptAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// The number of <see cref="ProgressScriptAsset.Events"/> stored for this asset, read directly
-    /// from its leading count field.
+    /// An explicit interface used to interact with <see cref="ProgressScriptAsset"/>'s underlying values.
     /// </summary>
-    /// <remarks>
-    /// When disagreements with <see cref="ProgressScriptAsset.Events"/>.Count exist, this field wins
-    /// during serialization.
-    /// </remarks>
-    uint EventCount { get; set; }
+    public interface IProgressScriptAsset : IBaseAsset
+    {
+        /// <summary>
+        /// The number of <see cref="ProgressScriptAsset.Events"/> stored for this asset, read directly
+        /// from its leading count field.
+        /// </summary>
+        /// <remarks>
+        /// When disagreements with <see cref="ProgressScriptAsset.Events"/>.Count exist, this field wins
+        /// during serialization.
+        /// </remarks>
+        uint EventCount { get; set; }
+    }
 }

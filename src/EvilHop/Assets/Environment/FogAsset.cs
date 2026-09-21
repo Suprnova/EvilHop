@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/FOG">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhysicalFogAsset
+public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), Physical.IFogAsset
 {
     /// <summary>
     /// The color the sky/background is drawn as while this fog is active.
@@ -47,10 +47,10 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhys
     public float TransitionTime { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
-    public override IPhysicalFogAsset Physical => this;
+    public override Physical.IFogAsset Physical => this;
 
     private byte _fogType;
-    byte IPhysicalFogAsset.FogType { get => _fogType; set => _fogType = value; }
+    byte Physical.IFogAsset.FogType { get => _fogType; set => _fogType = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Fog"/> is known to be read by.
@@ -107,13 +107,16 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhys
 
 }
 
-/// <summary>
-/// An explicit interface used to interact with <see cref="FogAsset"/>'s underlying values.
-/// </summary>
-public interface IPhysicalFogAsset : IPhysicalBaseAsset
+public static partial class Physical
 {
     /// <summary>
-    /// Unknown.
+    /// An explicit interface used to interact with <see cref="FogAsset"/>'s underlying values.
     /// </summary>
-    byte FogType { get; set; }
+    public interface IFogAsset : IBaseAsset
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        byte FogType { get; set; }
+    }
 }
