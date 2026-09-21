@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// its <see cref="Keys"/> count derives entirely from the asset's size.
 /// <seealso href="https://heavyironmodding.org/wiki/FLY">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class FlyAsset() : Asset(AssetType.Fly)
+public sealed partial class FlyAsset() : Asset(AssetType.Fly)
 {
     /// <summary>The recorded keyframes, one per frame of the flythrough.</summary>
     public Collection<FlyKey> Keys { get; } = [];

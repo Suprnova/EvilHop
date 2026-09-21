@@ -4,7 +4,6 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
-using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -129,6 +128,44 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="AttackTableAsset"/> section: a named category grouping a contiguous range of the
+    /// owning table's <see cref="Entries"/>.
+    /// </summary>
+    public sealed class AttackTableSection
+    {
+        /// <summary>
+        /// A hash identifying this section, matched against link/animation lookups by name.
+        /// </summary>
+        public uint SectionId { get; set; }
+
+        /// <summary>
+        /// The index into the owning <see cref="AttackTableAsset"/>'s <see cref="Entries"/>
+        /// where this section's range begins.
+        /// </summary>
+        public ushort Start { get; set; }
+
+        /// <summary>
+        /// The number of <see cref="Entries"/> in this section's range, starting at
+        /// <see cref="Start"/>.
+        /// </summary>
+        public ushort Count { get; set; }
+
+        internal static AttackTableSection Read(EndianReader reader, FormatProfile _) => new()
+        {
+            SectionId = reader.ReadUInt32(),
+            Start = reader.ReadUInt16(),
+            Count = reader.ReadUInt16(),
+        };
+
+        internal static void Write(AttackTableSection section, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(section.SectionId);
+            writer.Write(section.Start);
+            writer.Write(section.Count);
+        }
+    }
 }
 
 public static partial class Physical
@@ -177,43 +214,5 @@ public static partial class Physical
         /// during serialization.
         /// </remarks>
         ushort StateCount { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="AttackTableAsset"/> section: a named category grouping a contiguous range of the
-/// owning table's <see cref="AttackTableAsset.Entries"/>.
-/// </summary>
-public sealed class AttackTableSection
-{
-    /// <summary>
-    /// A hash identifying this section, matched against link/animation lookups by name.
-    /// </summary>
-    public uint SectionId { get; set; }
-
-    /// <summary>
-    /// The index into the owning <see cref="AttackTableAsset"/>'s <see cref="AttackTableAsset.Entries"/>
-    /// where this section's range begins.
-    /// </summary>
-    public ushort Start { get; set; }
-
-    /// <summary>
-    /// The number of <see cref="AttackTableAsset.Entries"/> in this section's range, starting at
-    /// <see cref="Start"/>.
-    /// </summary>
-    public ushort Count { get; set; }
-
-    internal static AttackTableSection Read(EndianReader reader, FormatProfile _) => new()
-    {
-        SectionId = reader.ReadUInt32(),
-        Start = reader.ReadUInt16(),
-        Count = reader.ReadUInt16(),
-    };
-
-    internal static void Write(AttackTableSection section, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(section.SectionId);
-        writer.Write(section.Start);
-        writer.Write(section.Count);
     }
 }
