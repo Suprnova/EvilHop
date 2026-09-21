@@ -127,6 +127,41 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="SoundGroupAsset"/> entry - <see cref="SoundId"/>, played at <see cref="Volume"/>
+    /// with a random pitch offset between <see cref="MinPitchMultiplier"/> and <see cref="MaxPitchMultiplier"/>.
+    /// </summary>
+    public sealed class SoundGroupEntry
+    {
+        /// <summary>The <see cref="AssetType.Sound"/> or <see cref="AssetType.StreamingSound"/> this entry plays.</summary>
+        public AssetId SoundId { get; set; }
+
+        /// <summary>This entry's playback volume, from 0 to 1.</summary>
+        public float Volume { get; set; }
+
+        /// <summary>The minimum pitch offset applied when this entry plays, chosen at random up to <see cref="MaxPitchMultiplier"/>.</summary>
+        public float MinPitchMultiplier { get; set; }
+
+        /// <summary>The maximum pitch offset applied when this entry plays, chosen at random down to <see cref="MinPitchMultiplier"/>.</summary>
+        public float MaxPitchMultiplier { get; set; }
+
+        internal static SoundGroupEntry Read(EndianReader reader, FormatProfile _) => new()
+        {
+            SoundId = reader.ReadAssetId(),
+            Volume = reader.ReadSingle(),
+            MinPitchMultiplier = reader.ReadSingle(),
+            MaxPitchMultiplier = reader.ReadSingle(),
+        };
+
+        internal static void Write(SoundGroupEntry value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.SoundId);
+            writer.Write(value.Volume);
+            writer.Write(value.MinPitchMultiplier);
+            writer.Write(value.MaxPitchMultiplier);
+        }
+    }
 }
 
 public static partial class Physical
@@ -169,40 +204,5 @@ public static partial class Physical
         /// Every archive checked so far has this zero.
         /// </remarks>
         uint GroupNamePointer { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="SoundGroupAsset"/> entry - <see cref="SoundId"/>, played at <see cref="Volume"/>
-/// with a random pitch offset between <see cref="MinPitchMultiplier"/> and <see cref="MaxPitchMultiplier"/>.
-/// </summary>
-public sealed class SoundGroupEntry
-{
-    /// <summary>The <see cref="AssetType.Sound"/> or <see cref="AssetType.StreamingSound"/> this entry plays.</summary>
-    public AssetId SoundId { get; set; }
-
-    /// <summary>This entry's playback volume, from 0 to 1.</summary>
-    public float Volume { get; set; }
-
-    /// <summary>The minimum pitch offset applied when this entry plays, chosen at random up to <see cref="MaxPitchMultiplier"/>.</summary>
-    public float MinPitchMultiplier { get; set; }
-
-    /// <summary>The maximum pitch offset applied when this entry plays, chosen at random down to <see cref="MinPitchMultiplier"/>.</summary>
-    public float MaxPitchMultiplier { get; set; }
-
-    internal static SoundGroupEntry Read(EndianReader reader, FormatProfile _) => new()
-    {
-        SoundId = reader.ReadAssetId(),
-        Volume = reader.ReadSingle(),
-        MinPitchMultiplier = reader.ReadSingle(),
-        MaxPitchMultiplier = reader.ReadSingle(),
-    };
-
-    internal static void Write(SoundGroupEntry value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.SoundId);
-        writer.Write(value.Volume);
-        writer.Write(value.MinPitchMultiplier);
-        writer.Write(value.MaxPitchMultiplier);
     }
 }

@@ -4,6 +4,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.AnimationTableAsset.AnimationTableFile;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -91,7 +92,7 @@ public class AnimationTableAssetTests
 
         Assert.Single(asset.Files);
         var file = asset.Files[0];
-        Assert.Equal((FileFlags)0xF0, file.FileFlags);
+        Assert.Equal((FileFlags)0xF0, file.Flags);
         Assert.Equal(-1.0f, file.TimeOffset);
         Assert.Equal(1, file.NumAnimsX);
         Assert.Equal(1, file.NumAnimsY);

@@ -143,6 +143,31 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Flags controlling playback and spatialization for a <see cref="SoundFXAsset"/>.
+    /// </summary>
+    [Flags]
+    public enum SFXFlags : ushort
+    {
+        /// <summary>No flags are set.</summary>
+        None = 0,
+
+        /// <summary>
+        /// The sound plays from a 3D position - <see cref="AttachId"/>'s live position or
+        /// the fixed <see cref="Position"/> - rather than flat.
+        /// </summary>
+        Positional = 1 << 1,
+
+        /// <summary>The sound loops.</summary>
+        Loop = 1 << 2,
+
+        /// <summary>
+        /// The sound plays from <see cref="AttachId"/>'s live position, instead of the fixed
+        /// <see cref="Position"/>, when <see cref="Positional"/> is set.
+        /// </summary>
+        PlayFromEntity = 1 << 3,
+    }
 }
 
 public static partial class Physical
@@ -154,39 +179,14 @@ public static partial class Physical
     {
         /// <summary>The sound's raw flags word, read directly from disk.</summary>
         /// <remarks>
-        /// <see cref="SFXFlags.Positional"/>, <see cref="SFXFlags.Loop"/>, and
-        /// <see cref="SFXFlags.PlayFromEntity"/> are exposed logically as
+        /// <see cref="SoundFXAsset.SFXFlags.Positional"/>, <see cref="SoundFXAsset.SFXFlags.Loop"/>, and
+        /// <see cref="SoundFXAsset.SFXFlags.PlayFromEntity"/> are exposed logically as
         /// <see cref="SoundFXAsset.Positional"/>, <see cref="SoundFXAsset.Loop"/>, and
         /// <see cref="SoundFXAsset.PlayFromEntity"/> respectively.
         /// </remarks>
-        SFXFlags SFXFlags { get; set; }
+        SoundFXAsset.SFXFlags SFXFlags { get; set; }
 
         /// <summary>Unknown.</summary>
         byte LoopCount { get; set; }
     }
-}
-
-/// <summary>
-/// Flags controlling playback and spatialization for a <see cref="SoundFXAsset"/>.
-/// </summary>
-[Flags]
-public enum SFXFlags : ushort
-{
-    /// <summary>No flags are set.</summary>
-    None = 0,
-
-    /// <summary>
-    /// The sound plays from a 3D position - <see cref="SoundFXAsset.AttachId"/>'s live position or
-    /// the fixed <see cref="SoundFXAsset.Position"/> - rather than flat.
-    /// </summary>
-    Positional = 1 << 1,
-
-    /// <summary>The sound loops.</summary>
-    Loop = 1 << 2,
-
-    /// <summary>
-    /// The sound plays from <see cref="SoundFXAsset.AttachId"/>'s live position, instead of the fixed
-    /// <see cref="SoundFXAsset.Position"/>, when <see cref="Positional"/> is set.
-    /// </summary>
-    PlayFromEntity = 1 << 3,
 }

@@ -131,6 +131,43 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="AnimationAsset"/> keyframe: a bone's rotation and translation at a given time.
+    /// </summary>
+    public sealed class AnimationKey
+    {
+        /// <summary>
+        /// The index into the owning <see cref="Times"/> this keyframe applies at.
+        /// </summary>
+        public ushort TimeIndex { get; set; }
+
+        /// <summary>
+        /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W).
+        /// </summary>
+        /// TODO: we serialize these as shorts, losing precision, that should be communicated somehow,
+        /// in the type or in the comments.
+        public Vector4 Quat { get; set; }
+
+        /// <summary>
+        /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
+        /// </summary>
+        public Vector3 Tran { get; set; }
+
+        internal static AnimationKey Read(EndianReader reader, FormatProfile _) => new()
+        {
+            TimeIndex = reader.ReadUInt16(),
+            Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
+            Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
+        };
+
+        internal static void Write(AnimationKey value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.TimeIndex);
+            writer.Write((short)value.Quat.X); writer.Write((short)value.Quat.Y); writer.Write((short)value.Quat.Z); writer.Write((short)value.Quat.W);
+            writer.Write((short)value.Tran.X); writer.Write((short)value.Tran.Y); writer.Write((short)value.Tran.Z);
+        }
+    }
 }
 
 public static partial class Physical
@@ -174,42 +211,5 @@ public static partial class Physical
         /// serialization.
         /// </remarks>
         ushort TimeCount { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="AnimationAsset"/> keyframe: a bone's rotation and translation at a given time.
-/// </summary>
-public sealed class AnimationKey
-{
-    /// <summary>
-    /// The index into the owning <see cref="AnimationAsset.Times"/> this keyframe applies at.
-    /// </summary>
-    public ushort TimeIndex { get; set; }
-
-    /// <summary>
-    /// The bone's rotation at <see cref="TimeIndex"/>, as a fixed-point quaternion (X, Y, Z, W).
-    /// </summary>
-    /// TODO: we serialize these as shorts, losing precision, that should be communicated somehow,
-    /// in the type or in the comments.
-    public Vector4 Quat { get; set; }
-
-    /// <summary>
-    /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
-    /// </summary>
-    public Vector3 Tran { get; set; }
-
-    internal static AnimationKey Read(EndianReader reader, FormatProfile _) => new()
-    {
-        TimeIndex = reader.ReadUInt16(),
-        Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
-        Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
-    };
-
-    internal static void Write(AnimationKey value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.TimeIndex);
-        writer.Write((short)value.Quat.X); writer.Write((short)value.Quat.Y); writer.Write((short)value.Quat.Z); writer.Write((short)value.Quat.W);
-        writer.Write((short)value.Tran.X); writer.Write((short)value.Tran.Y); writer.Write((short)value.Tran.Z);
     }
 }

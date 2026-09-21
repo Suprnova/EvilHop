@@ -85,6 +85,22 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Flags controlling playback behavior for a <see cref="SoundEffectAsset"/>.
+    /// </summary>
+    [Flags]
+    public enum SoundFlags : uint
+    {
+        /// <summary>No flags are set.</summary>
+        None = 0,
+
+        /// <summary>
+        /// The sound plays from <see cref="AttachId"/>'s live position, instead of
+        /// the fixed <see cref="Position"/>.
+        /// </summary>
+        PlayFromEntity = 1 << 2,
+    }
 }
 
 public static partial class Physical
@@ -96,24 +112,8 @@ public static partial class Physical
     {
         /// <summary>The sound's raw flags word, read directly from disk.</summary>
         /// <remarks>
-        /// <see cref="SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
+        /// <see cref="SoundEffectAsset.SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
         /// </remarks>
-        SoundFlags SoundFlags { get; set; }
+        SoundEffectAsset.SoundFlags SoundFlags { get; set; }
     }
-}
-
-/// <summary>
-/// Flags controlling playback behavior for a <see cref="SoundEffectAsset"/>.
-/// </summary>
-[Flags]
-public enum SoundFlags : uint
-{
-    /// <summary>No flags are set.</summary>
-    None = 0,
-
-    /// <summary>
-    /// The sound plays from <see cref="SoundEffectAsset.AttachId"/>'s live position, instead of
-    /// the fixed <see cref="SoundEffectAsset.Position"/>.
-    /// </summary>
-    PlayFromEntity = 1 << 2,
 }

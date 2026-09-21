@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/RANM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ReactiveAnimationAsset() : BaseAsset(AssetType.ReactiveAnimation, baseType: 0x00), Physical.IReactiveAnimationAsset
+public sealed partial class ReactiveAnimationAsset() : BaseAsset(AssetType.ReactiveAnimation, baseType: 0x00), Physical.IReactiveAnimationAsset
 {
     /// <summary>
     /// The table's format version.

@@ -19,7 +19,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ATBL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), Physical.IAnimationTableAsset
+public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTable), Physical.IAnimationTableAsset
 {
     /// <summary>
     /// Selects which game-specific "constructor" function builds this table's runtime

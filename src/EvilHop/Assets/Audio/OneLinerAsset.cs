@@ -61,6 +61,27 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physica
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Identifies the type of criteria for which this <see cref="OneLinerEntry"/> will play.
+    /// </summary>
+    public enum OneLinerPlayerType
+    {
+        /// <summary>This entry has no gating condition - it is always eligible to play.</summary>
+        Always = 0,
+
+        /// <summary>Unknown.</summary>
+        Counter = 1,
+
+        /// <summary>Unknown.</summary>
+        Checker = 2,
+
+        /// <summary>
+        /// This entry's eligibility is gated by evaluating <see cref="OneLinerEntry.FirstParam"/> and
+        /// <see cref="OneLinerEntry.SecondParam"/> against an unconfirmed condition.
+        /// </summary>
+        Tester = 3,
+    }
 }
 
 public static partial class Physical
@@ -80,25 +101,4 @@ public static partial class Physical
         /// </remarks>
         uint EntryCount { get; set; }
     }
-}
-
-/// <summary>
-/// Identifies the type of criteria for which this <see cref="OneLinerEntry"/> will play.
-/// </summary>
-public enum OneLinerPlayerType
-{
-    /// <summary>This entry has no gating condition - it is always eligible to play.</summary>
-    Always = 0,
-
-    /// <summary>Unknown.</summary>
-    Counter = 1,
-
-    /// <summary>Unknown.</summary>
-    Checker = 2,
-
-    /// <summary>
-    /// This entry's eligibility is gated by evaluating <see cref="OneLinerEntry.FirstParam"/> and
-    /// <see cref="OneLinerEntry.SecondParam"/> against an unconfirmed condition.
-    /// </summary>
-    Tester = 3,
 }

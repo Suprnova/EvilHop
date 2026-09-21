@@ -4,6 +4,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.SoundGroupAsset;
 
 namespace EvilHop.Tests.Serialization;
 
