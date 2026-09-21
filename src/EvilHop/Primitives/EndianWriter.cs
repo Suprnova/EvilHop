@@ -90,6 +90,13 @@ public sealed class EndianWriter(Stream output, Endianness endianness, bool leav
         Write(bytes);
     }
 
+    /// <summary>Writes a <see cref="Vector2"/> as two consecutive <see cref="Write(float)"/>s.</summary>
+    public void Write(Vector2 value)
+    {
+        Write(value.X);
+        Write(value.Y);
+    }
+
     /// <summary>Writes a <see cref="Vector3"/> as three consecutive <see cref="Write(float)"/>s.</summary>
     public void Write(Vector3 value)
     {

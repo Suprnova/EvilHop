@@ -1,3 +1,6 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -46,4 +49,26 @@ public sealed class AnimationTableState
     /// is entered.
     /// </summary>
     public uint SubStateCount { get; set; }
+
+    internal static AnimationTableState Read(EndianReader reader, FormatProfile _) => new()
+    {
+        StateId = reader.ReadUInt32(),
+        FileIndex = reader.ReadUInt32(),
+        EffectCount = reader.ReadUInt32(),
+        EffectOffset = reader.ReadUInt32(),
+        Speed = reader.ReadSingle(),
+        SubStateId = reader.ReadUInt32(),
+        SubStateCount = reader.ReadUInt32(),
+    };
+
+    internal static void Write(AnimationTableState value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.StateId);
+        writer.Write(value.FileIndex);
+        writer.Write(value.EffectCount);
+        writer.Write(value.EffectOffset);
+        writer.Write(value.Speed);
+        writer.Write(value.SubStateId);
+        writer.Write(value.SubStateCount);
+    }
 }

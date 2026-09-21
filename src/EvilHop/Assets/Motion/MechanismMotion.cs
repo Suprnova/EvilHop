@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -68,60 +69,64 @@ public sealed class MechanismMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.Mechanism;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static new MechanismMotion Read(EndianReader reader, FormatProfile profile)
     {
-        Movement = (MechanismMovement)reader.ReadByte();
-        MechanismFlags = (MechanismFlags)reader.ReadByte();
-        SlideAxis = (MotionAxis)reader.ReadByte();
-        RotateAxis = (MotionAxis)reader.ReadByte();
-        if (!IsBFBBOrEarlier(game))
+        var motion = new MechanismMotion
         {
-            ScaleAxis = reader.ReadByte();
+            Movement = (MechanismMovement)reader.ReadByte(),
+            MechanismFlags = (MechanismFlags)reader.ReadByte(),
+            SlideAxis = (MotionAxis)reader.ReadByte(),
+            RotateAxis = (MotionAxis)reader.ReadByte(),
+        };
+        if (!IsBFBBOrEarlier(profile.Game))
+        {
+            motion.ScaleAxis = reader.ReadByte();
             reader.ReadBytes(3); // padding
         }
 
-        SlideDistance = reader.ReadSingle();
-        SlideTime = reader.ReadSingle();
-        SlideAccelTime = reader.ReadSingle();
-        SlideDecelTime = reader.ReadSingle();
-        RotateDistance = reader.ReadSingle();
-        RotateTime = reader.ReadSingle();
-        RotateAccelTime = reader.ReadSingle();
-        RotateDecelTime = reader.ReadSingle();
-        ReturnDelay = reader.ReadSingle();
-        PostReturnDelay = reader.ReadSingle();
-        if (IsBFBBOrEarlier(game)) return;
+        motion.SlideDistance = reader.ReadSingle();
+        motion.SlideTime = reader.ReadSingle();
+        motion.SlideAccelTime = reader.ReadSingle();
+        motion.SlideDecelTime = reader.ReadSingle();
+        motion.RotateDistance = reader.ReadSingle();
+        motion.RotateTime = reader.ReadSingle();
+        motion.RotateAccelTime = reader.ReadSingle();
+        motion.RotateDecelTime = reader.ReadSingle();
+        motion.ReturnDelay = reader.ReadSingle();
+        motion.PostReturnDelay = reader.ReadSingle();
+        if (IsBFBBOrEarlier(profile.Game)) return motion;
 
-        ScaleAmount = reader.ReadSingle();
-        ScaleDuration = reader.ReadSingle();
+        motion.ScaleAmount = reader.ReadSingle();
+        motion.ScaleDuration = reader.ReadSingle();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(MechanismMotion value, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write((byte)Movement);
-        writer.Write((byte)MechanismFlags);
-        writer.Write((byte)SlideAxis);
-        writer.Write((byte)RotateAxis);
-        if (!IsBFBBOrEarlier(game))
+        writer.Write((byte)value.Movement);
+        writer.Write((byte)value.MechanismFlags);
+        writer.Write((byte)value.SlideAxis);
+        writer.Write((byte)value.RotateAxis);
+        if (!IsBFBBOrEarlier(profile.Game))
         {
-            writer.Write(ScaleAxis);
+            writer.Write(value.ScaleAxis);
             writer.Write(new byte[3]); // padding
         }
 
-        writer.Write(SlideDistance);
-        writer.Write(SlideTime);
-        writer.Write(SlideAccelTime);
-        writer.Write(SlideDecelTime);
-        writer.Write(RotateDistance);
-        writer.Write(RotateTime);
-        writer.Write(RotateAccelTime);
-        writer.Write(RotateDecelTime);
-        writer.Write(ReturnDelay);
-        writer.Write(PostReturnDelay);
-        if (IsBFBBOrEarlier(game)) return;
+        writer.Write(value.SlideDistance);
+        writer.Write(value.SlideTime);
+        writer.Write(value.SlideAccelTime);
+        writer.Write(value.SlideDecelTime);
+        writer.Write(value.RotateDistance);
+        writer.Write(value.RotateTime);
+        writer.Write(value.RotateAccelTime);
+        writer.Write(value.RotateDecelTime);
+        writer.Write(value.ReturnDelay);
+        writer.Write(value.PostReturnDelay);
+        if (IsBFBBOrEarlier(profile.Game)) return;
 
-        writer.Write(ScaleAmount);
-        writer.Write(ScaleDuration);
+        writer.Write(value.ScaleAmount);
+        writer.Write(value.ScaleDuration);
     }
 }
 

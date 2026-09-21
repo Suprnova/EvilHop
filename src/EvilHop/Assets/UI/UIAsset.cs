@@ -80,12 +80,13 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI, baseType: 0x20), IHasS
         asset.Width = reader.ReadUInt16();
         asset.Height = reader.ReadUInt16();
         asset.TextureId = reader.ReadAssetId();
-        asset.TopLeftUV = ReadVector2(reader);
-        asset.TopRightUV = ReadVector2(reader);
-        asset.BottomRightUV = ReadVector2(reader);
-        asset.BottomLeftUV = ReadVector2(reader);
+        asset.TopLeftUV = reader.ReadVector2();
+        asset.TopRightUV = reader.ReadVector2();
+        asset.BottomRightUV = reader.ReadVector2();
+        asset.BottomLeftUV = reader.ReadVector2();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -100,21 +101,14 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI, baseType: 0x20), IHasS
         writer.Write(asset.Width);
         writer.Write(asset.Height);
         writer.Write(asset.TextureId);
-        WriteVector2(writer, asset.TopLeftUV);
-        WriteVector2(writer, asset.TopRightUV);
-        WriteVector2(writer, asset.BottomRightUV);
-        WriteVector2(writer, asset.BottomLeftUV);
+        writer.Write(asset.TopLeftUV);
+        writer.Write(asset.TopRightUV);
+        writer.Write(asset.BottomRightUV);
+        writer.Write(asset.BottomLeftUV);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
-    }
-
-    private static Vector2 ReadVector2(EndianReader reader) => new(reader.ReadSingle(), reader.ReadSingle());
-
-    private static void WriteVector2(EndianWriter writer, Vector2 value)
-    {
-        writer.Write(value.X);
-        writer.Write(value.Y);
     }
 }
 

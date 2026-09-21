@@ -47,36 +47,25 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), IPh
         GameVersion.Ratatouille,
     };
 
-    internal static CollisionTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static CollisionTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new CollisionTableAsset();
         AssetFields.Populate(asset, header, debug);
 
         var count = reader.ReadUInt32();
         for (var i = 0; i < count; i++)
-        {
-            asset.Entries.Add(new CollisionTableEntry
-            {
-                ModelId = reader.ReadAssetId(),
-                CollisionModelId = reader.ReadAssetId(),
-                CameraCollisionModelId = reader.ReadAssetId(),
-            });
-        }
+            asset.Entries.Add(CollisionTableEntry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(CollisionTableAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(CollisionTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.ModelId);
-            writer.Write(entry.CollisionModelId);
-            writer.Write(entry.CameraCollisionModelId);
-        }
+            CollisionTableEntry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -120,4 +109,18 @@ public record struct CollisionTableEntry
     /// <see cref="ModelId"/> and can pass through it.
     /// </summary>
     public AssetId CameraCollisionModelId { get; set; }
+
+    internal static CollisionTableEntry Read(EndianReader reader, FormatProfile _) => new()
+    {
+        ModelId = reader.ReadAssetId(),
+        CollisionModelId = reader.ReadAssetId(),
+        CameraCollisionModelId = reader.ReadAssetId(),
+    };
+
+    internal static void Write(CollisionTableEntry value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.ModelId);
+        writer.Write(value.CollisionModelId);
+        writer.Write(value.CameraCollisionModelId);
+    }
 }

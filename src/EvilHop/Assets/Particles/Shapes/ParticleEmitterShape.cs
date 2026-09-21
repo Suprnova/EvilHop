@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -18,52 +18,53 @@ public abstract class ParticleEmitterShape
     internal const int BlockSize = 0x1C;
 
     /// <summary>
-    /// Reads this shape's fields from a reader scoped to the rest of its block.
-    /// </summary>
-    private protected abstract void ReadFields(EndianReader reader, GameVersion game);
-
-    /// <summary>
-    /// Writes this shape's fields, no more than the rest of its block holds.
-    /// </summary>
-    private protected abstract void WriteFields(EndianWriter writer, GameVersion game);
-
-    /// <summary>
     /// Reads one shape block for <paramref name="kind"/>.
     /// </summary>
     /// <exception cref="InvalidDataException"><paramref name="kind"/> has no known shape.</exception>
-    internal static ParticleEmitterShape Read(EndianReader reader, GameVersion game, ParticleEmitterKind kind)
+    internal static ParticleEmitterShape Read(EndianReader reader, ParticleEmitterKind kind, FormatProfile profile)
     {
         using var block = new EndianReader(new MemoryStream(reader.ReadBytes(BlockSize)), reader.Endianness);
 
-        ParticleEmitterShape shape = kind switch
+        return kind switch
         {
-            ParticleEmitterKind.Point => new PointEmitterShape(),
+            ParticleEmitterKind.Point => PointEmitterShape.Read(block, profile),
             ParticleEmitterKind.CircleEdge or ParticleEmitterKind.Circle
-                or ParticleEmitterKind.OCircleEdge or ParticleEmitterKind.OCircle => new CircleEmitterShape(),
-            ParticleEmitterKind.RectEdge or ParticleEmitterKind.Rect => new RectEmitterShape(),
-            ParticleEmitterKind.Line => new LineEmitterShape(),
-            ParticleEmitterKind.Volume => new VolumeEmitterShape(),
+                or ParticleEmitterKind.OCircleEdge or ParticleEmitterKind.OCircle => CircleEmitterShape.Read(block, profile),
+            ParticleEmitterKind.RectEdge or ParticleEmitterKind.Rect => RectEmitterShape.Read(block, profile),
+            ParticleEmitterKind.Line => LineEmitterShape.Read(block, profile),
+            ParticleEmitterKind.Volume => VolumeEmitterShape.Read(block, profile),
             ParticleEmitterKind.SphereEdge1 or ParticleEmitterKind.Sphere
-                or ParticleEmitterKind.SphereEdge2 or ParticleEmitterKind.SphereEdge3 => new SphereEmitterShape(),
-            ParticleEmitterKind.OffsetPoint => new OffsetPointEmitterShape(),
-            ParticleEmitterKind.VCylEdge => new VCylEmitterShape(),
-            ParticleEmitterKind.EntityBone => new EntityBoneEmitterShape(),
-            ParticleEmitterKind.EntityBound => new EntityBoundEmitterShape(),
+                or ParticleEmitterKind.SphereEdge2 or ParticleEmitterKind.SphereEdge3 => SphereEmitterShape.Read(block, profile),
+            ParticleEmitterKind.OffsetPoint => OffsetPointEmitterShape.Read(block, profile),
+            ParticleEmitterKind.VCylEdge => VCylEmitterShape.Read(block, profile),
+            ParticleEmitterKind.EntityBone => EntityBoneEmitterShape.Read(block, profile),
+            ParticleEmitterKind.EntityBound => EntityBoundEmitterShape.Read(block, profile),
             _ => throw new InvalidDataException($"Particle emitter kind 0x{(byte)kind:X2} has no {nameof(ParticleEmitterShape)}."),
         };
-
-        shape.ReadFields(block, game);
-        return shape;
     }
 
     /// <summary>
-    /// Writes this shape as one block.
+    /// Writes <paramref name="value"/> as one shape block.
     /// </summary>
-    internal void Write(EndianWriter writer, GameVersion game)
+    internal static void Write(ParticleEmitterShape value, EndianWriter writer, FormatProfile profile)
     {
         using var stream = new MemoryStream();
         using (var block = new EndianWriter(stream, writer.Endianness, leaveOpen: true))
-            WriteFields(block, game);
+        {
+            switch (value)
+            {
+                case PointEmitterShape s: PointEmitterShape.Write(s, block, profile); break;
+                case CircleEmitterShape s: CircleEmitterShape.Write(s, block, profile); break;
+                case RectEmitterShape s: RectEmitterShape.Write(s, block, profile); break;
+                case LineEmitterShape s: LineEmitterShape.Write(s, block, profile); break;
+                case VolumeEmitterShape s: VolumeEmitterShape.Write(s, block, profile); break;
+                case SphereEmitterShape s: SphereEmitterShape.Write(s, block, profile); break;
+                case OffsetPointEmitterShape s: OffsetPointEmitterShape.Write(s, block, profile); break;
+                case VCylEmitterShape s: VCylEmitterShape.Write(s, block, profile); break;
+                case EntityBoneEmitterShape s: EntityBoneEmitterShape.Write(s, block, profile); break;
+                case EntityBoundEmitterShape s: EntityBoundEmitterShape.Write(s, block, profile); break;
+            }
+        }
 
         writer.Write(stream.ToArray());
         writer.Write(new byte[BlockSize - (int)stream.Length]);

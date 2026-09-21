@@ -69,7 +69,8 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
         asset.ActiveTime = reader.ReadSingle();
         asset.OnAnimationId = reader.ReadAssetId();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -87,7 +88,8 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
         writer.Write(asset.ActiveTime);
         writer.Write(asset.OnAnimationId);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

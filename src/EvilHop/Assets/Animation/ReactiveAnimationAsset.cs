@@ -46,7 +46,7 @@ public sealed class ReactiveAnimationAsset() : BaseAsset(AssetType.ReactiveAnima
         GameVersion.Incredibles,
     };
 
-    internal static ReactiveAnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static ReactiveAnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new ReactiveAnimationAsset();
         AssetFields.Populate(asset, header, debug);
@@ -54,57 +54,20 @@ public sealed class ReactiveAnimationAsset() : BaseAsset(AssetType.ReactiveAnima
 
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
-        for (int i = 0; i < rowCount; i++)
-        {
-            asset.Rows.Add(new ReactiveAnimationRow
-            {
-                StaticModelId = reader.ReadAssetId(),
-                BoundModelId = reader.ReadAssetId(),
-                LodDistance = reader.ReadSingle(),
-                IdleAnimationId = reader.ReadAssetId(),
-                MoveThroughAnimationId = reader.ReadAssetId(),
-                HitAnimationId = reader.ReadAssetId(),
-                IdleSoundGroupId = reader.ReadAssetId(),
-                MoveThroughSoundGroupId = reader.ReadAssetId(),
-                HitSoundGroupId = reader.ReadAssetId(),
-                BurntModelId = reader.ReadAssetId(),
-                BurnAnimationId = reader.ReadAssetId(),
-                BurnFuel = reader.ReadSingle(),
-                BurnFlameSize = reader.ReadSingle(),
-                BurnEmitScale = reader.ReadSingle(),
-                MoveThroughRadius = reader.ReadSingle(),
-            });
-        }
+        for (int i = 0; i < rowCount; i++) asset.Rows.Add(ReactiveAnimationRow.Read(reader, profile));
 
         asset.Physical.RowCount = asset.Rows.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(ReactiveAnimationAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(ReactiveAnimationAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
-        foreach (var row in asset.Rows)
-        {
-            writer.Write(row.StaticModelId);
-            writer.Write(row.BoundModelId);
-            writer.Write(row.LodDistance);
-            writer.Write(row.IdleAnimationId);
-            writer.Write(row.MoveThroughAnimationId);
-            writer.Write(row.HitAnimationId);
-            writer.Write(row.IdleSoundGroupId);
-            writer.Write(row.MoveThroughSoundGroupId);
-            writer.Write(row.HitSoundGroupId);
-            writer.Write(row.BurntModelId);
-            writer.Write(row.BurnAnimationId);
-            writer.Write(row.BurnFuel);
-            writer.Write(row.BurnFlameSize);
-            writer.Write(row.BurnEmitScale);
-            writer.Write(row.MoveThroughRadius);
-        }
+        foreach (var row in asset.Rows) ReactiveAnimationRow.Write(row, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

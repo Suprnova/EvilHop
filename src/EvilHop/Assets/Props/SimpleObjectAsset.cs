@@ -69,7 +69,8 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
         asset.Physical.SimpleFlags = reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -86,7 +87,8 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
         writer.Write(asset.Physical.SimpleFlags);
         writer.Write((short)0); // padding
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

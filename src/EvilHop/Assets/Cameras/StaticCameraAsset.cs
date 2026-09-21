@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
@@ -22,16 +23,18 @@ public sealed class StaticCameraAsset() : CameraAsset, IPhysicalStaticCameraAsse
 
     private const int ReservedSize = 20;
 
-    private protected override void ReadTypeFields(EndianReader reader)
+    internal static StaticCameraAsset Read(EndianReader reader, FormatProfile _)
     {
-        Physical.Unused = reader.ReadUInt32();
-        Physical.Reserved = reader.ReadBytes(ReservedSize);
+        var value = new StaticCameraAsset();
+        value.Physical.Unused = reader.ReadUInt32();
+        value.Physical.Reserved = reader.ReadBytes(ReservedSize);
+        return value;
     }
 
-    private protected override void WriteTypeFields(EndianWriter writer)
+    internal static void Write(StaticCameraAsset value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Physical.Unused);
-        writer.Write(Physical.Reserved);
+        writer.Write(value.Physical.Unused);
+        writer.Write(value.Physical.Reserved);
     }
 }
 

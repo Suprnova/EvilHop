@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -22,19 +22,19 @@ public sealed class ForwardReturnMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.ForwardReturn;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static ForwardReturnMotion Read(EndianReader reader, FormatProfile _) => new()
     {
-        ForwardSpeed = reader.ReadSingle();
-        ReturnSpeed = reader.ReadSingle();
-        ReturnDelay = reader.ReadSingle();
-        PostReturnDelay = reader.ReadSingle();
-    }
+        ForwardSpeed = reader.ReadSingle(),
+        ReturnSpeed = reader.ReadSingle(),
+        ReturnDelay = reader.ReadSingle(),
+        PostReturnDelay = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(ForwardReturnMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(ForwardSpeed);
-        writer.Write(ReturnSpeed);
-        writer.Write(ReturnDelay);
-        writer.Write(PostReturnDelay);
+        writer.Write(value.ForwardSpeed);
+        writer.Write(value.ReturnSpeed);
+        writer.Write(value.ReturnDelay);
+        writer.Write(value.PostReturnDelay);
     }
 }

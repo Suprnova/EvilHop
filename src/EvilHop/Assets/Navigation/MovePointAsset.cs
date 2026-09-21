@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Numerics;
 
@@ -75,6 +79,65 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
+
+    internal static MovePointAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new MovePointAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+
+        asset.Position = reader.ReadVector3();
+        asset.Weight = reader.ReadUInt16();
+        asset.Kind = (MovePointKind)reader.ReadByte();
+        asset.BezierRole = (MovePointBezierRole)reader.ReadByte();
+        asset.Physical.FlagsProps = reader.ReadByte();
+        reader.ReadByte(); // pad, always zero
+        int numPoints = reader.ReadUInt16();
+        asset.Delay = reader.ReadSingle();
+
+        if (profile.Game is not GameVersion.N100F)
+        {
+            asset.ZoneRadius = reader.ReadSingle();
+            asset.ArenaRadius = reader.ReadSingle();
+        }
+
+        for (int i = 0; i < numPoints; i++)
+            asset.SiblingIds.Add(reader.ReadAssetId());
+
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
+        asset.Physical.NumPoints = (ushort)asset.SiblingIds.Count;
+        asset.Physical.LinkCount = (byte)asset.Links.Count;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(MovePointAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+
+        writer.Write(asset.Position);
+        writer.Write(asset.Weight);
+        writer.Write((byte)asset.Kind);
+        writer.Write((byte)asset.BezierRole);
+        writer.Write(asset.Physical.FlagsProps);
+        writer.Write((byte)0); // pad
+        writer.Write(asset.Physical.NumPoints);
+        writer.Write(asset.Delay);
+
+        if (profile.Game is not GameVersion.N100F)
+        {
+            writer.Write(asset.ZoneRadius);
+            writer.Write(asset.ArenaRadius);
+        }
+
+        foreach (var siblingId in asset.SiblingIds)
+            writer.Write(siblingId);
+
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>

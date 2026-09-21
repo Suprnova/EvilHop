@@ -152,7 +152,8 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
             asset.MaxBounds = reader.ReadVector3();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount, profile.LinkHasExtendedFields);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -194,7 +195,8 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
             writer.Write(asset.MaxBounds);
         }
 
-        LinkSerialization.Write(asset, writer, profile.LinkHasExtendedFields);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

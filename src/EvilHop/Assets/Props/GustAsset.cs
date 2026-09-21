@@ -51,7 +51,7 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
         GameVersion.N100F,
     };
 
-    internal static GustAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static GustAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new GustAsset();
         AssetFields.Populate(asset, header, debug);
@@ -64,13 +64,14 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
         asset.Fade = reader.ReadSingle();
         asset.ParticleModifier = reader.ReadSingle();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(GustAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(GustAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -81,7 +82,8 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
         writer.Write(asset.Fade);
         writer.Write(asset.ParticleModifier);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -42,4 +44,26 @@ public sealed class PickupTableEntry
     /// plays, if any.
     /// </summary>
     public AssetId AnimId { get; set; }
+
+    internal static PickupTableEntry Read(EndianReader reader, FormatProfile _) => new()
+    {
+        PickupHash = reader.ReadUInt32(),
+        PickupType = reader.ReadByte(),
+        PickupIndex = reader.ReadByte(),
+        Flags = reader.ReadUInt16(),
+        Quantity = reader.ReadUInt32(),
+        ModelId = reader.ReadAssetId(),
+        AnimId = reader.ReadAssetId(),
+    };
+
+    internal static void Write(PickupTableEntry value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.PickupHash);
+        writer.Write(value.PickupType);
+        writer.Write(value.PickupIndex);
+        writer.Write(value.Flags);
+        writer.Write(value.Quantity);
+        writer.Write(value.ModelId);
+        writer.Write(value.AnimId);
+    }
 }

@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Numerics;
 
@@ -73,6 +77,58 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), I
     {
         GameVersion.Incredibles,
     };
+
+    internal static AttackTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new AttackTableAsset();
+        AssetFields.Populate(asset, header, debug);
+
+        ushort sectionCount = reader.ReadUInt16();
+        ushort entryCount = reader.ReadUInt16();
+        ushort transitionCount = reader.ReadUInt16();
+        ushort stateCount = reader.ReadUInt16();
+
+        for (int i = 0; i < sectionCount; i++)
+            asset.Sections.Add(AttackTableSection.Read(reader, profile));
+
+        for (int i = 0; i < entryCount; i++)
+            asset.Entries.Add(AttackTableEntry.Read(reader, profile));
+
+        for (int i = 0; i < transitionCount; i++)
+            asset.Transitions.Add(AttackTableTransition.Read(reader, profile));
+
+        for (int i = 0; i < stateCount; i++)
+            asset.States.Add(AttackTableState.Read(reader, profile));
+
+        asset.Physical.SectionCount = sectionCount;
+        asset.Physical.EntryCount = entryCount;
+        asset.Physical.TransitionCount = transitionCount;
+        asset.Physical.StateCount = stateCount;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(AttackTableAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(asset.Physical.SectionCount);
+        writer.Write(asset.Physical.EntryCount);
+        writer.Write(asset.Physical.TransitionCount);
+        writer.Write(asset.Physical.StateCount);
+
+        foreach (var section in asset.Sections)
+            AttackTableSection.Write(section, writer, profile);
+
+        foreach (var entry in asset.Entries)
+            AttackTableEntry.Write(entry, writer, profile);
+
+        foreach (var transition in asset.Transitions)
+            AttackTableTransition.Write(transition, writer, profile);
+
+        foreach (var state in asset.States)
+            AttackTableState.Write(state, writer, profile);
+
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>
@@ -143,4 +199,18 @@ public sealed class AttackTableSection
     /// <see cref="Start"/>.
     /// </summary>
     public ushort Count { get; set; }
+
+    internal static AttackTableSection Read(EndianReader reader, FormatProfile _) => new()
+    {
+        SectionId = reader.ReadUInt32(),
+        Start = reader.ReadUInt16(),
+        Count = reader.ReadUInt16(),
+    };
+
+    internal static void Write(AttackTableSection section, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(section.SectionId);
+        writer.Write(section.Start);
+        writer.Write(section.Count);
+    }
 }

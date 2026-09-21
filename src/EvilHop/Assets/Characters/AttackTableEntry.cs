@@ -1,3 +1,6 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -60,4 +63,42 @@ public sealed class AttackTableEntry
     /// The time, in seconds into the current animation, at which this entry becomes selectable.
     /// </summary>
     public float StartTime { get; set; }
+
+    internal static AttackTableEntry Read(EndianReader reader, FormatProfile _)
+    {
+        AttackTableEntry entry = new()
+        {
+            AnimationStateId = reader.ReadUInt32(),
+        };
+
+        reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero
+        entry.AnimationStart = reader.ReadUInt16();
+        entry.AnimationCount = reader.ReadUInt16();
+        entry.Start = reader.ReadUInt16();
+        entry.Count = reader.ReadUInt16();
+        entry.OnFlags = reader.ReadUInt16();
+        entry.OffFlags = reader.ReadUInt16();
+        entry.Input = reader.ReadByte();
+        entry.Power = reader.ReadByte();
+        reader.ReadUInt16(); // padding, always zero
+        entry.StartTime = reader.ReadSingle();
+
+        return entry;
+    }
+
+    internal static void Write(AttackTableEntry entry, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(entry.AnimationStateId);
+        writer.Write(0u); // runtime-resolved
+        writer.Write(entry.AnimationStart);
+        writer.Write(entry.AnimationCount);
+        writer.Write(entry.Start);
+        writer.Write(entry.Count);
+        writer.Write(entry.OnFlags);
+        writer.Write(entry.OffFlags);
+        writer.Write(entry.Input);
+        writer.Write(entry.Power);
+        writer.Write((ushort)0); // padding
+        writer.Write(entry.StartTime);
+    }
 }

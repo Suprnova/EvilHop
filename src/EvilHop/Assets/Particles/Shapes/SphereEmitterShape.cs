@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -13,9 +13,11 @@ public sealed class SphereEmitterShape : ParticleEmitterShape
     /// <summary>The sphere's radius.</summary>
     public float Radius { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _) =>
-        Radius = reader.ReadSingle();
+    internal static SphereEmitterShape Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Radius = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _) =>
-        writer.Write(Radius);
+    internal static void Write(SphereEmitterShape value, EndianWriter writer, FormatProfile _) =>
+        writer.Write(value.Radius);
 }

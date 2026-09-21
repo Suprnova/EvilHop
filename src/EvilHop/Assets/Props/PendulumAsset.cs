@@ -42,9 +42,10 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.Motion = (PendulumMotion)EntityMotion.Read(reader, profile.Game);
+        asset.Motion = (PendulumMotion)EntityMotion.Read(reader, profile);
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -55,9 +56,10 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 
         BaseAssetPrefix.Write(asset, writer);
         EntityAssetPrefix.Write(asset, writer, profile);
 
-        asset.Motion.Write(writer, profile.Game);
+        EntityMotion.Write(asset.Motion, writer, profile);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

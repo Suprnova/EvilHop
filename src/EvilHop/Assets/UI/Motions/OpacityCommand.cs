@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -19,17 +20,21 @@ public sealed class OpacityCommand : UIMotionCommand
 
     private protected override int FieldsSize => 4;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new OpacityCommand Read(EndianReader reader, FormatProfile _)
     {
-        StartOpacity = reader.ReadByte();
-        EndOpacity = reader.ReadByte();
+        var value = new OpacityCommand
+        {
+            StartOpacity = reader.ReadByte(),
+            EndOpacity = reader.ReadByte(),
+        };
         reader.ReadBytes(2); // padding, always zero
+        return value;
     }
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(OpacityCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(StartOpacity);
-        writer.Write(EndOpacity);
+        writer.Write(value.StartOpacity);
+        writer.Write(value.EndOpacity);
         writer.Write(new byte[2]); // padding
     }
 }

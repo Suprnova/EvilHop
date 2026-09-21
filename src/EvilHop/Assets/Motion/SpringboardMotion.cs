@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
 using System.Numerics;
 
@@ -51,26 +52,32 @@ public sealed class SpringboardMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.Springboard;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static SpringboardMotion Read(EndianReader reader, FormatProfile profile)
     {
-        JumpHeights = [reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()];
-        if (game is not GameVersion.N100F) BounceHeight = reader.ReadSingle();
-        SpringAnimationId = reader.ReadAssetId();
-        IdleAnimationId = reader.ReadAssetId();
+        var game = profile.Game;
+        var motion = new SpringboardMotion
+        {
+            JumpHeights = [reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()],
+        };
+        if (game is not GameVersion.N100F) motion.BounceHeight = reader.ReadSingle();
+        motion.SpringAnimationId = reader.ReadAssetId();
+        motion.IdleAnimationId = reader.ReadAssetId();
         reader.ReadAssetId(); // padding
-        JumpDirection = reader.ReadVector3();
-        if (game is not GameVersion.N100F) SpringFlags = (SpringboardFlags)reader.ReadUInt32();
+        motion.JumpDirection = reader.ReadVector3();
+        if (game is not GameVersion.N100F) motion.SpringFlags = (SpringboardFlags)reader.ReadUInt32();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(SpringboardMotion value, EndianWriter writer, FormatProfile profile)
     {
-        foreach (float height in JumpHeights) writer.Write(height);
-        if (game is not GameVersion.N100F) writer.Write(BounceHeight);
-        writer.Write(SpringAnimationId);
-        writer.Write(IdleAnimationId);
+        var game = profile.Game;
+        foreach (float height in value.JumpHeights) writer.Write(height);
+        if (game is not GameVersion.N100F) writer.Write(value.BounceHeight);
+        writer.Write(value.SpringAnimationId);
+        writer.Write(value.IdleAnimationId);
         writer.Write(AssetId.None); // padding
-        writer.Write(JumpDirection);
-        if (game is not GameVersion.N100F) writer.Write((uint)SpringFlags);
+        writer.Write(value.JumpDirection);
+        if (game is not GameVersion.N100F) writer.Write((uint)value.SpringFlags);
     }
 }
 

@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -12,9 +12,11 @@ public sealed class OffsetPointEmitterShape : ParticleEmitterShape
     /// <summary>The offset from <see cref="ParticleEmitterAsset.Position"/> particles are emitted from.</summary>
     public Vector3 Offset { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _) =>
-        Offset = reader.ReadVector3();
+    internal static OffsetPointEmitterShape Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Offset = reader.ReadVector3(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _) =>
-        writer.Write(Offset);
+    internal static void Write(OffsetPointEmitterShape value, EndianWriter writer, FormatProfile _) =>
+        writer.Write(value.Offset);
 }

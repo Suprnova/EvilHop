@@ -1,6 +1,7 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -12,15 +13,8 @@ namespace EvilHop.Assets;
 /// Shaped like a <see cref="Link"/>, but not one: it has no source event of its own (playback past
 /// <see cref="Percent"/> is what triggers it) and no <see cref="Link.CheckAssetId"/>.
 /// </remarks>
-[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Nothing compares ProgressScriptEvents by value; Param holds reference-equality-only Parameters, so a real implementation would be misleading.")]
-public struct ProgressScriptEvent
+public sealed class ProgressScriptEvent()
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="ProgressScriptEvent"/> with four zeroed
-    /// <see cref="Param"/> slots.
-    /// </summary>
-    public ProgressScriptEvent() { }
-
     /// <summary>
     /// The percentage, from 0 to 100, of playback this event fires at.
     /// </summary>
@@ -48,7 +42,7 @@ public struct ProgressScriptEvent
     /// <exception cref="ArgumentException">The assigned value's length isn't 4.</exception>
     public ImmutableArray<Parameter> Param
     {
-        readonly get;
+        get;
         set => field = value.Length == 4
             ? value
             : throw new ArgumentException($"{nameof(Param)} must contain exactly 4 elements.", nameof(value));
@@ -61,6 +55,32 @@ public struct ProgressScriptEvent
 
     private static ImmutableArray<Parameter> ZeroedParams() =>
         [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
+
+    internal static ProgressScriptEvent Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Percent = reader.ReadSingle(),
+        Flags = (ProgressScriptEventFlags)reader.ReadInt32(),
+        WidgetId = reader.ReadAssetId(),
+        ParamEvent = reader.ReadUInt32(),
+        Param =
+        [
+            new RawParameter(reader.ReadBytes(4)),
+            new RawParameter(reader.ReadBytes(4)),
+            new RawParameter(reader.ReadBytes(4)),
+            new RawParameter(reader.ReadBytes(4)),
+        ],
+        ParamWidgetId = reader.ReadAssetId(),
+    };
+
+    internal static void Write(ProgressScriptEvent value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.Percent);
+        writer.Write((int)value.Flags);
+        writer.Write(value.WidgetId);
+        writer.Write(value.ParamEvent);
+        foreach (var param in value.Param) param.WriteTo(writer);
+        writer.Write(value.ParamWidgetId);
+    }
 }
 
 /// <summary>

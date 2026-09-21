@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Numerics;
 
@@ -73,173 +73,60 @@ public sealed class CreditsSection
     /// This section's timed lines of credits text.
     /// </summary>
     public Collection<CreditsHunk> Hunks { get; } = [];
-}
 
-/// <summary>
-/// One reusable text or texture style, referenced by position from a <see cref="CreditsSection"/>'s
-/// <see cref="CreditsHunk"/>s.
-/// </summary>
-public sealed class CreditsPreset
-{
-    /// <summary>
-    /// An index recorded alongside this preset. <see cref="CreditsHunk"/>s reference a preset by its
-    /// position within <see cref="CreditsSection.Presets"/>, not by this value.
-    /// </summary>
-    public ushort Index { get; set; }
+    internal static int SectionByteLength(CreditsSection section) =>
+        CreditsAsset.SectionHeaderSize + section.Presets.Count * CreditsAsset.PresetSize + section.Hunks.Sum(CreditsHunk.HunkByteLength);
 
-    /// <summary>
-    /// How this preset's <see cref="Textboxes"/> or <see cref="Textures"/> are laid out.
-    /// </summary>
-    public CreditsPresetAlignment Alignment { get; set; }
+    internal static CreditsSection Read(EndianReader reader, FormatProfile profile)
+    {
+        long sectionStart = reader.BaseStream.Position;
+        uint creditsSize = reader.ReadUInt32();
 
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    public float Delay { get; set; }
+        var section = new CreditsSection
+        {
+            Duration = reader.ReadSingle(),
+            Flags = reader.ReadUInt32(),
+            Start = new Vector2(reader.ReadSingle(), reader.ReadSingle()),
+            End = new Vector2(reader.ReadSingle(), reader.ReadSingle()),
+            ScrollRate = reader.ReadSingle(),
+            Lifetime = reader.ReadSingle(),
+            FadeInStart = reader.ReadSingle(),
+            FadeInEnd = reader.ReadSingle(),
+            FadeOutStart = reader.ReadSingle(),
+            FadeOutEnd = reader.ReadSingle(),
+        };
 
-    /// <summary>
-    /// The gap between the two <see cref="Textboxes"/>, for a <see cref="CreditsPresetAlignment"/>
-    /// that shows both at once.
-    /// </summary>
-    public float InnerSpacing { get; set; }
+        uint numPresets = reader.ReadUInt32();
+        for (uint i = 0; i < numPresets; i++)
+            section.Presets.Add(CreditsPreset.Read(reader, profile));
 
-    /// <summary>
-    /// This preset's text styles. Populated when <see cref="Alignment"/> is not
-    /// <see cref="CreditsPresetAlignment.Texture"/>, empty otherwise.
-    /// </summary>
-    public Collection<CreditsTextbox> Textboxes { get; } = [];
+        while (reader.BaseStream.Position - sectionStart < creditsSize)
+            section.Hunks.Add(CreditsHunk.Read(reader, profile));
 
-    /// <summary>
-    /// This preset's texture. Populated when <see cref="Alignment"/> is
-    /// <see cref="CreditsPresetAlignment.Texture"/>, empty otherwise.
-    /// </summary>
-    public Collection<CreditsTexture> Textures { get; } = [];
-}
+        return section;
+    }
 
-// TODO: names for <see cref="Center"/>, <see cref="Left"/>, <see cref="Right"/>, and
-// <see cref="Inner"/> are inferred from a dead-stripped debug string list's declaration order
-// (<c>CM_ALIGN_CENTER</c>, <c>CM_ALIGN_LEFT</c>, <c>CM_ALIGN_RIGHT</c>, <c>CM_ALIGN_INNER</c>,
-// <c>CM_ALIGN_TEXTURE</c>), not confirmed against their numeric values directly. Only
-// <see cref="Center"/> and <see cref="Texture"/> are confirmed by the render switch itself; only
-// <see cref="Center"/>, <see cref="Inner"/>, and <see cref="Texture"/> are ever observed in the
-// corpus.
+    internal static void Write(CreditsSection section, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write((uint)SectionByteLength(section));
+        writer.Write(section.Duration);
+        writer.Write(section.Flags);
+        writer.Write(section.Start.X);
+        writer.Write(section.Start.Y);
+        writer.Write(section.End.X);
+        writer.Write(section.End.Y);
+        writer.Write(section.ScrollRate);
+        writer.Write(section.Lifetime);
+        writer.Write(section.FadeInStart);
+        writer.Write(section.FadeInEnd);
+        writer.Write(section.FadeOutStart);
+        writer.Write(section.FadeOutEnd);
+        writer.Write((uint)section.Presets.Count);
 
-/// <summary>
-/// Specifies text alignment and layout positioning for credits lines.
-/// </summary>
-public enum CreditsPresetAlignment : ushort
-{
-    /// <summary>A single, centered <see cref="CreditsTextbox"/>.</summary>
-    Center = 0,
-    /// <summary>Two <see cref="CreditsTextbox"/>s, both left-aligned.</summary>
-    Left = 1,
-    /// <summary>Two <see cref="CreditsTextbox"/>s, both right-aligned.</summary>
-    Right = 2,
-    /// <summary>Two <see cref="CreditsTextbox"/>s, facing each other across the gap between them.</summary>
-    Inner = 3,
-    /// <summary>A single <see cref="CreditsTexture"/>.</summary>
-    Texture = 4,
-}
+        foreach (var preset in section.Presets)
+            CreditsPreset.Write(preset, writer, profile);
 
-/// <summary>
-/// One text style: a font plus the color, character size, spacing, and box size text is rendered
-/// with.
-/// </summary>
-public sealed class CreditsTextbox
-{
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    public uint Font { get; set; }
-
-    /// <summary>
-    /// The text's color.
-    /// </summary>
-    public Rgba Color { get; set; }
-
-    /// <summary>
-    /// The character width and height, in pixels.
-    /// </summary>
-    public Vector2 CharSize { get; set; }
-
-    /// <summary>
-    /// The spacing between characters.
-    /// </summary>
-    public Vector2 CharSpacing { get; set; }
-
-    /// <summary>
-    /// The text box's maximum width and height, as a percentage (0 to 1) of the screen.
-    /// </summary>
-    public Vector2 Size { get; set; }
-}
-
-/// <summary>
-/// One texture drawn at a fixed screen position, in place of scrolling text.
-/// </summary>
-public sealed class CreditsTexture
-{
-    /// <summary>
-    /// The <see cref="AssetType.Texture"/> to draw.
-    /// </summary>
-    public AssetId TextureId { get; set; }
-
-    /// <summary>
-    /// The texture's color.
-    /// </summary>
-    public Rgba Color { get; set; }
-
-    /// <summary>
-    /// The texture's position, as a percentage (0 to 1) of the screen.
-    /// </summary>
-    public Vector2 Position { get; set; }
-
-    /// <summary>
-    /// The texture's width and height, as a percentage (0 to 1) of the screen.
-    /// </summary>
-    public Vector2 Size { get; set; }
-
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    public uint Handle { get; set; }
-
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    public uint Padding { get; set; }
-}
-
-/// <summary>
-/// One line (or pair of lines) of scrolling credits text, shown between <see cref="StartTime"/> and
-/// <see cref="EndTime"/> using one of its <see cref="CreditsSection"/>'s presets.
-/// </summary>
-public sealed class CreditsHunk
-{
-    /// <summary>
-    /// The position, within the owning <see cref="CreditsSection.Presets"/>, of the preset this hunk
-    /// is shown with.
-    /// </summary>
-    public int PresetIndex { get; set; }
-
-    /// <summary>
-    /// The time, in seconds, at which this hunk starts being shown.
-    /// </summary>
-    public float StartTime { get; set; }
-
-    /// <summary>
-    /// The time, in seconds, at which this hunk stops being shown.
-    /// </summary>
-    public float EndTime { get; set; }
-
-    /// <summary>
-    /// The text shown in the preset's first <see cref="CreditsTextbox"/>, or <see langword="null"/>
-    /// for a <see cref="CreditsPresetAlignment.Texture"/> preset.
-    /// </summary>
-    public string? Text1 { get; set; }
-
-    /// <summary>
-    /// The text shown in the preset's second <see cref="CreditsTextbox"/>, for a
-    /// <see cref="CreditsPresetAlignment"/> that shows two at once.
-    /// </summary>
-    public string? Text2 { get; set; }
+        foreach (var hunk in section.Hunks)
+            CreditsHunk.Write(hunk, writer, profile);
+    }
 }

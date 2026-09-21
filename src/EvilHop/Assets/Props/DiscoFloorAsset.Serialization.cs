@@ -2,7 +2,6 @@ using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
-using System.Collections.ObjectModel;
 using System.Text;
 
 namespace EvilHop.Assets;
@@ -29,7 +28,7 @@ public sealed partial class DiscoFloorAsset
     // the authoring tool's buffer already held rather than zeroing them.
     private byte[]? _rawTrailingPadding;
 
-    internal static DiscoFloorAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static DiscoFloorAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new DiscoFloorAsset();
         AssetFields.Populate(asset, header, debug);
@@ -49,7 +48,8 @@ public sealed partial class DiscoFloorAsset
 
         // Placed immediately after the fixed struct above, not addressed by any offset field of its
         // own - mirrors every other BaseAsset's link placement.
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
 
         // Each prefix's slice runs up to the next prefix's offset (or states_offset, for the last
@@ -65,7 +65,7 @@ public sealed partial class DiscoFloorAsset
         asset._rawOnPrefix = reader.ReadBytes((int)(statesOffset - onPrefixOffset));
         asset.OnPrefix = DecodeNullTerminated(asset._rawOnPrefix);
 
-        int maskByteSize = StateMaskByteSize(tileCount);
+        int maskByteSize = DiscoFloorState.MaskByteSize(tileCount);
         long maxOffsetTouched = statesOffset + 4L * stateCount;
 
         reader.BaseStream.Position = bodyStart + statesOffset;
@@ -76,8 +76,7 @@ public sealed partial class DiscoFloorAsset
         for (int i = 0; i < stateCount; i++)
         {
             reader.BaseStream.Position = bodyStart + stateOffsets[i];
-            byte[] mask = reader.ReadBytes(maskByteSize);
-            asset.States.Add(ReadState(mask, tileCount));
+            asset.States.Add(DiscoFloorState.Read(reader, tileCount, profile));
 
             maxOffsetTouched = Math.Max(maxOffsetTouched, stateOffsets[i] + maskByteSize);
         }
@@ -93,14 +92,14 @@ public sealed partial class DiscoFloorAsset
         return asset;
     }
 
-    internal static void Write(DiscoFloorAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(DiscoFloorAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
         uint linkCount = asset.Physical.LinkCount;
         uint tileCount = asset.Physical.TileCount;
         uint stateCount = asset.Physical.StateCount;
-        int maskByteSize = StateMaskByteSize(tileCount);
+        int maskByteSize = DiscoFloorState.MaskByteSize(tileCount);
 
         byte[] offPrefixBytes = EncodePrefix(asset.OffPrefix, asset._rawOffPrefix);
         byte[] transitionPrefixBytes = EncodePrefix(asset.TransitionPrefix, asset._rawTransitionPrefix);
@@ -122,7 +121,8 @@ public sealed partial class DiscoFloorAsset
         writer.Write(statesOffset);
         writer.Write(stateCount);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
 
         writer.Write(offPrefixBytes);
         writer.Write(transitionPrefixBytes);
@@ -135,7 +135,7 @@ public sealed partial class DiscoFloorAsset
         for (int i = 0; i < stateCount; i++)
         {
             var state = i < asset.States.Count ? asset.States[i] : new DiscoFloorState();
-            writer.Write(EncodeStateMask(state, tileCount, maskByteSize));
+            DiscoFloorState.Write(state, writer, tileCount, profile);
             totalMaskBytes += maskByteSize;
         }
 
@@ -146,62 +146,6 @@ public sealed partial class DiscoFloorAsset
             : new byte[trailingPaddingLength]);
 
         writer.Write(asset.GetUnparsedTail());
-    }
-
-    /// <summary>The byte length of one state's tile bitmask: 2 bits per tile, rounded up to a whole byte.</summary>
-    private static int StateMaskByteSize(uint tileCount) => (int)((tileCount * 2 + 7) / 8);
-
-    private static DiscoFloorState ReadState(byte[] mask, uint tileCount)
-    {
-        var state = new DiscoFloorState();
-        for (int i = 0; i < tileCount; i++)
-            state.Tiles.Add(GetTile(mask, i));
-        state.SetRawMask(mask);
-        return state;
-    }
-
-    /// <summary>
-    /// Encodes <paramref name="state"/>'s mask, replaying <paramref name="state"/>'s captured raw
-    /// bytes verbatim - including whatever garbage sits in bit pairs beyond <paramref name="tileCount"/>
-    /// within the last byte - as long as they still decode to its current <see cref="DiscoFloorState.Tiles"/>.
-    /// Falls back to a freshly zero-filled mask once <see cref="DiscoFloorState.Tiles"/> no longer
-    /// matches (or none was ever captured).
-    /// </summary>
-    private static byte[] EncodeStateMask(DiscoFloorState state, uint tileCount, int maskByteSize)
-    {
-        byte[]? raw = state.GetRawMask();
-        if (raw is not null && raw.Length == maskByteSize && MatchesTiles(raw, state.Tiles, tileCount))
-            return raw;
-
-        byte[] mask = new byte[maskByteSize];
-        for (int i = 0; i < tileCount; i++)
-            SetTile(mask, i, i < state.Tiles.Count ? state.Tiles[i] : TileState.Off);
-        return mask;
-    }
-
-    private static bool MatchesTiles(byte[] mask, Collection<TileState> tiles, uint tileCount)
-    {
-        if (tiles.Count != tileCount)
-            return false;
-
-        for (int i = 0; i < tileCount; i++)
-        {
-            if (GetTile(mask, i) != tiles[i])
-                return false;
-        }
-
-        return true;
-    }
-
-    // Tiles are packed 4 to a byte, LSB first: tile 0 in bits 0-1, tile 1 in bits 2-3, and so on.
-    private static TileState GetTile(byte[] mask, int index) =>
-        (TileState)((mask[index >> 2] >> ((index & 3) << 1)) & 3);
-
-    private static void SetTile(byte[] mask, int index, TileState value)
-    {
-        int byteIndex = index >> 2;
-        int shift = (index & 3) << 1;
-        mask[byteIndex] = (byte)((mask[byteIndex] & ~(3 << shift)) | ((int)value << shift));
     }
 
     private static string DecodeNullTerminated(byte[] bytes)

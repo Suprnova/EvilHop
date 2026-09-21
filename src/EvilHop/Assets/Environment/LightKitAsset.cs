@@ -67,27 +67,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             reader.ReadUInt32(); // "blended" - always 0xCDCDCDCD (uninitialized) on disk, reset to false at load
 
         for (int i = 0; i < lightCount; i++)
-        {
-            var light = new LightKitLight
-            {
-                Type = (LightKitLightType)reader.ReadUInt32(),
-                Color = reader.ReadRgba(),
-                Right = reader.ReadVector3(),
-            };
-
-            reader.ReadSingle(); // Right's homogeneous component; always 0
-            light.Up = reader.ReadVector3();
-            reader.ReadSingle(); // Up's homogeneous component; always 0
-            light.At = reader.ReadVector3();
-            reader.ReadSingle(); // At's homogeneous component; always 0
-            light.Position = reader.ReadVector3();
-            light.PositionW = reader.ReadSingle();
-            light.Radius = reader.ReadSingle();
-            light.Angle = reader.ReadSingle();
-            reader.ReadUInt32(); // runtime-resolved platLight, always 0
-
-            asset.Lights.Add(light);
-        }
+            asset.Lights.Add(LightKitLight.Read(reader, profile));
 
         asset.Physical.LightCount = lightCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -105,21 +85,7 @@ public sealed class LightKitAsset() : Asset(AssetType.LightKit), IPhysicalLightK
             writer.Write(0xCDCDCDCDu); // "blended"
 
         foreach (var light in asset.Lights)
-        {
-            writer.Write((uint)light.Type);
-            writer.Write(light.Color);
-            writer.Write(light.Right);
-            writer.Write(0f); // Right's homogeneous component
-            writer.Write(light.Up);
-            writer.Write(0f); // Up's homogeneous component
-            writer.Write(light.At);
-            writer.Write(0f); // At's homogeneous component
-            writer.Write(light.Position);
-            writer.Write(light.PositionW);
-            writer.Write(light.Radius);
-            writer.Write(light.Angle);
-            writer.Write(0u); // runtime-resolved
-        }
+            LightKitLight.Write(light, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

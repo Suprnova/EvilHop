@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -12,59 +13,59 @@ public abstract class PlatformMotion : Motion
     private protected PlatformMotion() { }
 
     /// <summary>
-    /// Reads this motion's fields from a reader scoped to its type-specific block.
-    /// </summary>
-    private protected abstract void ReadFields(EndianReader reader, GameVersion game);
-
-    /// <summary>
-    /// Writes this motion's fields, no more than its type-specific block holds.
-    /// </summary>
-    private protected abstract void WriteFields(EndianWriter writer, GameVersion game);
-
-    /// <summary>
     /// The size, in bytes, of a platform's type-specific block under <paramref name="game"/>.
     /// </summary>
     internal static int BlockSize(GameVersion game) => game is GameVersion.N100F ? 0x24 : 0x38;
 
     /// <summary>
-    /// Reads the type-specific block <paramref name="type"/> selects.
+    /// Reads the type-specific block <paramref name="discriminator"/> selects.
     /// </summary>
-    /// <exception cref="InvalidDataException"><paramref name="type"/> is unknown, or has no layout under <paramref name="game"/>.</exception>
-    internal static PlatformMotion Read(EndianReader reader, PlatformType type, GameVersion game)
+    /// <exception cref="InvalidDataException"><paramref name="discriminator"/> is unknown, or has no layout under this <see cref="FormatProfile"/>.</exception>
+    internal static PlatformMotion Read(EndianReader reader, PlatformType discriminator, FormatProfile profile)
     {
-        using var block = ReadBlock(reader, BlockSize(game));
-        PlatformMotion motion = type switch
+        using var block = ReadBlock(reader, BlockSize(profile.Game));
+        return discriminator switch
         {
-            PlatformType.ConveyorBelt => new ConveyorBeltMotion(),
-            PlatformType.Falling => new FallingMotion(),
-            PlatformType.ForwardReturn => new ForwardReturnMotion(),
-            PlatformType.Breakaway => new BreakawayMotion(),
-            PlatformType.Springboard => new SpringboardMotion(),
-            PlatformType.TeeterTotter => new TeeterTotterMotion(),
-            PlatformType.Paddle => new PaddleMotion(),
-            PlatformType.FullyManipulable => new FullyManipulableMotion(),
-            _ => throw new InvalidDataException($"Unknown platform type 0x{(byte)type:X2}."),
+            PlatformType.ConveyorBelt => ConveyorBeltMotion.Read(block, profile),
+            PlatformType.Falling => FallingMotion.Read(block, profile),
+            PlatformType.ForwardReturn => ForwardReturnMotion.Read(block, profile),
+            PlatformType.Breakaway => BreakawayMotion.Read(block, profile),
+            PlatformType.Springboard => SpringboardMotion.Read(block, profile),
+            PlatformType.TeeterTotter => TeeterTotterMotion.Read(block, profile),
+            PlatformType.Paddle => PaddleMotion.Read(block, profile),
+            PlatformType.FullyManipulable => FullyManipulableMotion.Read(block, profile),
+            _ => throw new InvalidDataException($"Unknown platform type 0x{(byte)discriminator:X2}."),
         };
-
-        motion.ReadFields(block, game);
-        return motion;
     }
 
     /// <summary>
     /// Writes this motion as one type-specific block.
     /// </summary>
-    internal void Write(EndianWriter writer, GameVersion game) =>
-        WriteBlock(writer, BlockSize(game), block => WriteFields(block, game));
+    internal static void Write(PlatformMotion value, EndianWriter writer, FormatProfile profile) =>
+        WriteBlock(writer, BlockSize(profile.Game), block =>
+        {
+            switch (value)
+            {
+                case ConveyorBeltMotion m: ConveyorBeltMotion.Write(m, block, profile); break;
+                case FallingMotion m: FallingMotion.Write(m, block, profile); break;
+                case ForwardReturnMotion m: ForwardReturnMotion.Write(m, block, profile); break;
+                case BreakawayMotion m: BreakawayMotion.Write(m, block, profile); break;
+                case SpringboardMotion m: SpringboardMotion.Write(m, block, profile); break;
+                case TeeterTotterMotion m: TeeterTotterMotion.Write(m, block, profile); break;
+                case PaddleMotion m: PaddleMotion.Write(m, block, profile); break;
+                case FullyManipulableMotion m: FullyManipulableMotion.Write(m, block, profile); break;
+            }
+        });
 
     /// <summary>
     /// Reads the empty type-specific block stored alongside an <see cref="EntityMotion"/>.
     /// </summary>
-    internal static void ReadEmpty(EndianReader reader, GameVersion game) =>
-        reader.ReadBytes(BlockSize(game)); // padding
+    internal static void ReadEmpty(EndianReader reader, FormatProfile profile) =>
+        reader.ReadBytes(BlockSize(profile.Game)); // padding
 
     /// <summary>
     /// Writes the empty type-specific block stored alongside an <see cref="EntityMotion"/>.
     /// </summary>
-    internal static void WriteEmpty(EndianWriter writer, GameVersion game) =>
-        writer.Write(new byte[BlockSize(game)]);
+    internal static void WriteEmpty(EndianWriter writer, FormatProfile profile) =>
+        writer.Write(new byte[BlockSize(profile.Game)]);
 }

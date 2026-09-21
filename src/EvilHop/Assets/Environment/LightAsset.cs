@@ -53,7 +53,7 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
         GameVersion.N100F,
     };
 
-    internal static LightAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static LightAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new LightAsset();
         AssetFields.Populate(asset, header, debug);
@@ -70,13 +70,14 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
         asset.Radius = reader.ReadSingle();
         asset.AttachedEntityId = reader.ReadAssetId();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(LightAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(LightAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -91,7 +92,8 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
         writer.Write(asset.Radius);
         writer.Write(asset.AttachedEntityId);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

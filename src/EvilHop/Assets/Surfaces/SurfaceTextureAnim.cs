@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -27,6 +29,26 @@ public sealed class SurfaceTextureAnim
     /// How quickly this animation advances, in frames per second.
     /// </summary>
     public float Speed { get; set; }
+
+    internal static SurfaceTextureAnim Read(EndianReader reader, FormatProfile _)
+    {
+        reader.ReadUInt16(); // padding, always zero
+        var mode = (SurfaceTextureAnimMode)reader.ReadUInt16();
+        return new SurfaceTextureAnim
+        {
+            Mode = mode,
+            Group = reader.ReadAssetId(),
+            Speed = reader.ReadSingle(),
+        };
+    }
+
+    internal static void Write(SurfaceTextureAnim anim, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((ushort)0); // padding
+        writer.Write((ushort)anim.Mode);
+        writer.Write(anim.Group);
+        writer.Write(anim.Speed);
+    }
 }
 
 /// <summary>

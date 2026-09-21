@@ -40,7 +40,7 @@ public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, 
         GameVersion.ROTU,
     };
 
-    internal static ProgressScriptAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static ProgressScriptAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new ProgressScriptAsset();
         AssetFields.Populate(asset, header, debug);
@@ -48,47 +48,26 @@ public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, 
 
         uint eventCount = reader.ReadUInt32();
         for (uint i = 0; i < eventCount; i++)
-        {
-            asset.Events.Add(new ProgressScriptEvent
-            {
-                Percent = reader.ReadSingle(),
-                Flags = (ProgressScriptEventFlags)reader.ReadInt32(),
-                WidgetId = reader.ReadAssetId(),
-                ParamEvent = reader.ReadUInt32(),
-                Param =
-                [
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                ],
-                ParamWidgetId = reader.ReadAssetId(),
-            });
-        }
+            asset.Events.Add(ProgressScriptEvent.Read(reader, profile));
         asset.Physical.EventCount = (uint)asset.Events.Count;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(ProgressScriptAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(ProgressScriptAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
         writer.Write(asset.Physical.EventCount);
         foreach (var evt in asset.Events)
-        {
-            writer.Write(evt.Percent);
-            writer.Write((int)evt.Flags);
-            writer.Write(evt.WidgetId);
-            writer.Write(evt.ParamEvent);
-            foreach (var param in evt.Param) param.WriteTo(writer);
-            writer.Write(evt.ParamWidgetId);
-        }
+            ProgressScriptEvent.Write(evt, writer, profile);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

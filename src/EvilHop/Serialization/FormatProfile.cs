@@ -46,9 +46,7 @@ namespace EvilHop.Serialization;
 /// <param name="LinkHasExtendedFields">
 /// Whether a <see cref="Link"/> is followed by <see cref="Link.ParamWidgetAssetId"/> and
 /// <see cref="Link.CheckAssetId"/> - 32 bytes per link rather than 24. False only for
-/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype; true everywhere else. Not read from this
-/// record directly - passed explicitly at whichever <see cref="Assets.Serialization.LinkSerialization"/>
-/// call sites a build known to differ actually reaches.
+/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype; true everywhere else.
 /// </param>
 /// <param name="TriggerHasDirectionAndFlags">
 /// Whether a <see cref="TriggerAsset"/> carries a <see cref="TriggerAsset.Direction"/> and

@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -33,25 +34,29 @@ public sealed class AbsoluteScaleCommand : UIMotionCommand
 
     private protected override int FieldsSize => 20;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new AbsoluteScaleCommand Read(EndianReader reader, FormatProfile _)
     {
-        StartX = reader.ReadSingle();
-        StartY = reader.ReadSingle();
-        EndX = reader.ReadSingle();
-        EndY = reader.ReadSingle();
-        CenterPivot = reader.ReadByte() != 0;
-        TextScale = reader.ReadByte();
+        var value = new AbsoluteScaleCommand
+        {
+            StartX = reader.ReadSingle(),
+            StartY = reader.ReadSingle(),
+            EndX = reader.ReadSingle(),
+            EndY = reader.ReadSingle(),
+            CenterPivot = reader.ReadByte() != 0,
+            TextScale = reader.ReadByte(),
+        };
         reader.ReadBytes(2); // padding, always zero
+        return value;
     }
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(AbsoluteScaleCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(StartX);
-        writer.Write(StartY);
-        writer.Write(EndX);
-        writer.Write(EndY);
-        writer.Write((byte)(CenterPivot ? 1 : 0));
-        writer.Write(TextScale);
+        writer.Write(value.StartX);
+        writer.Write(value.StartY);
+        writer.Write(value.EndX);
+        writer.Write(value.EndY);
+        writer.Write((byte)(value.CenterPivot ? 1 : 0));
+        writer.Write(value.TextScale);
         writer.Write(new byte[2]); // padding
     }
 }

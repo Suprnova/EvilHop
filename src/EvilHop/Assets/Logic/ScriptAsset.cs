@@ -3,7 +3,6 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
@@ -84,33 +83,12 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A),
             reader.ReadBytes(3); // padding, always zero
         }
 
-        bool hasEnabled = profile.Game is GameVersion.ROTU or GameVersion.Ratatouille;
         for (uint i = 0; i < eventCount; i++)
-        {
-            var evt = new ScriptEvent
-            {
-                Time = reader.ReadSingle(),
-                WidgetId = reader.ReadAssetId(),
-                ParamEvent = reader.ReadUInt32(),
-                Param =
-                [
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                ],
-                ParamWidgetId = reader.ReadAssetId(),
-            };
-            if (hasEnabled)
-            {
-                evt.Enabled = reader.ReadByte() != 0;
-                reader.ReadBytes(3); // padding, always zero
-            }
-            asset.Events.Add(evt);
-        }
+            asset.Events.Add(ScriptEvent.Read(reader, profile));
         asset.Physical.EventCount = (uint)asset.Events.Count;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -130,22 +108,11 @@ public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A),
             writer.Write(new byte[3]); // padding
         }
 
-        bool hasEnabled = profile.Game is GameVersion.ROTU or GameVersion.Ratatouille;
         foreach (var evt in asset.Events)
-        {
-            writer.Write(evt.Time);
-            writer.Write(evt.WidgetId);
-            writer.Write(evt.ParamEvent);
-            foreach (var param in evt.Param) param.WriteTo(writer);
-            writer.Write(evt.ParamWidgetId);
-            if (hasEnabled)
-            {
-                writer.Write((byte)(evt.Enabled ? 1 : 0));
-                writer.Write(new byte[3]); // padding
-            }
-        }
+            ScriptEvent.Write(evt, writer, profile);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

@@ -45,7 +45,7 @@ public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, 
         GameVersion.ROTU,
     };
 
-    internal static ThrowableTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static ThrowableTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new ThrowableTableAsset();
         AssetFields.Populate(asset, header, debug);
@@ -54,43 +54,21 @@ public sealed class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, 
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
         for (int i = 0; i < rowCount; i++)
-        {
-            var row = new ThrowableTableRow
-            {
-                ModelId = reader.ReadAssetId(),
-                Type = reader.ReadUInt32(),
-                ShrapnelId = reader.ReadAssetId(),
-                Damage = reader.ReadInt32(),
-            };
-            if (asset.Version >= 3)
-            {
-                row.DamageRadius = reader.ReadSingle();
-            }
-            asset.Rows.Add(row);
-        }
+            asset.Rows.Add(ThrowableTableRow.Read(reader, profile, asset.Version));
 
         asset.Physical.RowCount = rowCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(ThrowableTableAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(ThrowableTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
         foreach (var row in asset.Rows)
-        {
-            writer.Write(row.ModelId);
-            writer.Write(row.Type);
-            writer.Write(row.ShrapnelId);
-            writer.Write(row.Damage);
-            if (asset.Version >= 3)
-            {
-                writer.Write(row.DamageRadius);
-            }
-        }
+            ThrowableTableRow.Write(row, writer, profile, asset.Version);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -141,4 +119,32 @@ public sealed class ThrowableTableRow
     /// The blast radius of the damage on impact. Not present in version 2 assets.
     /// </summary>
     public float DamageRadius { get; set; }
+
+    internal static ThrowableTableRow Read(EndianReader reader, FormatProfile _, int version)
+    {
+        var row = new ThrowableTableRow
+        {
+            ModelId = reader.ReadAssetId(),
+            Type = reader.ReadUInt32(),
+            ShrapnelId = reader.ReadAssetId(),
+            Damage = reader.ReadInt32(),
+        };
+        if (version >= 3)
+        {
+            row.DamageRadius = reader.ReadSingle();
+        }
+        return row;
+    }
+
+    internal static void Write(ThrowableTableRow value, EndianWriter writer, FormatProfile _, int version)
+    {
+        writer.Write(value.ModelId);
+        writer.Write(value.Type);
+        writer.Write(value.ShrapnelId);
+        writer.Write(value.Damage);
+        if (version >= 3)
+        {
+            writer.Write(value.DamageRadius);
+        }
+    }
 }

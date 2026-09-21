@@ -141,29 +141,7 @@ public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IP
         asset.Physical.Padding = reader.ReadBytes(PaddingSize);
 
         for (int i = 0; i < stateCount; i++)
-        {
-            var state = new DestructibleAssetState
-            {
-                Percent = reader.ReadUInt32(),
-                ModelId = reader.ReadAssetId(),
-                ShrapnelId = reader.ReadAssetId(),
-                HitShrapnelId = reader.ReadAssetId(),
-                IdleSoundGroupId = reader.ReadAssetId(),
-                FxSoundGroupId = reader.ReadAssetId(),
-                HitSoundGroupId = reader.ReadAssetId(),
-                SwitchFxSoundGroupId = reader.ReadAssetId(),
-                SwitchHitSoundGroupId = reader.ReadAssetId(),
-                HitRumbleId = reader.ReadAssetId(),
-                SwitchRumbleId = reader.ReadAssetId(),
-                FxFlags = reader.ReadUInt32(),
-            };
-
-            uint animationCount = reader.ReadUInt32();
-            for (int j = 0; j < animationCount; j++)
-                state.AnimationIds.Add(reader.ReadAssetId());
-
-            asset.States.Add(state);
-        }
+            asset.States.Add(DestructibleAssetState.Read(reader, profile));
 
         asset.Physical.StateCount = (uint)asset.States.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -195,23 +173,7 @@ public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), IP
         writer.Write(asset.Physical.Padding);
 
         foreach (var state in asset.States)
-        {
-            writer.Write(state.Percent);
-            writer.Write(state.ModelId);
-            writer.Write(state.ShrapnelId);
-            writer.Write(state.HitShrapnelId);
-            writer.Write(state.IdleSoundGroupId);
-            writer.Write(state.FxSoundGroupId);
-            writer.Write(state.HitSoundGroupId);
-            writer.Write(state.SwitchFxSoundGroupId);
-            writer.Write(state.SwitchHitSoundGroupId);
-            writer.Write(state.HitRumbleId);
-            writer.Write(state.SwitchRumbleId);
-            writer.Write(state.FxFlags);
-
-            writer.Write((uint)state.AnimationIds.Count);
-            foreach (var animationId in state.AnimationIds) writer.Write(animationId);
-        }
+            DestructibleAssetState.Write(state, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

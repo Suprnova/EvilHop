@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -19,17 +20,21 @@ public sealed class ColorCommand : UIMotionCommand
 
     private protected override int FieldsSize => 8;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new ColorCommand Read(EndianReader reader, FormatProfile _)
     {
-        StartColor = reader.ReadRgb24();
-        EndColor = reader.ReadRgb24();
+        var value = new ColorCommand
+        {
+            StartColor = reader.ReadRgb24(),
+            EndColor = reader.ReadRgb24(),
+        };
         reader.ReadBytes(2); // padding, always zero
+        return value;
     }
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(ColorCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.WriteRgb24(StartColor);
-        writer.WriteRgb24(EndColor);
+        writer.WriteRgb24(value.StartColor);
+        writer.WriteRgb24(value.EndColor);
         writer.Write(new byte[2]); // padding
     }
 }

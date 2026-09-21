@@ -1,3 +1,6 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -41,4 +44,26 @@ public sealed class AttackTableTransition
     /// Unknown flags. Always 0.
     /// </summary>
     public uint Flags { get; set; }
+
+    internal static AttackTableTransition Read(EndianReader reader, FormatProfile _) => new()
+    {
+        SourceState = reader.ReadUInt32(),
+        DestinationState = reader.ReadUInt32(),
+        SourceTime = reader.ReadSingle(),
+        ThroughTime = reader.ReadSingle(),
+        DestinationTime = reader.ReadSingle(),
+        BlendTime = reader.ReadSingle(),
+        Flags = reader.ReadUInt32(),
+    };
+
+    internal static void Write(AttackTableTransition transition, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(transition.SourceState);
+        writer.Write(transition.DestinationState);
+        writer.Write(transition.SourceTime);
+        writer.Write(transition.ThroughTime);
+        writer.Write(transition.DestinationTime);
+        writer.Write(transition.BlendTime);
+        writer.Write(transition.Flags);
+    }
 }

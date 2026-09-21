@@ -50,7 +50,8 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
         asset.Seconds = reader.ReadSingle();
         if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) asset.RandomRange = reader.ReadSingle();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -61,7 +62,8 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.Seconds);
         if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) writer.Write(asset.RandomRange);
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

@@ -102,15 +102,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         uint keyCount = reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
 
-        for (uint i = 0; i < keyCount; i++)
-        {
-            asset.Keys.Add(new AnimationKey
-            {
-                TimeIndex = reader.ReadUInt16(),
-                Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
-                Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
-            });
-        }
+        for (uint i = 0; i < keyCount; i++) asset.Keys.Add(AnimationKey.Read(reader, _));
 
         for (int i = 0; i < timeCount; i++) asset.Times.Add(reader.ReadSingle());
 
@@ -132,12 +124,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), IPhysicalAnim
         writer.Write(asset.Physical.KeyCount);
         writer.Write(asset.Scale);
 
-        foreach (var key in asset.Keys)
-        {
-            writer.Write(key.TimeIndex);
-            writer.Write((short)key.Quat.X); writer.Write((short)key.Quat.Y); writer.Write((short)key.Quat.Z); writer.Write((short)key.Quat.W);
-            writer.Write((short)key.Tran.X); writer.Write((short)key.Tran.Y); writer.Write((short)key.Tran.Z);
-        }
+        foreach (var key in asset.Keys) AnimationKey.Write(key, writer, _);
 
         foreach (float time in asset.Times) writer.Write(time);
         foreach (ushort offset in asset.Offsets) writer.Write(offset);
@@ -208,4 +195,18 @@ public sealed class AnimationKey
     /// The bone's translation offset at <see cref="TimeIndex"/>, as a fixed-point vector (X, Y, Z).
     /// </summary>
     public Vector3 Tran { get; set; }
+
+    internal static AnimationKey Read(EndianReader reader, FormatProfile _) => new()
+    {
+        TimeIndex = reader.ReadUInt16(),
+        Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
+        Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
+    };
+
+    internal static void Write(AnimationKey value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.TimeIndex);
+        writer.Write((short)value.Quat.X); writer.Write((short)value.Quat.Y); writer.Write((short)value.Quat.Z); writer.Write((short)value.Quat.W);
+        writer.Write((short)value.Tran.X); writer.Write((short)value.Tran.Y); writer.Write((short)value.Tran.Z);
+    }
 }

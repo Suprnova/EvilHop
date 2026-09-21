@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -19,17 +20,21 @@ public sealed class BrightnessCommand : UIMotionCommand
 
     private protected override int FieldsSize => 4;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new BrightnessCommand Read(EndianReader reader, FormatProfile _)
     {
-        StartBrightness = reader.ReadByte();
-        EndBrightness = reader.ReadByte();
+        var value = new BrightnessCommand
+        {
+            StartBrightness = reader.ReadByte(),
+            EndBrightness = reader.ReadByte(),
+        };
         reader.ReadBytes(2); // padding, always zero
+        return value;
     }
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(BrightnessCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(StartBrightness);
-        writer.Write(EndBrightness);
+        writer.Write(value.StartBrightness);
+        writer.Write(value.EndBrightness);
         writer.Write(new byte[2]); // padding
     }
 }

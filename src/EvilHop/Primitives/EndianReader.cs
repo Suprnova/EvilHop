@@ -71,6 +71,9 @@ public sealed class EndianReader(Stream input, Endianness endianness, bool leave
         ? BinaryPrimitives.ReadUInt64BigEndian(ReadBytes(8))
         : BinaryPrimitives.ReadUInt64LittleEndian(ReadBytes(8));
 
+    /// <summary>Reads two consecutive <see cref="ReadSingle"/>s as a <see cref="Vector2"/>.</summary>
+    public Vector2 ReadVector2() => new(ReadSingle(), ReadSingle());
+
     /// <summary>Reads three consecutive <see cref="ReadSingle"/>s as a <see cref="Vector3"/>.</summary>
     public Vector3 ReadVector3() => new(ReadSingle(), ReadSingle(), ReadSingle());
 

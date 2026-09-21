@@ -65,7 +65,7 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhys
         GameVersion.Ratatouille,
     };
 
-    internal static FogAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static FogAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new FogAsset();
         AssetFields.Populate(asset, header, debug);
@@ -80,13 +80,14 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhys
         asset.Physical.FogType = reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(FogAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(FogAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -99,7 +100,8 @@ public sealed class FogAsset() : BaseAsset(AssetType.Fog, baseType: 0x24), IPhys
         writer.Write(asset.Physical.FogType);
         writer.Write(new byte[3]); // padding
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 

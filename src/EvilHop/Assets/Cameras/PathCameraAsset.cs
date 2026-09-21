@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
@@ -31,20 +32,24 @@ public sealed class PathCameraAsset() : CameraAsset, IPhysicalPathCameraAsset
 
     private const int ReservedSize = 12;
 
-    private protected override void ReadTypeFields(EndianReader reader)
+    internal static PathCameraAsset Read(EndianReader reader, FormatProfile _)
     {
-        PathId = reader.ReadAssetId();
-        TimeEnd = reader.ReadSingle();
-        TimeDelay = reader.ReadSingle();
-        Physical.Reserved = reader.ReadBytes(ReservedSize);
+        var value = new PathCameraAsset
+        {
+            PathId = reader.ReadAssetId(),
+            TimeEnd = reader.ReadSingle(),
+            TimeDelay = reader.ReadSingle(),
+        };
+        value.Physical.Reserved = reader.ReadBytes(ReservedSize);
+        return value;
     }
 
-    private protected override void WriteTypeFields(EndianWriter writer)
+    internal static void Write(PathCameraAsset value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(PathId);
-        writer.Write(TimeEnd);
-        writer.Write(TimeDelay);
-        writer.Write(Physical.Reserved);
+        writer.Write(value.PathId);
+        writer.Write(value.TimeEnd);
+        writer.Write(value.TimeDelay);
+        writer.Write(value.Physical.Reserved);
     }
 }
 

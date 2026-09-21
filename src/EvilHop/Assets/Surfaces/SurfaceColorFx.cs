@@ -1,3 +1,5 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
@@ -21,6 +23,20 @@ public sealed class SurfaceColorFx
     /// The speed of this color animation.
     /// </summary>
     public float Speed { get; set; }
+
+    internal static SurfaceColorFx Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Flags = (SurfaceColorFxFlags)reader.ReadUInt16(),
+        Mode = reader.ReadUInt16(),
+        Speed = reader.ReadSingle(),
+    };
+
+    internal static void Write(SurfaceColorFx color, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((ushort)color.Flags);
+        writer.Write(color.Mode);
+        writer.Write(color.Speed);
+    }
 }
 
 /// <summary>

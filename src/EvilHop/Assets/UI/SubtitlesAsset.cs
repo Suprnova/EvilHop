@@ -56,7 +56,7 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
         GameVersion.ROTU,
     };
 
-    internal static SubtitlesAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SubtitlesAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SubtitlesAsset();
         AssetFields.Populate(asset, header, debug);
@@ -86,7 +86,6 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
                 int length = nullIndex >= 0 ? nullIndex - start : stringPool.Length - start;
                 text = Encoding.Latin1.GetString(stringPool, start, length);
             }
-
             asset.Lines.Add(new SubtitleLine
             {
                 StartTime = StartTime,
@@ -98,13 +97,14 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
         asset.Physical.NumLines = numLines;
         asset.Physical.ByteCount = byteCount;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SubtitlesAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SubtitlesAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -130,7 +130,8 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
         int poolPadding = asset.Physical.ByteCount - (asset.Lines.Count * 12) - currentOffset;
         if (poolPadding > 0) writer.Write(new byte[poolPadding]);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

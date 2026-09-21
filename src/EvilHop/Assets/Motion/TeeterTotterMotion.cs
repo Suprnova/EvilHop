@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -24,19 +25,23 @@ public sealed class TeeterTotterMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.TeeterTotter;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static TeeterTotterMotion Read(EndianReader reader, FormatProfile profile)
     {
-        InitialTilt = reader.ReadSingle();
-        MaxTilt = reader.ReadSingle();
-        InverseMass = reader.ReadSingle();
-        if (game is GameVersion.ROTU) Unknown = reader.ReadUInt32();
+        var motion = new TeeterTotterMotion
+        {
+            InitialTilt = reader.ReadSingle(),
+            MaxTilt = reader.ReadSingle(),
+            InverseMass = reader.ReadSingle(),
+        };
+        if (profile.Game is GameVersion.ROTU) motion.Unknown = reader.ReadUInt32();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(TeeterTotterMotion value, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write(InitialTilt);
-        writer.Write(MaxTilt);
-        writer.Write(InverseMass);
-        if (game is GameVersion.ROTU) writer.Write(Unknown);
+        writer.Write(value.InitialTilt);
+        writer.Write(value.MaxTilt);
+        writer.Write(value.InverseMass);
+        if (profile.Game is GameVersion.ROTU) writer.Write(value.Unknown);
     }
 }

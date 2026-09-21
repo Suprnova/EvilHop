@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -38,23 +39,27 @@ public sealed class ScaleCommand : UIMotionCommand
 
     private protected override int FieldsSize => 20;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new ScaleCommand Read(EndianReader reader, FormatProfile _)
     {
-        AmountX = reader.ReadSingle();
-        AmountY = reader.ReadSingle();
-        CenterPivot = reader.ReadByte() != 0;
+        var value = new ScaleCommand
+        {
+            AmountX = reader.ReadSingle(),
+            AmountY = reader.ReadSingle(),
+            CenterPivot = reader.ReadByte() != 0,
+        };
         reader.ReadBytes(3); // padding, always zero
-        CenterOffsetX = reader.ReadSingle();
-        CenterOffsetY = reader.ReadSingle();
+        value.CenterOffsetX = reader.ReadSingle();
+        value.CenterOffsetY = reader.ReadSingle();
+        return value;
     }
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(ScaleCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(AmountX);
-        writer.Write(AmountY);
-        writer.Write((byte)(CenterPivot ? 1 : 0));
+        writer.Write(value.AmountX);
+        writer.Write(value.AmountY);
+        writer.Write((byte)(value.CenterPivot ? 1 : 0));
         writer.Write(new byte[3]); // padding
-        writer.Write(CenterOffsetX);
-        writer.Write(CenterOffsetY);
+        writer.Write(value.CenterOffsetX);
+        writer.Write(value.CenterOffsetY);
     }
 }

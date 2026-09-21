@@ -1,6 +1,7 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -13,14 +14,8 @@ namespace EvilHop.Assets;
 /// Shaped like a <see cref="Link"/>, but not one: it has no source event of its own (elapsed time
 /// reaching <see cref="Time"/> is what triggers it) and no <see cref="Link.CheckAssetId"/>.
 /// </remarks>
-[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Nothing compares ScriptEvents by value; Param holds reference-equality-only Parameters, so a real implementation would be misleading.")]
-public struct ScriptEvent
+public sealed class ScriptEvent()
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="ScriptEvent"/> with four zeroed <see cref="Param"/>
-    /// slots.
-    /// </summary>
-    public ScriptEvent() { }
 
     /// <summary>
     /// The time, in seconds, this event fires at, relative to when the script starts running.
@@ -44,7 +39,7 @@ public struct ScriptEvent
     /// <exception cref="ArgumentException">The assigned value's length isn't 4.</exception>
     public ImmutableArray<Parameter> Param
     {
-        readonly get;
+        get;
         set => field = value.Length == 4
             ? value
             : throw new ArgumentException($"{nameof(Param)} must contain exactly 4 elements.", nameof(value));
@@ -65,4 +60,47 @@ public struct ScriptEvent
 
     private static ImmutableArray<Parameter> ZeroedParams() =>
         [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
+
+    internal static ScriptEvent Read(EndianReader reader, FormatProfile profile)
+    {
+        var evt = new ScriptEvent
+        {
+            Time = reader.ReadSingle(),
+            WidgetId = reader.ReadAssetId(),
+            ParamEvent = reader.ReadUInt32(),
+            Param =
+            [
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+            ],
+            ParamWidgetId = reader.ReadAssetId(),
+        };
+
+        bool hasEnabled = profile.Game is GameVersion.ROTU or GameVersion.Ratatouille;
+        if (hasEnabled)
+        {
+            evt.Enabled = reader.ReadByte() != 0;
+            reader.ReadBytes(3); // padding, always zero
+        }
+
+        return evt;
+    }
+
+    internal static void Write(ScriptEvent value, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(value.Time);
+        writer.Write(value.WidgetId);
+        writer.Write(value.ParamEvent);
+        foreach (var param in value.Param) param.WriteTo(writer);
+        writer.Write(value.ParamWidgetId);
+
+        bool hasEnabled = profile.Game is GameVersion.ROTU or GameVersion.Ratatouille;
+        if (hasEnabled)
+        {
+            writer.Write((byte)(value.Enabled ? 1 : 0));
+            writer.Write(new byte[3]); // padding
+        }
+    }
 }

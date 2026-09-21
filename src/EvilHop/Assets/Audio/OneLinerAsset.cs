@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -32,6 +36,31 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), IPhysic
     {
         GameVersion.Incredibles,
     };
+
+    internal static OneLinerAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new OneLinerAsset();
+        AssetFields.Populate(asset, header, debug);
+
+        uint entryCount = reader.ReadUInt32();
+        for (int i = 0; i < entryCount; i++)
+            asset.Entries.Add(OneLinerEntry.Read(reader, profile));
+
+        asset.Physical.EntryCount = (uint)asset.Entries.Count;
+        // TODO: Partial implementation - trailing 67-byte trailer is not modeled
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(OneLinerAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(asset.Physical.EntryCount);
+
+        foreach (var entry in asset.Entries)
+            OneLinerEntry.Write(entry, writer, profile);
+
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>

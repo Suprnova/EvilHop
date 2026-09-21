@@ -45,7 +45,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
         GameVersion.Ratatouille,
     };
 
-    internal static GroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static GroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new GroupAsset();
         AssetFields.Populate(asset, header, debug);
@@ -57,7 +57,8 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
         for (int i = 0; i < itemCount; i++)
             asset.Items.Add(reader.ReadAssetId());
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
 
         asset.Physical.ItemCount = (ushort)asset.Items.Count;
         asset.Physical.LinkCount = (byte)asset.Links.Count;
@@ -65,7 +66,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
         return asset;
     }
 
-    internal static void Write(GroupAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(GroupAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.Physical.ItemCount);
@@ -74,7 +75,8 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), I
         foreach (var item in asset.Items)
             writer.Write(item);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

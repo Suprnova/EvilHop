@@ -1,3 +1,6 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
 namespace EvilHop.Assets;
 
 /// <summary>
@@ -53,6 +56,32 @@ public sealed class AnimationTableFile
     /// Unknown. Usually -1.
     /// </summary>
     public int EndPose { get; set; }
+
+    internal static AnimationTableFile Read(EndianReader reader, FormatProfile _) => new()
+    {
+        FileFlags = (FileFlags)reader.ReadUInt32(),
+        Duration = reader.ReadSingle(),
+        TimeOffset = reader.ReadSingle(),
+        NumAnimsX = reader.ReadUInt16(),
+        NumAnimsY = reader.ReadUInt16(),
+        RawDataOffset = reader.ReadUInt32(),
+        Physics = reader.ReadInt32(),
+        StartPose = reader.ReadInt32(),
+        EndPose = reader.ReadInt32(),
+    };
+
+    internal static void Write(AnimationTableFile value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((uint)value.FileFlags);
+        writer.Write(value.Duration);
+        writer.Write(value.TimeOffset);
+        writer.Write(value.NumAnimsX);
+        writer.Write(value.NumAnimsY);
+        writer.Write(value.RawDataOffset);
+        writer.Write(value.Physics);
+        writer.Write(value.StartPose);
+        writer.Write(value.EndPose);
+    }
 }
 
 /// <summary>

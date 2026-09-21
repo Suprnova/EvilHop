@@ -96,7 +96,7 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
         GameVersion.BFBB,
     };
 
-    internal static SoundFXAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SoundFXAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SoundFXAsset();
         AssetFields.Populate(asset, header, debug);
@@ -115,13 +115,14 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
         asset.InnerRadius = reader.ReadSingle();
         asset.OuterRadius = reader.ReadSingle();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SoundFXAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SoundFXAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -138,7 +139,8 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
         writer.Write(asset.InnerRadius);
         writer.Write(asset.OuterRadius);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

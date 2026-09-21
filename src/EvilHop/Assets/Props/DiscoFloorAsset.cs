@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -130,39 +132,4 @@ public enum DiscoFloorFlags : uint
     Loop = 0x1,
     /// <summary>The Disco Floor runs and its SIMPs render.</summary>
     Enabled = 0x2,
-}
-
-/// <summary>
-/// One step of a <see cref="DiscoFloorAsset"/>'s pattern: the <see cref="TileState"/> every tile is
-/// set to during this step.
-/// </summary>
-public sealed class DiscoFloorState
-{
-    /// <summary>
-    /// Each tile's state during this step, in tile order.
-    /// </summary>
-    public Collection<TileState> Tiles { get; } = [];
-
-    // The on-disk mask is byte-aligned, so a tile count not divisible by 4 leaves a few unused bit
-    // pairs in its last byte - real archives leave those set to whatever the authoring tool's buffer
-    // happened to already hold, not zero. Caching the exact bytes here lets a codec replay them
-    // verbatim as long as Tiles hasn't changed since Read, instead of always zeroing them.
-    private byte[]? _rawMask;
-
-    internal byte[]? GetRawMask() => _rawMask;
-
-    internal void SetRawMask(byte[] mask) => _rawMask = mask;
-}
-
-/// <summary>
-/// Defines the visual and active state assigned to an individual disco floor tile.
-/// </summary>
-public enum TileState : byte
-{
-    /// <summary>The tile is off (white).</summary>
-    Off = 0,
-    /// <summary>The tile is on (red).</summary>
-    On = 1,
-    /// <summary>The tile is randomly either on or off, chosen independently each time it is reached.</summary>
-    Random = 2,
 }

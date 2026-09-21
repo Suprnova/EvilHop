@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -16,7 +20,7 @@ namespace EvilHop.Assets;
 /// <seealso href="https://heavyironmodding.org/wiki/CSN">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 // TODO: Partial implementation - chunked media data is unmodelled and preserved in unparsed tail
-public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader, IPhysicalCutsceneAsset
+public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader, IPhysicalCutsceneAsset
 {
     /// <summary>
     /// The models this cutscene needs loaded before playback.
@@ -95,6 +99,21 @@ public sealed partial class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsce
         GameVersion.Incredibles,
         GameVersion.ROTU,
     };
+
+    internal static CutsceneAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new CutsceneAsset();
+        AssetFields.Populate(asset, header, debug);
+        ICutsceneHeader.ReadHeader(asset, reader, profile);
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(CutsceneAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        ICutsceneHeader.WriteHeader(asset, writer, profile);
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>
@@ -129,6 +148,22 @@ public record struct CutsceneDataEntry
     /// <see cref="AssetType.Model"/> asset.
     /// </summary>
     public uint FileOffset { get; set; }
+
+    internal static CutsceneDataEntry Read(EndianReader reader, FormatProfile _) => new()
+    {
+        DataType = (CutsceneDataType)reader.ReadUInt32(),
+        AssetId = reader.ReadAssetId(),
+        ChunkSize = reader.ReadUInt32(),
+        FileOffset = reader.ReadUInt32(),
+    };
+
+    internal static void Write(CutsceneDataEntry value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((uint)value.DataType);
+        writer.Write(value.AssetId);
+        writer.Write(value.ChunkSize);
+        writer.Write(value.FileOffset);
+    }
 }
 
 /// <summary>
@@ -148,4 +183,19 @@ public enum CutsceneDataType : uint
 /// One stereo sound track slot in a <see cref="GameVersion.TSSM"/>/<see cref="GameVersion.Incredibles"/>
 /// <see cref="CutsceneAsset"/>.
 /// </summary>
-public readonly record struct CutsceneAudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound);
+public readonly record struct CutsceneAudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
+{
+    internal static CutsceneAudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
+        reader.ReadAssetId(),
+        reader.ReadAssetId(),
+        ICutsceneHeader.ReadFixedString(reader, soundLength),
+        ICutsceneHeader.ReadFixedString(reader, soundLength));
+
+    internal static void Write(CutsceneAudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
+    {
+        writer.Write(value.LeftSoundId);
+        writer.Write(value.RightSoundId);
+        ICutsceneHeader.WriteFixedString(writer, value.LeftSound, soundLength);
+        ICutsceneHeader.WriteFixedString(writer, value.RightSound, soundLength);
+    }
+}

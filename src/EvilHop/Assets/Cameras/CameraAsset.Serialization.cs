@@ -39,13 +39,14 @@ public abstract partial class CameraAsset
         var kind = (CameraKind)reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
 
+        using var typeReader = new EndianReader(new MemoryStream(typeData), profile.Endianness);
         CameraAsset asset = kind switch
         {
-            CameraKind.Follow => new FollowCameraAsset(),
-            CameraKind.Shoulder => new ShoulderCameraAsset(),
-            CameraKind.Static => new StaticCameraAsset(),
-            CameraKind.Path => new PathCameraAsset(),
-            CameraKind.StaticFollow => new StaticFollowCameraAsset(),
+            CameraKind.Follow => FollowCameraAsset.Read(typeReader, profile),
+            CameraKind.Shoulder => ShoulderCameraAsset.Read(typeReader, profile),
+            CameraKind.Static => StaticCameraAsset.Read(typeReader, profile),
+            CameraKind.Path => PathCameraAsset.Read(typeReader, profile),
+            CameraKind.StaticFollow => StaticFollowCameraAsset.Read(typeReader, profile),
             _ => throw new InvalidDataException($"Unknown Cam Type 0x{(byte)kind:X2}."),
         };
 
@@ -69,20 +70,18 @@ public abstract partial class CameraAsset
         asset.FadeUp = fadeUp;
         asset.FadeDown = fadeDown;
 
-        using (var typeReader = new EndianReader(new MemoryStream(typeData), profile.Endianness))
-            asset.ReadTypeFields(typeReader);
-
         asset.Physical.ValidFlags = validFlags;
         asset.MarkerId1 = markerId1;
         asset.MarkerId2 = markerId2;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(CameraAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -100,7 +99,14 @@ public abstract partial class CameraAsset
         writer.Write(asset.FadeUp);
         writer.Write(asset.FadeDown);
 
-        asset.WriteTypeFields(writer);
+        switch (asset)
+        {
+            case FollowCameraAsset c: FollowCameraAsset.Write(c, writer, profile); break;
+            case ShoulderCameraAsset c: ShoulderCameraAsset.Write(c, writer, profile); break;
+            case StaticCameraAsset c: StaticCameraAsset.Write(c, writer, profile); break;
+            case PathCameraAsset c: PathCameraAsset.Write(c, writer, profile); break;
+            case StaticFollowCameraAsset c: StaticFollowCameraAsset.Write(c, writer, profile); break;
+        }
 
         writer.Write(asset.Physical.ValidFlags);
         writer.Write(asset.MarkerId1);
@@ -108,7 +114,8 @@ public abstract partial class CameraAsset
         writer.Write((byte)asset.Kind);
         writer.Write(new byte[3]); // padding
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

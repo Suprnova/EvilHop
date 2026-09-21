@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// </summary>
 public sealed class PointEmitterShape : ParticleEmitterShape
 {
-    private protected override void ReadFields(EndianReader _, GameVersion __) { }
+    internal static PointEmitterShape Read(EndianReader _, FormatProfile __) => new();
 
-    private protected override void WriteFields(EndianWriter _, GameVersion __) { }
+    internal static void Write(PointEmitterShape _, EndianWriter __, FormatProfile ___) { }
 }

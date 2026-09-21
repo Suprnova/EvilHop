@@ -61,7 +61,8 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup, baseType: 0x04
         asset.Flags = (PickupFlags)reader.ReadInt16();
         asset.PickupValue = reader.ReadInt16();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -76,7 +77,8 @@ public sealed class PickupAsset() : EntityAsset(AssetType.Pickup, baseType: 0x04
         writer.Write((short)asset.Flags);
         writer.Write(asset.PickupValue);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

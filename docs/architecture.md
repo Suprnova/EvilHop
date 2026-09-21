@@ -105,6 +105,28 @@ opt into them through trait interfaces (`IHasModel`, `IGrabbable`, ...) in
 [`Traits.cs`](../src/EvilHop/Assets/Traits.cs). A trait projects onto the physical storage; it never
 stores a copy.
 
+## Nested And Satellite Types
+
+Asset fields frequently hold substructures: table rows, animation keyframes, mesh geometry, or event
+links. These helper types are not `Asset` subclasses and do not have a `Physical` surface split. We choose
+their type shape based on three distinct criteria:
+
+- **`sealed class` for mutable entities, child collections, and polymorphic hierarchies**: Any type with
+  mutable properties intended to be modified in-place within a collection must be a class to avoid the C#
+  indexer trap (`CS1612`: `asset.Collection[i].Field = val` is illegal for value types). Composite objects
+  holding child collections of their own (such as `CreditsSection`) or polymorphic hierarchies (such as
+  `EntityMotion` or `PlatformMotion`) are always classes.
+- **`record struct` / `readonly record struct` for flat value tuples and table entries**: Small, flat
+  records representing table rows or data pairs (`CollisionTableEntry`, `CutsceneDataEntry`,
+  `AssetDiagnostic`) use record structs for built-in value equality and concise syntax.
+- **`record struct` for high-density numerical geometry**: Mesh vertices, triangle faces, and topology
+  links (`GrassMeshVertex`, `GrassMeshFace`, `DashTrackTriangle`, `DashTrackPortal`) can number in the
+  thousands per asset. They are value types to eliminate heap allocation overhead and GC pressure.
+
+Satellite types follow an `internal static` codec convention directly on the type (`Foo.Read(reader, profile)`
+and `Foo.Write(value, writer, profile)`) with no interface contracts. The enclosing asset manages collection
+counts, loops, and container framing.
+
 ## An Asset In Memory Is Game-Agnostic
 
 An asset carries every field EvilHop models for its type, regardless of which game it is destined

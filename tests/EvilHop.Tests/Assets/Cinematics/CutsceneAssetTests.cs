@@ -36,7 +36,7 @@ public class CutsceneAssetTests
     }
 
     // N100F's Cutscene/CutsceneTable payloads are little-endian even on GameCube - see
-    // CutsceneAsset.HeaderReader/HeaderWriter - unlike every other game's, and unlike every other
+    // ICutsceneHeader.HeaderReader/HeaderWriter - unlike every other game's, and unlike every other
     // field these fixtures build.
     private static byte[] U32(uint value, bool littleEndian) =>
         littleEndian ? BitConverter.GetBytes(value) : [.. BitConverter.GetBytes(value).Reverse()];

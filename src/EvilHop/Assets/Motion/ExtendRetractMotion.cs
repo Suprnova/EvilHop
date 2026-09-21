@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -29,23 +29,23 @@ public sealed class ExtendRetractMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.ExtendRetract;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static new ExtendRetractMotion Read(EndianReader reader, FormatProfile _) => new()
     {
-        RetractPosition = reader.ReadVector3();
-        ExtendOffset = reader.ReadVector3();
-        ExtendTime = reader.ReadSingle();
-        ExtendWaitTime = reader.ReadSingle();
-        RetractTime = reader.ReadSingle();
-        RetractWaitTime = reader.ReadSingle();
-    }
+        RetractPosition = reader.ReadVector3(),
+        ExtendOffset = reader.ReadVector3(),
+        ExtendTime = reader.ReadSingle(),
+        ExtendWaitTime = reader.ReadSingle(),
+        RetractTime = reader.ReadSingle(),
+        RetractWaitTime = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(ExtendRetractMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(RetractPosition);
-        writer.Write(ExtendOffset);
-        writer.Write(ExtendTime);
-        writer.Write(ExtendWaitTime);
-        writer.Write(RetractTime);
-        writer.Write(RetractWaitTime);
+        writer.Write(value.RetractPosition);
+        writer.Write(value.ExtendOffset);
+        writer.Write(value.ExtendTime);
+        writer.Write(value.ExtendWaitTime);
+        writer.Write(value.RetractTime);
+        writer.Write(value.RetractWaitTime);
     }
 }

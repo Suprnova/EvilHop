@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -29,23 +30,23 @@ public sealed class FollowCameraAsset() : CameraAsset
     /// <inheritdoc/>
     public override CameraKind Kind => CameraKind.Follow;
 
-    private protected override void ReadTypeFields(EndianReader reader)
+    internal static FollowCameraAsset Read(EndianReader reader, FormatProfile _) => new()
     {
-        Rotation = reader.ReadSingle();
-        Distance = reader.ReadSingle();
-        Height = reader.ReadSingle();
-        RubberBand = reader.ReadSingle();
-        StartSpeed = reader.ReadSingle();
-        EndSpeed = reader.ReadSingle();
-    }
+        Rotation = reader.ReadSingle(),
+        Distance = reader.ReadSingle(),
+        Height = reader.ReadSingle(),
+        RubberBand = reader.ReadSingle(),
+        StartSpeed = reader.ReadSingle(),
+        EndSpeed = reader.ReadSingle(),
+    };
 
-    private protected override void WriteTypeFields(EndianWriter writer)
+    internal static void Write(FollowCameraAsset value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Rotation);
-        writer.Write(Distance);
-        writer.Write(Height);
-        writer.Write(RubberBand);
-        writer.Write(StartSpeed);
-        writer.Write(EndSpeed);
+        writer.Write(value.Rotation);
+        writer.Write(value.Distance);
+        writer.Write(value.Height);
+        writer.Write(value.RubberBand);
+        writer.Write(value.StartSpeed);
+        writer.Write(value.EndSpeed);
     }
 }

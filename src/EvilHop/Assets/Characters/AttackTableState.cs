@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
 using System.Numerics;
 
@@ -254,6 +256,134 @@ public sealed class AttackTableState
 
     private static ImmutableArray<HitBoneInfo> ZeroedHitBones() => [new(), new(), new(), new()];
     private static ImmutableArray<ushort> ZeroedEffectBones() => [0, 0];
+
+    internal static AttackTableState Read(EndianReader reader, FormatProfile profile)
+    {
+        var state = new AttackTableState
+        {
+            StateId = reader.ReadUInt32(),
+            MoveDistanceZ = reader.ReadSingle(),
+            MoveDistanceY = reader.ReadSingle(),
+            MoveTime = reader.ReadSingle(),
+            AttackStart = reader.ReadSingle(),
+            AttackEnd = reader.ReadSingle(),
+            AttackRadius = reader.ReadSingle(),
+            HitBones =
+            [
+                HitBoneInfo.Read(reader, profile),
+                HitBoneInfo.Read(reader, profile),
+                HitBoneInfo.Read(reader, profile),
+                HitBoneInfo.Read(reader, profile),
+            ],
+            Damage = reader.ReadInt16(),
+            Source = reader.ReadUInt16(),
+            Effect = reader.ReadUInt16(),
+            HitEffect = reader.ReadUInt16(),
+            EffectStart = reader.ReadSingle(),
+            EffectEnd = reader.ReadSingle(),
+            EffectBonesOutside = [ReadEffectBone(reader), ReadEffectBone(reader)],
+            EffectBonesInside = [ReadEffectBone(reader), ReadEffectBone(reader)]
+        };
+        reader.ReadUInt32(); // runtime-resolved zAnimCacheEntry* cache, always zero
+        reader.ReadUInt32(); // runtime-resolved zAnimCacheEntry* cache, always zero
+        state.RumbleStartTime = reader.ReadSingle();
+        state.RumbleEmitterId = reader.ReadUInt32();
+        state.ShrapnelId = reader.ReadAssetId();
+        reader.ReadUInt32(); // runtime-resolved zShrapnelAsset pointer, always zero
+        state.ShrapnelStartTime = reader.ReadSingle();
+        state.VelocityUp = reader.ReadSingle();
+        state.VelocityAway = reader.ReadSingle();
+        state.Flags = reader.ReadUInt32();
+        state.HoldTime = reader.ReadSingle();
+        state.JumpBreakTime = reader.ReadSingle();
+        state.CrouchBreakTime = reader.ReadSingle();
+        state.TurnLockStart = reader.ReadSingle();
+        state.TurnLockStop = reader.ReadSingle();
+        state.ClimaxTime = reader.ReadSingle();
+        state.ClimaxOffset = reader.ReadVector3();
+        state.DrainRate = reader.ReadSingle();
+        state.BlurStart = reader.ReadSingle();
+        state.BlurEnd = reader.ReadSingle();
+        state.BlurLife = reader.ReadSingle();
+        state.BlurAlpha = reader.ReadSingle();
+        state.BlurFadeInTime = reader.ReadSingle();
+        state.BlurFadeOutTime = reader.ReadSingle();
+        state.FlashAlpha = reader.ReadInt16();
+        reader.ReadInt16(); // padding, always zero
+        state.FlashTime = reader.ReadSingle();
+        state.ComboBonus = reader.ReadSingle();
+        state.ComboType = reader.ReadInt16();
+        state.PowerBonus = reader.ReadInt16();
+
+        return state;
+    }
+
+    private static ushort ReadEffectBone(EndianReader reader)
+    {
+        ushort bone = reader.ReadUInt16();
+        reader.ReadInt16(); // padding, always zero
+        reader.ReadUInt32(); // runtime-resolved xVec3* position cache, always zero
+        return bone;
+    }
+
+    internal static void Write(AttackTableState state, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(state.StateId);
+        writer.Write(state.MoveDistanceZ);
+        writer.Write(state.MoveDistanceY);
+        writer.Write(state.MoveTime);
+        writer.Write(state.AttackStart);
+        writer.Write(state.AttackEnd);
+        writer.Write(state.AttackRadius);
+        foreach (var hitBone in state.HitBones)
+            HitBoneInfo.Write(hitBone, writer, profile);
+
+        writer.Write(state.Damage);
+        writer.Write(state.Source);
+        writer.Write(state.Effect);
+        writer.Write(state.HitEffect);
+        writer.Write(state.EffectStart);
+        writer.Write(state.EffectEnd);
+        foreach (var bone in state.EffectBonesOutside) WriteEffectBone(writer, bone);
+        foreach (var bone in state.EffectBonesInside) WriteEffectBone(writer, bone);
+        writer.Write(0u); // runtime-resolved
+        writer.Write(0u); // runtime-resolved
+        writer.Write(state.RumbleStartTime);
+        writer.Write(state.RumbleEmitterId);
+        writer.Write(state.ShrapnelId);
+        writer.Write(0u); // runtime-resolved
+        writer.Write(state.ShrapnelStartTime);
+        writer.Write(state.VelocityUp);
+        writer.Write(state.VelocityAway);
+        writer.Write(state.Flags);
+        writer.Write(state.HoldTime);
+        writer.Write(state.JumpBreakTime);
+        writer.Write(state.CrouchBreakTime);
+        writer.Write(state.TurnLockStart);
+        writer.Write(state.TurnLockStop);
+        writer.Write(state.ClimaxTime);
+        writer.Write(state.ClimaxOffset);
+        writer.Write(state.DrainRate);
+        writer.Write(state.BlurStart);
+        writer.Write(state.BlurEnd);
+        writer.Write(state.BlurLife);
+        writer.Write(state.BlurAlpha);
+        writer.Write(state.BlurFadeInTime);
+        writer.Write(state.BlurFadeOutTime);
+        writer.Write(state.FlashAlpha);
+        writer.Write((short)0); // padding
+        writer.Write(state.FlashTime);
+        writer.Write(state.ComboBonus);
+        writer.Write(state.ComboType);
+        writer.Write(state.PowerBonus);
+    }
+
+    private static void WriteEffectBone(EndianWriter writer, ushort bone)
+    {
+        writer.Write(bone);
+        writer.Write((short)0); // padding
+        writer.Write(0u); // runtime-resolved
+    }
 }
 
 /// <summary>
@@ -276,4 +406,23 @@ public sealed class HitBoneInfo
     /// Unknown.
     /// </summary>
     public short Atomic { get; set; }
+
+    internal static HitBoneInfo Read(EndianReader reader, FormatProfile _)
+    {
+        var hitBone = new HitBoneInfo { Bone = reader.ReadUInt16() };
+        reader.ReadInt16(); // padding, always zero
+        hitBone.Offset = reader.ReadVector3();
+        hitBone.Atomic = reader.ReadInt16();
+        reader.ReadInt16(); // padding, always zero
+        return hitBone;
+    }
+
+    internal static void Write(HitBoneInfo hitBone, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(hitBone.Bone);
+        writer.Write((short)0); // padding
+        writer.Write(hitBone.Offset);
+        writer.Write(hitBone.Atomic);
+        writer.Write((short)0); // padding
+    }
 }

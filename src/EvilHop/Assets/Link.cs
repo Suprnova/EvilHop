@@ -1,6 +1,7 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -10,14 +11,8 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Events#Links">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Nothing compares Links by value; Params holds reference-equality-only Parameters, so a real implementation would be misleading.")]
-public struct Link
+public sealed class Link()
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="Link"/> with four zeroed <see cref="Params"/> slots.
-    /// </summary>
-    public Link() { }
-
     /// <summary>
     /// The event on the owning <see cref="BaseAsset"/> that triggers this <see cref="Link"/>.
     /// </summary>
@@ -38,7 +33,7 @@ public struct Link
     /// <exception cref="ArgumentException">The assigned value's length isn't 4.</exception>
     public ImmutableArray<Parameter> Params
     {
-        readonly get;
+        get;
         set => field = value.Length == 4
             ? value
             : throw new ArgumentException($"{nameof(Params)} must contain exactly 4 elements.", nameof(value));
@@ -56,4 +51,46 @@ public struct Link
 
     private static ImmutableArray<Parameter> ZeroedParams() =>
         [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
+
+    /// <summary>
+    /// Reads one <see cref="Link"/> from <paramref name="reader"/>'s current position. The caller owns
+    /// the loop over a link list, since the link count is <see cref="BaseAsset"/>'s physical field.
+    /// </summary>
+    internal static Link Read(EndianReader reader, FormatProfile profile)
+    {
+        var link = new Link
+        {
+            SourceEvent = reader.ReadInt16(),
+            DestinationEvent = reader.ReadInt16(),
+            DestinationAssetId = reader.ReadAssetId(),
+            Params =
+            [
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4)),
+            ],
+        };
+        if (profile.LinkHasExtendedFields)
+        {
+            link.ParamWidgetAssetId = reader.ReadAssetId();
+            link.CheckAssetId = reader.ReadAssetId();
+        }
+        return link;
+    }
+
+    /// <summary>Writes <paramref name="value"/> to <paramref name="writer"/>.</summary>
+    internal static void Write(Link value, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(value.SourceEvent);
+        writer.Write(value.DestinationEvent);
+        writer.Write(value.DestinationAssetId);
+        foreach (var param in value.Params)
+            param.WriteTo(writer);
+        if (profile.LinkHasExtendedFields)
+        {
+            writer.Write(value.ParamWidgetAssetId);
+            writer.Write(value.CheckAssetId);
+        }
+    }
 }

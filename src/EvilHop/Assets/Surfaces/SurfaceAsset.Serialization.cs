@@ -24,34 +24,20 @@ public sealed partial class SurfaceAsset
         asset.PhysFlags = (SurfacePhysicsFlags)reader.ReadByte();
         asset.Friction = reader.ReadSingle();
 
-        asset.MaterialFx = new SurfaceMaterialFx
-        {
-            Flags = (SurfaceMaterialFxFlags)reader.ReadUInt32(),
-            BumpMapId = reader.ReadAssetId(),
-            EnvMapId = reader.ReadAssetId(),
-            Shininess = reader.ReadSingle(),
-            Bumpiness = reader.ReadSingle(),
-            DualMapId = reader.ReadAssetId(),
-        };
-
-        asset.ColorFx = new SurfaceColorFx
-        {
-            Flags = (SurfaceColorFxFlags)reader.ReadUInt16(),
-            Mode = reader.ReadUInt16(),
-            Speed = reader.ReadSingle(),
-        };
+        asset.MaterialFx = SurfaceMaterialFx.Read(reader, profile);
+        asset.ColorFx = SurfaceColorFx.Read(reader, profile);
 
         var textureAnimFlags = (SurfaceTextureAnimFlags)reader.ReadUInt32();
-        var textureAnim0 = ReadTextureAnim(reader);
-        var textureAnim1 = ReadTextureAnim(reader);
+        var textureAnim0 = SurfaceTextureAnim.Read(reader, profile);
+        var textureAnim1 = SurfaceTextureAnim.Read(reader, profile);
         textureAnim0.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot0);
         textureAnim1.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot1);
         asset.TextureAnims = [textureAnim0, textureAnim1];
         asset.Physical.TextureAnimFlags = textureAnimFlags;
 
         var uvfxFlags = (SurfaceUvfxFlags)reader.ReadUInt32();
-        var uvfx0 = ReadUvfx(reader);
-        var uvfx1 = ReadUvfx(reader);
+        var uvfx0 = SurfaceUvfx.Read(reader, profile);
+        var uvfx1 = SurfaceUvfx.Read(reader, profile);
         uvfx0.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot0);
         uvfx1.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot1);
         asset.Uvfxs = [uvfx0, uvfx1];
@@ -73,7 +59,8 @@ public sealed partial class SurfaceAsset
         int remaining = (int)(reader.BaseStream.Length - reader.BaseStream.Position);
         asset.ExtendedData = [.. reader.ReadBytes(remaining - 32 * asset.Physical.LinkCount)];
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -93,24 +80,16 @@ public sealed partial class SurfaceAsset
         writer.Write((byte)asset.PhysFlags);
         writer.Write(asset.Friction);
 
-        writer.Write((uint)asset.MaterialFx.Flags);
-        writer.Write(asset.MaterialFx.BumpMapId);
-        writer.Write(asset.MaterialFx.EnvMapId);
-        writer.Write(asset.MaterialFx.Shininess);
-        writer.Write(asset.MaterialFx.Bumpiness);
-        writer.Write(asset.MaterialFx.DualMapId);
-
-        writer.Write((ushort)asset.ColorFx.Flags);
-        writer.Write(asset.ColorFx.Mode);
-        writer.Write(asset.ColorFx.Speed);
+        SurfaceMaterialFx.Write(asset.MaterialFx, writer, profile);
+        SurfaceColorFx.Write(asset.ColorFx, writer, profile);
 
         writer.Write((uint)asset.Physical.TextureAnimFlags);
-        WriteTextureAnim(writer, asset.TextureAnims[0]);
-        WriteTextureAnim(writer, asset.TextureAnims[1]);
+        SurfaceTextureAnim.Write(asset.TextureAnims[0], writer, profile);
+        SurfaceTextureAnim.Write(asset.TextureAnims[1], writer, profile);
 
         writer.Write((uint)asset.Physical.UvfxFlags);
-        WriteUvfx(writer, asset.Uvfxs[0]);
-        WriteUvfx(writer, asset.Uvfxs[1]);
+        SurfaceUvfx.Write(asset.Uvfxs[0], writer, profile);
+        SurfaceUvfx.Write(asset.Uvfxs[1], writer, profile);
 
         writer.Write(asset.Physical.IsEnabled);
         writer.Write(new byte[3]); // padding
@@ -125,55 +104,8 @@ public sealed partial class SurfaceAsset
 
         writer.Write(asset.ExtendedData.AsSpan());
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
-    }
-
-    private static SurfaceTextureAnim ReadTextureAnim(EndianReader reader)
-    {
-        reader.ReadUInt16(); // padding, always zero
-        var mode = (SurfaceTextureAnimMode)reader.ReadUInt16();
-        return new SurfaceTextureAnim
-        {
-            Mode = mode,
-            Group = reader.ReadAssetId(),
-            Speed = reader.ReadSingle(),
-        };
-    }
-
-    private static void WriteTextureAnim(EndianWriter writer, SurfaceTextureAnim anim)
-    {
-        writer.Write((ushort)0); // padding
-        writer.Write((ushort)anim.Mode);
-        writer.Write(anim.Group);
-        writer.Write(anim.Speed);
-    }
-
-    private static SurfaceUvfx ReadUvfx(EndianReader reader) => new()
-    {
-        Mode = (SurfaceUvfxMode)reader.ReadInt32(),
-        Rotation = reader.ReadSingle(),
-        RotationSpeed = reader.ReadSingle(),
-        Translation = reader.ReadVector3(),
-        TranslationSpeed = reader.ReadVector3(),
-        Scale = reader.ReadVector3(),
-        ScaleSpeed = reader.ReadVector3(),
-        Min = reader.ReadVector3(),
-        Max = reader.ReadVector3(),
-        MinMaxSpeed = reader.ReadVector3(),
-    };
-
-    private static void WriteUvfx(EndianWriter writer, SurfaceUvfx uvfx)
-    {
-        writer.Write((int)uvfx.Mode);
-        writer.Write(uvfx.Rotation);
-        writer.Write(uvfx.RotationSpeed);
-        writer.Write(uvfx.Translation);
-        writer.Write(uvfx.TranslationSpeed);
-        writer.Write(uvfx.Scale);
-        writer.Write(uvfx.ScaleSpeed);
-        writer.Write(uvfx.Min);
-        writer.Write(uvfx.Max);
-        writer.Write(uvfx.MinMaxSpeed);
     }
 }

@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -15,7 +19,7 @@ namespace EvilHop.Assets;
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ATBL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPhysicalAnimationTableAsset
+public sealed class AnimationTableAsset() : Asset(AssetType.AnimationTable), IPhysicalAnimationTableAsset
 {
     /// <summary>
     /// Selects which game-specific "constructor" function builds this table's runtime
@@ -78,6 +82,46 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
+    internal static AnimationTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    {
+        var asset = new AnimationTableAsset();
+        AssetFields.Populate(asset, header, debug);
+
+        reader.ReadUInt32(); // Magic
+        uint rawCount = reader.ReadUInt32();
+        uint fileCount = reader.ReadUInt32();
+        uint stateCount = reader.ReadUInt32();
+        asset.ConstructFunc = reader.ReadUInt32();
+
+        for (uint i = 0; i < rawCount; i++) asset.Raw.Add(reader.ReadAssetId());
+
+        for (uint i = 0; i < fileCount; i++) asset.Files.Add(AnimationTableFile.Read(reader, _));
+
+        for (uint i = 0; i < stateCount; i++) asset.States.Add(AnimationTableState.Read(reader, _));
+
+        asset.Physical.RawCount = rawCount;
+        asset.Physical.FileCount = fileCount;
+        asset.Physical.StateCount = stateCount;
+        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(AnimationTableAsset asset, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(0x4C425441u); // Magic
+        writer.Write(asset.Physical.RawCount);
+        writer.Write(asset.Physical.FileCount);
+        writer.Write(asset.Physical.StateCount);
+        writer.Write(asset.ConstructFunc);
+
+        foreach (var id in asset.Raw) writer.Write(id);
+
+        foreach (var file in asset.Files) AnimationTableFile.Write(file, writer, _);
+
+        foreach (var state in asset.States) AnimationTableState.Write(state, writer, _);
+
+        writer.Write(asset.GetUnparsedTail());
+    }
 }
 
 /// <summary>

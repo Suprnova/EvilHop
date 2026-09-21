@@ -41,7 +41,7 @@ mistakes come out.
 | Trait interfaces (`IHasModel`, `IGrabbable`, ...) | `src/EvilHop/Assets/Traits.cs` |
 | Shared header readers/writers | `src/EvilHop/Assets/Serialization/AssetPrefixes.cs` |
 | Header-sourced field copy | `src/EvilHop/Assets/Serialization/AssetFields.cs` |
-| Link read/write | `src/EvilHop/Assets/Serialization/LinkSerialization.cs`, `src/EvilHop/Assets/Link.cs`, `src/EvilHop/Assets/Parameter.cs` |
+| Link read/write | `src/EvilHop/Assets/Link.cs`, `src/EvilHop/Assets/Parameter.cs` |
 | Generic shape fallbacks | `src/EvilHop/Assets/Fallbacks/GenericAssets.cs` |
 | Codec registry | `src/EvilHop/Assets/Serialization/AssetCodecs.cs` (incl. `ShapesByType` table) |
 | Per-game quirks | `src/EvilHop/Serialization/FormatProfile.cs`, `src/EvilHop/Serialization/Games/*Serializer.cs` (one per game) |
@@ -122,9 +122,25 @@ In the meantime, see §[etiquette for IPhysical* and unknowns](#etiquette-what-t
 
 A field with a substructure of its own (an array of records, like `LODT`'s entries) is *not* itself an
 `Asset` and gets no `Physical` split — `Physical` only exists on `Asset` and its subclasses. Model the
-substructure as a plain class/struct with ordinary public properties (see `Link`, or `LODTableEntry`
-once it exists) and put only the top-level asset's own determined-vs-real fields through the
-physical/logical test.
+substructure with ordinary public properties and choose its type representation according to these criteria:
+
+- **`sealed class` for mutable entities, child collections, and polymorphic hierarchies**: Any type with mutable
+  properties intended to be modified in-place within a collection (`Collection<T>`) must be a class to avoid
+  the C# indexer trap (`CS1612`: `asset.Links[i].Field = val` is illegal for value types because the indexer
+  returns a copy). Composite objects holding child collections of their own (such as `CreditsSection`) or
+  polymorphic hierarchies (such as `EntityMotion` or `PlatformMotion`) are also always classes.
+  *Precedents:* `Link`, `ScriptEvent`, `ProgressScriptEvent`, `LODTableEntry`, `FlyKey`, `CreditsSection`.
+- **`record struct` / `readonly record struct` for flat value tuples and table entries**: Small, flat records
+  representing table rows or data pairs with value equality and no internal collections. Use `readonly record struct`
+  when immutable; use `record struct` when property init/mutation syntax (`{ get; set; }`) is preferred.
+  *Precedents:* `CollisionTableEntry`, `SimpleShadowTableEntry`, `CutsceneDataEntry`, `CutsceneAudioTrack`, `AssetDiagnostic`.
+- **`record struct` for high-density numerical geometry**: Mesh vertices, triangle faces, and topology
+  buffers (`GrassMeshVertex`, `GrassMeshFace`, `DashTrackTriangle`, `DashTrackPortal`) can number in the
+  thousands per asset. They are value types to eliminate heap allocation overhead and GC pressure.
+
+Satellite types follow an `internal static` codec convention directly on the type (`Foo.Read(reader, profile)`
+and `Foo.Write(value, writer, profile)`) with no interface contracts. The enclosing asset manages collection
+counts, loops, and container framing.
 
 ### 3. Which games does it diverge across? (and which is "the" game to write first)
 
@@ -233,15 +249,26 @@ Copies `Id`, `Type`, `Name`, `FileName` (from `header`/`debug`) and `Physical.Ty
 `Physical.Alignment` (header-sourced physical fields). Nothing about a type's own payload — that
 starts immediately after this call.
 
-### Links — `Link.cs`, `Parameter.cs`, `LinkSerialization.cs`
+### Links — `Link.cs`, `Parameter.cs`
 
-One `Link` is exactly 32 bytes: `SourceEvent` (`short`) → `DestinationEvent` (`short`) →
+One `Link` is a `public sealed class` that is exactly 32 bytes on disk: `SourceEvent` (`short`) → `DestinationEvent` (`short`) →
 `DestinationAssetId` (`AssetId`, 4B) → `Params` (exactly 4 × `Parameter`, 4B each — `RawParameter`
 for unknown bytes, `FloatParameter`/`IntParameter`/`AssetIdParameter` where the meaning is known) →
 `ParamWidgetAssetId` (`AssetId`, 4B) → `CheckAssetId` (`AssetId`, 4B).
-`LinkSerialization.Read(asset, reader, count)`/`.Write(asset, writer)` handle the whole array; call
-`Read` wherever your type's layout actually places its links (see
-[Wire up the codec](#wire-up-the-codec) — not necessarily right after `LinkCount`).
+Read and write links using `Link.Read(reader, profile)` and `Link.Write(link, writer, profile)`. The caller
+loops over the count (from `BaseAssetPrefix`'s `LinkCount` or the physical field) and adds them to `asset.Links`.
+
+### Satellite and nested types — `Read`/`Write` pattern
+
+Nested objects (table entries, keyframes, mesh geometry, etc.) do not use interface contracts. They implement `internal static` methods directly on the type:
+
+```csharp
+internal static FooEntry Read(EndianReader reader, FormatProfile profile) => ...;
+internal static void Write(FooEntry value, EndianWriter writer, FormatProfile profile) { ... }
+```
+
+Discard unused `profile` arguments **in leaf types only** with `_`. The enclosing asset owns the collection container (`Collection<T>`),
+leading count fields, and looping over items.
 
 ### Generic shape fallbacks & `ShapesByType` (`src/EvilHop/Assets/Fallbacks/GenericAssets.cs`, `src/EvilHop/Assets/Serialization/AssetCodecs.cs`)
 

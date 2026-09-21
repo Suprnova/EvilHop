@@ -51,23 +51,7 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
 
         int count = reader.ReadInt32();
         for (int i = 0; i < count; i++)
-        {
-            var entry = new PipeInfoEntry
-            {
-                ModelId = reader.ReadAssetId(),
-                SubObjectBits = reader.ReadUInt32(),
-                Flags = new PipeRenderFlags(reader.ReadUInt32()),
-            };
-
-            if (profile.Game is not GameVersion.BFBB)
-            {
-                entry.Layer = (PipeLayer)reader.ReadByte();
-                entry.AlphaDiscard = reader.ReadByte();
-                reader.ReadInt16(); // padding, always zero
-            }
-
-            asset.Entries.Add(entry);
-        }
+            asset.Entries.Add(PipeInfoEntry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -78,18 +62,7 @@ public sealed class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable), IPhys
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.ModelId);
-            writer.Write(entry.SubObjectBits);
-            writer.Write(entry.Flags.Value);
-
-            if (profile.Game is not GameVersion.BFBB)
-            {
-                writer.Write((byte)entry.Layer);
-                writer.Write(entry.AlphaDiscard);
-                writer.Write((short)0); // padding
-            }
-        }
+            PipeInfoEntry.Write(entry, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }
@@ -145,6 +118,39 @@ public sealed class PipeInfoEntry
     /// Unknown. Not present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public byte AlphaDiscard { get; set; }
+
+    internal static PipeInfoEntry Read(EndianReader reader, FormatProfile profile)
+    {
+        var entry = new PipeInfoEntry
+        {
+            ModelId = reader.ReadAssetId(),
+            SubObjectBits = reader.ReadUInt32(),
+            Flags = new PipeRenderFlags(reader.ReadUInt32()),
+        };
+
+        if (profile.Game is not GameVersion.BFBB)
+        {
+            entry.Layer = (PipeLayer)reader.ReadByte();
+            entry.AlphaDiscard = reader.ReadByte();
+            reader.ReadInt16(); // padding, always zero
+        }
+
+        return entry;
+    }
+
+    internal static void Write(PipeInfoEntry value, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(value.ModelId);
+        writer.Write(value.SubObjectBits);
+        writer.Write(value.Flags.Value);
+
+        if (profile.Game is not GameVersion.BFBB)
+        {
+            writer.Write((byte)value.Layer);
+            writer.Write(value.AlphaDiscard);
+            writer.Write((short)0); // padding
+        }
+    }
 }
 
 /// <summary>

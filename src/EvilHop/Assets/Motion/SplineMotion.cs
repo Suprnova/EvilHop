@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -30,21 +31,22 @@ public sealed class SplineMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.Spline;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static new SplineMotion Read(EndianReader reader, FormatProfile profile)
     {
-        SplineId = reader.ReadAssetId();
-        if (IsBFBBOrEarlier(game)) return;
+        var motion = new SplineMotion { SplineId = reader.ReadAssetId() };
+        if (IsBFBBOrEarlier(profile.Game)) return motion;
 
-        Speed = reader.ReadSingle();
-        LeanModifier = reader.ReadSingle();
+        motion.Speed = reader.ReadSingle();
+        motion.LeanModifier = reader.ReadSingle();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(SplineMotion value, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write(SplineId);
-        if (IsBFBBOrEarlier(game)) return;
+        writer.Write(value.SplineId);
+        if (IsBFBBOrEarlier(profile.Game)) return;
 
-        writer.Write(Speed);
-        writer.Write(LeanModifier);
+        writer.Write(value.Speed);
+        writer.Write(value.LeanModifier);
     }
 }

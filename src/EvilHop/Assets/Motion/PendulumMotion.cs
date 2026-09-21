@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -28,25 +28,29 @@ public sealed class PendulumMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.Pendulum;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static new PendulumMotion Read(EndianReader reader, FormatProfile _)
     {
-        PendulumFlags = reader.ReadByte();
-        Plane = reader.ReadByte();
+        var motion = new PendulumMotion
+        {
+            PendulumFlags = reader.ReadByte(),
+            Plane = reader.ReadByte(),
+        };
         reader.ReadBytes(2); // padding
-        Length = reader.ReadSingle();
-        Range = reader.ReadSingle();
-        Period = reader.ReadSingle();
-        Phase = reader.ReadSingle();
+        motion.Length = reader.ReadSingle();
+        motion.Range = reader.ReadSingle();
+        motion.Period = reader.ReadSingle();
+        motion.Phase = reader.ReadSingle();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(PendulumMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(PendulumFlags);
-        writer.Write(Plane);
+        writer.Write(value.PendulumFlags);
+        writer.Write(value.Plane);
         writer.Write(new byte[2]); // padding
-        writer.Write(Length);
-        writer.Write(Range);
-        writer.Write(Period);
-        writer.Write(Phase);
+        writer.Write(value.Length);
+        writer.Write(value.Range);
+        writer.Write(value.Period);
+        writer.Write(value.Phase);
     }
 }

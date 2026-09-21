@@ -50,7 +50,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), IPhys
         GameVersion.Ratatouille,
     };
 
-    internal static SurfaceMapperAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SurfaceMapperAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SurfaceMapperAsset();
         AssetFields.Populate(asset, header, debug);
@@ -59,29 +59,20 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), IPhys
         uint count = reader.ReadUInt32();
 
         for (int i = 0; i < count; i++)
-        {
-            asset.Entries.Add(new SurfaceMapperEntry
-            {
-                SurfaceId = reader.ReadAssetId(),
-                MaterialIndex = reader.ReadUInt32(),
-            });
-        }
+            asset.Entries.Add(SurfaceMapperEntry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SurfaceMapperAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SurfaceMapperAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.SelfId);
         writer.Write(asset.Physical.Count);
 
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.SurfaceId);
-            writer.Write(entry.MaterialIndex);
-        }
+            SurfaceMapperEntry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -129,4 +120,16 @@ public sealed class SurfaceMapperEntry
     /// <see cref="SurfaceId"/> applies to it.
     /// </summary>
     public uint MaterialIndex { get; set; }
+
+    internal static SurfaceMapperEntry Read(EndianReader reader, FormatProfile _) => new()
+    {
+        SurfaceId = reader.ReadAssetId(),
+        MaterialIndex = reader.ReadUInt32(),
+    };
+
+    internal static void Write(SurfaceMapperEntry value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.SurfaceId);
+        writer.Write(value.MaterialIndex);
+    }
 }

@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -98,4 +99,57 @@ public sealed class PickupTypeEntry
     /// Runtime initialization flag, typically 0 on disk.
     /// </summary>
     public sbyte Initialized { get; set; }
+
+    internal static PickupTypeEntry Read(EndianReader reader, FormatProfile profile)
+    {
+        var entry = new PickupTypeEntry
+        {
+            TypeHash = reader.ReadAssetId(),
+            ModelId = reader.ReadAssetId(),
+        };
+
+        if (profile.PickupTypesHasPulseFields)
+        {
+            entry.PulseModelId = reader.ReadAssetId();
+            entry.PulseTime = reader.ReadSingle();
+            entry.PulseAddScale = reader.ReadSingle();
+            entry.PulseMoveDown = reader.ReadSingle();
+            entry.ColorMultiplier = reader.ReadRgb();
+        }
+
+        entry.Color = reader.ReadUInt32();
+        entry.FlyingSoundGroupId = reader.ReadAssetId();
+        entry.UsedSoundGroupId = reader.ReadAssetId();
+        entry.CantUseSoundGroupId = reader.ReadAssetId();
+        entry.HealthGain = reader.ReadByte();
+        entry.PowerGain = reader.ReadByte();
+        entry.SaveFlag = reader.ReadByte();
+        entry.Initialized = reader.ReadSByte();
+
+        return entry;
+    }
+
+    internal static void Write(PickupTypeEntry value, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(value.TypeHash);
+        writer.Write(value.ModelId);
+
+        if (profile.PickupTypesHasPulseFields)
+        {
+            writer.Write(value.PulseModelId);
+            writer.Write(value.PulseTime);
+            writer.Write(value.PulseAddScale);
+            writer.Write(value.PulseMoveDown);
+            writer.Write(value.ColorMultiplier);
+        }
+
+        writer.Write(value.Color);
+        writer.Write(value.FlyingSoundGroupId);
+        writer.Write(value.UsedSoundGroupId);
+        writer.Write(value.CantUseSoundGroupId);
+        writer.Write(value.HealthGain);
+        writer.Write(value.PowerGain);
+        writer.Write(value.SaveFlag);
+        writer.Write(value.Initialized);
+    }
 }

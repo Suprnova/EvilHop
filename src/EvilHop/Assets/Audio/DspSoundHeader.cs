@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -75,4 +77,52 @@ public sealed class DspSoundHeader
     /// <see cref="AssetType.CutsceneStreamingSound"/> asset this header describes.
     /// </summary>
     public AssetId SoundAssetId { get; set; }
+
+    internal static DspSoundHeader Read(EndianReader reader, FormatProfile _)
+    {
+        var header = new DspSoundHeader
+        {
+            SampleCount = reader.ReadUInt32(),
+            NibbleCount = reader.ReadUInt32(),
+            SampleRate = reader.ReadUInt32(),
+            IsLooped = reader.ReadUInt16() != 0,
+            Format = reader.ReadUInt16(),
+            LoopStart = reader.ReadUInt32(),
+            LoopEnd = reader.ReadUInt32(),
+            InitialOffset = reader.ReadUInt32(),
+        };
+        for (int i = 0; i < header.Coefficients.Count; i++) header.Coefficients[i] = reader.ReadInt16();
+        header.Gain = reader.ReadUInt16();
+        header.PredictorScale = reader.ReadUInt16();
+        header.History1 = reader.ReadInt16();
+        header.History2 = reader.ReadInt16();
+        header.LoopPredictorScale = reader.ReadUInt16();
+        header.LoopHistory1 = reader.ReadInt16();
+        header.LoopHistory2 = reader.ReadInt16();
+        for (int i = 0; i < header.Unknown.Count; i++) header.Unknown[i] = reader.ReadByte();
+        header.SoundAssetId = reader.ReadAssetId();
+        return header;
+    }
+
+    internal static void Write(DspSoundHeader value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.SampleCount);
+        writer.Write(value.NibbleCount);
+        writer.Write(value.SampleRate);
+        writer.Write((ushort)(value.IsLooped ? 1 : 0));
+        writer.Write(value.Format);
+        writer.Write(value.LoopStart);
+        writer.Write(value.LoopEnd);
+        writer.Write(value.InitialOffset);
+        foreach (short coefficient in value.Coefficients) writer.Write(coefficient);
+        writer.Write(value.Gain);
+        writer.Write(value.PredictorScale);
+        writer.Write(value.History1);
+        writer.Write(value.History2);
+        writer.Write(value.LoopPredictorScale);
+        writer.Write(value.LoopHistory1);
+        writer.Write(value.LoopHistory2);
+        foreach (byte b in value.Unknown) writer.Write(b);
+        writer.Write(value.SoundAssetId);
+    }
 }

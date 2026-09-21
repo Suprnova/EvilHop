@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -21,17 +22,17 @@ public sealed class RotateCommand : UIMotionCommand
 
     private protected override int FieldsSize => 12;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new RotateCommand Read(EndianReader reader, FormatProfile _) => new()
     {
-        Rotation = reader.ReadSingle();
-        CenterOffsetX = reader.ReadSingle();
-        CenterOffsetY = reader.ReadSingle();
-    }
+        Rotation = reader.ReadSingle(),
+        CenterOffsetX = reader.ReadSingle(),
+        CenterOffsetY = reader.ReadSingle(),
+    };
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(RotateCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Rotation);
-        writer.Write(CenterOffsetX);
-        writer.Write(CenterOffsetY);
+        writer.Write(value.Rotation);
+        writer.Write(value.CenterOffsetX);
+        writer.Write(value.CenterOffsetY);
     }
 }

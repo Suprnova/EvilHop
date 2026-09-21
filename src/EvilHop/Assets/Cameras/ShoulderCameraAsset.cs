@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
@@ -32,22 +33,26 @@ public sealed class ShoulderCameraAsset() : CameraAsset, IPhysicalShoulderCamera
 
     private const int ReservedSize = 8;
 
-    private protected override void ReadTypeFields(EndianReader reader)
+    internal static ShoulderCameraAsset Read(EndianReader reader, FormatProfile _)
     {
-        Distance = reader.ReadSingle();
-        Height = reader.ReadSingle();
-        RealignSpeed = reader.ReadSingle();
-        RealignDelay = reader.ReadSingle();
-        Physical.Reserved = reader.ReadBytes(ReservedSize);
+        var value = new ShoulderCameraAsset
+        {
+            Distance = reader.ReadSingle(),
+            Height = reader.ReadSingle(),
+            RealignSpeed = reader.ReadSingle(),
+            RealignDelay = reader.ReadSingle(),
+        };
+        value.Physical.Reserved = reader.ReadBytes(ReservedSize);
+        return value;
     }
 
-    private protected override void WriteTypeFields(EndianWriter writer)
+    internal static void Write(ShoulderCameraAsset value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Distance);
-        writer.Write(Height);
-        writer.Write(RealignSpeed);
-        writer.Write(RealignDelay);
-        writer.Write(Physical.Reserved);
+        writer.Write(value.Distance);
+        writer.Write(value.Height);
+        writer.Write(value.RealignSpeed);
+        writer.Write(value.RealignDelay);
+        writer.Write(value.Physical.Reserved);
     }
 }
 

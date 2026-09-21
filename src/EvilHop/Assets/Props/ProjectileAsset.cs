@@ -76,7 +76,7 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType
         GameVersion.N100F,
     };
 
-    internal static ProjectileAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static ProjectileAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new ProjectileAsset();
         AssetFields.Populate(asset, header, debug);
@@ -93,13 +93,14 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType
         asset.Physical.Oriented = reader.ReadInt32();
         asset.Physical.Reserved = reader.ReadBytes(ReservedSize);
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(ProjectileAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(ProjectileAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -114,7 +115,8 @@ public sealed class ProjectileAsset() : BaseAsset(AssetType.Projectile, baseType
         writer.Write(asset.Physical.Oriented);
         writer.Write(asset.Physical.Reserved);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

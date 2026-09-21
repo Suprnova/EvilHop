@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -22,23 +23,27 @@ public sealed class EntityBoundEmitterShape : ParticleEmitterShape
     /// <summary>How much a particle's emitted direction deflects away from the bounding volume's surface.</summary>
     public float Deflection { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static EntityBoundEmitterShape Read(EndianReader reader, FormatProfile _)
     {
-        Flags = reader.ReadByte();
-        AttachType = reader.ReadByte();
+        var shape = new EntityBoundEmitterShape
+        {
+            Flags = reader.ReadByte(),
+            AttachType = reader.ReadByte(),
+        };
         reader.ReadByte(); // pad1, always zero
         reader.ReadByte(); // pad2, always zero
-        Expand = reader.ReadSingle();
-        Deflection = reader.ReadSingle();
+        shape.Expand = reader.ReadSingle();
+        shape.Deflection = reader.ReadSingle();
+        return shape;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(EntityBoundEmitterShape value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Flags);
-        writer.Write(AttachType);
+        writer.Write(value.Flags);
+        writer.Write(value.AttachType);
         writer.Write((byte)0); // pad1
         writer.Write((byte)0); // pad2
-        writer.Write(Expand);
-        writer.Write(Deflection);
+        writer.Write(value.Expand);
+        writer.Write(value.Deflection);
     }
 }

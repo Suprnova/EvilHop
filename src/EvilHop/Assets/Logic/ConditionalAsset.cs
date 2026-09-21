@@ -63,7 +63,8 @@ public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseTy
         if (profile.Game is not GameVersion.N100F)
             asset.TargetId = reader.ReadAssetId();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -80,7 +81,8 @@ public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseTy
         if (profile.Game is not GameVersion.N100F)
             writer.Write(asset.TargetId);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

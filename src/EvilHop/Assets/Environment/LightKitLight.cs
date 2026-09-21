@@ -1,4 +1,6 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -64,6 +66,46 @@ public sealed class LightKitLight
     /// The cone angle of a <see cref="LightKitLightType.Spot"/> light.
     /// </summary>
     public float Angle { get; set; }
+
+    internal static LightKitLight Read(EndianReader reader, FormatProfile _)
+    {
+        var light = new LightKitLight
+        {
+            Type = (LightKitLightType)reader.ReadUInt32(),
+            Color = reader.ReadRgba(),
+            Right = reader.ReadVector3(),
+        };
+
+        reader.ReadSingle(); // Right's homogeneous component; always 0
+        light.Up = reader.ReadVector3();
+        reader.ReadSingle(); // Up's homogeneous component; always 0
+        light.At = reader.ReadVector3();
+        reader.ReadSingle(); // At's homogeneous component; always 0
+        light.Position = reader.ReadVector3();
+        light.PositionW = reader.ReadSingle();
+        light.Radius = reader.ReadSingle();
+        light.Angle = reader.ReadSingle();
+        reader.ReadUInt32(); // runtime-resolved platLight, always 0
+
+        return light;
+    }
+
+    internal static void Write(LightKitLight value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((uint)value.Type);
+        writer.Write(value.Color);
+        writer.Write(value.Right);
+        writer.Write(0f); // Right's homogeneous component
+        writer.Write(value.Up);
+        writer.Write(0f); // Up's homogeneous component
+        writer.Write(value.At);
+        writer.Write(0f); // At's homogeneous component
+        writer.Write(value.Position);
+        writer.Write(value.PositionW);
+        writer.Write(value.Radius);
+        writer.Write(value.Angle);
+        writer.Write(0u); // runtime-resolved
+    }
 }
 
 /// <summary>

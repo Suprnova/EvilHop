@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -30,18 +31,22 @@ public sealed class MovePointMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.MovePoint;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    /// <remarks>
+    /// Not read here - <see cref="EntityMotion.Read"/> sets it from the shared Motion block header,
+    /// not from this motion's own fields.
+    /// </remarks>
+    internal static new MovePointMotion Read(EndianReader reader, FormatProfile _) => new()
     {
-        MovePointFlags = (MovePointFlags)reader.ReadUInt32();
-        MovePointId = reader.ReadAssetId();
-        Speed = reader.ReadSingle();
-    }
+        MovePointFlags = (MovePointFlags)reader.ReadUInt32(),
+        MovePointId = reader.ReadAssetId(),
+        Speed = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(MovePointMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write((uint)MovePointFlags);
-        writer.Write(MovePointId);
-        writer.Write(Speed);
+        writer.Write((uint)value.MovePointFlags);
+        writer.Write(value.MovePointId);
+        writer.Write(value.Speed);
     }
 }
 

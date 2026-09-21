@@ -93,7 +93,7 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
         GameVersion.Incredibles,
     };
 
-    internal static SplinePathAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SplinePathAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SplinePathAsset();
         AssetFields.Populate(asset, header, debug);
@@ -122,13 +122,14 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
             asset.BackwardAssetIds.Add(reader.ReadAssetId());
         asset.Physical.BackwardCount = (ushort)asset.BackwardAssetIds.Count;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SplinePathAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SplinePathAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -153,7 +154,8 @@ public sealed class SplinePathAsset() : BaseAsset(AssetType.SplinePath, baseType
         foreach (var id in asset.BackwardAssetIds)
             writer.Write(id);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

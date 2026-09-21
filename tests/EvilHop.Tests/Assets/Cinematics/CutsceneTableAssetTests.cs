@@ -36,7 +36,7 @@ public class CutsceneTableAssetTests
     }
 
     // N100F's Cutscene/CutsceneTable payloads are little-endian even on GameCube - see
-    // CutsceneAsset.HeaderReader/HeaderWriter - unlike every other field these fixtures build.
+    // ICutsceneHeader.HeaderReader/HeaderWriter - unlike every other field these fixtures build.
     private static byte[] Count(uint value) => BitConverter.GetBytes(value);
 
     private static byte[] Header(uint assetId, uint numData, uint numTime, uint headerSize) =>

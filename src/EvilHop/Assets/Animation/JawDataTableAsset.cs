@@ -57,20 +57,8 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
             reader.ReadInt32(); // dataLength, derived from this entry's own jaw data length
         }
 
-        bool hasUnknownField = profile.Game is GameVersion.ROTU;
         foreach (var soundId in soundIds)
-        {
-            int length = hasUnknownField ? reader.ReadInt32() : BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));
-            uint unknown = hasUnknownField ? reader.ReadUInt32() : 0;
-            byte[] jawData = reader.ReadBytes(length);
-
-            int padding = Align4(length) - length;
-            if (padding > 0) reader.ReadBytes(padding); // 4-byte alignment padding, always zero
-
-            var entry = new JawDataTableEntry { SoundId = soundId, Unknown = unknown };
-            foreach (byte b in jawData) entry.JawData.Add(b);
-            asset.Entries.Add(entry);
-        }
+            asset.Entries.Add(JawDataTableEntry.Read(reader, soundId, profile));
 
         asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -92,25 +80,7 @@ public sealed class JawDataTableAsset() : Asset(AssetType.JawDataTable), IPhysic
             dataStart = Align4(dataStart + dataLength);
         }
 
-        Span<byte> writeBuffer = stackalloc byte[4];
-
-        foreach (var entry in asset.Entries)
-        {
-            if (hasUnknownField)
-            {
-                writer.Write(entry.JawData.Count);
-                writer.Write(entry.Unknown);
-            }
-            else
-            {
-                BinaryPrimitives.WriteInt32LittleEndian(writeBuffer, entry.JawData.Count);
-                writer.Write(writeBuffer);
-            }
-            writer.Write(entry.JawData.ToArray());
-
-            int padding = Align4(entry.JawData.Count) - entry.JawData.Count;
-            for (int i = 0; i < padding; i++) writer.Write((byte)0);
-        }
+        foreach (var entry in asset.Entries) JawDataTableEntry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -156,4 +126,45 @@ public sealed class JawDataTableEntry
     /// Unknown. Only present in <see cref="GameVersion.ROTU"/>.
     /// </summary>
     public uint Unknown { get; set; }
+
+    /// <remarks>
+    /// The owning <see cref="JawDataTableAsset"/> reads <paramref name="soundId"/> from its leading
+    /// table-of-contents pass; this reads the rest of the entry from the payload region that follows
+    /// every entry's table-of-contents record.
+    /// </remarks>
+    internal static JawDataTableEntry Read(EndianReader reader, AssetId soundId, FormatProfile profile)
+    {
+        bool hasUnknownField = profile.Game is GameVersion.ROTU;
+        int length = hasUnknownField ? reader.ReadInt32() : BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));
+        uint unknown = hasUnknownField ? reader.ReadUInt32() : 0;
+        byte[] jawData = reader.ReadBytes(length);
+
+        int padding = Align4(length) - length;
+        if (padding > 0) reader.ReadBytes(padding); // 4-byte alignment padding, always zero
+
+        var entry = new JawDataTableEntry { SoundId = soundId, Unknown = unknown };
+        foreach (byte b in jawData) entry.JawData.Add(b);
+        return entry;
+    }
+
+    internal static void Write(JawDataTableEntry value, EndianWriter writer, FormatProfile profile)
+    {
+        if (profile.Game is GameVersion.ROTU)
+        {
+            writer.Write(value.JawData.Count);
+            writer.Write(value.Unknown);
+        }
+        else
+        {
+            Span<byte> writeBuffer = stackalloc byte[4];
+            BinaryPrimitives.WriteInt32LittleEndian(writeBuffer, value.JawData.Count);
+            writer.Write(writeBuffer);
+        }
+        writer.Write(value.JawData.ToArray());
+
+        int padding = Align4(value.JawData.Count) - value.JawData.Count;
+        for (int i = 0; i < padding; i++) writer.Write((byte)0);
+    }
+
+    private static int Align4(int value) => (value + 3) & ~3;
 }

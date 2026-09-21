@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -16,15 +17,15 @@ public sealed class FallingMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.Falling;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static FallingMotion Read(EndianReader reader, FormatProfile _) => new()
     {
-        Speed = reader.ReadSingle();
-        BustModelId = reader.ReadAssetId();
-    }
+        Speed = reader.ReadSingle(),
+        BustModelId = reader.ReadAssetId(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(FallingMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Speed);
-        writer.Write(BustModelId);
+        writer.Write(value.Speed);
+        writer.Write(value.BustModelId);
     }
 }

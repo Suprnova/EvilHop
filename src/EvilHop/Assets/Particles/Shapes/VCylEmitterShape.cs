@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -18,17 +19,17 @@ public sealed class VCylEmitterShape : ParticleEmitterShape
     /// <summary>How much a particle's emitted direction deflects away from the cylinder's edge.</summary>
     public float Deflection { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static VCylEmitterShape Read(EndianReader reader, FormatProfile _) => new()
     {
-        Height = reader.ReadSingle();
-        Radius = reader.ReadSingle();
-        Deflection = reader.ReadSingle();
-    }
+        Height = reader.ReadSingle(),
+        Radius = reader.ReadSingle(),
+        Deflection = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(VCylEmitterShape value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Height);
-        writer.Write(Radius);
-        writer.Write(Deflection);
+        writer.Write(value.Height);
+        writer.Write(value.Radius);
+        writer.Write(value.Deflection);
     }
 }

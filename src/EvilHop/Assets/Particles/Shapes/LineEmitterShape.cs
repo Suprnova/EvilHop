@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -18,17 +18,17 @@ public sealed class LineEmitterShape : ParticleEmitterShape
     /// <summary>The line's thickness.</summary>
     public float Radius { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static LineEmitterShape Read(EndianReader reader, FormatProfile _) => new()
     {
-        Position1 = reader.ReadVector3();
-        Position2 = reader.ReadVector3();
-        Radius = reader.ReadSingle();
-    }
+        Position1 = reader.ReadVector3(),
+        Position2 = reader.ReadVector3(),
+        Radius = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(LineEmitterShape value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Position1);
-        writer.Write(Position2);
-        writer.Write(Radius);
+        writer.Write(value.Position1);
+        writer.Write(value.Position2);
+        writer.Write(value.Radius);
     }
 }

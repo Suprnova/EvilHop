@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -36,6 +38,26 @@ public sealed class SurfaceMaterialFx
     /// A secondary map applied to this surface, if any.
     /// </summary>
     public AssetId DualMapId { get; set; }
+
+    internal static SurfaceMaterialFx Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Flags = (SurfaceMaterialFxFlags)reader.ReadUInt32(),
+        BumpMapId = reader.ReadAssetId(),
+        EnvMapId = reader.ReadAssetId(),
+        Shininess = reader.ReadSingle(),
+        Bumpiness = reader.ReadSingle(),
+        DualMapId = reader.ReadAssetId(),
+    };
+
+    internal static void Write(SurfaceMaterialFx material, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((uint)material.Flags);
+        writer.Write(material.BumpMapId);
+        writer.Write(material.EnvMapId);
+        writer.Write(material.Shininess);
+        writer.Write(material.Bumpiness);
+        writer.Write(material.DualMapId);
+    }
 }
 
 /// <summary>

@@ -1,3 +1,5 @@
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -62,6 +64,34 @@ public sealed class SurfaceUvfx
     /// between <see cref="Min"/> and <see cref="Max"/>.
     /// </summary>
     public Vector3 MinMaxSpeed { get; set; }
+
+    internal static SurfaceUvfx Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Mode = (SurfaceUvfxMode)reader.ReadInt32(),
+        Rotation = reader.ReadSingle(),
+        RotationSpeed = reader.ReadSingle(),
+        Translation = reader.ReadVector3(),
+        TranslationSpeed = reader.ReadVector3(),
+        Scale = reader.ReadVector3(),
+        ScaleSpeed = reader.ReadVector3(),
+        Min = reader.ReadVector3(),
+        Max = reader.ReadVector3(),
+        MinMaxSpeed = reader.ReadVector3(),
+    };
+
+    internal static void Write(SurfaceUvfx uvfx, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write((int)uvfx.Mode);
+        writer.Write(uvfx.Rotation);
+        writer.Write(uvfx.RotationSpeed);
+        writer.Write(uvfx.Translation);
+        writer.Write(uvfx.TranslationSpeed);
+        writer.Write(uvfx.Scale);
+        writer.Write(uvfx.ScaleSpeed);
+        writer.Write(uvfx.Min);
+        writer.Write(uvfx.Max);
+        writer.Write(uvfx.MinMaxSpeed);
+    }
 }
 
 /// <summary>

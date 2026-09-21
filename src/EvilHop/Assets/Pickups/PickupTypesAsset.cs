@@ -55,33 +55,7 @@ public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseTy
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
         for (int i = 0; i < rowCount; i++)
-        {
-            var entry = new PickupTypeEntry
-            {
-                TypeHash = reader.ReadAssetId(),
-                ModelId = reader.ReadAssetId(),
-            };
-
-            if (profile.PickupTypesHasPulseFields)
-            {
-                entry.PulseModelId = reader.ReadAssetId();
-                entry.PulseTime = reader.ReadSingle();
-                entry.PulseAddScale = reader.ReadSingle();
-                entry.PulseMoveDown = reader.ReadSingle();
-                entry.ColorMultiplier = reader.ReadRgb();
-            }
-
-            entry.Color = reader.ReadUInt32();
-            entry.FlyingSoundGroupId = reader.ReadAssetId();
-            entry.UsedSoundGroupId = reader.ReadAssetId();
-            entry.CantUseSoundGroupId = reader.ReadAssetId();
-            entry.HealthGain = reader.ReadByte();
-            entry.PowerGain = reader.ReadByte();
-            entry.SaveFlag = reader.ReadByte();
-            entry.Initialized = reader.ReadSByte();
-
-            asset.Entries.Add(entry);
-        }
+            asset.Entries.Add(PickupTypeEntry.Read(reader, profile));
 
         asset.Physical.RowCount = rowCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -95,28 +69,7 @@ public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseTy
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.TypeHash);
-            writer.Write(entry.ModelId);
-
-            if (profile.PickupTypesHasPulseFields)
-            {
-                writer.Write(entry.PulseModelId);
-                writer.Write(entry.PulseTime);
-                writer.Write(entry.PulseAddScale);
-                writer.Write(entry.PulseMoveDown);
-                writer.Write(entry.ColorMultiplier);
-            }
-
-            writer.Write(entry.Color);
-            writer.Write(entry.FlyingSoundGroupId);
-            writer.Write(entry.UsedSoundGroupId);
-            writer.Write(entry.CantUseSoundGroupId);
-            writer.Write(entry.HealthGain);
-            writer.Write(entry.PowerGain);
-            writer.Write(entry.SaveFlag);
-            writer.Write(entry.Initialized);
-        }
+            PickupTypeEntry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

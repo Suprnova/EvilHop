@@ -50,21 +50,7 @@ public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTab
 
         int count = reader.ReadInt32();
         for (int i = 0; i < count; i++)
-        {
-            var entry = new LODTableEntry
-            {
-                BaseModelId = reader.ReadAssetId(),
-                NoRenderDistance = reader.ReadSingle(),
-                Flags = profile.Game is not GameVersion.BFBB ? reader.ReadUInt32() : 0,
-                Lod1ModelId = reader.ReadAssetId(),
-                Lod2ModelId = reader.ReadAssetId(),
-                Lod3ModelId = reader.ReadAssetId(),
-                Lod1Distance = reader.ReadSingle(),
-                Lod2Distance = reader.ReadSingle(),
-                Lod3Distance = reader.ReadSingle(),
-            };
-            asset.Entries.Add(entry);
-        }
+            asset.Entries.Add(LODTableEntry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -75,17 +61,7 @@ public sealed class LODTableAsset() : Asset(AssetType.LODTable), IPhysicalLODTab
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.BaseModelId);
-            writer.Write(entry.NoRenderDistance);
-            if (profile.Game is not GameVersion.BFBB) writer.Write(entry.Flags);
-            writer.Write(entry.Lod1ModelId);
-            writer.Write(entry.Lod2ModelId);
-            writer.Write(entry.Lod3ModelId);
-            writer.Write(entry.Lod1Distance);
-            writer.Write(entry.Lod2Distance);
-            writer.Write(entry.Lod3Distance);
-        }
+            LODTableEntry.Write(entry, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

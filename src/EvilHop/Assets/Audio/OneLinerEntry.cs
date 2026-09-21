@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -66,4 +68,52 @@ public sealed class OneLinerEntry
     /// The second parameter passed to <see cref="PlayerType"/>'s condition, if applicable.
     /// </summary>
     public float SecondParam { get; set; }
+
+    internal static OneLinerEntry Read(EndianReader reader, FormatProfile _)
+    {
+        var entry = new OneLinerEntry
+        {
+            SoundGroupId = reader.ReadAssetId(),
+            SoundStartDelay = reader.ReadSingle(),
+            TimeSpan = reader.ReadSingle(),
+            TimeLastPlayed = reader.ReadSingle(),
+            NumPlays = reader.ReadUInt32(),
+            DelayBetweenPlays = reader.ReadSingle(),
+            Probability = reader.ReadSingle(),
+            DefaultDuration = reader.ReadSingle(),
+            LastDuration = reader.ReadSingle(),
+            MaxPlays = reader.ReadUInt32(),
+        };
+        reader.ReadUInt32(); // m_soundGroupHandle, runtime-resolved, always zero
+        reader.ReadUInt32(); // m_pOLManager, runtime-resolved back-pointer, always zero
+        entry.EventType = reader.ReadInt16();
+        entry.PlaysInMusicChannel = reader.ReadInt16() != 0;
+        reader.ReadUInt32(); // m_pData, runtime-resolved per-PlayerType data pointer, always zero
+        entry.PlayerType = (OneLinerPlayerType)reader.ReadInt32();
+        entry.FirstParam = reader.ReadInt32();
+        entry.SecondParam = reader.ReadSingle();
+        return entry;
+    }
+
+    internal static void Write(OneLinerEntry entry, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(entry.SoundGroupId);
+        writer.Write(entry.SoundStartDelay);
+        writer.Write(entry.TimeSpan);
+        writer.Write(entry.TimeLastPlayed);
+        writer.Write(entry.NumPlays);
+        writer.Write(entry.DelayBetweenPlays);
+        writer.Write(entry.Probability);
+        writer.Write(entry.DefaultDuration);
+        writer.Write(entry.LastDuration);
+        writer.Write(entry.MaxPlays);
+        writer.Write(0u); // m_soundGroupHandle
+        writer.Write(0u); // m_pOLManager
+        writer.Write(entry.EventType);
+        writer.Write((short)(entry.PlaysInMusicChannel ? 1 : 0));
+        writer.Write(0u); // m_pData
+        writer.Write((int)entry.PlayerType);
+        writer.Write(entry.FirstParam);
+        writer.Write(entry.SecondParam);
+    }
 }

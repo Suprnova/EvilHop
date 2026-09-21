@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -12,7 +16,15 @@ namespace EvilHop.Assets;
 /// </remarks>
 public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysicalCreditsAsset
 {
-    private const int HeaderSize = 24;
+    /// <summary>
+    /// The key an encrypted <see cref="CreditsAsset"/>'s body is XORed against.
+    /// </summary>
+    internal const string CipherKey = "xCMChunkHand";
+
+    internal const int HeaderSize = 24;
+    internal const int SectionHeaderSize = 56;
+    internal const int PresetSize = 12 + 2 * 32;
+    internal const int HunkHeaderSize = 24;
 
     /// <summary>
     /// Whether this <see cref="CreditsAsset"/> is stored encrypted on disk.
@@ -55,9 +67,6 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysical
         set => _overriddenTotalSize = value == ComputedTotalSize ? null : value;
     }
 
-    private uint ComputedTotalSize =>
-        (uint)(HeaderSize + Sections.Sum(SectionByteLength) + GetUnparsedTail().Length);
-
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Credits"/> is known to be read by.
     /// </summary>
@@ -69,6 +78,79 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), IPhysical
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
+
+    private uint ComputedTotalSize =>
+        (uint)(HeaderSize + Sections.Sum(CreditsSection.SectionByteLength) + GetUnparsedTail().Length);
+
+    internal static CreditsAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new CreditsAsset();
+        AssetFields.Populate(asset, header, debug);
+
+        asset.Physical.Magic = reader.ReadUInt32();
+        asset.Physical.Version = reader.ReadUInt32();
+        asset.Physical.CreditsId = reader.ReadAssetId();
+        asset.Physical.State = (CreditsState)reader.ReadUInt32();
+        asset.Duration = reader.ReadSingle();
+        asset.Physical.TotalSize = reader.ReadUInt32();
+
+        byte[] body = reader.ReadRemainingBytes();
+        if (asset.Physical.State is CreditsState.Encrypted)
+            Decrypt(body);
+
+        using var bodyReader = new EndianReader(new MemoryStream(body), profile.Endianness);
+        while (body.Length - bodyReader.BaseStream.Position >= SectionHeaderSize)
+            asset.Sections.Add(CreditsSection.Read(bodyReader, profile));
+
+        asset.SetUnparsedTail(body[(int)bodyReader.BaseStream.Position..]);
+        asset.Physical.TotalSize = asset.ComputedTotalSize;
+        return asset;
+    }
+
+    internal static void Write(CreditsAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(asset.Physical.Magic);
+        writer.Write(asset.Physical.Version);
+        writer.Write(asset.Physical.CreditsId);
+        writer.Write((uint)asset.Physical.State);
+        writer.Write(asset.Duration);
+        writer.Write(asset.Physical.TotalSize);
+
+        using var bodyStream = new MemoryStream();
+        using (var bodyWriter = new EndianWriter(bodyStream, profile.Endianness, leaveOpen: true))
+        {
+            foreach (var section in asset.Sections)
+                CreditsSection.Write(section, bodyWriter, profile);
+            bodyWriter.Write(asset.GetUnparsedTail());
+        }
+
+        byte[] body = bodyStream.ToArray();
+        if (asset.Physical.State is CreditsState.Encrypted)
+            Encrypt(body);
+
+        writer.Write(body);
+    }
+
+    private static void Decrypt(byte[] body)
+    {
+        byte last = 0;
+        for (int i = 0; i < body.Length; i++)
+        {
+            last = (byte)(body[i] ^ last ^ CipherKey[i % CipherKey.Length]);
+            body[i] = last;
+        }
+    }
+
+    private static void Encrypt(byte[] body)
+    {
+        byte previousPlaintext = 0;
+        for (int i = 0; i < body.Length; i++)
+        {
+            byte plaintext = body[i];
+            body[i] = (byte)(plaintext ^ previousPlaintext ^ CipherKey[i % CipherKey.Length]);
+            previousPlaintext = plaintext;
+        }
+    }
 }
 
 /// <summary>

@@ -95,7 +95,8 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
             asset.Flags = (TriggerFlags)reader.ReadUInt32();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount, profile.LinkHasExtendedFields);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -116,7 +117,8 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
             writer.Write((uint)asset.Flags);
         }
 
-        LinkSerialization.Write(asset, writer, profile.LinkHasExtendedFields);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

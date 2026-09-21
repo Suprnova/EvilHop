@@ -1,4 +1,5 @@
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -19,15 +20,15 @@ public sealed class MoveCommand : UIMotionCommand
 
     private protected override int FieldsSize => 8;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new MoveCommand Read(EndianReader reader, FormatProfile _) => new()
     {
-        DistanceX = reader.ReadSingle();
-        DistanceY = reader.ReadSingle();
-    }
+        DistanceX = reader.ReadSingle(),
+        DistanceY = reader.ReadSingle(),
+    };
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(MoveCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(DistanceX);
-        writer.Write(DistanceY);
+        writer.Write(value.DistanceX);
+        writer.Write(value.DistanceY);
     }
 }

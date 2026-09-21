@@ -54,14 +54,14 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhys
     {
         var asset = new CutsceneTableAsset();
         AssetFields.Populate(asset, header, debug);
-        reader = CutsceneAsset.HeaderReader(reader, profile);
+        reader = ICutsceneHeader.HeaderReader(reader, profile);
 
         uint count = reader.ReadUInt32();
         for (int i = 0; i < count; i++)
         {
             var entry = new CutsceneTableEntry();
             long start = reader.BaseStream.Position;
-            CutsceneAsset.ReadHeader(entry, reader, profile);
+            ICutsceneHeader.ReadHeader(entry, reader, profile);
             int consumed = (int)(reader.BaseStream.Position - start);
             entry.SetUnparsedTail(reader.ReadBytes((int)entry.Physical.HeaderSize - consumed));
             asset.Cutscenes.Add(entry);
@@ -75,11 +75,11 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), IPhys
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "HeaderWriter's result never owns a resource worth disposing - see HeaderReader's remarks.")]
     internal static void Write(CutsceneTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        writer = CutsceneAsset.HeaderWriter(writer, profile);
+        writer = ICutsceneHeader.HeaderWriter(writer, profile);
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Cutscenes)
         {
-            CutsceneAsset.WriteHeader(entry, writer, profile);
+            ICutsceneHeader.WriteHeader(entry, writer, profile);
             writer.Write(entry.GetUnparsedTail());
         }
         writer.Write(asset.GetUnparsedTail());

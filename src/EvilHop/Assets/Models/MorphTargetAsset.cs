@@ -65,7 +65,7 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
         GameVersion.N100F,
     };
 
-    internal static MorphTargetAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static MorphTargetAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new MorphTargetAsset();
         AssetFields.Populate(asset, header, debug);
@@ -83,13 +83,7 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
         int paddingSize = (int)((rawSize + 15) / 16 * 16 - rawSize);
 
         for (int t = 0; t < targetCount; t++)
-        {
-            var target = new MorphTarget();
-            for (int v = 0; v < vertexCount; v++)
-                target.Vertices.Add(asset.Scale == 0f ? reader.ReadVector3() : ReadScaledVertex(reader, asset.Scale));
-            reader.ReadBytes(paddingSize); // alignment padding, always zero
-            asset.Targets.Add(target);
-        }
+            asset.Targets.Add(MorphTarget.Read(reader, profile, vertexCount, asset.Scale, paddingSize));
 
         asset.Physical.TargetCount = targetCount;
         asset.Physical.VertexCount = vertexCount;
@@ -97,7 +91,7 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
         return asset;
     }
 
-    internal static void Write(MorphTargetAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(MorphTargetAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.Magic);
         writer.Write(asset.Physical.TargetCount);
@@ -112,28 +106,9 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), IPhysical
         int paddingSize = (int)((rawSize + 15) / 16 * 16 - rawSize);
 
         foreach (var target in asset.Targets)
-        {
-            foreach (var vertex in target.Vertices)
-            {
-                if (asset.Scale == 0f) writer.Write(vertex);
-                else WriteScaledVertex(writer, vertex, asset.Scale);
-            }
-            for (int i = 0; i < paddingSize; i++) writer.Write((byte)0);
-        }
+            MorphTarget.Write(target, writer, profile, asset.Scale, paddingSize);
 
         writer.Write(asset.GetUnparsedTail());
-    }
-
-    private static Vector3 ReadScaledVertex(EndianReader reader, float scale) => new(
-        reader.ReadInt16() * scale,
-        reader.ReadInt16() * scale,
-        reader.ReadInt16() * scale);
-
-    private static void WriteScaledVertex(EndianWriter writer, Vector3 vertex, float scale)
-    {
-        writer.Write((short)MathF.Round(vertex.X / scale));
-        writer.Write((short)MathF.Round(vertex.Y / scale));
-        writer.Write((short)MathF.Round(vertex.Z / scale));
     }
 }
 
@@ -177,4 +152,35 @@ public sealed class MorphTarget
 {
     /// <summary>This target's vertex positions.</summary>
     public Collection<Vector3> Vertices { get; } = [];
+
+    internal static MorphTarget Read(EndianReader reader, FormatProfile profile, int vertexCount, float scale, int paddingSize)
+    {
+        var target = new MorphTarget();
+        for (int v = 0; v < vertexCount; v++)
+            target.Vertices.Add(scale == 0f ? reader.ReadVector3() : ReadScaledVertex(reader, profile, scale));
+        reader.ReadBytes(paddingSize); // alignment padding, always zero
+        return target;
+    }
+
+    internal static void Write(MorphTarget value, EndianWriter writer, FormatProfile profile, float scale, int paddingSize)
+    {
+        foreach (var vertex in value.Vertices)
+        {
+            if (scale == 0f) writer.Write(vertex);
+            else WriteScaledVertex(vertex, writer, profile, scale);
+        }
+        for (int i = 0; i < paddingSize; i++) writer.Write((byte)0);
+    }
+
+    private static Vector3 ReadScaledVertex(EndianReader reader, FormatProfile _, float scale) => new(
+        reader.ReadInt16() * scale,
+        reader.ReadInt16() * scale,
+        reader.ReadInt16() * scale);
+
+    private static void WriteScaledVertex(Vector3 vertex, EndianWriter writer, FormatProfile _, float scale)
+    {
+        writer.Write((short)MathF.Round(vertex.X / scale));
+        writer.Write((short)MathF.Round(vertex.Y / scale));
+        writer.Write((short)MathF.Round(vertex.Z / scale));
+    }
 }

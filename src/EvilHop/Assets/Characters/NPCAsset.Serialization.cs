@@ -52,7 +52,8 @@ public sealed partial class NPCAsset
             asset.MinPlayerPowerups = reader.ReadInt32();
             asset.MinGameDifficulty = reader.ReadInt32();
 
-            LinkSerialization.Read(asset, reader, asset.Physical.LinkCount, profile.LinkHasExtendedFields);
+            for (var i = 0; i < asset.Physical.LinkCount; i++)
+                asset.Links.Add(Link.Read(reader, profile));
             asset.Physical.LinkCount = (byte)asset.Links.Count;
         }
 
@@ -101,7 +102,8 @@ public sealed partial class NPCAsset
             writer.Write(asset.MinPlayerPowerups);
             writer.Write(asset.MinGameDifficulty);
 
-            LinkSerialization.Write(asset, writer, profile.LinkHasExtendedFields);
+            foreach (var link in asset.Links)
+                Link.Write(link, writer, profile);
         }
 
         writer.Write(asset.GetUnparsedTail());

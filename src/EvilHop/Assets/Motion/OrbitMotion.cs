@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -23,19 +23,19 @@ public sealed class OrbitMotion() : EntityMotion
 
     private protected override MotionType Type => MotionType.Orbit;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static new OrbitMotion Read(EndianReader reader, FormatProfile _) => new()
     {
-        Center = reader.ReadVector3();
-        Width = reader.ReadSingle();
-        Height = reader.ReadSingle();
-        Period = reader.ReadSingle();
-    }
+        Center = reader.ReadVector3(),
+        Width = reader.ReadSingle(),
+        Height = reader.ReadSingle(),
+        Period = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(OrbitMotion value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Center);
-        writer.Write(Width);
-        writer.Write(Height);
-        writer.Write(Period);
+        writer.Write(value.Center);
+        writer.Write(value.Width);
+        writer.Write(value.Height);
+        writer.Write(value.Period);
     }
 }

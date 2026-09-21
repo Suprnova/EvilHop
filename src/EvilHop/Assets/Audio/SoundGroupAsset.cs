@@ -74,7 +74,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         GameVersion.Ratatouille,
     };
 
-    internal static SoundGroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SoundGroupAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SoundGroupAsset();
         AssetFields.Populate(asset, header, debug);
@@ -94,23 +94,16 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         asset.Physical.GroupNamePointer = reader.ReadUInt32();
 
         for (int i = 0; i < entryCount; i++)
-        {
-            asset.Entries.Add(new SoundGroupEntry
-            {
-                SoundId = reader.ReadAssetId(),
-                Volume = reader.ReadSingle(),
-                MinPitchMultiplier = reader.ReadSingle(),
-                MaxPitchMultiplier = reader.ReadSingle(),
-            });
-        }
+            asset.Entries.Add(SoundGroupEntry.Read(reader, profile));
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SoundGroupAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SoundGroupAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -128,14 +121,10 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         writer.Write(asset.Physical.GroupNamePointer);
 
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.SoundId);
-            writer.Write(entry.Volume);
-            writer.Write(entry.MinPitchMultiplier);
-            writer.Write(entry.MaxPitchMultiplier);
-        }
+            SoundGroupEntry.Write(entry, writer, profile);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }
@@ -197,4 +186,20 @@ public sealed class SoundGroupEntry
 
     /// <summary>The maximum pitch offset applied when this entry plays, chosen at random down to <see cref="MinPitchMultiplier"/>.</summary>
     public float MaxPitchMultiplier { get; set; }
+
+    internal static SoundGroupEntry Read(EndianReader reader, FormatProfile _) => new()
+    {
+        SoundId = reader.ReadAssetId(),
+        Volume = reader.ReadSingle(),
+        MinPitchMultiplier = reader.ReadSingle(),
+        MaxPitchMultiplier = reader.ReadSingle(),
+    };
+
+    internal static void Write(SoundGroupEntry value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.SoundId);
+        writer.Write(value.Volume);
+        writer.Write(value.MinPitchMultiplier);
+        writer.Write(value.MaxPitchMultiplier);
+    }
 }

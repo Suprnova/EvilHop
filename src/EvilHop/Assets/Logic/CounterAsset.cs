@@ -33,25 +33,27 @@ public sealed class CounterAsset() : BaseAsset(AssetType.Counter, baseType: 0x16
         GameVersion.Ratatouille,
     };
 
-    internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static CounterAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new CounterAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
         asset.InitialValue = reader.ReadInt16();
         reader.ReadInt16(); // padding, always zero
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(CounterAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(CounterAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
         writer.Write(asset.InitialValue);
         writer.Write((short)0); // padding
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

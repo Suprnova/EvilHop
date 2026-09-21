@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -23,16 +24,6 @@ public abstract class EntityMotion : Motion
     internal sealed override PlatformType PlatformType => (PlatformType)Type;
 
     /// <summary>
-    /// Reads this motion's type-specific fields from a reader scoped to the rest of its Motion block.
-    /// </summary>
-    private protected abstract void ReadFields(EndianReader reader, GameVersion game);
-
-    /// <summary>
-    /// Writes this motion's type-specific fields, no more than the rest of its Motion block holds.
-    /// </summary>
-    private protected abstract void WriteFields(EndianWriter writer, GameVersion game);
-
-    /// <summary>
     /// The size, in bytes, of a Motion block under <paramref name="game"/>.
     /// </summary>
     internal static int BlockSize(GameVersion game) => IsBFBBOrEarlier(game) ? 0x30 : 0x3C;
@@ -41,39 +32,48 @@ public abstract class EntityMotion : Motion
     /// Reads one Motion block.
     /// </summary>
     /// <exception cref="InvalidDataException">The block's type is <see cref="MotionType.None"/> or unknown.</exception>
-    internal static EntityMotion Read(EndianReader reader, GameVersion game)
+    internal static EntityMotion Read(EndianReader reader, FormatProfile profile)
     {
-        using var block = ReadBlock(reader, BlockSize(game));
+        using var block = ReadBlock(reader, BlockSize(profile.Game));
         var type = (MotionType)block.ReadByte();
         byte useBanking = block.ReadByte();
         var flags = (MotionFlags)block.ReadUInt16();
 
         EntityMotion motion = type switch
         {
-            MotionType.ExtendRetract => new ExtendRetractMotion(),
-            MotionType.Orbit => new OrbitMotion(),
-            MotionType.Spline => new SplineMotion(),
-            MotionType.MovePoint => new MovePointMotion { UseBanking = useBanking == 1 },
-            MotionType.Mechanism => new MechanismMotion(),
-            MotionType.Pendulum => new PendulumMotion(),
+            MotionType.ExtendRetract => ExtendRetractMotion.Read(block, profile),
+            MotionType.Orbit => OrbitMotion.Read(block, profile),
+            MotionType.Spline => SplineMotion.Read(block, profile),
+            MotionType.MovePoint => MovePointMotion.Read(block, profile),
+            MotionType.Mechanism => MechanismMotion.Read(block, profile),
+            MotionType.Pendulum => PendulumMotion.Read(block, profile),
             _ => throw new InvalidDataException($"Motion type 0x{(byte)type:X2} has no {nameof(EntityMotion)}."),
         };
 
+        if (motion is MovePointMotion movePoint)
+            movePoint.UseBanking = useBanking == 1;
         motion.Flags = flags;
-        motion.ReadFields(block, game);
         return motion;
     }
 
     /// <summary>
     /// Writes this motion as one Motion block.
     /// </summary>
-    internal void Write(EndianWriter writer, GameVersion game) =>
-        WriteBlock(writer, BlockSize(game), block =>
+    internal static void Write(EntityMotion value, EndianWriter writer, FormatProfile profile) =>
+        WriteBlock(writer, BlockSize(profile.Game), block =>
         {
-            block.Write((byte)Type);
-            block.Write((byte)(this is MovePointMotion { UseBanking: true } ? 1 : 0));
-            block.Write((ushort)Flags);
-            WriteFields(block, game);
+            block.Write((byte)value.Type);
+            block.Write((byte)(value is MovePointMotion { UseBanking: true } ? 1 : 0));
+            block.Write((ushort)value.Flags);
+            switch (value)
+            {
+                case ExtendRetractMotion m: ExtendRetractMotion.Write(m, block, profile); break;
+                case OrbitMotion m: OrbitMotion.Write(m, block, profile); break;
+                case SplineMotion m: SplineMotion.Write(m, block, profile); break;
+                case MovePointMotion m: MovePointMotion.Write(m, block, profile); break;
+                case MechanismMotion m: MechanismMotion.Write(m, block, profile); break;
+                case PendulumMotion m: PendulumMotion.Write(m, block, profile); break;
+            }
         });
 
     /// <summary>
@@ -81,9 +81,9 @@ public abstract class EntityMotion : Motion
     /// <see cref="PlatformMotion"/>, returning the only thing it holds - its flags.
     /// </summary>
     /// <exception cref="InvalidDataException">The block's type isn't <see cref="MotionType.None"/>.</exception>
-    internal static MotionFlags ReadEmpty(EndianReader reader, GameVersion game)
+    internal static MotionFlags ReadEmpty(EndianReader reader, FormatProfile profile)
     {
-        using var block = ReadBlock(reader, BlockSize(game));
+        using var block = ReadBlock(reader, BlockSize(profile.Game));
         var type = (MotionType)block.ReadByte();
         if (type is not MotionType.None)
             throw new InvalidDataException($"Expected an empty Motion block, found motion type 0x{(byte)type:X2}.");
@@ -95,8 +95,8 @@ public abstract class EntityMotion : Motion
     /// <summary>
     /// Writes a Motion block of type <see cref="MotionType.None"/> holding only <paramref name="flags"/>.
     /// </summary>
-    internal static void WriteEmpty(EndianWriter writer, GameVersion game, MotionFlags flags) =>
-        WriteBlock(writer, BlockSize(game), block =>
+    internal static void WriteEmpty(EndianWriter writer, FormatProfile profile, MotionFlags flags) =>
+        WriteBlock(writer, BlockSize(profile.Game), block =>
         {
             block.Write((byte)MotionType.None);
             block.Write((byte)0); // use_banking

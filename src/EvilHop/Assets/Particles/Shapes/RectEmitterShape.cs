@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -15,15 +15,15 @@ public sealed class RectEmitterShape : ParticleEmitterShape
     /// <summary>The rectangle's length along the Z axis.</summary>
     public float ZLength { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static RectEmitterShape Read(EndianReader reader, FormatProfile _) => new()
     {
-        XLength = reader.ReadSingle();
-        ZLength = reader.ReadSingle();
-    }
+        XLength = reader.ReadSingle(),
+        ZLength = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(RectEmitterShape value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(XLength);
-        writer.Write(ZLength);
+        writer.Write(value.XLength);
+        writer.Write(value.ZLength);
     }
 }

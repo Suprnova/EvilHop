@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -86,4 +88,42 @@ public sealed class ReactiveAnimationRow
     /// The radius within which something is considered to be moving through the reacting object.
     /// </summary>
     public float MoveThroughRadius { get; set; }
+
+    internal static ReactiveAnimationRow Read(EndianReader reader, FormatProfile _) => new()
+    {
+        StaticModelId = reader.ReadAssetId(),
+        BoundModelId = reader.ReadAssetId(),
+        LodDistance = reader.ReadSingle(),
+        IdleAnimationId = reader.ReadAssetId(),
+        MoveThroughAnimationId = reader.ReadAssetId(),
+        HitAnimationId = reader.ReadAssetId(),
+        IdleSoundGroupId = reader.ReadAssetId(),
+        MoveThroughSoundGroupId = reader.ReadAssetId(),
+        HitSoundGroupId = reader.ReadAssetId(),
+        BurntModelId = reader.ReadAssetId(),
+        BurnAnimationId = reader.ReadAssetId(),
+        BurnFuel = reader.ReadSingle(),
+        BurnFlameSize = reader.ReadSingle(),
+        BurnEmitScale = reader.ReadSingle(),
+        MoveThroughRadius = reader.ReadSingle(),
+    };
+
+    internal static void Write(ReactiveAnimationRow value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.StaticModelId);
+        writer.Write(value.BoundModelId);
+        writer.Write(value.LodDistance);
+        writer.Write(value.IdleAnimationId);
+        writer.Write(value.MoveThroughAnimationId);
+        writer.Write(value.HitAnimationId);
+        writer.Write(value.IdleSoundGroupId);
+        writer.Write(value.MoveThroughSoundGroupId);
+        writer.Write(value.HitSoundGroupId);
+        writer.Write(value.BurntModelId);
+        writer.Write(value.BurnAnimationId);
+        writer.Write(value.BurnFuel);
+        writer.Write(value.BurnFlameSize);
+        writer.Write(value.BurnEmitScale);
+        writer.Write(value.MoveThroughRadius);
+    }
 }

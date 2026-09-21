@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -20,15 +21,15 @@ public sealed class UVScrollCommand : UIMotionCommand
 
     private protected override int FieldsSize => 8;
 
-    internal override void ReadFields(EndianReader reader)
+    internal static new UVScrollCommand Read(EndianReader reader, FormatProfile _) => new()
     {
-        AmountU = reader.ReadSingle();
-        AmountV = reader.ReadSingle();
-    }
+        AmountU = reader.ReadSingle(),
+        AmountV = reader.ReadSingle(),
+    };
 
-    internal override void WriteFields(EndianWriter writer)
+    internal static void Write(UVScrollCommand value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(AmountU);
-        writer.Write(AmountV);
+        writer.Write(value.AmountU);
+        writer.Write(value.AmountV);
     }
 }

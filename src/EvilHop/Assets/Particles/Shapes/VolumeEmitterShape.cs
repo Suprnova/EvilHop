@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -11,9 +12,11 @@ public sealed class VolumeEmitterShape : ParticleEmitterShape
     /// <summary>The <see cref="AssetType.Volume"/> particles are emitted from anywhere within.</summary>
     public AssetId VolumeId { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _) =>
-        VolumeId = reader.ReadAssetId();
+    internal static VolumeEmitterShape Read(EndianReader reader, FormatProfile _) => new()
+    {
+        VolumeId = reader.ReadAssetId(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _) =>
-        writer.Write(VolumeId);
+    internal static void Write(VolumeEmitterShape value, EndianWriter writer, FormatProfile _) =>
+        writer.Write(value.VolumeId);
 }

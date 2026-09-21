@@ -41,7 +41,8 @@ public sealed class PlayerAsset() : EntityAsset(AssetType.Player, baseType: 0x03
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
 
         if (profile.Game is not GameVersion.N100F)
@@ -56,7 +57,8 @@ public sealed class PlayerAsset() : EntityAsset(AssetType.Player, baseType: 0x03
         BaseAssetPrefix.Write(asset, writer);
         EntityAssetPrefix.Write(asset, writer, profile);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
 
         if (profile.Game is not GameVersion.N100F)
             writer.Write(asset.LightKitId);

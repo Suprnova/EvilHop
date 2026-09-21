@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -29,25 +30,29 @@ public sealed class EntityBoneEmitterShape : ParticleEmitterShape
     /// <summary>How much a particle's emitted direction deflects away from the bone's orientation.</summary>
     public float Deflection { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _)
+    internal static EntityBoneEmitterShape Read(EndianReader reader, FormatProfile _)
     {
-        Flags = reader.ReadByte();
-        AttachType = reader.ReadByte();
-        Bone = reader.ReadByte();
+        var shape = new EntityBoneEmitterShape
+        {
+            Flags = reader.ReadByte(),
+            AttachType = reader.ReadByte(),
+            Bone = reader.ReadByte(),
+        };
         reader.ReadByte(); // pad1, always zero
-        Offset = reader.ReadVector3();
-        Radius = reader.ReadSingle();
-        Deflection = reader.ReadSingle();
+        shape.Offset = reader.ReadVector3();
+        shape.Radius = reader.ReadSingle();
+        shape.Deflection = reader.ReadSingle();
+        return shape;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _)
+    internal static void Write(EntityBoneEmitterShape value, EndianWriter writer, FormatProfile _)
     {
-        writer.Write(Flags);
-        writer.Write(AttachType);
-        writer.Write(Bone);
+        writer.Write(value.Flags);
+        writer.Write(value.AttachType);
+        writer.Write(value.Bone);
         writer.Write((byte)0); // pad1
-        writer.Write(Offset);
-        writer.Write(Radius);
-        writer.Write(Deflection);
+        writer.Write(value.Offset);
+        writer.Write(value.Radius);
+        writer.Write(value.Deflection);
     }
 }

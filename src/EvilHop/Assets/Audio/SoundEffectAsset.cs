@@ -54,7 +54,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
         GameVersion.Ratatouille,
     };
 
-    internal static SoundEffectAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static SoundEffectAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SoundEffectAsset();
         AssetFields.Populate(asset, header, debug);
@@ -65,13 +65,14 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
         asset.Position = reader.ReadVector3();
         asset.Physical.SoundFlags = (SoundFlags)reader.ReadUInt32();
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(SoundEffectAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(SoundEffectAsset asset, EndianWriter writer, FormatProfile profile)
     {
         BaseAssetPrefix.Write(asset, writer);
 
@@ -80,7 +81,8 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
         writer.Write(asset.Position);
         writer.Write((uint)asset.Physical.SoundFlags);
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

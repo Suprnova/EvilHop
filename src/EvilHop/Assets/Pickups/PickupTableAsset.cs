@@ -47,7 +47,7 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
         GameVersion.Ratatouille,
     };
 
-    internal static PickupTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static PickupTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new PickupTableAsset();
         AssetFields.Populate(asset, header, debug);
@@ -55,38 +55,19 @@ public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), IPhysical
         asset.Physical.Magic = reader.ReadUInt32();
         uint entryCount = reader.ReadUInt32();
         for (uint i = 0; i < entryCount; i++)
-        {
-            asset.Entries.Add(new PickupTableEntry
-            {
-                PickupHash = reader.ReadUInt32(),
-                PickupType = reader.ReadByte(),
-                PickupIndex = reader.ReadByte(),
-                Flags = reader.ReadUInt16(),
-                Quantity = reader.ReadUInt32(),
-                ModelId = reader.ReadAssetId(),
-                AnimId = reader.ReadAssetId(),
-            });
-        }
+            asset.Entries.Add(PickupTableEntry.Read(reader, profile));
         asset.Physical.EntryCount = (uint)asset.Entries.Count;
 
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(PickupTableAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(PickupTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.Magic);
         writer.Write(asset.Physical.EntryCount);
         foreach (var entry in asset.Entries)
-        {
-            writer.Write(entry.PickupHash);
-            writer.Write(entry.PickupType);
-            writer.Write(entry.PickupIndex);
-            writer.Write(entry.Flags);
-            writer.Write(entry.Quantity);
-            writer.Write(entry.ModelId);
-            writer.Write(entry.AnimId);
-        }
+            PickupTableEntry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -22,17 +23,21 @@ public sealed class CircleEmitterShape : ParticleEmitterShape
     /// </summary>
     public Vector3 Direction { get; set; }
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static CircleEmitterShape Read(EndianReader reader, FormatProfile profile)
     {
-        Radius = reader.ReadSingle();
-        Deflection = reader.ReadSingle();
-        if (game is not GameVersion.N100F) Direction = reader.ReadVector3();
+        var shape = new CircleEmitterShape
+        {
+            Radius = reader.ReadSingle(),
+            Deflection = reader.ReadSingle(),
+        };
+        if (profile.Game is not GameVersion.N100F) shape.Direction = reader.ReadVector3();
+        return shape;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(CircleEmitterShape value, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write(Radius);
-        writer.Write(Deflection);
-        if (game is not GameVersion.N100F) writer.Write(Direction);
+        writer.Write(value.Radius);
+        writer.Write(value.Deflection);
+        if (profile.Game is not GameVersion.N100F) writer.Write(value.Direction);
     }
 }

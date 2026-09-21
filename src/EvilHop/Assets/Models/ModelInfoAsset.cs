@@ -84,7 +84,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
         }
 
         for (int i = 0; i < modelInstanceCount; i++)
-            asset.ModelInstances.Add(ReadInstance(reader));
+            asset.ModelInstances.Add(ModelInfoInstance.Read(reader, profile));
 
         while (reader.BaseStream.Length - reader.BaseStream.Position >= 5)
         {
@@ -100,7 +100,7 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
             }
 
             reader.BaseStream.Position = entryStart;
-            asset.Parameters.Add(ModelInfoParameterSerialization.Read(reader));
+            asset.Parameters.Add(ModelInfoParameter.Read(reader, profile));
         }
 
         asset.Physical.ModelInstanceCount = modelInstanceCount;
@@ -121,36 +121,12 @@ public sealed class ModelInfoAsset() : Asset(AssetType.ModelInfo), IPhysicalMode
         }
 
         foreach (var instance in asset.ModelInstances)
-            WriteInstance(writer, instance);
+            ModelInfoInstance.Write(instance, writer, profile);
 
         foreach (var parameter in asset.Parameters)
-            ModelInfoParameterSerialization.Write(writer, parameter);
+            ModelInfoParameter.Write(parameter, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
-    }
-
-    private static ModelInfoInstance ReadInstance(EndianReader reader) => new()
-    {
-        ModelId = reader.ReadAssetId(),
-        Flags = reader.ReadUInt16(),
-        Parent = reader.ReadByte(),
-        Bone = reader.ReadByte(),
-        Right = reader.ReadVector3(),
-        Up = reader.ReadVector3(),
-        At = reader.ReadVector3(),
-        Position = reader.ReadVector3(),
-    };
-
-    private static void WriteInstance(EndianWriter writer, ModelInfoInstance instance)
-    {
-        writer.Write(instance.ModelId);
-        writer.Write(instance.Flags);
-        writer.Write(instance.Parent);
-        writer.Write(instance.Bone);
-        writer.Write(instance.Right);
-        writer.Write(instance.Up);
-        writer.Write(instance.At);
-        writer.Write(instance.Position);
     }
 }
 
@@ -209,4 +185,28 @@ public sealed class ModelInfoInstance
 
     /// <summary>This instance's position relative to <see cref="Parent"/>, usually zero.</summary>
     public Vector3 Position { get; set; }
+
+    internal static ModelInfoInstance Read(EndianReader reader, FormatProfile _) => new()
+    {
+        ModelId = reader.ReadAssetId(),
+        Flags = reader.ReadUInt16(),
+        Parent = reader.ReadByte(),
+        Bone = reader.ReadByte(),
+        Right = reader.ReadVector3(),
+        Up = reader.ReadVector3(),
+        At = reader.ReadVector3(),
+        Position = reader.ReadVector3(),
+    };
+
+    internal static void Write(ModelInfoInstance value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.ModelId);
+        writer.Write(value.Flags);
+        writer.Write(value.Parent);
+        writer.Write(value.Bone);
+        writer.Write(value.Right);
+        writer.Write(value.Up);
+        writer.Write(value.At);
+        writer.Write(value.Position);
+    }
 }

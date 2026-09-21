@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -56,4 +58,30 @@ public sealed class LODTableEntry
     /// <see cref="Lod2ModelId"/>.
     /// </summary>
     public float Lod3Distance { get; set; }
+
+    internal static LODTableEntry Read(EndianReader reader, FormatProfile profile) => new()
+    {
+        BaseModelId = reader.ReadAssetId(),
+        NoRenderDistance = reader.ReadSingle(),
+        Flags = profile.Game is not GameVersion.BFBB ? reader.ReadUInt32() : 0,
+        Lod1ModelId = reader.ReadAssetId(),
+        Lod2ModelId = reader.ReadAssetId(),
+        Lod3ModelId = reader.ReadAssetId(),
+        Lod1Distance = reader.ReadSingle(),
+        Lod2Distance = reader.ReadSingle(),
+        Lod3Distance = reader.ReadSingle(),
+    };
+
+    internal static void Write(LODTableEntry value, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(value.BaseModelId);
+        writer.Write(value.NoRenderDistance);
+        if (profile.Game is not GameVersion.BFBB) writer.Write(value.Flags);
+        writer.Write(value.Lod1ModelId);
+        writer.Write(value.Lod2ModelId);
+        writer.Write(value.Lod3ModelId);
+        writer.Write(value.Lod1Distance);
+        writer.Write(value.Lod2Distance);
+        writer.Write(value.Lod3Distance);
+    }
 }

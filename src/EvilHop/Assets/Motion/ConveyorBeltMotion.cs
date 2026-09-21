@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -16,9 +16,11 @@ public sealed class ConveyorBeltMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.ConveyorBelt;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion _) =>
-        Speed = reader.ReadSingle();
+    internal static ConveyorBeltMotion Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Speed = reader.ReadSingle(),
+    };
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion _) =>
-        writer.Write(Speed);
+    internal static void Write(ConveyorBeltMotion value, EndianWriter writer, FormatProfile _) =>
+        writer.Write(value.Speed);
 }

@@ -23,7 +23,7 @@ public sealed partial class SoundInfoAsset
         if (profile.Game is GameVersion.N100F or GameVersion.BFBB)
             ReadDspTable(asset, reader, profile);
         else
-            ReadFsb3(asset, reader);
+            ReadFsb3(asset, reader, profile);
 
         return asset;
     }
@@ -40,7 +40,7 @@ public sealed partial class SoundInfoAsset
         if (profile.Game is GameVersion.N100F or GameVersion.BFBB)
             WriteDspTable(asset, writer, profile);
         else
-            WriteFsb3(asset, writer);
+            WriteFsb3(asset, writer, profile);
     }
 
     private static void ReadDspTable(SoundInfoAsset asset, EndianReader reader, FormatProfile profile)
@@ -50,9 +50,9 @@ public sealed partial class SoundInfoAsset
         int streamCount = reader.ReadInt32();
         int cutsceneCount = profile.Game is GameVersion.BFBB ? reader.ReadInt32() : 0;
 
-        for (int i = 0; i < effectCount; i++) asset.Effects.Add(ReadDspSoundHeader(reader));
-        for (int i = 0; i < streamCount; i++) asset.Streams.Add(ReadDspSoundHeader(reader));
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(ReadDspSoundHeader(reader));
+        for (int i = 0; i < effectCount; i++) asset.Effects.Add(DspSoundHeader.Read(reader, profile));
+        for (int i = 0; i < streamCount; i++) asset.Streams.Add(DspSoundHeader.Read(reader, profile));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspSoundHeader.Read(reader, profile));
 
         asset.Physical.EffectCount = asset.Effects.Count;
         asset.Physical.StreamCount = asset.Streams.Count;
@@ -68,62 +68,14 @@ public sealed partial class SoundInfoAsset
         writer.Write(asset.Physical.StreamCount);
         if (profile.Game is GameVersion.BFBB) writer.Write(asset.Physical.CutsceneCount);
 
-        foreach (var effect in asset.Effects) WriteDspSoundHeader(writer, effect);
-        foreach (var stream in asset.Streams) WriteDspSoundHeader(writer, stream);
-        foreach (var cutscene in asset.Cutscenes) WriteDspSoundHeader(writer, cutscene);
+        foreach (var effect in asset.Effects) DspSoundHeader.Write(effect, writer, profile);
+        foreach (var stream in asset.Streams) DspSoundHeader.Write(stream, writer, profile);
+        foreach (var cutscene in asset.Cutscenes) DspSoundHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
 
-    private static DspSoundHeader ReadDspSoundHeader(EndianReader reader)
-    {
-        var header = new DspSoundHeader
-        {
-            SampleCount = reader.ReadUInt32(),
-            NibbleCount = reader.ReadUInt32(),
-            SampleRate = reader.ReadUInt32(),
-            IsLooped = reader.ReadUInt16() != 0,
-            Format = reader.ReadUInt16(),
-            LoopStart = reader.ReadUInt32(),
-            LoopEnd = reader.ReadUInt32(),
-            InitialOffset = reader.ReadUInt32(),
-        };
-        for (int i = 0; i < header.Coefficients.Count; i++) header.Coefficients[i] = reader.ReadInt16();
-        header.Gain = reader.ReadUInt16();
-        header.PredictorScale = reader.ReadUInt16();
-        header.History1 = reader.ReadInt16();
-        header.History2 = reader.ReadInt16();
-        header.LoopPredictorScale = reader.ReadUInt16();
-        header.LoopHistory1 = reader.ReadInt16();
-        header.LoopHistory2 = reader.ReadInt16();
-        for (int i = 0; i < header.Unknown.Count; i++) header.Unknown[i] = reader.ReadByte();
-        header.SoundAssetId = reader.ReadAssetId();
-        return header;
-    }
-
-    private static void WriteDspSoundHeader(EndianWriter writer, DspSoundHeader header)
-    {
-        writer.Write(header.SampleCount);
-        writer.Write(header.NibbleCount);
-        writer.Write(header.SampleRate);
-        writer.Write((ushort)(header.IsLooped ? 1 : 0));
-        writer.Write(header.Format);
-        writer.Write(header.LoopStart);
-        writer.Write(header.LoopEnd);
-        writer.Write(header.InitialOffset);
-        foreach (short coefficient in header.Coefficients) writer.Write(coefficient);
-        writer.Write(header.Gain);
-        writer.Write(header.PredictorScale);
-        writer.Write(header.History1);
-        writer.Write(header.History2);
-        writer.Write(header.LoopPredictorScale);
-        writer.Write(header.LoopHistory1);
-        writer.Write(header.LoopHistory2);
-        foreach (byte b in header.Unknown) writer.Write(b);
-        writer.Write(header.SoundAssetId);
-    }
-
-    private static void ReadFsb3(SoundInfoAsset asset, EndianReader reader)
+    private static void ReadFsb3(SoundInfoAsset asset, EndianReader reader, FormatProfile profile)
     {
         asset.Physical.SoundInfoId = reader.ReadAssetId();
         uint footerOffset = reader.ReadUInt32(); // relative to the end of this header
@@ -144,19 +96,9 @@ public sealed partial class SoundInfoAsset
         var bankOffsets = new uint[soundBankCount];
         for (int i = 0; i < soundBankCount; i++) bankOffsets[i] = reader.ReadUInt32();
 
-        for (int i = 0; i < soundCount; i++)
-        {
-            asset.Sounds.Add(new SoundBankEntry
-            {
-                SoundAssetId = reader.ReadAssetId(),
-                Flags = (SoundBankEntryFlags)reader.ReadByte(),
-                SampleIndex = reader.ReadByte(),
-                SoundBankIndex = reader.ReadByte(),
-                SoundInfoIndex = reader.ReadByte(),
-            });
-        }
+        for (int i = 0; i < soundCount; i++) asset.Sounds.Add(SoundBankEntry.Read(reader, profile));
 
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(ReadDspSoundHeader(reader));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspSoundHeader.Read(reader, profile));
 
         long footerEnd = reader.BaseStream.Position;
 
@@ -175,7 +117,7 @@ public sealed partial class SoundInfoAsset
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
     }
 
-    private static void WriteFsb3(SoundInfoAsset asset, EndianWriter writer)
+    private static void WriteFsb3(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
         var bankOffsets = new uint[asset.SoundBanks.Count];
         uint footerOffset = 0;
@@ -205,7 +147,7 @@ public sealed partial class SoundInfoAsset
             writer.Write(sound.SoundBankIndex);
             writer.Write(sound.SoundInfoIndex);
         }
-        foreach (var cutscene in asset.Cutscenes) WriteDspSoundHeader(writer, cutscene);
+        foreach (var cutscene in asset.Cutscenes) DspSoundHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

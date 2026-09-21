@@ -5,7 +5,6 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -39,45 +38,25 @@ public sealed class FlyAsset() : Asset(AssetType.Fly)
     private const int KeySize = 64;
 
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "LittleEndianReader's result never owns a resource worth disposing - see its remarks.")]
-    internal static FlyAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static FlyAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new FlyAsset();
         AssetFields.Populate(asset, header, debug);
 
         reader = LittleEndianReader(reader);
         while (reader.BaseStream.Length - reader.BaseStream.Position >= KeySize)
-        {
-            asset.Keys.Add(new FlyKey
-            {
-                Frame = reader.ReadInt32(),
-                Right = reader.ReadVector3(),
-                Up = reader.ReadVector3(),
-                At = reader.ReadVector3(),
-                Position = reader.ReadVector3(),
-                Aperture = new Vector2(reader.ReadSingle(), reader.ReadSingle()),
-                FocalLength = reader.ReadSingle(),
-            });
-        }
+            asset.Keys.Add(FlyKey.Read(reader, profile));
 
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "LittleEndianWriter's result never owns a resource worth disposing - see LittleEndianReader's remarks.")]
-    internal static void Write(FlyAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(FlyAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer = LittleEndianWriter(writer);
         foreach (var key in asset.Keys)
-        {
-            writer.Write(key.Frame);
-            writer.Write(key.Right);
-            writer.Write(key.Up);
-            writer.Write(key.At);
-            writer.Write(key.Position);
-            writer.Write(key.Aperture.X);
-            writer.Write(key.Aperture.Y);
-            writer.Write(key.FocalLength);
-        }
+            FlyKey.Write(key, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -104,32 +83,4 @@ public sealed class FlyAsset() : Asset(AssetType.Fly)
         writer.Endianness == Endianness.Little
             ? writer
             : new EndianWriter(writer.BaseStream, Endianness.Little, leaveOpen: true);
-}
-
-/// <summary>
-/// One frame of a <see cref="FlyAsset"/>: the camera's transform, aperture, and focal length at a
-/// given frame.
-/// </summary>
-public sealed class FlyKey
-{
-    /// <summary>The frame number this key applies at, at 30 FPS.</summary>
-    public int Frame { get; set; }
-
-    /// <summary>The camera's normalized right vector.</summary>
-    public Vector3 Right { get; set; }
-
-    /// <summary>The camera's normalized up vector.</summary>
-    public Vector3 Up { get; set; }
-
-    /// <summary>The camera's normalized forward vector.</summary>
-    public Vector3 At { get; set; }
-
-    /// <summary>The camera's position.</summary>
-    public Vector3 Position { get; set; }
-
-    /// <summary>The camera's aperture (view window half-extents).</summary>
-    public Vector2 Aperture { get; set; }
-
-    /// <summary>The camera's focal length.</summary>
-    public float FocalLength { get; set; }
 }

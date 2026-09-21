@@ -29,7 +29,7 @@ public sealed partial class ParticleEmitterAsset
             asset.PropId = reader.ReadAssetId();
         }
 
-        asset.Shape = ParticleEmitterShape.Read(reader, profile.Game, asset.Kind);
+        asset.Shape = ParticleEmitterShape.Read(reader, asset.Kind, profile);
         asset.AttachToId = reader.ReadAssetId();
 
         if (profile.Game is GameVersion.N100F)
@@ -61,7 +61,8 @@ public sealed partial class ParticleEmitterAsset
             asset.CullDistanceSquared = reader.ReadSingle();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -86,7 +87,7 @@ public sealed partial class ParticleEmitterAsset
             writer.Write(asset.PropId);
         }
 
-        asset.Shape.Write(writer, profile.Game);
+        ParticleEmitterShape.Write(asset.Shape, writer, profile);
         writer.Write(asset.AttachToId);
 
         if (profile.Game is GameVersion.N100F)
@@ -118,7 +119,8 @@ public sealed partial class ParticleEmitterAsset
             writer.Write(asset.CullDistanceSquared);
         }
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

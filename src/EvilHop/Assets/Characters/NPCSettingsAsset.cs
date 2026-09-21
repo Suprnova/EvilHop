@@ -38,26 +38,26 @@ public sealed class NPCSettingsAsset() : Asset(AssetType.NPCSettings), IPhysical
         GameVersion.ROTU,
     };
 
-    internal static NPCSettingsAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static NPCSettingsAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new NPCSettingsAsset();
         AssetFields.Populate(asset, header, debug);
 
         uint parameterCount = reader.ReadUInt32();
         for (int i = 0; i < parameterCount; i++)
-            asset.Parameters.Add(ModelInfoParameterSerialization.Read(reader));
+            asset.Parameters.Add(ModelInfoParameter.Read(reader, profile));
 
         asset.Physical.ParameterCount = (uint)asset.Parameters.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
     }
 
-    internal static void Write(NPCSettingsAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(NPCSettingsAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.ParameterCount);
 
         foreach (var parameter in asset.Parameters)
-            ModelInfoParameterSerialization.Write(writer, parameter);
+            ModelInfoParameter.Write(parameter, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

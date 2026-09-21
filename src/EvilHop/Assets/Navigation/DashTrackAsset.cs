@@ -1,4 +1,8 @@
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Numerics;
 
@@ -14,7 +18,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DTRK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), IPhysicalDashTrackAsset
+public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), IPhysicalDashTrackAsset
 {
     /// <summary>
     /// The mesh's vertices, indexed by <see cref="DashTrackTriangle.VertexA"/>/<see cref="DashTrackTriangle.VertexB"/>/<see cref="DashTrackTriangle.VertexC"/>.
@@ -69,7 +73,62 @@ public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, ba
     {
         GameVersion.Incredibles,
     };
-}
+
+    internal static DashTrackAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    {
+        var asset = new DashTrackAsset();
+        AssetFields.Populate(asset, header, debug);
+        BaseAssetPrefix.Read(asset, reader);
+
+        int vertexCount = reader.ReadInt32();
+        int triangleCount = reader.ReadInt32();
+        asset.LandableStart = reader.ReadInt32();
+        asset.LeavableStart = reader.ReadInt32();
+        asset.Physical.Unknown1 = reader.ReadUInt32();
+        asset.Physical.Unknown2 = reader.ReadUInt32();
+        asset.Physical.Unknown3 = reader.ReadUInt32();
+
+        for (int i = 0; i < vertexCount; i++)
+            asset.Vertices.Add(reader.ReadVector3());
+
+        for (int i = 0; i < triangleCount; i++)
+            asset.Triangles.Add(DashTrackTriangle.Read(reader, profile));
+
+        // Portals have no leading count of their own - they fill whatever's left of the payload.
+        byte[] portalBytes = reader.ReadRemainingBytes();
+        using var portalReader = new EndianReader(new MemoryStream(portalBytes), profile.Endianness);
+        while (portalBytes.Length - portalReader.BaseStream.Position >= 6)
+            asset.Portals.Add(DashTrackPortal.Read(portalReader, profile));
+
+        asset.Physical.VertexCount = vertexCount;
+        asset.Physical.TriangleCount = triangleCount;
+        asset.SetUnparsedTail(portalReader.ReadRemainingBytes());
+        return asset;
+    }
+
+    internal static void Write(DashTrackAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        BaseAssetPrefix.Write(asset, writer);
+        writer.Write(asset.Physical.VertexCount);
+        writer.Write(asset.Physical.TriangleCount);
+        writer.Write(asset.LandableStart);
+        writer.Write(asset.LeavableStart);
+        writer.Write(asset.Physical.Unknown1);
+        writer.Write(asset.Physical.Unknown2);
+        writer.Write(asset.Physical.Unknown3);
+
+        foreach (var vertex in asset.Vertices)
+            writer.Write(vertex);
+
+        foreach (var triangle in asset.Triangles)
+            DashTrackTriangle.Write(triangle, writer, profile);
+
+        foreach (var portal in asset.Portals)
+            DashTrackPortal.Write(portal, writer, profile);
+
+        writer.Write(asset.GetUnparsedTail());
+    }
+};
 
 /// <summary>
 /// An explicit interface used to interact with <see cref="DashTrackAsset"/>'s underlying values.
@@ -110,7 +169,7 @@ public interface IPhysicalDashTrackAsset : IPhysicalBaseAsset
 /// One <see cref="DashTrackAsset"/> triangle: three <see cref="DashTrackAsset.Vertices"/> indices,
 /// plus the per-edge coefficients used to test whether a point lies within it.
 /// </summary>
-public sealed class DashTrackTriangle
+public record struct DashTrackTriangle
 {
     /// <summary>The first of the triangle's three <see cref="DashTrackAsset.Vertices"/> indices.</summary>
     public ushort VertexA { get; set; }
@@ -129,6 +188,26 @@ public sealed class DashTrackTriangle
 
     /// <summary>Unknown.</summary>
     public Vector3 V { get; set; }
+
+    internal static DashTrackTriangle Read(EndianReader reader, FormatProfile _) => new()
+    {
+        VertexA = reader.ReadUInt16(),
+        VertexB = reader.ReadUInt16(),
+        VertexC = reader.ReadUInt16(),
+        Flags = reader.ReadUInt16(),
+        U = reader.ReadVector3(),
+        V = reader.ReadVector3(),
+    };
+
+    internal static void Write(DashTrackTriangle value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.VertexA);
+        writer.Write(value.VertexB);
+        writer.Write(value.VertexC);
+        writer.Write(value.Flags);
+        writer.Write(value.U);
+        writer.Write(value.V);
+    }
 }
 
 /// <summary>
@@ -136,7 +215,7 @@ public sealed class DashTrackTriangle
 /// edges, used to walk from one triangle to the next as the player crosses it. A value of
 /// <c>0xFFFF</c> marks an edge with no neighbor.
 /// </summary>
-public sealed class DashTrackPortal
+public record struct DashTrackPortal
 {
     /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>
     public ushort Neighbor0 { get; set; }
@@ -146,4 +225,18 @@ public sealed class DashTrackPortal
 
     /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexC"/>, or <c>0xFFFF</c> if none.</summary>
     public ushort Neighbor2 { get; set; }
+
+    internal static DashTrackPortal Read(EndianReader reader, FormatProfile _) => new()
+    {
+        Neighbor0 = reader.ReadUInt16(),
+        Neighbor1 = reader.ReadUInt16(),
+        Neighbor2 = reader.ReadUInt16(),
+    };
+
+    internal static void Write(DashTrackPortal value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.Neighbor0);
+        writer.Write(value.Neighbor1);
+        writer.Write(value.Neighbor2);
+    }
 }

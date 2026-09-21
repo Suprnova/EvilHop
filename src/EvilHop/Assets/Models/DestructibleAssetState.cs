@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -75,4 +77,48 @@ public sealed class DestructibleAssetState
     /// The <see cref="AssetType.Animation"/>s attached to this state.
     /// </summary>
     public Collection<AssetId> AnimationIds { get; } = [];
+
+    internal static DestructibleAssetState Read(EndianReader reader, FormatProfile _)
+    {
+        var state = new DestructibleAssetState
+        {
+            Percent = reader.ReadUInt32(),
+            ModelId = reader.ReadAssetId(),
+            ShrapnelId = reader.ReadAssetId(),
+            HitShrapnelId = reader.ReadAssetId(),
+            IdleSoundGroupId = reader.ReadAssetId(),
+            FxSoundGroupId = reader.ReadAssetId(),
+            HitSoundGroupId = reader.ReadAssetId(),
+            SwitchFxSoundGroupId = reader.ReadAssetId(),
+            SwitchHitSoundGroupId = reader.ReadAssetId(),
+            HitRumbleId = reader.ReadAssetId(),
+            SwitchRumbleId = reader.ReadAssetId(),
+            FxFlags = reader.ReadUInt32(),
+        };
+
+        uint animationCount = reader.ReadUInt32();
+        for (int j = 0; j < animationCount; j++)
+            state.AnimationIds.Add(reader.ReadAssetId());
+
+        return state;
+    }
+
+    internal static void Write(DestructibleAssetState value, EndianWriter writer, FormatProfile _)
+    {
+        writer.Write(value.Percent);
+        writer.Write(value.ModelId);
+        writer.Write(value.ShrapnelId);
+        writer.Write(value.HitShrapnelId);
+        writer.Write(value.IdleSoundGroupId);
+        writer.Write(value.FxSoundGroupId);
+        writer.Write(value.HitSoundGroupId);
+        writer.Write(value.SwitchFxSoundGroupId);
+        writer.Write(value.SwitchHitSoundGroupId);
+        writer.Write(value.HitRumbleId);
+        writer.Write(value.SwitchRumbleId);
+        writer.Write(value.FxFlags);
+
+        writer.Write((uint)value.AnimationIds.Count);
+        foreach (var animationId in value.AnimationIds) writer.Write(animationId);
+    }
 }

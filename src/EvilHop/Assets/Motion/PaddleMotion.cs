@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
 
 namespace EvilHop.Assets;
@@ -60,40 +61,41 @@ public sealed class PaddleMotion() : PlatformMotion
 
     internal override PlatformType PlatformType => PlatformType.Paddle;
 
-    private protected override void ReadFields(EndianReader reader, GameVersion game)
+    internal static PaddleMotion Read(EndianReader reader, FormatProfile profile)
     {
-        if (game is GameVersion.N100F)
+        if (profile.Game is GameVersion.N100F)
             throw new InvalidDataException($"{nameof(GameVersion.N100F)} has no paddle platforms.");
 
-        StartOrientation = reader.ReadInt32();
+        var motion = new PaddleMotion { StartOrientation = reader.ReadInt32() };
         int count = reader.ReadInt32();
-        OrientationLoop = reader.ReadSingle();
+        motion.OrientationLoop = reader.ReadSingle();
         float[] slots = [.. Enumerable.Range(0, MaxOrientations).Select(_ => reader.ReadSingle())];
         if (count is < 0 or > MaxOrientations)
             throw new InvalidDataException($"Paddle orientation count {count} is outside 0-{MaxOrientations}.");
 
-        Orientations = [.. slots.Take(count)];
-        PaddleFlags = (PaddleFlags)reader.ReadUInt32();
-        RotateSpeed = reader.ReadSingle();
-        AccelTime = reader.ReadSingle();
-        DecelTime = reader.ReadSingle();
-        HubRadius = reader.ReadSingle();
+        motion.Orientations = [.. slots.Take(count)];
+        motion.PaddleFlags = (PaddleFlags)reader.ReadUInt32();
+        motion.RotateSpeed = reader.ReadSingle();
+        motion.AccelTime = reader.ReadSingle();
+        motion.DecelTime = reader.ReadSingle();
+        motion.HubRadius = reader.ReadSingle();
+        return motion;
     }
 
-    private protected override void WriteFields(EndianWriter writer, GameVersion game)
+    internal static void Write(PaddleMotion value, EndianWriter writer, FormatProfile profile)
     {
-        if (game is GameVersion.N100F) return;
+        if (profile.Game is GameVersion.N100F) return;
 
-        writer.Write(StartOrientation);
-        writer.Write(Orientations.Length);
-        writer.Write(OrientationLoop);
-        foreach (float orientation in Orientations) writer.Write(orientation);
-        writer.Write(new byte[sizeof(float) * (MaxOrientations - Orientations.Length)]);
-        writer.Write((uint)PaddleFlags);
-        writer.Write(RotateSpeed);
-        writer.Write(AccelTime);
-        writer.Write(DecelTime);
-        writer.Write(HubRadius);
+        writer.Write(value.StartOrientation);
+        writer.Write(value.Orientations.Length);
+        writer.Write(value.OrientationLoop);
+        foreach (float orientation in value.Orientations) writer.Write(orientation);
+        writer.Write(new byte[sizeof(float) * (MaxOrientations - value.Orientations.Length)]);
+        writer.Write((uint)value.PaddleFlags);
+        writer.Write(value.RotateSpeed);
+        writer.Write(value.AccelTime);
+        writer.Write(value.DecelTime);
+        writer.Write(value.HubRadius);
     }
 }
 

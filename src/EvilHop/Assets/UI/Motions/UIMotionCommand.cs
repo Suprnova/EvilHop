@@ -1,5 +1,6 @@
 using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -39,9 +40,66 @@ public abstract class UIMotionCommand
 
     private protected abstract int FieldsSize { get; }
 
-    internal abstract void ReadFields(EndianReader reader);
+    /// <summary>
+    /// Reads one command, including its shared header.
+    /// </summary>
+    /// <exception cref="InvalidDataException">The stored command type is not a known <see cref="UIMotionCommandType"/>.</exception>
+    internal static UIMotionCommand Read(EndianReader reader, FormatProfile profile)
+    {
+        var type = (UIMotionCommandType)reader.ReadUInt32();
+        float startTime = reader.ReadSingle();
+        float endTime = reader.ReadSingle();
+        float accelTime = reader.ReadSingle();
+        float decelTime = reader.ReadSingle();
+        bool enabled = reader.ReadByte() != 0;
+        reader.ReadBytes(3); // padding, always zero
 
-    internal abstract void WriteFields(EndianWriter writer);
+        UIMotionCommand command = type switch
+        {
+            UIMotionCommandType.Move => MoveCommand.Read(reader, profile),
+            UIMotionCommandType.Scale => ScaleCommand.Read(reader, profile),
+            UIMotionCommandType.Rotate => RotateCommand.Read(reader, profile),
+            UIMotionCommandType.Opacity => OpacityCommand.Read(reader, profile),
+            UIMotionCommandType.AbsoluteScale => AbsoluteScaleCommand.Read(reader, profile),
+            UIMotionCommandType.Brightness => BrightnessCommand.Read(reader, profile),
+            UIMotionCommandType.Color => ColorCommand.Read(reader, profile),
+            UIMotionCommandType.UVScroll => UVScrollCommand.Read(reader, profile),
+            _ => throw new InvalidDataException($"Unknown UI Motion command type 0x{(uint)type:X8}."),
+        };
+
+        command.StartTime = startTime;
+        command.EndTime = endTime;
+        command.AccelTime = accelTime;
+        command.DecelTime = decelTime;
+        command.Enabled = enabled;
+        return command;
+    }
+
+    /// <summary>
+    /// Writes one command, including its shared header.
+    /// </summary>
+    internal static void Write(UIMotionCommand command, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write((uint)command.Type);
+        writer.Write(command.StartTime);
+        writer.Write(command.EndTime);
+        writer.Write(command.AccelTime);
+        writer.Write(command.DecelTime);
+        writer.Write((byte)(command.Enabled ? 1 : 0));
+        writer.Write(new byte[3]); // padding
+
+        switch (command)
+        {
+            case MoveCommand c: MoveCommand.Write(c, writer, profile); break;
+            case ScaleCommand c: ScaleCommand.Write(c, writer, profile); break;
+            case RotateCommand c: RotateCommand.Write(c, writer, profile); break;
+            case OpacityCommand c: OpacityCommand.Write(c, writer, profile); break;
+            case AbsoluteScaleCommand c: AbsoluteScaleCommand.Write(c, writer, profile); break;
+            case BrightnessCommand c: BrightnessCommand.Write(c, writer, profile); break;
+            case ColorCommand c: ColorCommand.Write(c, writer, profile); break;
+            case UVScrollCommand c: UVScrollCommand.Write(c, writer, profile); break;
+        }
+    }
 }
 
 /// <summary>

@@ -48,7 +48,8 @@ public sealed partial class BoulderAsset
             if (profile.Game is GameVersion.ROTU) asset.InitialNonCollideTime = reader.ReadSingle();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -94,7 +95,8 @@ public sealed partial class BoulderAsset
             if (profile.Game is GameVersion.ROTU) writer.Write(asset.InitialNonCollideTime);
         }
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

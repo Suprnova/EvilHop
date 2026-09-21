@@ -1,5 +1,5 @@
-using EvilHop.Common;
 using EvilHop.Primitives;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
@@ -11,7 +11,7 @@ public sealed class FullyManipulableMotion() : PlatformMotion
 {
     internal override PlatformType PlatformType => PlatformType.FullyManipulable;
 
-    private protected override void ReadFields(EndianReader _, GameVersion __) { }
+    internal static FullyManipulableMotion Read(EndianReader _, FormatProfile __) => new();
 
-    private protected override void WriteFields(EndianWriter _, GameVersion __) { }
+    internal static void Write(FullyManipulableMotion _, EndianWriter __, FormatProfile ___) { }
 }

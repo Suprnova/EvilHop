@@ -1,5 +1,4 @@
 using EvilHop.Common;
-using EvilHop.Primitives;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -83,20 +82,11 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseTy
     uint IPhysicalCameraAsset.ValidFlags { get => _validFlags; set => _validFlags = value; }
 
     /// <summary>
-    /// The size, in bytes, of the type-specific region every <see cref="CameraKind"/> shares.
+    /// The size, in bytes, of the type-specific region every <see cref="CameraKind"/> shares. Every
+    /// concrete <see cref="CameraAsset"/> subclass's own <c>Read</c>/<c>Write</c> pair reads or writes
+    /// exactly this many bytes.
     /// </summary>
     private protected const int TypeDataSize = 24;
-
-    /// <summary>
-    /// Reads this camera's type-specific fields from a reader scoped to exactly
-    /// <see cref="TypeDataSize"/> bytes.
-    /// </summary>
-    private protected abstract void ReadTypeFields(EndianReader reader);
-
-    /// <summary>
-    /// Writes this camera's type-specific fields, always exactly <see cref="TypeDataSize"/> bytes.
-    /// </summary>
-    private protected abstract void WriteTypeFields(EndianWriter writer);
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Camera"/> is known to be read by.

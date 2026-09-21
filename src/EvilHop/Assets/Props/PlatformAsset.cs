@@ -86,20 +86,21 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
 
         if (platformType <= PlatformType.Pendulum)
         {
-            PlatformMotion.ReadEmpty(reader, profile.Game);
-            asset.Motion = EntityMotion.Read(reader, profile.Game);
+            PlatformMotion.ReadEmpty(reader, profile);
+            asset.Motion = EntityMotion.Read(reader, profile);
         }
         else
         {
-            var motion = PlatformMotion.Read(reader, platformType, profile.Game);
-            motion.Flags = EntityMotion.ReadEmpty(reader, profile.Game);
+            var motion = PlatformMotion.Read(reader, platformType, profile);
+            motion.Flags = EntityMotion.ReadEmpty(reader, profile);
             asset.Motion = motion;
         }
 
         asset.Physical.PlatformType = platformType;
         asset.Physical.Subtype = subtype;
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -117,16 +118,17 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
         switch (asset.Motion)
         {
             case EntityMotion motion:
-                PlatformMotion.WriteEmpty(writer, profile.Game);
-                motion.Write(writer, profile.Game);
+                PlatformMotion.WriteEmpty(writer, profile);
+                EntityMotion.Write(motion, writer, profile);
                 break;
             case PlatformMotion motion:
-                motion.Write(writer, profile.Game);
-                EntityMotion.WriteEmpty(writer, profile.Game, motion.Flags);
+                PlatformMotion.Write(motion, writer, profile);
+                EntityMotion.WriteEmpty(writer, profile, motion.Flags);
                 break;
         }
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

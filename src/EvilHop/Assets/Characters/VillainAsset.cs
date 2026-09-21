@@ -99,7 +99,8 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
             asset.SettingsId = reader.ReadAssetId();
         }
 
-        LinkSerialization.Read(asset, reader, asset.Physical.LinkCount);
+        for (var i = 0; i < asset.Physical.LinkCount; i++)
+            asset.Links.Add(Link.Read(reader, profile));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -125,7 +126,8 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
             writer.Write(asset.SettingsId);
         }
 
-        LinkSerialization.Write(asset, writer);
+        foreach (var link in asset.Links)
+            Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }
