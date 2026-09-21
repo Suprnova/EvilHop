@@ -353,3 +353,47 @@ public enum SurfacePhysicsFlags : byte
     /// </summary>
     WallJump = 1 << 5,
 }
+
+/// <summary>
+/// Flags governing active texture animations on a surface.
+/// </summary>
+[Flags]
+public enum SurfaceTextureAnimFlags : uint
+{
+    /// <summary>
+    /// Neither texture animation is active.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// The first texture animation (<see cref="SurfaceAsset.TextureAnims"/>[0]) is active.
+    /// </summary>
+    Slot0 = 1 << 0,
+
+    /// <summary>
+    /// The second texture animation (<see cref="SurfaceAsset.TextureAnims"/>[1]) is active.
+    /// </summary>
+    Slot1 = 1 << 1,
+}
+
+/// <summary>
+/// Flags governing active UV coordinate animation effects on a surface.
+/// </summary>
+[Flags]
+public enum SurfaceUvfxFlags : uint
+{
+    /// <summary>
+    /// Neither UV animation is active.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// The first UV animation (<see cref="SurfaceAsset.Uvfxs"/>[0]) is active.
+    /// </summary>
+    Slot0 = 1 << 0,
+
+    /// <summary>
+    /// The second UV animation (<see cref="SurfaceAsset.Uvfxs"/>[1]) is active.
+    /// </summary>
+    Slot1 = 1 << 1,
+}
