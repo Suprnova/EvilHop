@@ -18,7 +18,6 @@ public partial class ScriptAsset
     /// </remarks>
     public sealed class ScriptEvent()
     {
-
         /// <summary>
         /// The time, in seconds, this event fires at, relative to when the script starts running.
         /// </summary>

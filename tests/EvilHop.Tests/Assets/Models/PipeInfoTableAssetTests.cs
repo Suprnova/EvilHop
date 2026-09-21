@@ -88,9 +88,9 @@ public class PipeInfoTableAssetTests
         Assert.True(first.Flags.IgnoreFog);
         Assert.Equal(RwBlendFunction.One, first.Flags.DestinationBlend);
         Assert.Equal(RwBlendFunction.SourceAlpha, first.Flags.SourceBlend);
-        Assert.Equal(PipeLightingMode.LightKitOnly, first.Flags.LightingMode);
-        Assert.Equal(PipeCullMode.Unknown, first.Flags.CullMode);
-        Assert.Equal(PipeZWriteMode.Disabled, first.Flags.ZWriteMode);
+        Assert.Equal(PipeInfoTableAsset.PipeLightingMode.LightKitOnly, first.Flags.LightingMode);
+        Assert.Equal(PipeInfoTableAsset.PipeCullMode.Unknown, first.Flags.CullMode);
+        Assert.Equal(PipeInfoTableAsset.PipeZWriteMode.Disabled, first.Flags.ZWriteMode);
         Assert.Equal(default, first.Layer);
         Assert.Equal(0, first.AlphaDiscard);
 
@@ -107,11 +107,11 @@ public class PipeInfoTableAssetTests
 
         var first = asset.Entries[0];
         Assert.Equal(0x00006501u, first.Flags.Value);
-        Assert.Equal(PipeLayer.PreLastFx, first.Layer);
+        Assert.Equal(PipeInfoTableAsset.PipeLayer.PreLastFx, first.Layer);
         Assert.Equal(0x80, first.AlphaDiscard);
 
         var second = asset.Entries[1];
-        Assert.Equal(PipeLayer.PrePtank, second.Layer);
+        Assert.Equal(PipeInfoTableAsset.PipeLayer.PrePtank, second.Layer);
         Assert.Equal(0, second.AlphaDiscard);
     }
 
@@ -193,7 +193,7 @@ public class PipeInfoTableAssetTests
     public void Count_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new PipeInfoTableAsset();
-        asset.Entries.Add(new PipeInfoEntry());
+        asset.Entries.Add(new PipeInfoTableAsset.PipeInfoEntry());
 
         asset.Physical.Count = 5;
 
@@ -205,11 +205,11 @@ public class PipeInfoTableAssetTests
     public void Count_MatchingEntries_DerivesFromEntries()
     {
         var asset = new PipeInfoTableAsset();
-        asset.Entries.Add(new PipeInfoEntry());
-        asset.Entries.Add(new PipeInfoEntry());
+        asset.Entries.Add(new PipeInfoTableAsset.PipeInfoEntry());
+        asset.Entries.Add(new PipeInfoTableAsset.PipeInfoEntry());
 
         asset.Physical.Count = 2;
-        asset.Entries.Add(new PipeInfoEntry());
+        asset.Entries.Add(new PipeInfoTableAsset.PipeInfoEntry());
 
         Assert.Equal(3, asset.Physical.Count);
     }
@@ -219,7 +219,7 @@ public class PipeInfoTableAssetTests
     [InlineData(0x00000000u, 0)]
     public void PipeRenderFlags_WithAlphaCompare_ReplacesOnlyThatField(uint initial, byte expected)
     {
-        var flags = new PipeRenderFlags(initial).WithAlphaCompare(expected);
+        var flags = new PipeInfoTableAsset.PipeRenderFlags(initial).WithAlphaCompare(expected);
 
         Assert.Equal(expected, flags.AlphaCompare);
         Assert.Equal(initial & 0x00FFFFFFu, flags.Value & 0x00FFFFFFu);
@@ -228,7 +228,7 @@ public class PipeInfoTableAssetTests
     [Fact]
     public void PipeRenderFlags_WithSourceAndDestinationBlend_MatchSourceBits()
     {
-        var flags = new PipeRenderFlags(0)
+        var flags = new PipeInfoTableAsset.PipeRenderFlags(0)
             .WithSourceBlend(RwBlendFunction.SourceAlpha)
             .WithDestinationBlend(RwBlendFunction.InverseSourceAlpha);
 

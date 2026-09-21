@@ -93,6 +93,68 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>One <see cref="GrassMeshAsset"/> vertex.</summary>
+    public record struct GrassMeshVertex
+    {
+        /// <summary>The vertex's position, relative to the mesh's origin.</summary>
+        public Vector3 Position { get; set; }
+
+        /// <summary>The vertex's height along the blade, used to weight how much wind sway displaces it.</summary>
+        public float Height { get; set; }
+
+        /// <summary>The vertex's normal, used for lighting.</summary>
+        public Vector3 Normal { get; set; }
+
+        /// <summary>The vertex's color.</summary>
+        public Rgba Color { get; set; }
+
+        internal static GrassMeshVertex Read(EndianReader reader, FormatProfile _) => new()
+        {
+            Position = reader.ReadVector3(),
+            Height = reader.ReadSingle(),
+            Normal = reader.ReadVector3(),
+            Color = reader.ReadRgba32(),
+        };
+
+        internal static void Write(GrassMeshVertex value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.Position);
+            writer.Write(value.Height);
+            writer.Write(value.Normal);
+            writer.WriteRgba32(value.Color);
+        }
+    }
+
+    /// <summary>
+    /// One <see cref="GrassMeshAsset"/> face: three <see cref="Vertices"/> indices forming
+    /// a triangle.
+    /// </summary>
+    public record struct GrassMeshFace
+    {
+        /// <summary>The first of the face's three <see cref="Vertices"/> indices.</summary>
+        public ushort VertexA { get; set; }
+
+        /// <summary>The second of the face's three <see cref="Vertices"/> indices.</summary>
+        public ushort VertexB { get; set; }
+
+        /// <summary>The third of the face's three <see cref="Vertices"/> indices.</summary>
+        public ushort VertexC { get; set; }
+
+        internal static GrassMeshFace Read(EndianReader reader, FormatProfile _) => new()
+        {
+            VertexA = reader.ReadUInt16(),
+            VertexB = reader.ReadUInt16(),
+            VertexC = reader.ReadUInt16(),
+        };
+
+        internal static void Write(GrassMeshFace value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.VertexA);
+            writer.Write(value.VertexB);
+            writer.Write(value.VertexC);
+        }
+    }
 }
 
 public static partial class Physical
@@ -121,67 +183,5 @@ public static partial class Physical
         /// serialization.
         /// </remarks>
         int FaceCount { get; set; }
-    }
-}
-
-/// <summary>One <see cref="GrassMeshAsset"/> vertex.</summary>
-public record struct GrassMeshVertex
-{
-    /// <summary>The vertex's position, relative to the mesh's origin.</summary>
-    public Vector3 Position { get; set; }
-
-    /// <summary>The vertex's height along the blade, used to weight how much wind sway displaces it.</summary>
-    public float Height { get; set; }
-
-    /// <summary>The vertex's normal, used for lighting.</summary>
-    public Vector3 Normal { get; set; }
-
-    /// <summary>The vertex's color.</summary>
-    public Rgba Color { get; set; }
-
-    internal static GrassMeshVertex Read(EndianReader reader, FormatProfile _) => new()
-    {
-        Position = reader.ReadVector3(),
-        Height = reader.ReadSingle(),
-        Normal = reader.ReadVector3(),
-        Color = reader.ReadRgba32(),
-    };
-
-    internal static void Write(GrassMeshVertex value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.Position);
-        writer.Write(value.Height);
-        writer.Write(value.Normal);
-        writer.WriteRgba32(value.Color);
-    }
-}
-
-/// <summary>
-/// One <see cref="GrassMeshAsset"/> face: three <see cref="GrassMeshAsset.Vertices"/> indices forming
-/// a triangle.
-/// </summary>
-public record struct GrassMeshFace
-{
-    /// <summary>The first of the face's three <see cref="GrassMeshAsset.Vertices"/> indices.</summary>
-    public ushort VertexA { get; set; }
-
-    /// <summary>The second of the face's three <see cref="GrassMeshAsset.Vertices"/> indices.</summary>
-    public ushort VertexB { get; set; }
-
-    /// <summary>The third of the face's three <see cref="GrassMeshAsset.Vertices"/> indices.</summary>
-    public ushort VertexC { get; set; }
-
-    internal static GrassMeshFace Read(EndianReader reader, FormatProfile _) => new()
-    {
-        VertexA = reader.ReadUInt16(),
-        VertexB = reader.ReadUInt16(),
-        VertexC = reader.ReadUInt16(),
-    };
-
-    internal static void Write(GrassMeshFace value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.VertexA);
-        writer.Write(value.VertexB);
-        writer.Write(value.VertexC);
     }
 }

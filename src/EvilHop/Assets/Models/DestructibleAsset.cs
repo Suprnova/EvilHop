@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DEST">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DestructibleAsset() : Asset(AssetType.DestructibleAsset), Physical.IDestructibleAsset
+public sealed partial class DestructibleAsset() : Asset(AssetType.DestructibleAsset), Physical.IDestructibleAsset
 {
     /// <summary>
     /// The <see cref="AssetType.ModelInfo"/> this destructible is associated with.

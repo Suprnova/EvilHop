@@ -101,7 +101,7 @@ public class MorphTargetAssetTests
         Assert.Equal(2, asset.Physical.TargetCount);
         Assert.Equal(2, asset.Physical.VertexCount);
 
-        asset.Targets.Add(new MorphTarget());
+        asset.Targets.Add(new MorphTargetAsset.MorphTarget());
         Assert.Equal(3, asset.Physical.TargetCount);
 
         asset.Targets[0].Vertices.Add(Vector3.Zero);

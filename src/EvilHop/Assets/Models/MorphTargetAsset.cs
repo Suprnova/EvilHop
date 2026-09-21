@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/MPHT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), Physical.IMorphTargetAsset
+public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), Physical.IMorphTargetAsset
 {
     /// <summary>
     /// Scales each <see cref="MorphTarget.Vertices"/> component when they're packed as 16-bit
@@ -110,6 +110,47 @@ public sealed class MorphTargetAsset() : Asset(AssetType.MorphTarget), Physical.
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="MorphTargetAsset"/> target: one alternate position per vertex of the base mesh,
+    /// in the same order.
+    /// </summary>
+    public sealed class MorphTarget
+    {
+        /// <summary>This target's vertex positions.</summary>
+        public Collection<Vector3> Vertices { get; } = [];
+
+        internal static MorphTarget Read(EndianReader reader, FormatProfile profile, int vertexCount, float scale, int paddingSize)
+        {
+            var target = new MorphTarget();
+            for (int v = 0; v < vertexCount; v++)
+                target.Vertices.Add(scale == 0f ? reader.ReadVector3() : ReadScaledVertex(reader, profile, scale));
+            reader.ReadBytes(paddingSize); // alignment padding, always zero
+            return target;
+        }
+
+        internal static void Write(MorphTarget value, EndianWriter writer, FormatProfile profile, float scale, int paddingSize)
+        {
+            foreach (var vertex in value.Vertices)
+            {
+                if (scale == 0f) writer.Write(vertex);
+                else WriteScaledVertex(vertex, writer, profile, scale);
+            }
+            for (int i = 0; i < paddingSize; i++) writer.Write((byte)0);
+        }
+
+        private static Vector3 ReadScaledVertex(EndianReader reader, FormatProfile _, float scale) => new(
+            reader.ReadInt16() * scale,
+            reader.ReadInt16() * scale,
+            reader.ReadInt16() * scale);
+
+        private static void WriteScaledVertex(Vector3 vertex, EndianWriter writer, FormatProfile _, float scale)
+        {
+            writer.Write((short)MathF.Round(vertex.X / scale));
+            writer.Write((short)MathF.Round(vertex.Y / scale));
+            writer.Write((short)MathF.Round(vertex.Z / scale));
+        }
+    }
 }
 
 public static partial class Physical
@@ -141,49 +182,8 @@ public static partial class Physical
         /// </summary>
         /// <remarks>
         /// When disagreements with the first <see cref="MorphTargetAsset.Targets"/> entry's
-        /// <see cref="MorphTarget.Vertices"/>.Count exist, this field wins during serialization.
+        /// <see cref="MorphTargetAsset.MorphTarget.Vertices"/>.Count exist, this field wins during serialization.
         /// </remarks>
         ushort VertexCount { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="MorphTargetAsset"/> target: one alternate position per vertex of the base mesh,
-/// in the same order.
-/// </summary>
-public sealed class MorphTarget
-{
-    /// <summary>This target's vertex positions.</summary>
-    public Collection<Vector3> Vertices { get; } = [];
-
-    internal static MorphTarget Read(EndianReader reader, FormatProfile profile, int vertexCount, float scale, int paddingSize)
-    {
-        var target = new MorphTarget();
-        for (int v = 0; v < vertexCount; v++)
-            target.Vertices.Add(scale == 0f ? reader.ReadVector3() : ReadScaledVertex(reader, profile, scale));
-        reader.ReadBytes(paddingSize); // alignment padding, always zero
-        return target;
-    }
-
-    internal static void Write(MorphTarget value, EndianWriter writer, FormatProfile profile, float scale, int paddingSize)
-    {
-        foreach (var vertex in value.Vertices)
-        {
-            if (scale == 0f) writer.Write(vertex);
-            else WriteScaledVertex(vertex, writer, profile, scale);
-        }
-        for (int i = 0; i < paddingSize; i++) writer.Write((byte)0);
-    }
-
-    private static Vector3 ReadScaledVertex(EndianReader reader, FormatProfile _, float scale) => new(
-        reader.ReadInt16() * scale,
-        reader.ReadInt16() * scale,
-        reader.ReadInt16() * scale);
-
-    private static void WriteScaledVertex(Vector3 vertex, EndianWriter writer, FormatProfile _, float scale)
-    {
-        writer.Write((short)MathF.Round(vertex.X / scale));
-        writer.Write((short)MathF.Round(vertex.Y / scale));
-        writer.Write((short)MathF.Round(vertex.Z / scale));
     }
 }

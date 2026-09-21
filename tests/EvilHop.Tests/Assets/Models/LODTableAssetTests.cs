@@ -188,7 +188,7 @@ public class LODTableAssetTests
     public void Count_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new LODTableAsset();
-        asset.Entries.Add(new LODTableEntry());
+        asset.Entries.Add(new LODTableAsset.LODTableEntry());
 
         asset.Physical.Count = 5;
 
@@ -200,11 +200,11 @@ public class LODTableAssetTests
     public void Count_MatchingEntries_DerivesFromEntries()
     {
         var asset = new LODTableAsset();
-        asset.Entries.Add(new LODTableEntry());
-        asset.Entries.Add(new LODTableEntry());
+        asset.Entries.Add(new LODTableAsset.LODTableEntry());
+        asset.Entries.Add(new LODTableAsset.LODTableEntry());
 
         asset.Physical.Count = 2;
-        asset.Entries.Add(new LODTableEntry());
+        asset.Entries.Add(new LODTableAsset.LODTableEntry());
 
         Assert.Equal(3, asset.Physical.Count);
     }

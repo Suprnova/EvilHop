@@ -15,7 +15,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LODT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LODTableAsset() : Asset(AssetType.LODTable), Physical.ILODTableAsset
+public sealed partial class LODTableAsset() : Asset(AssetType.LODTable), Physical.ILODTableAsset
 {
     /// <summary>
     /// The table's entries, each mapping one base model to its levels of detail.

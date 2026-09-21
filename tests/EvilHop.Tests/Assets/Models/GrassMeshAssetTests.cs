@@ -115,8 +115,8 @@ public class GrassMeshAssetTests
         Assert.Equal(2, asset.Physical.VertexCount);
         Assert.Equal(1, asset.Physical.FaceCount);
 
-        asset.Vertices.Add(new GrassMeshVertex());
-        asset.Faces.Add(new GrassMeshFace());
+        asset.Vertices.Add(new GrassMeshAsset.GrassMeshVertex());
+        asset.Faces.Add(new GrassMeshAsset.GrassMeshFace());
 
         Assert.Equal(3, asset.Physical.VertexCount);
         Assert.Equal(2, asset.Physical.FaceCount);

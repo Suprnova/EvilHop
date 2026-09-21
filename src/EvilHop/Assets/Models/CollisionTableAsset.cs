@@ -69,6 +69,45 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="CollisionTableAsset"/> entry, overriding the collision meshes used against a single
+    /// <see cref="AssetType.Model"/>.
+    /// </summary>
+    public record struct CollisionTableEntry
+    {
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
+        /// </summary>
+        public AssetId ModelId { get; set; }
+
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> used for collision detection by
+        /// other objects. If <see cref="AssetId.None"/>, <see cref="ModelId"/> is used instead.
+        /// </summary>
+        public AssetId CollisionModelId { get; set; }
+
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> used for collision detection by
+        /// the camera. If <see cref="AssetId.None"/>, the camera has no collision mesh against
+        /// <see cref="ModelId"/> and can pass through it.
+        /// </summary>
+        public AssetId CameraCollisionModelId { get; set; }
+
+        internal static CollisionTableEntry Read(EndianReader reader, FormatProfile _) => new()
+        {
+            ModelId = reader.ReadAssetId(),
+            CollisionModelId = reader.ReadAssetId(),
+            CameraCollisionModelId = reader.ReadAssetId(),
+        };
+
+        internal static void Write(CollisionTableEntry value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.ModelId);
+            writer.Write(value.CollisionModelId);
+            writer.Write(value.CameraCollisionModelId);
+        }
+    }
 }
 
 public static partial class Physical
@@ -86,44 +125,5 @@ public static partial class Physical
         /// When disagreements with <see cref="CollisionTableAsset.Entries"/>.Count exist, this field wins during serialization.
         /// </remarks>
         uint Count { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="CollisionTableAsset"/> entry, overriding the collision meshes used against a single
-/// <see cref="AssetType.Model"/>.
-/// </summary>
-public record struct CollisionTableEntry
-{
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
-    /// </summary>
-    public AssetId ModelId { get; set; }
-
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> used for collision detection by
-    /// other objects. If <see cref="AssetId.None"/>, <see cref="ModelId"/> is used instead.
-    /// </summary>
-    public AssetId CollisionModelId { get; set; }
-
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> used for collision detection by
-    /// the camera. If <see cref="AssetId.None"/>, the camera has no collision mesh against
-    /// <see cref="ModelId"/> and can pass through it.
-    /// </summary>
-    public AssetId CameraCollisionModelId { get; set; }
-
-    internal static CollisionTableEntry Read(EndianReader reader, FormatProfile _) => new()
-    {
-        ModelId = reader.ReadAssetId(),
-        CollisionModelId = reader.ReadAssetId(),
-        CameraCollisionModelId = reader.ReadAssetId(),
-    };
-
-    internal static void Write(CollisionTableEntry value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.ModelId);
-        writer.Write(value.CollisionModelId);
-        writer.Write(value.CameraCollisionModelId);
     }
 }

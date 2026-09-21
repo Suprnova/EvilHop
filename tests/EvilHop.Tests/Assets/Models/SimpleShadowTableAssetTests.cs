@@ -109,7 +109,7 @@ public class SimpleShadowTableAssetTests
     public void Write_SimpleShadowTableAsset_UnderN100F_StillWritesItsOwnFields()
     {
         var asset = new SimpleShadowTableAsset { Type = AssetType.SimpleShadowTable };
-        asset.Entries.Add(new SimpleShadowTableEntry { ModelId = new AssetId(1), ShadowModelId = new AssetId(2), Unknown = 1 });
+        asset.Entries.Add(new SimpleShadowTableAsset.SimpleShadowTableEntry { ModelId = new AssetId(1), ShadowModelId = new AssetId(2), Unknown = 1 });
 
         Assert.Equal(TableBytes(EntryBytes(1, 2, 1)), Write(asset, N100FSerializer.DefaultProfile));
     }
@@ -122,7 +122,7 @@ public class SimpleShadowTableAssetTests
 
         Assert.Equal(1u, asset.Physical.Count);
 
-        asset.Entries.Add(new SimpleShadowTableEntry());
+        asset.Entries.Add(new SimpleShadowTableAsset.SimpleShadowTableEntry());
 
         Assert.Equal(2u, asset.Physical.Count);
     }
@@ -131,7 +131,7 @@ public class SimpleShadowTableAssetTests
     public void Count_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new SimpleShadowTableAsset();
-        asset.Entries.Add(new SimpleShadowTableEntry());
+        asset.Entries.Add(new SimpleShadowTableAsset.SimpleShadowTableEntry());
 
         asset.Physical.Count = 5;
 

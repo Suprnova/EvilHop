@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SHDW">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable), Physical.ISimpleShadowTableAsset
+public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable), Physical.ISimpleShadowTableAsset
 {
     /// <summary>
     /// The table's entries.
@@ -60,6 +60,43 @@ public sealed class SimpleShadowTableAsset() : Asset(AssetType.SimpleShadowTable
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="SimpleShadowTableAsset"/> entry, assigning a shadow model to a single
+    /// <see cref="AssetType.Model"/>.
+    /// </summary>
+    public record struct SimpleShadowTableEntry
+    {
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
+        /// </summary>
+        public AssetId ModelId { get; set; }
+
+        /// <summary>
+        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> rendered as <see cref="ModelId"/>'s
+        /// shadow.
+        /// </summary>
+        public AssetId ShadowModelId { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        public uint Unknown { get; set; }
+
+        internal static SimpleShadowTableEntry Read(EndianReader reader, FormatProfile _) => new()
+        {
+            ModelId = reader.ReadAssetId(),
+            ShadowModelId = reader.ReadAssetId(),
+            Unknown = reader.ReadUInt32(),
+        };
+
+        internal static void Write(SimpleShadowTableEntry value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.ModelId);
+            writer.Write(value.ShadowModelId);
+            writer.Write(value.Unknown);
+        }
+    }
 }
 
 public static partial class Physical
@@ -77,42 +114,5 @@ public static partial class Physical
         /// When disagreements with <see cref="SimpleShadowTableAsset.Entries"/>.Count exist, this field wins during serialization.
         /// </remarks>
         uint Count { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="SimpleShadowTableAsset"/> entry, assigning a shadow model to a single
-/// <see cref="AssetType.Model"/>.
-/// </summary>
-public record struct SimpleShadowTableEntry
-{
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
-    /// </summary>
-    public AssetId ModelId { get; set; }
-
-    /// <summary>
-    /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> rendered as <see cref="ModelId"/>'s
-    /// shadow.
-    /// </summary>
-    public AssetId ShadowModelId { get; set; }
-
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    public uint Unknown { get; set; }
-
-    internal static SimpleShadowTableEntry Read(EndianReader reader, FormatProfile _) => new()
-    {
-        ModelId = reader.ReadAssetId(),
-        ShadowModelId = reader.ReadAssetId(),
-        Unknown = reader.ReadUInt32(),
-    };
-
-    internal static void Write(SimpleShadowTableEntry value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.ModelId);
-        writer.Write(value.ShadowModelId);
-        writer.Write(value.Unknown);
     }
 }

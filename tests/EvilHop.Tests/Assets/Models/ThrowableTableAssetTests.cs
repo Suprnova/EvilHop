@@ -225,7 +225,7 @@ public class ThrowableTableAssetTests
         var asset = (ThrowableTableAsset)Read(data);
         Assert.Equal(1, asset.Physical.RowCount);
 
-        asset.Rows.Add(new ThrowableTableRow());
+        asset.Rows.Add(new ThrowableTableAsset.ThrowableTableRow());
         Assert.Equal(2, asset.Physical.RowCount);
     }
 
@@ -233,7 +233,7 @@ public class ThrowableTableAssetTests
     public void RowCount_DisagreeingWithRows_IsStoredIndependently()
     {
         var asset = new ThrowableTableAsset();
-        asset.Rows.Add(new ThrowableTableRow());
+        asset.Rows.Add(new ThrowableTableAsset.ThrowableTableRow());
 
         asset.Physical.RowCount = 5;
 
@@ -245,11 +245,11 @@ public class ThrowableTableAssetTests
     public void RowCount_MatchingRows_DerivesFromRows()
     {
         var asset = new ThrowableTableAsset();
-        asset.Rows.Add(new ThrowableTableRow());
-        asset.Rows.Add(new ThrowableTableRow());
+        asset.Rows.Add(new ThrowableTableAsset.ThrowableTableRow());
+        asset.Rows.Add(new ThrowableTableAsset.ThrowableTableRow());
 
         asset.Physical.RowCount = 2;
-        asset.Rows.Add(new ThrowableTableRow());
+        asset.Rows.Add(new ThrowableTableAsset.ThrowableTableRow());
 
         Assert.Equal(3, asset.Physical.RowCount);
     }
