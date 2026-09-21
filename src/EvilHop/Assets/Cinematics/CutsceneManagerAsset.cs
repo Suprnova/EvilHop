@@ -127,6 +127,28 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One particle emitter cue in a <see cref="CutsceneManagerAsset"/>, enabling <see cref="EmitterId"/>
+    /// between <see cref="StartTime"/> and <see cref="EndTime"/> while the cutscene plays.
+    /// </summary>
+    public record struct CutsceneEmitterCue
+    {
+        /// <summary>
+        /// The particle emitter this cue targets, or <see cref="AssetId.None"/> if this slot is unused.
+        /// </summary>
+        public AssetId EmitterId { get; set; }
+
+        /// <summary>
+        /// The cutscene time, in seconds, at which <see cref="EmitterId"/> is enabled.
+        /// </summary>
+        public float StartTime { get; set; }
+
+        /// <summary>
+        /// The cutscene time, in seconds, at which <see cref="EmitterId"/> is disabled.
+        /// </summary>
+        public float EndTime { get; set; }
+    }
 }
 
 public static partial class Physical
@@ -141,26 +163,4 @@ public static partial class Physical
         /// </summary>
         uint ManagerFlags { get; set; }
     }
-}
-
-/// <summary>
-/// One particle emitter cue in a <see cref="CutsceneManagerAsset"/>, enabling <see cref="EmitterId"/>
-/// between <see cref="StartTime"/> and <see cref="EndTime"/> while the cutscene plays.
-/// </summary>
-public record struct CutsceneEmitterCue
-{
-    /// <summary>
-    /// The particle emitter this cue targets, or <see cref="AssetId.None"/> if this slot is unused.
-    /// </summary>
-    public AssetId EmitterId { get; set; }
-
-    /// <summary>
-    /// The cutscene time, in seconds, at which <see cref="EmitterId"/> is enabled.
-    /// </summary>
-    public float StartTime { get; set; }
-
-    /// <summary>
-    /// The cutscene time, in seconds, at which <see cref="EmitterId"/> is disabled.
-    /// </summary>
-    public float EndTime { get; set; }
 }

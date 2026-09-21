@@ -16,10 +16,10 @@ namespace EvilHop.Assets;
 public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
 {
     /// <summary>This light's type.</summary>
-    public LightType LightType { get; set; }
+    public LightType Kind { get; set; }
 
     /// <summary>Which flickering, strobing, dimming, or color-cycling effect this light plays.</summary>
-    public LightEffect LightEffect { get; set; }
+    public LightEffect Effect { get; set; }
 
     /// <summary>Whether this light is turned on, and whether it affects level geometry.</summary>
     public LightFlags Flags { get; set; }
@@ -59,8 +59,8 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.LightType = (LightType)reader.ReadByte();
-        asset.LightEffect = (LightEffect)reader.ReadByte();
+        asset.Kind = (LightType)reader.ReadByte();
+        asset.Effect = (LightEffect)reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
         asset.Flags = (LightFlags)reader.ReadUInt32();
         asset.Color = reader.ReadRgba();
@@ -81,8 +81,8 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
     {
         BaseAssetPrefix.Write(asset, writer);
 
-        writer.Write((byte)asset.LightType);
-        writer.Write((byte)asset.LightEffect);
+        writer.Write((byte)asset.Kind);
+        writer.Write((byte)asset.Effect);
         writer.Write((short)0); // padding
         writer.Write((uint)asset.Flags);
         writer.Write(asset.Color);
@@ -96,95 +96,95 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
-}
 
-/// <summary>A <see cref="LightAsset"/>'s type.</summary>
-public enum LightType : byte
-{
-    /// <summary>A light radiating from <see cref="LightAsset.Position"/> in every direction, out to <see cref="LightAsset.Radius"/>.</summary>
-    Point = 0,
+    /// <summary>A <see cref="LightAsset"/>'s type.</summary>
+    public enum LightType : byte
+    {
+        /// <summary>A light radiating from <see cref="Position"/> in every direction, out to <see cref="Radius"/>.</summary>
+        Point = 0,
+
+        /// <summary>
+        /// A light radiating from <see cref="Position"/> in a cone along
+        /// <see cref="Direction"/>, out to <see cref="Radius"/> and
+        /// <see cref="ConeAngle"/>.
+        /// </summary>
+        Spot = 1,
+
+        /// <summary>Functionally identical to <see cref="Point"/>.</summary>
+        Point2 = 2,
+
+        /// <summary>Functionally identical to <see cref="Point"/>.</summary>
+        Point3 = 3,
+    }
+
+    /// <summary>Which flickering, strobing, dimming, or color-cycling effect a <see cref="LightAsset"/> plays.</summary>
+    public enum LightEffect : byte
+    {
+        /// <summary>No effect.</summary>
+        None = 0,
+
+        /// <summary>Flickers slowly.</summary>
+        FlickerSlow = 2,
+
+        /// <summary>Flickers.</summary>
+        Flicker = 3,
+
+        /// <summary>Flickers erratically.</summary>
+        FlickerErratic = 4,
+
+        /// <summary>Strobes slowly.</summary>
+        StrobeSlow = 5,
+
+        /// <summary>Strobes.</summary>
+        Strobe = 6,
+
+        /// <summary>Strobes fast.</summary>
+        StrobeFast = 7,
+
+        /// <summary>Dims slowly.</summary>
+        DimSlow = 8,
+
+        /// <summary>Dims.</summary>
+        Dim = 9,
+
+        /// <summary>Dims fast.</summary>
+        DimFast = 10,
+
+        /// <summary>Dims to half brightness slowly.</summary>
+        HalfDimSlow = 11,
+
+        /// <summary>Dims to half brightness.</summary>
+        HalfDim = 12,
+
+        /// <summary>Dims to half brightness fast.</summary>
+        HalfDimFast = 13,
+
+        /// <summary>Cycles through random colors slowly.</summary>
+        RandomColSlow = 14,
+
+        /// <summary>Cycles through random colors.</summary>
+        RandomCol = 15,
+
+        /// <summary>Cycles through random colors fast.</summary>
+        RandomColFast = 16,
+
+        /// <summary>Flickers with the warm, uneven glow of a cauldron fire.</summary>
+        Cauldron = 17,
+    }
 
     /// <summary>
-    /// A light radiating from <see cref="LightAsset.Position"/> in a cone along
-    /// <see cref="LightAsset.Direction"/>, out to <see cref="LightAsset.Radius"/> and
-    /// <see cref="LightAsset.ConeAngle"/>.
+    /// Flags toggling light state and scene interaction behavior for a <see cref="LightAsset"/>.
     /// </summary>
-    Spot = 1,
+    [Flags]
+    public enum LightFlags : uint
+    {
+        /// <summary>The light is turned off.</summary>
+        None = 0,
 
-    /// <summary>Functionally identical to <see cref="Point"/>.</summary>
-    Point2 = 2,
+        /// <summary>The light affects level geometry, not just entities.</summary>
+        Environment = 1 << 3,
 
-    /// <summary>Functionally identical to <see cref="Point"/>.</summary>
-    Point3 = 3,
-}
-
-/// <summary>Which flickering, strobing, dimming, or color-cycling effect a <see cref="LightAsset"/> plays.</summary>
-public enum LightEffect : byte
-{
-    /// <summary>No effect.</summary>
-    None = 0,
-
-    /// <summary>Flickers slowly.</summary>
-    FlickerSlow = 2,
-
-    /// <summary>Flickers.</summary>
-    Flicker = 3,
-
-    /// <summary>Flickers erratically.</summary>
-    FlickerErratic = 4,
-
-    /// <summary>Strobes slowly.</summary>
-    StrobeSlow = 5,
-
-    /// <summary>Strobes.</summary>
-    Strobe = 6,
-
-    /// <summary>Strobes fast.</summary>
-    StrobeFast = 7,
-
-    /// <summary>Dims slowly.</summary>
-    DimSlow = 8,
-
-    /// <summary>Dims.</summary>
-    Dim = 9,
-
-    /// <summary>Dims fast.</summary>
-    DimFast = 10,
-
-    /// <summary>Dims to half brightness slowly.</summary>
-    HalfDimSlow = 11,
-
-    /// <summary>Dims to half brightness.</summary>
-    HalfDim = 12,
-
-    /// <summary>Dims to half brightness fast.</summary>
-    HalfDimFast = 13,
-
-    /// <summary>Cycles through random colors slowly.</summary>
-    RandomColSlow = 14,
-
-    /// <summary>Cycles through random colors.</summary>
-    RandomCol = 15,
-
-    /// <summary>Cycles through random colors fast.</summary>
-    RandomColFast = 16,
-
-    /// <summary>Flickers with the warm, uneven glow of a cauldron fire.</summary>
-    Cauldron = 17,
-}
-
-/// <summary>
-/// Flags toggling light state and scene interaction behavior for a <see cref="LightAsset"/>.
-/// </summary>
-[Flags]
-public enum LightFlags : uint
-{
-    /// <summary>The light is turned off.</summary>
-    None = 0,
-
-    /// <summary>The light affects level geometry, not just entities.</summary>
-    Environment = 1 << 3,
-
-    /// <summary>The light is turned on.</summary>
-    On = 1 << 5,
+        /// <summary>The light is turned on.</summary>
+        On = 1 << 5,
+    }
 }

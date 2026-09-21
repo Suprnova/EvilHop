@@ -43,15 +43,15 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
     /// <summary>
     /// Which weather effect plays over this environment.
     /// </summary>
-    public ClimateFlags ClimateFlags { get; set; }
+    public ClimateFlags Climate { get; set; }
 
     /// <summary>
-    /// The low end of <see cref="ClimateFlags"/>'s effect strength.
+    /// The low end of <see cref="Climate"/>'s effect strength.
     /// </summary>
     public float ClimateStrengthMin { get; set; }
 
     /// <summary>
-    /// The high end of <see cref="ClimateFlags"/>'s effect strength.
+    /// The high end of <see cref="Climate"/>'s effect strength.
     /// </summary>
     public float ClimateStrengthMax { get; set; }
 
@@ -129,7 +129,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
 
         if (profile.EnvironmentHasExtendedFields)
         {
-            asset.ClimateFlags = (ClimateFlags)reader.ReadUInt32();
+            asset.Climate = (ClimateFlags)reader.ReadUInt32();
             asset.ClimateStrengthMin = reader.ReadSingle();
             asset.ClimateStrengthMax = reader.ReadSingle();
             asset.BspLightKitId = reader.ReadAssetId();
@@ -168,7 +168,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
 
         if (profile.EnvironmentHasExtendedFields)
         {
-            writer.Write((uint)asset.ClimateFlags);
+            writer.Write((uint)asset.Climate);
             writer.Write(asset.ClimateStrengthMin);
             writer.Write(asset.ClimateStrengthMax);
             writer.Write(asset.BspLightKitId);
@@ -199,6 +199,26 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Flags controlling weather and environmental effects such as rain, snow, or wind.
+    /// </summary>
+    [Flags]
+    public enum ClimateFlags : uint
+    {
+        /// <summary>
+        /// No weather effect plays.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Rain plays. Takes priority over <see cref="Snow"/>.
+        /// </summary>
+        Rain = 1 << 0,
+        /// <summary>
+        /// Snow plays.
+        /// </summary>
+        Snow = 1 << 1,
+    }
 }
 
 public static partial class Physical
@@ -218,24 +238,4 @@ public static partial class Physical
         /// </summary>
         float LoldHeight { get; set; }
     }
-}
-
-/// <summary>
-/// Flags controlling weather and environmental effects such as rain, snow, or wind.
-/// </summary>
-[Flags]
-public enum ClimateFlags : uint
-{
-    /// <summary>
-    /// No weather effect plays.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// Rain plays. Takes priority over <see cref="Snow"/>.
-    /// </summary>
-    Rain = 1 << 0,
-    /// <summary>
-    /// Snow plays.
-    /// </summary>
-    Snow = 1 << 1,
 }

@@ -114,6 +114,79 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
         ICutsceneHeader.WriteHeader(asset, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One entry in a <see cref="Data"/> table, referencing a model this cutscene needs loaded before
+    /// playback.
+    /// </summary>
+    public record struct CutsceneDataEntry
+    {
+        /// <summary>Which kind of model this entry is.</summary>
+        public CutsceneDataType DataType { get; set; }
+
+        /// <summary>The <see cref="Common.AssetId"/> of the referenced model.</summary>
+        public AssetId AssetId { get; set; }
+
+        /// <summary>The size, in bytes, of this model's data within the cutscene's unparsed chunk data.</summary>
+        public uint ChunkSize { get; set; }
+
+        /// <summary>
+        /// The offset, in bytes, to this model's data within the cutscene's unparsed chunk data. Zero
+        /// alongside a zero <see cref="ChunkSize"/> when the model is instead an external
+        /// <see cref="AssetType.Model"/> asset.
+        /// </summary>
+        public uint FileOffset { get; set; }
+
+        internal static CutsceneDataEntry Read(EndianReader reader, FormatProfile _) => new()
+        {
+            DataType = (CutsceneDataType)reader.ReadUInt32(),
+            AssetId = reader.ReadAssetId(),
+            ChunkSize = reader.ReadUInt32(),
+            FileOffset = reader.ReadUInt32(),
+        };
+
+        internal static void Write(CutsceneDataEntry value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write((uint)value.DataType);
+            writer.Write(value.AssetId);
+            writer.Write(value.ChunkSize);
+            writer.Write(value.FileOffset);
+        }
+    }
+
+    /// <summary>
+    /// Identifies the media or animation stream type contained in a cutscene data chunk.
+    /// </summary>
+    public enum CutsceneDataType : uint
+    {
+        /// <summary>An embedded RenderWare clump model.</summary>
+        RWModel = 1,
+        /// <summary>
+        /// A JDTM model. Not present in <see cref="GameVersion.N100F"/>.
+        /// </summary>
+        JdtmModel = 6,
+    }
+
+    /// <summary>
+    /// One stereo sound track slot in a <see cref="GameVersion.TSSM"/>/<see cref="GameVersion.Incredibles"/>
+    /// <see cref="CutsceneAsset"/>.
+    /// </summary>
+    public readonly record struct CutsceneAudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
+    {
+        internal static CutsceneAudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
+            reader.ReadAssetId(),
+            reader.ReadAssetId(),
+            ICutsceneHeader.ReadFixedString(reader, soundLength),
+            ICutsceneHeader.ReadFixedString(reader, soundLength));
+
+        internal static void Write(CutsceneAudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
+        {
+            writer.Write(value.LeftSoundId);
+            writer.Write(value.RightSoundId);
+            ICutsceneHeader.WriteFixedString(writer, value.LeftSound, soundLength);
+            ICutsceneHeader.WriteFixedString(writer, value.RightSound, soundLength);
+        }
+    }
 }
 
 public static partial class Physical
@@ -128,77 +201,4 @@ public static partial class Physical
     /// implemented by the non-<see cref="Asset"/> <see cref="CutsceneTableEntry"/>.
     /// </remarks>
     public interface ICutsceneAsset : IAsset, ICutsceneHeader;
-}
-
-/// <summary>
-/// One entry in a <see cref="CutsceneAsset.Data"/> table, referencing a model this cutscene needs
-/// loaded before playback.
-/// </summary>
-public record struct CutsceneDataEntry
-{
-    /// <summary>Which kind of model this entry is.</summary>
-    public CutsceneDataType DataType { get; set; }
-
-    /// <summary>The <see cref="Common.AssetId"/> of the referenced model.</summary>
-    public AssetId AssetId { get; set; }
-
-    /// <summary>The size, in bytes, of this model's data within the cutscene's unparsed chunk data.</summary>
-    public uint ChunkSize { get; set; }
-
-    /// <summary>
-    /// The offset, in bytes, to this model's data within the cutscene's unparsed chunk data. Zero
-    /// alongside a zero <see cref="ChunkSize"/> when the model is instead an external
-    /// <see cref="AssetType.Model"/> asset.
-    /// </summary>
-    public uint FileOffset { get; set; }
-
-    internal static CutsceneDataEntry Read(EndianReader reader, FormatProfile _) => new()
-    {
-        DataType = (CutsceneDataType)reader.ReadUInt32(),
-        AssetId = reader.ReadAssetId(),
-        ChunkSize = reader.ReadUInt32(),
-        FileOffset = reader.ReadUInt32(),
-    };
-
-    internal static void Write(CutsceneDataEntry value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write((uint)value.DataType);
-        writer.Write(value.AssetId);
-        writer.Write(value.ChunkSize);
-        writer.Write(value.FileOffset);
-    }
-}
-
-/// <summary>
-/// Identifies the media or animation stream type contained in a cutscene data chunk.
-/// </summary>
-public enum CutsceneDataType : uint
-{
-    /// <summary>An embedded RenderWare clump model.</summary>
-    RWModel = 1,
-    /// <summary>
-    /// A JDTM model. Not present in <see cref="GameVersion.N100F"/>.
-    /// </summary>
-    JdtmModel = 6,
-}
-
-/// <summary>
-/// One stereo sound track slot in a <see cref="GameVersion.TSSM"/>/<see cref="GameVersion.Incredibles"/>
-/// <see cref="CutsceneAsset"/>.
-/// </summary>
-public readonly record struct CutsceneAudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
-{
-    internal static CutsceneAudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
-        reader.ReadAssetId(),
-        reader.ReadAssetId(),
-        ICutsceneHeader.ReadFixedString(reader, soundLength),
-        ICutsceneHeader.ReadFixedString(reader, soundLength));
-
-    internal static void Write(CutsceneAudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
-    {
-        writer.Write(value.LeftSoundId);
-        writer.Write(value.RightSoundId);
-        ICutsceneHeader.WriteFixedString(writer, value.LeftSound, soundLength);
-        ICutsceneHeader.WriteFixedString(writer, value.RightSound, soundLength);
-    }
 }

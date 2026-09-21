@@ -151,6 +151,42 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
             previousPlaintext = plaintext;
         }
     }
+
+    /// <summary>
+    /// Defines the playback and display state of a credits entry.
+    /// </summary>
+    public enum CreditsState : uint
+    {
+        /// <summary>The body following the header is stored as-is.</summary>
+        NotEncrypted = 1,
+        /// <summary>The body following the header is encrypted and must be decrypted before use.</summary>
+        Encrypted = 3,
+    }
+
+    // TODO: names for <see cref="Center"/>, <see cref="Left"/>, <see cref="Right"/>, and
+    // <see cref="Inner"/> are inferred from a dead-stripped debug string list's declaration order
+    // (<c>CM_ALIGN_CENTER</c>, <c>CM_ALIGN_LEFT</c>, <c>CM_ALIGN_RIGHT</c>, <c>CM_ALIGN_INNER</c>,
+    // <c>CM_ALIGN_TEXTURE</c>), not confirmed against their numeric values directly. Only
+    // <see cref="Center"/> and <see cref="Texture"/> are confirmed by the render switch itself; only
+    // <see cref="Center"/>, <see cref="Inner"/>, and <see cref="Texture"/> are ever observed in the
+    // corpus.
+
+    /// <summary>
+    /// Specifies text alignment and layout positioning for credits lines.
+    /// </summary>
+    public enum CreditsPresetAlignment : ushort
+    {
+        /// <summary>A single, centered <see cref="CreditsTextbox"/>.</summary>
+        Center = 0,
+        /// <summary>Two <see cref="CreditsTextbox"/>s, both left-aligned.</summary>
+        Left = 1,
+        /// <summary>Two <see cref="CreditsTextbox"/>s, both right-aligned.</summary>
+        Right = 2,
+        /// <summary>Two <see cref="CreditsTextbox"/>s, facing each other across the gap between them.</summary>
+        Inner = 3,
+        /// <summary>A single <see cref="CreditsTexture"/>.</summary>
+        Texture = 4,
+    }
 }
 
 public static partial class Physical
@@ -179,7 +215,7 @@ public static partial class Physical
         /// <summary>
         /// Whether the body following this header is encrypted.
         /// </summary>
-        CreditsState State { get; set; }
+        CreditsAsset.CreditsState State { get; set; }
 
         /// <summary>
         /// The total size, in bytes, of this <see cref="CreditsAsset"/>'s entire on-disk representation,
@@ -190,15 +226,4 @@ public static partial class Physical
         /// </remarks>
         uint TotalSize { get; set; }
     }
-}
-
-/// <summary>
-/// Defines the playback and display state of a credits entry.
-/// </summary>
-public enum CreditsState : uint
-{
-    /// <summary>The body following the header is stored as-is.</summary>
-    NotEncrypted = 1,
-    /// <summary>The body following the header is encrypted and must be decrypted before use.</summary>
-    Encrypted = 3,
 }

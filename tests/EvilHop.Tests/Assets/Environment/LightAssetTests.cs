@@ -5,6 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.LightAsset;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -88,8 +89,8 @@ public class LightAssetTests
     {
         var asset = (LightAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
 
-        Assert.Equal(LightType.Point3, asset.LightType);
-        Assert.Equal(LightEffect.FlickerErratic, asset.LightEffect);
+        Assert.Equal(LightType.Point3, asset.Kind);
+        Assert.Equal(LightEffect.FlickerErratic, asset.Effect);
         Assert.Equal(LightFlags.On | LightFlags.Environment, asset.Flags);
         Assert.Equal(new Rgba(0.98f, 0.69f, 0.016f, 1.0f), asset.Color);
         Assert.Equal(new Vector3(0.0f, 0.0f, 1.0f), asset.Direction);

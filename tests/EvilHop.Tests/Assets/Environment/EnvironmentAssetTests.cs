@@ -4,6 +4,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.EnvironmentAsset;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -114,7 +115,7 @@ public class EnvironmentAssetTests
 
         Assert.Equal(new AssetId(0x11111111), asset.BspId);
         Assert.Equal(new AssetId(0x22222222), asset.StartCameraId);
-        Assert.Equal(ClimateFlags.Rain, asset.ClimateFlags);
+        Assert.Equal(ClimateFlags.Rain, asset.Climate);
         Assert.Equal(0.25f, asset.ClimateStrengthMin);
         Assert.Equal(0.75f, asset.ClimateStrengthMax);
         Assert.Equal(new AssetId(0x33333333), asset.BspLightKitId);
@@ -184,7 +185,7 @@ public class EnvironmentAssetTests
 
         Assert.Equal(new AssetId(0xC34C0527), asset.BspId);
         Assert.Equal(new AssetId(0x0015DEF8), asset.StartCameraId);
-        Assert.Equal(ClimateFlags.None, asset.ClimateFlags);
+        Assert.Equal(ClimateFlags.None, asset.Climate);
         Assert.Equal(new AssetId(0), asset.BspLightKitId);
 
         Assert.Equal(data, Write(asset, profile));

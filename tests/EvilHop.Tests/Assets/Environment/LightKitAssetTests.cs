@@ -5,6 +5,8 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.LightKitAsset;
+using static EvilHop.Assets.LightKitAsset.LightKitLight;
 
 namespace EvilHop.Tests.Serialization;
 

@@ -6,6 +6,7 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
 using System.Text;
+using static EvilHop.Assets.CreditsAsset;
 
 namespace EvilHop.Tests.Serialization;
 

@@ -4,7 +4,6 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
-using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -15,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/LKIT">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class LightKitAsset() : Asset(AssetType.LightKit), Physical.ILightKitAsset
+public sealed partial class LightKitAsset() : Asset(AssetType.LightKit), Physical.ILightKitAsset
 {
     /// <summary>
     /// The <see cref="AssetType.Group"/> of entities this light kit is applied to, in addition to

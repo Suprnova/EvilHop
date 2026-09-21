@@ -96,7 +96,7 @@ public class CutsceneAssetTests
         Assert.Empty(asset.AudioTracks);
 
         var entry = Assert.Single(asset.Data);
-        Assert.Equal(CutsceneDataType.RWModel, entry.DataType);
+        Assert.Equal(CutsceneAsset.CutsceneDataType.RWModel, entry.DataType);
         Assert.Equal(new AssetId(0xAABBCCDD), entry.AssetId);
         Assert.Equal(100u, entry.ChunkSize);
         Assert.Equal(2048u, entry.FileOffset);
@@ -231,8 +231,8 @@ public class CutsceneAssetTests
     public void NumData_WhenNotOverridden_DerivesFromDataCount()
     {
         var asset = new CutsceneAsset();
-        asset.Data.Add(new CutsceneDataEntry());
-        asset.Data.Add(new CutsceneDataEntry());
+        asset.Data.Add(new CutsceneAsset.CutsceneDataEntry());
+        asset.Data.Add(new CutsceneAsset.CutsceneDataEntry());
 
         Assert.Equal(2u, asset.Physical.NumData);
     }
