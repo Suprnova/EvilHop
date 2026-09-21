@@ -121,6 +121,47 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Defines the geometric volume shape (box, sphere, or cylinder) used for trigger collision detection.
+    /// </summary>
+    public enum TriggerShape : byte
+    {
+        /// <summary>
+        /// An axis-aligned box between <see cref="TriggerPosition0"/> and
+        /// <see cref="TriggerPosition1"/>.
+        /// </summary>
+        Box = 0,
+        /// <summary>
+        /// A sphere centered on <see cref="TriggerPosition0"/> with a radius of
+        /// <see cref="TriggerPosition1"/>'s <see cref="Vector3.X"/>.
+        /// </summary>
+        Sphere = 1,
+        /// <summary>
+        /// A vertical cylinder.
+        /// </summary>
+        Cylinder = 2,
+        /// <summary>
+        /// Identical to <see cref="Sphere"/>.
+        /// </summary>
+        VSphere = 3,
+    }
+
+    /// <summary>
+    /// Flags controlling trigger activation criteria, directionality, and player interaction.
+    /// </summary>
+    [Flags]
+    public enum TriggerFlags : uint
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Restricts this trigger to only fire when approached from <see cref="Direction"/>.
+        /// </summary>
+        DirectionGate = 1 << 0,
+    }
 }
 
 public static partial class Physical
@@ -140,45 +181,4 @@ public static partial class Physical
         /// </summary>
         Vector3 TriggerPosition3 { get; set; }
     }
-}
-
-/// <summary>
-/// Defines the geometric volume shape (box, sphere, or cylinder) used for trigger collision detection.
-/// </summary>
-public enum TriggerShape : byte
-{
-    /// <summary>
-    /// An axis-aligned box between <see cref="TriggerAsset.TriggerPosition0"/> and
-    /// <see cref="TriggerAsset.TriggerPosition1"/>.
-    /// </summary>
-    Box = 0,
-    /// <summary>
-    /// A sphere centered on <see cref="TriggerAsset.TriggerPosition0"/> with a radius of
-    /// <see cref="TriggerAsset.TriggerPosition1"/>'s <see cref="Vector3.X"/>.
-    /// </summary>
-    Sphere = 1,
-    /// <summary>
-    /// A vertical cylinder.
-    /// </summary>
-    Cylinder = 2,
-    /// <summary>
-    /// Identical to <see cref="Sphere"/>.
-    /// </summary>
-    VSphere = 3,
-}
-
-/// <summary>
-/// Flags controlling trigger activation criteria, directionality, and player interaction.
-/// </summary>
-[Flags]
-public enum TriggerFlags : uint
-{
-    /// <summary>
-    /// No flags are set.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// Restricts this trigger to only fire when approached from <see cref="TriggerAsset.Direction"/>.
-    /// </summary>
-    DirectionGate = 1 << 0,
 }

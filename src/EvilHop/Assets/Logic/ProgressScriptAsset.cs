@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PGRS">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), Physical.IProgressScriptAsset
+public sealed partial class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), Physical.IProgressScriptAsset
 {
     /// <summary>
     /// This script's events, in ascending <see cref="ProgressScriptEvent.Percent"/> order.

@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SCRP">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A), Physical.IScriptAsset
+public sealed partial class ScriptAsset() : BaseAsset(AssetType.Script, baseType: 0x2A), Physical.IScriptAsset
 {
     /// <summary>
     /// The starting time offset in seconds, or playback speed multiplier.

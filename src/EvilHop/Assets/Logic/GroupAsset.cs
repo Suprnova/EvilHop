@@ -79,6 +79,22 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), P
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>Which of a <see cref="GroupAsset"/>'s <see cref="Items"/> a received event is forwarded to.</summary>
+    public enum GroupEventMode : short
+    {
+        /// <summary>The event is forwarded to every item.</summary>
+        All = 0,
+
+        /// <summary>The event is forwarded to one randomly chosen item.</summary>
+        Random = 1,
+
+        /// <summary>
+        /// The event is forwarded to one item, advancing to the next item (wrapping back to the first)
+        /// each time an event is received.
+        /// </summary>
+        Sequential = 2,
+    }
 }
 
 public static partial class Physical
@@ -98,20 +114,4 @@ public static partial class Physical
         /// </remarks>
         ushort ItemCount { get; set; }
     }
-}
-
-/// <summary>Which of a <see cref="GroupAsset"/>'s <see cref="GroupAsset.Items"/> a received event is forwarded to.</summary>
-public enum GroupEventMode : short
-{
-    /// <summary>The event is forwarded to every item.</summary>
-    All = 0,
-
-    /// <summary>The event is forwarded to one randomly chosen item.</summary>
-    Random = 1,
-
-    /// <summary>
-    /// The event is forwarded to one item, advancing to the next item (wrapping back to the first)
-    /// each time an event is received.
-    /// </summary>
-    Sequential = 2,
 }

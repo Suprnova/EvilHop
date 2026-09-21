@@ -13,7 +13,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/COND">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseType: 0x1F)
+public sealed partial class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseType: 0x1F)
 {
     /// <summary>
     /// The value <see cref="Variable"/> is compared against, using <see cref="Operation"/>.
@@ -85,23 +85,24 @@ public sealed class ConditionalAsset() : BaseAsset(AssetType.Conditional, baseTy
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// The comparison or evaluation operation used by a <see cref="ConditionalAsset"/> to test its variables.
+    /// </summary>
+    public enum ConditionalOperation : uint
+    {
+        /// <summary>The variable must equal the evaluation amount.</summary>
+        EqualTo = 0,
+        /// <summary>The variable must be greater than the evaluation amount.</summary>
+        GreaterThan = 1,
+        /// <summary>The variable must be less than the evaluation amount.</summary>
+        LessThan = 2,
+        /// <summary>The variable must be greater than or equal to the evaluation amount.</summary>
+        GreaterThanOrEqualTo = 3,
+        /// <summary>The variable must be less than or equal to the evaluation amount.</summary>
+        LessThanOrEqualTo = 4,
+        /// <summary>The variable must not equal the evaluation amount.</summary>
+        NotEqualTo = 5,
+    }
 }
 
-/// <summary>
-/// The comparison or evaluation operation used by a <see cref="ConditionalAsset"/> to test its variables.
-/// </summary>
-public enum ConditionalOperation : uint
-{
-    /// <summary>The variable must equal the evaluation amount.</summary>
-    EqualTo = 0,
-    /// <summary>The variable must be greater than the evaluation amount.</summary>
-    GreaterThan = 1,
-    /// <summary>The variable must be less than the evaluation amount.</summary>
-    LessThan = 2,
-    /// <summary>The variable must be greater than or equal to the evaluation amount.</summary>
-    GreaterThanOrEqualTo = 3,
-    /// <summary>The variable must be less than or equal to the evaluation amount.</summary>
-    LessThanOrEqualTo = 4,
-    /// <summary>The variable must not equal the evaluation amount.</summary>
-    NotEqualTo = 5,
-}
