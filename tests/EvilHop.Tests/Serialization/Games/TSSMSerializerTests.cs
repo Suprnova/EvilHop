@@ -43,7 +43,7 @@ public class TSSMSerializerTests : SerializerContractTests
         Assert.Equal(TSSMSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 
-    [Fact(Skip = "omitted pending the appropriate licensing of test fixture")]
+    [Fact]
     public void Read_UnofficialArchiveFixture_ParsesTrailingHipbBlock()
     {
         using var stream = File.OpenRead(UnofficialArchiveFixturePath);
@@ -57,7 +57,7 @@ public class TSSMSerializerTests : SerializerContractTests
         Assert.Empty(hipb.LayerNames);
     }
 
-    [Fact(Skip = "omitted pending the appropriate licensing of test fixture")]
+    [Fact]
     public void Read_ThenWrite_UnofficialArchiveFixture_ProducesIdenticalBytes()
     {
         byte[] originalBytes = File.ReadAllBytes(UnofficialArchiveFixturePath);
