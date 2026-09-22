@@ -1,6 +1,4 @@
 using EvilHop.Common;
-using EvilHop.Primitives;
-using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 
 namespace EvilHop.Assets;
@@ -20,15 +18,15 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     /// <summary>
     /// Behavior flags for this <see cref="DiscoFloorAsset"/>.
     /// </summary>
-    public DiscoFloorFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>
     /// Whether the pattern loops back to its first step once it reaches the last, instead of pausing there.
     /// </summary>
     public bool Loop
     {
-        get => (Flags & DiscoFloorFlags.Loop) != 0;
-        set => Flags = value ? Flags | DiscoFloorFlags.Loop : Flags & ~DiscoFloorFlags.Loop;
+        get => (Flags & Behavior.Loop) != 0;
+        set => Flags = value ? Flags | Behavior.Loop : Flags & ~Behavior.Loop;
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     /// <summary>
     /// The pattern this <see cref="DiscoFloorAsset"/> steps through, one entry per step.
     /// </summary>
-    public Collection<DiscoFloorState> States { get; } = [];
+    public Collection<State> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IDiscoFloorAsset Physical => this;
@@ -97,7 +95,7 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     /// Behavior flags for a <see cref="DiscoFloorAsset"/>.
     /// </summary>
     [Flags]
-    public enum DiscoFloorFlags : uint
+    public enum Behavior : uint
     {
         /// <summary>Neither flag is set.</summary>
         None = 0,

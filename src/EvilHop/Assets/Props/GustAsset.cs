@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
 {
     /// <summary>Whether the gust is turned on, and which kind of particles it emits.</summary>
-    public GustFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>The <see cref="AssetType.Volume"/> an entity must be inside for the gust to push it.</summary>
     public AssetId VolumeId { get; set; }
@@ -57,7 +57,7 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Flags = (GustFlags)reader.ReadUInt32();
+        asset.Flags = (Behavior)reader.ReadUInt32();
         asset.VolumeId = reader.ReadAssetId();
         asset.EffectVolumeId = reader.ReadAssetId();
         asset.Velocity = reader.ReadVector3();
@@ -89,7 +89,7 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
 
     /// <summary>Toggles a <see cref="GustAsset"/> on or off, and which particles it emits while on.</summary>
     [Flags]
-    public enum GustFlags : uint
+    public enum Behavior : uint
     {
         /// <summary>The gust is turned off.</summary>
         None = 0,

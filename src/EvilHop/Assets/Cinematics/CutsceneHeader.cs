@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 internal interface ICutsceneHeader
 {
     /// <inheritdoc cref="CutsceneAsset.Data"/>
-    Collection<CutsceneAsset.CutsceneDataEntry> Data { get; }
+    Collection<CutsceneAsset.Entry> Data { get; }
 
     /// <inheritdoc cref="CutsceneAsset.SoundLeft"/>
     string SoundLeft { get; set; }
@@ -26,7 +26,7 @@ internal interface ICutsceneHeader
     string SoundRight { get; set; }
 
     /// <inheritdoc cref="CutsceneAsset.AudioTracks"/>
-    Collection<CutsceneAsset.CutsceneAudioTrack> AudioTracks { get; }
+    Collection<CutsceneAsset.AudioTrack> AudioTracks { get; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     Physical.ICutsceneHeader Physical { get; }
@@ -69,7 +69,7 @@ internal interface ICutsceneHeader
         }
 
         for (int i = 0; i < header.Physical.NumData; i++)
-            header.Data.Add(CutsceneAsset.CutsceneDataEntry.Read(reader, profile));
+            header.Data.Add(CutsceneAsset.Entry.Read(reader, profile));
         header.Physical.NumData = (uint)header.Data.Count;
     }
 
@@ -103,7 +103,7 @@ internal interface ICutsceneHeader
         }
 
         foreach (var entry in header.Data)
-            CutsceneAsset.CutsceneDataEntry.Write(entry, writer, profile);
+            CutsceneAsset.Entry.Write(entry, writer, profile);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ internal interface ICutsceneHeader
     private static void ReadAudioTracks(ICutsceneHeader header, EndianReader reader, int soundLength, FormatProfile profile)
     {
         for (int i = 0; i < 32; i++)
-            header.AudioTracks.Add(CutsceneAsset.CutsceneAudioTrack.Read(reader, soundLength, profile));
+            header.AudioTracks.Add(CutsceneAsset.AudioTrack.Read(reader, soundLength, profile));
     }
 
     private static void WriteAudioTracks(ICutsceneHeader header, EndianWriter writer, int soundLength, FormatProfile profile)
@@ -158,8 +158,8 @@ internal interface ICutsceneHeader
         {
             var track = i < header.AudioTracks.Count
                 ? header.AudioTracks[i]
-                : new CutsceneAsset.CutsceneAudioTrack(default, default, string.Empty, string.Empty);
-            CutsceneAsset.CutsceneAudioTrack.Write(track, writer, soundLength, profile);
+                : new CutsceneAsset.AudioTrack(default, default, string.Empty, string.Empty);
+            CutsceneAsset.AudioTrack.Write(track, writer, soundLength, profile);
         }
     }
 

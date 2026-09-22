@@ -88,7 +88,7 @@ public class PickupAssetTests
 
         Assert.Equal(PickupAsset.PickupKind.Underwear, asset.Kind);
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.Behavior.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
         Assert.Equal(new AssetId(0x94E25463), asset.Physical.ModelId);
     }
@@ -141,7 +141,7 @@ public class PickupAssetTests
         var asset = (PickupAsset)Read(data, profile);
 
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.Behavior.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
         Assert.Equal(data, Write(asset, profile));
     }
@@ -195,7 +195,7 @@ public class PickupAssetTests
         Assert.Equal(PickupAsset.PickupKind.Underwear, asset.Kind);
         Assert.Equal(new AssetId(0x94E25463), asset.Physical.ModelId);
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.Behavior.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
 
         Assert.Equal(data, Write(asset));

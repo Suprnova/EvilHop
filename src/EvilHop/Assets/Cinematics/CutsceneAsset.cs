@@ -25,7 +25,7 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// <summary>
     /// The models this cutscene needs loaded before playback.
     /// </summary>
-    public Collection<CutsceneDataEntry> Data { get; } = [];
+    public Collection<Entry> Data { get; } = [];
 
     /// <summary>
     /// The left-channel sound name for this cutscene's dialog track.
@@ -43,7 +43,7 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// Up to 32 stereo sound track slots this cutscene can play from.
     /// Only present in <see cref="GameVersion.TSSM"/> and <see cref="GameVersion.Incredibles"/>.
     /// </summary>
-    public Collection<CutsceneAudioTrack> AudioTracks { get; } = [];
+    public Collection<AudioTrack> AudioTracks { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ICutsceneAsset Physical => this;
@@ -119,10 +119,10 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// One entry in a <see cref="Data"/> table, referencing a model this cutscene needs loaded before
     /// playback.
     /// </summary>
-    public record struct CutsceneDataEntry
+    public record struct Entry
     {
         /// <summary>Which kind of model this entry is.</summary>
-        public CutsceneDataType DataType { get; set; }
+        public ModelKind ModelKind { get; set; }
 
         /// <summary>The <see cref="Common.AssetId"/> of the referenced model.</summary>
         public AssetId AssetId { get; set; }
@@ -137,17 +137,17 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
         /// </summary>
         public uint FileOffset { get; set; }
 
-        internal static CutsceneDataEntry Read(EndianReader reader, FormatProfile _) => new()
+        internal static Entry Read(EndianReader reader, FormatProfile _) => new()
         {
-            DataType = (CutsceneDataType)reader.ReadUInt32(),
+            ModelKind = (ModelKind)reader.ReadUInt32(),
             AssetId = reader.ReadAssetId(),
             ChunkSize = reader.ReadUInt32(),
             FileOffset = reader.ReadUInt32(),
         };
 
-        internal static void Write(CutsceneDataEntry value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Entry value, EndianWriter writer, FormatProfile _)
         {
-            writer.Write((uint)value.DataType);
+            writer.Write((uint)value.ModelKind);
             writer.Write(value.AssetId);
             writer.Write(value.ChunkSize);
             writer.Write(value.FileOffset);
@@ -157,7 +157,7 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// <summary>
     /// Identifies the media or animation stream type contained in a cutscene data chunk.
     /// </summary>
-    public enum CutsceneDataType : uint
+    public enum ModelKind : uint
     {
         /// <summary>An embedded RenderWare clump model.</summary>
         RWModel = 1,
@@ -171,15 +171,15 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// One stereo sound track slot in a <see cref="GameVersion.TSSM"/>/<see cref="GameVersion.Incredibles"/>
     /// <see cref="CutsceneAsset"/>.
     /// </summary>
-    public readonly record struct CutsceneAudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
+    public readonly record struct AudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
     {
-        internal static CutsceneAudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
+        internal static AudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
             reader.ReadAssetId(),
             reader.ReadAssetId(),
             ICutsceneHeader.ReadFixedString(reader, soundLength),
             ICutsceneHeader.ReadFixedString(reader, soundLength));
 
-        internal static void Write(CutsceneAudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
+        internal static void Write(AudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
         {
             writer.Write(value.LeftSoundId);
             writer.Write(value.RightSoundId);

@@ -75,7 +75,7 @@ public class CreditsAssetTests
         .. U32(handle), .. U32(padding),
     ];
 
-    private static byte[] Preset(ushort index, CreditsPresetAlignment alignment, float delay, float innerSpacing, byte[] box0, byte[] box1) =>
+    private static byte[] Preset(ushort index, Alignment alignment, float delay, float innerSpacing, byte[] box0, byte[] box1) =>
     [
         .. U16(index), .. U16((ushort)alignment), .. F32(delay), .. F32(innerSpacing), .. box0, .. box1,
     ];
@@ -103,7 +103,7 @@ public class CreditsAssetTests
 
     // Section 0: one Center preset (two textboxes) and one hunk with Text1 set.
     private static byte[] Section0PresetBytes() => Preset(
-        index: 7, alignment: CreditsPresetAlignment.Center, delay: 0.25f, innerSpacing: 0f,
+        index: 7, alignment: Alignment.Center, delay: 0.25f, innerSpacing: 0f,
         box0: Textbox(font: 1, color: new Rgba(255 / 255f, 255 / 255f, 0 / 255f, 255 / 255f), charSize: new Vector2(10, 12), charSpacing: new Vector2(1, 2), size: new Vector2(0.8f, 0.05f)),
         box1: Textbox(font: 2, color: new Rgba(0 / 255f, 255 / 255f, 255 / 255f, 128 / 255f), charSize: new Vector2(8, 10), charSpacing: new Vector2(0.5f, 1), size: new Vector2(0.6f, 0.04f)));
 
@@ -119,7 +119,7 @@ public class CreditsAssetTests
 
     // Section 1: one Texture preset (two textures) and one textless hunk.
     private static byte[] Section1PresetBytes() => Preset(
-        index: 3, alignment: CreditsPresetAlignment.Texture, delay: 1.5f, innerSpacing: 0.02f,
+        index: 3, alignment: Alignment.Texture, delay: 1.5f, innerSpacing: 0.02f,
         // Handle and padding are non-zero here on purpose: real archives carry leftover garbage in
         // both, so a fixture that zeroes them can't catch a codec that discards rather than
         // preserves them.
@@ -136,7 +136,7 @@ public class CreditsAssetTests
 
     private static byte[] SampleBody() => [.. Section0Bytes(), .. Section1Bytes()];
 
-    private static byte[] SampleCreditsData(uint state = (uint)CreditsState.NotEncrypted)
+    private static byte[] SampleCreditsData(uint state = (uint)State.NotEncrypted)
     {
         byte[] body = SampleBody();
         return [.. HeaderBytes(0xBEEEEEEF, 512, 0, state, 148.5f, 24 + (uint)body.Length), .. body];
@@ -167,7 +167,7 @@ public class CreditsAssetTests
         Assert.Equal(0xBEEEEEEFu, asset.Physical.Magic);
         Assert.Equal(256u, asset.Physical.Version);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.Physical.CreditsId);
-        Assert.Equal(CreditsState.NotEncrypted, asset.Physical.State);
+        Assert.Equal(State.NotEncrypted, asset.Physical.State);
         Assert.False(asset.IsEncrypted);
         Assert.Equal(148.5f, asset.Duration);
     }
@@ -199,7 +199,7 @@ public class CreditsAssetTests
 
         var preset = Assert.Single(asset.Sections[0].Presets);
         Assert.Equal(7, preset.Index);
-        Assert.Equal(CreditsPresetAlignment.Center, preset.Alignment);
+        Assert.Equal(Alignment.Center, preset.Alignment);
         Assert.Equal(0.25f, preset.Delay);
         Assert.Equal(0f, preset.InnerSpacing);
         Assert.Empty(preset.Textures);
@@ -220,7 +220,7 @@ public class CreditsAssetTests
 
         var preset = Assert.Single(asset.Sections[1].Presets);
         Assert.Equal(3, preset.Index);
-        Assert.Equal(CreditsPresetAlignment.Texture, preset.Alignment);
+        Assert.Equal(Alignment.Texture, preset.Alignment);
         Assert.Equal(1.5f, preset.Delay);
         Assert.Equal(0.02f, preset.InnerSpacing);
         Assert.Empty(preset.Textboxes);
@@ -264,7 +264,7 @@ public class CreditsAssetTests
     public void Read_EncryptedCredits_DecryptsBody()
     {
         byte[] body = SampleBody();
-        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)CreditsState.Encrypted, 148.5f, 24 + (uint)body.Length), .. Encrypt(body)];
+        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)State.Encrypted, 148.5f, 24 + (uint)body.Length), .. Encrypt(body)];
 
         var asset = (CreditsAsset)Read(data);
 
@@ -278,7 +278,7 @@ public class CreditsAssetTests
         // The header's own total_size field is deliberately wrong here - it should be discarded and
         // re-derived from the actual encoded size of the header plus every section once fully read.
         byte[] body = SampleBody();
-        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)CreditsState.NotEncrypted, 10f, totalSize: 999), .. body];
+        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)State.NotEncrypted, 10f, totalSize: 999), .. body];
 
         var asset = (CreditsAsset)Read(data);
 
@@ -286,9 +286,9 @@ public class CreditsAssetTests
     }
 
     [Theory]
-    [InlineData(true, CreditsState.Encrypted)]
-    [InlineData(false, CreditsState.NotEncrypted)]
-    public void IsEncrypted_Set_UpdatesPhysicalState(bool isEncrypted, CreditsState expectedState)
+    [InlineData(true, State.Encrypted)]
+    [InlineData(false, State.NotEncrypted)]
+    public void IsEncrypted_Set_UpdatesPhysicalState(bool isEncrypted, State expectedState)
     {
         var asset = new CreditsAsset
         {
@@ -302,7 +302,7 @@ public class CreditsAssetTests
     public void TotalSize_DisagreeingWithComputedSize_IsStoredIndependently()
     {
         var asset = new CreditsAsset();
-        asset.Sections.Add(new CreditsSection());
+        asset.Sections.Add(new Section());
 
         asset.Physical.TotalSize = 999;
 
@@ -314,10 +314,10 @@ public class CreditsAssetTests
     public void TotalSize_MatchingComputedSize_DerivesFromSections()
     {
         var asset = new CreditsAsset();
-        asset.Sections.Add(new CreditsSection());
+        asset.Sections.Add(new Section());
 
         asset.Physical.TotalSize = 24 + 56;
-        asset.Sections.Add(new CreditsSection());
+        asset.Sections.Add(new Section());
 
         Assert.Equal((uint)(24 + 56 * 2), asset.Physical.TotalSize);
     }
@@ -345,7 +345,7 @@ public class CreditsAssetTests
         // neither section could account for would still declare them as part of its own length.
         byte[] body = SampleBody();
         byte[] tail = [0xDE, 0xAD, 0xBE, 0xEF];
-        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)CreditsState.NotEncrypted, 148.5f, 24 + (uint)body.Length + (uint)tail.Length), .. body, .. tail];
+        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)State.NotEncrypted, 148.5f, 24 + (uint)body.Length + (uint)tail.Length), .. body, .. tail];
 
         Assert.Equal(data, Write(Read(data)));
     }
@@ -354,7 +354,7 @@ public class CreditsAssetTests
     public void Read_ThenWrite_EncryptedCredits_ReproducesInputBytes()
     {
         byte[] body = SampleBody();
-        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)CreditsState.Encrypted, 148.5f, 24 + (uint)body.Length), .. Encrypt(body)];
+        byte[] data = [.. HeaderBytes(0xBEEEEEEF, 512, 0, (uint)State.Encrypted, 148.5f, 24 + (uint)body.Length), .. Encrypt(body)];
 
         Assert.Equal(data, Write(Read(data)));
     }

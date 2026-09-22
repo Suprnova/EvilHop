@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType: 0x4A), Physical.ISoundGroupAsset
 {
     /// <summary>This group's entries, one of which is chosen to play at a time.</summary>
-    public Collection<SoundGroupEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <summary>The maximum number of plays permitted for this group, passed directly to the sound engine.</summary>
     public sbyte MaxPlays { get; set; }
@@ -94,7 +94,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         asset.Physical.GroupNamePointer = reader.ReadUInt32();
 
         for (int i = 0; i < entryCount; i++)
-            asset.Entries.Add(SoundGroupEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile));
@@ -121,7 +121,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         writer.Write(asset.Physical.GroupNamePointer);
 
         foreach (var entry in asset.Entries)
-            SoundGroupEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         foreach (var link in asset.Links)
             Link.Write(link, writer, profile);
@@ -132,7 +132,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
     /// One <see cref="SoundGroupAsset"/> entry - <see cref="SoundId"/>, played at <see cref="Volume"/>
     /// with a random pitch offset between <see cref="MinPitchMultiplier"/> and <see cref="MaxPitchMultiplier"/>.
     /// </summary>
-    public sealed class SoundGroupEntry
+    public sealed class Entry
     {
         /// <summary>The <see cref="AssetType.Sound"/> or <see cref="AssetType.StreamingSound"/> this entry plays.</summary>
         public AssetId SoundId { get; set; }
@@ -146,7 +146,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
         /// <summary>The maximum pitch offset applied when this entry plays, chosen at random down to <see cref="MinPitchMultiplier"/>.</summary>
         public float MaxPitchMultiplier { get; set; }
 
-        internal static SoundGroupEntry Read(EndianReader reader, FormatProfile _) => new()
+        internal static Entry Read(EndianReader reader, FormatProfile _) => new()
         {
             SoundId = reader.ReadAssetId(),
             Volume = reader.ReadSingle(),
@@ -154,7 +154,7 @@ public sealed class SoundGroupAsset() : BaseAsset(AssetType.SoundGroup, baseType
             MaxPitchMultiplier = reader.ReadSingle(),
         };
 
-        internal static void Write(SoundGroupEntry value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Entry value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.SoundId);
             writer.Write(value.Volume);

@@ -53,12 +53,12 @@ public class ParticleEmitterPropertyAssetTests
     private static byte[] I32(int value) => [.. BitConverter.GetBytes(value).Reverse()];
     private static byte[] Vec3(Vector3 v) => [.. F32(v.X), .. F32(v.Y), .. F32(v.Z)];
 
-    private static byte[] Interp(float start, float end, ParticleInterpolationMode mode, float freq, float oofreq) =>
+    private static byte[] Interp(float start, float end, InterpolationMode mode, float freq, float oofreq) =>
     [
         .. F32(start), .. F32(end), .. U32((uint)mode), .. F32(freq), .. F32(oofreq),
     ];
 
-    private static readonly byte[] ConstAOne = Interp(1f, 1f, ParticleInterpolationMode.ConstA, 0f, 0f);
+    private static readonly byte[] ConstAOne = Interp(1f, 1f, InterpolationMode.ConstA, 0f, 0f);
 
     private static byte[] LinkBytes(short sourceEvent, short destinationEvent, uint destinationAssetId) =>
     [
@@ -87,10 +87,10 @@ public class ParticleEmitterPropertyAssetTests
 
     private static byte[] SampleData(byte linkCount = 0) => Data(
         linkCount, parSysId: 0xAABBCCDD,
-        rate: Interp(5f, 5f, ParticleInterpolationMode.ConstA, 0f, 0f),
-        life: Interp(1f, 2f, ParticleInterpolationMode.Linear, 0.5f, 0f),
-        sizeBirth: Interp(0.5f, 0.5f, ParticleInterpolationMode.ConstA, 0f, 0f),
-        sizeDeath: Interp(1f, 1f, ParticleInterpolationMode.ConstA, 0f, 0f),
+        rate: Interp(5f, 5f, InterpolationMode.ConstA, 0f, 0f),
+        life: Interp(1f, 2f, InterpolationMode.Linear, 0.5f, 0f),
+        sizeBirth: Interp(0.5f, 0.5f, InterpolationMode.ConstA, 0f, 0f),
+        sizeDeath: Interp(1f, 1f, InterpolationMode.ConstA, 0f, 0f),
         colorBirth: DefaultColor(), colorDeath: DefaultColor(),
         velScale: ConstAOne, velAngle: ConstAOne,
         vel: Vector3.Zero, emitLimit: -1, emitLimitResetTime: 0f);
@@ -108,18 +108,18 @@ public class ParticleEmitterPropertyAssetTests
 
         Assert.Equal(5f, asset.Rate.Start);
         Assert.Equal(5f, asset.Rate.End);
-        Assert.Equal(ParticleInterpolationMode.ConstA, asset.Rate.Mode);
+        Assert.Equal(InterpolationMode.ConstA, asset.Rate.Mode);
 
         Assert.Equal(1f, asset.Life.Start);
         Assert.Equal(2f, asset.Life.End);
-        Assert.Equal(ParticleInterpolationMode.Linear, asset.Life.Mode);
+        Assert.Equal(InterpolationMode.Linear, asset.Life.Mode);
         Assert.Equal(0.5f, asset.Life.Frequency);
 
         Assert.Equal(0.5f, asset.SizeBirth.Start);
         Assert.Equal(1f, asset.SizeDeath.Start);
 
         Assert.Equal(1f, asset.ColorBirth.Red.Start);
-        Assert.Equal(ParticleInterpolationMode.ConstA, asset.ColorBirth.Alpha.Mode);
+        Assert.Equal(InterpolationMode.ConstA, asset.ColorBirth.Alpha.Mode);
         Assert.Equal(1f, asset.ColorDeath.Blue.End);
 
         Assert.Equal(Vector3.Zero, asset.Velocity);
@@ -163,14 +163,14 @@ public class ParticleEmitterPropertyAssetTests
     }
 
     [Theory]
-    [InlineData(ParticleInterpolationMode.ConstA)]
-    [InlineData(ParticleInterpolationMode.ConstB)]
-    [InlineData(ParticleInterpolationMode.Random)]
-    [InlineData(ParticleInterpolationMode.Linear)]
-    [InlineData(ParticleInterpolationMode.Sine)]
-    [InlineData(ParticleInterpolationMode.Cosine)]
-    [InlineData(ParticleInterpolationMode.Step)]
-    public void Read_ThenWrite_ParticleEmitterPropertyWithEachInterpolationMode_ReproducesInputBytes(ParticleInterpolationMode mode)
+    [InlineData(InterpolationMode.ConstA)]
+    [InlineData(InterpolationMode.ConstB)]
+    [InlineData(InterpolationMode.Random)]
+    [InlineData(InterpolationMode.Linear)]
+    [InlineData(InterpolationMode.Sine)]
+    [InlineData(InterpolationMode.Cosine)]
+    [InlineData(InterpolationMode.Step)]
+    public void Read_ThenWrite_ParticleEmitterPropertyWithEachInterpolationMode_ReproducesInputBytes(InterpolationMode mode)
     {
         byte[] rate = Interp(1f, 2f, mode, 0.25f, 0.75f);
         byte[] data = Data(0, 0, rate, ConstAOne, ConstAOne, ConstAOne, DefaultColor(), DefaultColor(),

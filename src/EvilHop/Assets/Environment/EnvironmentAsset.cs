@@ -43,7 +43,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
     /// <summary>
     /// Which weather effect plays over this environment.
     /// </summary>
-    public ClimateFlags Climate { get; set; }
+    public Weather Climate { get; set; }
 
     /// <summary>
     /// The low end of <see cref="Climate"/>'s effect strength.
@@ -129,7 +129,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
 
         if (profile.EnvironmentHasExtendedFields)
         {
-            asset.Climate = (ClimateFlags)reader.ReadUInt32();
+            asset.Climate = (Weather)reader.ReadUInt32();
             asset.ClimateStrengthMin = reader.ReadSingle();
             asset.ClimateStrengthMax = reader.ReadSingle();
             asset.BspLightKitId = reader.ReadAssetId();
@@ -204,7 +204,7 @@ public sealed class EnvironmentAsset() : BaseAsset(AssetType.Environment, baseTy
     /// Flags controlling weather and environmental effects such as rain, snow, or wind.
     /// </summary>
     [Flags]
-    public enum ClimateFlags : uint
+    public enum Weather : uint
     {
         /// <summary>
         /// No weather effect plays.

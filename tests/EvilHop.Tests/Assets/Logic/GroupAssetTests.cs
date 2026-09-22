@@ -81,7 +81,7 @@ public class GroupAssetTests
 
         var asset = Read(data);
 
-        Assert.Equal(GroupEventMode.Random, asset.GroupFlags);
+        Assert.Equal(EventMode.Random, asset.GroupFlags);
         Assert.Equal(3, asset.Items.Count);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.Items[0]);
         Assert.Equal(new AssetId(0x55667788), asset.Items[2]);

@@ -244,7 +244,7 @@ public class PickupTypesAssetTests
         var asset = (PickupTypesAsset)Read(data);
         Assert.Equal(1, asset.Physical.RowCount);
 
-        asset.Entries.Add(new PickupTypesAsset.PickupTypeEntry());
+        asset.Entries.Add(new PickupTypesAsset.Entry());
         Assert.Equal(2, asset.Physical.RowCount);
     }
 
@@ -252,7 +252,7 @@ public class PickupTypesAssetTests
     public void RowCount_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new PickupTypesAsset();
-        asset.Entries.Add(new PickupTypesAsset.PickupTypeEntry());
+        asset.Entries.Add(new PickupTypesAsset.Entry());
 
         asset.Physical.RowCount = 5;
 
@@ -264,11 +264,11 @@ public class PickupTypesAssetTests
     public void RowCount_MatchingEntries_DerivesFromEntries()
     {
         var asset = new PickupTypesAsset();
-        asset.Entries.Add(new PickupTypesAsset.PickupTypeEntry());
-        asset.Entries.Add(new PickupTypesAsset.PickupTypeEntry());
+        asset.Entries.Add(new PickupTypesAsset.Entry());
+        asset.Entries.Add(new PickupTypesAsset.Entry());
 
         asset.Physical.RowCount = 2;
-        asset.Entries.Add(new PickupTypesAsset.PickupTypeEntry());
+        asset.Entries.Add(new PickupTypesAsset.Entry());
 
         Assert.Equal(3, asset.Physical.RowCount);
     }

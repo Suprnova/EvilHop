@@ -54,8 +54,8 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     /// </summary>
     public bool Positional
     {
-        get => Physical.SFXFlags.HasFlag(SFXFlags.Positional);
-        set => SetFlag(SFXFlags.Positional, value);
+        get => Physical.SFXFlags.HasFlag(Behavior.Positional);
+        set => SetFlag(Behavior.Positional, value);
     }
 
     /// <summary>
@@ -64,25 +64,25 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     /// </summary>
     public bool PlayFromEntity
     {
-        get => Physical.SFXFlags.HasFlag(SFXFlags.PlayFromEntity);
-        set => SetFlag(SFXFlags.PlayFromEntity, value);
+        get => Physical.SFXFlags.HasFlag(Behavior.PlayFromEntity);
+        set => SetFlag(Behavior.PlayFromEntity, value);
     }
 
     /// <summary>Whether this sound loops.</summary>
     public bool Loop
     {
-        get => Physical.SFXFlags.HasFlag(SFXFlags.Loop);
-        set => SetFlag(SFXFlags.Loop, value);
+        get => Physical.SFXFlags.HasFlag(Behavior.Loop);
+        set => SetFlag(Behavior.Loop, value);
     }
 
-    private void SetFlag(SFXFlags bit, bool value) =>
+    private void SetFlag(Behavior bit, bool value) =>
         Physical.SFXFlags = value ? Physical.SFXFlags | bit : Physical.SFXFlags & ~bit;
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISoundFXAsset Physical => this;
 
-    private SFXFlags _sfxFlags;
-    SFXFlags Physical.ISoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
+    private Behavior _sfxFlags;
+    Behavior Physical.ISoundFXAsset.SFXFlags { get => _sfxFlags; set => _sfxFlags = value; }
 
     private byte _loopCount;
     byte Physical.ISoundFXAsset.LoopCount { get => _loopCount; set => _loopCount = value; }
@@ -102,7 +102,7 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Physical.SFXFlags = (SFXFlags)reader.ReadUInt16();
+        asset.Physical.SFXFlags = (Behavior)reader.ReadUInt16();
         asset.Frequency = reader.ReadUInt16();
         asset.FrequencyMultiplier = reader.ReadSingle();
         asset.SoundId = reader.ReadAssetId();
@@ -148,7 +148,7 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     /// Flags controlling playback and spatialization for a <see cref="SoundFXAsset"/>.
     /// </summary>
     [Flags]
-    public enum SFXFlags : ushort
+    public enum Behavior : ushort
     {
         /// <summary>No flags are set.</summary>
         None = 0,
@@ -179,12 +179,12 @@ public static partial class Physical
     {
         /// <summary>The sound's raw flags word, read directly from disk.</summary>
         /// <remarks>
-        /// <see cref="SoundFXAsset.SFXFlags.Positional"/>, <see cref="SoundFXAsset.SFXFlags.Loop"/>, and
-        /// <see cref="SoundFXAsset.SFXFlags.PlayFromEntity"/> are exposed logically as
+        /// <see cref="SoundFXAsset.Behavior.Positional"/>, <see cref="SoundFXAsset.Behavior.Loop"/>, and
+        /// <see cref="SoundFXAsset.Behavior.PlayFromEntity"/> are exposed logically as
         /// <see cref="SoundFXAsset.Positional"/>, <see cref="SoundFXAsset.Loop"/>, and
         /// <see cref="SoundFXAsset.PlayFromEntity"/> respectively.
         /// </remarks>
-        SoundFXAsset.SFXFlags SFXFlags { get; set; }
+        SoundFXAsset.Behavior SFXFlags { get; set; }
 
         /// <summary>Unknown.</summary>
         byte LoopCount { get; set; }

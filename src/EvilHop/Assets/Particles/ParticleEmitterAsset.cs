@@ -15,15 +15,15 @@ namespace EvilHop.Assets;
 public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.ParticleEmitter, baseType: 0x26)
 {
     /// <summary>This emitter's flags.</summary>
-    public ParticleEmitterFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>The shape particles are emitted from or along.</summary>
-    public ParticleEmitterKind Kind { get; set; }
+    public ShapeKind Kind { get; set; }
 
     /// <summary>
     /// <see cref="Kind"/>-specific data describing the emission shape.
     /// </summary>
-    public ParticleEmitterShape Shape { get; set; } = new ParticleEmitterShape.PointEmitterShape();
+    public ParticleEmitterShape Shape { get; set; } = new ParticleEmitterShape.Point();
 
     /// <summary>
     /// The <see cref="AssetType.ParticleEmitterProperty"/> asset defining this emitter's spawn rate,
@@ -34,9 +34,9 @@ public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.Particl
 
     /// <summary>
     /// The object this emitter is attached to and emits from - typically an <see cref="AssetType.Marker"/>
-    /// when <see cref="Kind"/> is <see cref="ParticleEmitterKind.Point"/>, or another object asset when
-    /// <see cref="Kind"/> is <see cref="ParticleEmitterKind.EntityBone"/> or
-    /// <see cref="ParticleEmitterKind.EntityBound"/>.
+    /// when <see cref="Kind"/> is <see cref="ShapeKind.Point"/>, or another object asset when
+    /// <see cref="Kind"/> is <see cref="ShapeKind.EntityBone"/> or
+    /// <see cref="ShapeKind.EntityBound"/>.
     /// </summary>
     public AssetId AttachToId { get; set; }
 
@@ -60,7 +60,7 @@ public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.Particl
     /// separate <see cref="AssetType.ParticleEmitterProperty"/> asset. Only meaningful in
     /// <see cref="GameVersion.N100F"/>; every other game leaves this at its default.
     /// </summary>
-    public ParticleEmitterInlineProperties InlineProperties { get; set; } = new();
+    public Properties InlineProperties { get; set; } = new();
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.ParticleEmitter"/> is known to be read by.
@@ -79,7 +79,7 @@ public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.Particl
     /// shape a <see cref="AssetType.ParticleEmitterProperty"/> asset would otherwise hold. Only read or
     /// written in <see cref="GameVersion.N100F"/>.
     /// </summary>
-    public sealed class ParticleEmitterInlineProperties
+    public sealed class Properties
     {
         /// <summary>The number of particles spawned per emission.</summary>
         public byte Count { get; set; }
@@ -122,7 +122,7 @@ public sealed partial class ParticleEmitterAsset() : BaseAsset(AssetType.Particl
     /// Flags controlling particle emission timing, orientation, and simulation behavior.
     /// </summary>
     [Flags]
-    public enum ParticleEmitterFlags : byte
+    public enum Behavior : byte
     {
         /// <summary>No flags are set.</summary>
         None = 0,

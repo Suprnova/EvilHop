@@ -138,7 +138,7 @@ public class FlyAssetTests
     public void Write_FlyAsset_UnderROTU_StillWritesItsOwnFields()
     {
         var asset = new FlyAsset { Type = AssetType.Fly };
-        asset.Keys.Add(new FlyKey
+        asset.Keys.Add(new Key
         {
             Frame = 1,
             Right = new Vector3(1, 0, 0),

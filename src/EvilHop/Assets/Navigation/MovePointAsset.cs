@@ -26,10 +26,10 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
     public ushort Weight { get; set; }
 
     /// <summary>This move point's kind.</summary>
-    public MovePointKind Kind { get; set; }
+    public PathKind Kind { get; set; }
 
     /// <summary>This move point's role, if any, in a bezier curve.</summary>
-    public MovePointBezierRole BezierRole { get; set; }
+    public BezierRole Role { get; set; }
 
     /// <summary>
     /// How long, in seconds, an occupant waits at this move point before continuing on. A value of 0
@@ -39,14 +39,14 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
 
     /// <summary>
     /// The distance an occupant will circle around this move point at, if this is a
-    /// <see cref="MovePointKind.Zone"/>. A value of -1 disables circling. Not present in
+    /// <see cref="PathKind.Zone"/>. A value of -1 disables circling. Not present in
     /// <see cref="GameVersion.N100F"/>.
     /// </summary>
     public float ZoneRadius { get; set; }
 
     /// <summary>
     /// The radius within which an occupant can detect the player from this move point, if this is an
-    /// <see cref="MovePointKind.Arena"/>, much like a sphere <see cref="AssetType.Trigger"/>. A value
+    /// <see cref="PathKind.Arena"/>, much like a sphere <see cref="AssetType.Trigger"/>. A value
     /// of -1 disables detection. Not present in <see cref="GameVersion.N100F"/>.
     /// </summary>
     public float ArenaRadius { get; set; }
@@ -88,8 +88,8 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
 
         asset.Position = reader.ReadVector3();
         asset.Weight = reader.ReadUInt16();
-        asset.Kind = (MovePointKind)reader.ReadByte();
-        asset.BezierRole = (MovePointBezierRole)reader.ReadByte();
+        asset.Kind = (PathKind)reader.ReadByte();
+        asset.Role = (BezierRole)reader.ReadByte();
         asset.Physical.FlagsProps = reader.ReadByte();
         reader.ReadByte(); // pad, always zero
         int numPoints = reader.ReadUInt16();
@@ -119,7 +119,7 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
         writer.Write(asset.Position);
         writer.Write(asset.Weight);
         writer.Write((byte)asset.Kind);
-        writer.Write((byte)asset.BezierRole);
+        writer.Write((byte)asset.Role);
         writer.Write(asset.Physical.FlagsProps);
         writer.Write((byte)0); // pad
         writer.Write(asset.Physical.NumPoints);
@@ -142,7 +142,7 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
     /// <summary>
     /// Defines whether an occupant moves along or patrols within the area of a <see cref="MovePointAsset"/>.
     /// </summary>
-    public enum MovePointKind : byte
+    public enum PathKind : byte
     {
         /// <summary>
         /// This move point does not define the area an occupant moves within; instead,
@@ -163,7 +163,7 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
     /// <summary>
     /// Defines how a <see cref="MovePointAsset"/> participates in a bezier curve path.
     /// </summary>
-    public enum MovePointBezierRole : byte
+    public enum BezierRole : byte
     {
         /// <summary>This move point is not part of a bezier curve.</summary>
         None = 0,

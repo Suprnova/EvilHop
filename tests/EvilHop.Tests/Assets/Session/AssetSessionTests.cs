@@ -34,14 +34,14 @@ public class AssetSessionTests
     /// (e.g. a <see cref="LayerHeader"/>'s <see cref="LayerHeader.AssetIds"/>) is still reflected in
     /// the recomputed data start.
     /// </summary>
-    private static Archive LoadRepaired(string game, Serializer serializer, Action<EvilHop.Blocks.Dictionary>? mutate = null)
+    private static Archive LoadRepaired(string game, Serializer serializer, Action<Dictionary>? mutate = null)
     {
         byte[] bytes = File.ReadAllBytes(
             Path.Combine(AppContext.BaseDirectory, "TestData", game, "minimal.hip"));
 
         var archive = Archive.Load(new MemoryStream(bytes), serializer);
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         mutate?.Invoke(dictionary);
 
         uint dataStart = (uint)(Save(archive).Length - streamData.Data.Length);
@@ -138,7 +138,7 @@ public class AssetSessionTests
 
         using (archive.OpenAssets()) { }
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         Assert.Equal(wrong, dictionary.AssetTable.Headers.Single().Debug.Checksum);
     }
 
@@ -155,7 +155,7 @@ public class AssetSessionTests
         using (var session = archive.OpenAssets())
             session.Layers.Single().Assets.Single().Physical.Checksum = deliberate;
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         Assert.Equal(deliberate, dictionary.AssetTable.Headers.Single().Debug.Checksum);
     }
 
@@ -177,7 +177,7 @@ public class AssetSessionTests
             asset.LoadFrom(new MemoryStream(replacement));
         }
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         Assert.Equal(Crc32Mpeg2.Compute(replacement), dictionary.AssetTable.Headers.Single().Debug.Checksum);
     }
 
@@ -195,7 +195,7 @@ public class AssetSessionTests
         using (var session = archive.OpenAssets())
             ((PayloadAsset)session.Layers.Single().Assets.Single()).LoadFrom(new MemoryStream([1, 2, 3, 4]));
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         Assert.Equal(wrong, dictionary.AssetTable.Headers.Single().Debug.Checksum);
     }
 
@@ -214,7 +214,7 @@ public class AssetSessionTests
     public void OpenAssets_AssetCarriesHeaderSourcedFields()
     {
         var archive = LoadRepaired("n100f");
-        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
         uint expectedId = header.Id;
         string expectedName = header.Debug.Name;
 
@@ -229,7 +229,7 @@ public class AssetSessionTests
     public void OpenAssets_DetachesAssetAndLayerTables()
     {
         var archive = LoadRepaired("n100f");
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
 
         using var session = archive.OpenAssets();
 
@@ -251,7 +251,7 @@ public class AssetSessionTests
     public void OpenAssets_LocksCapturedAssetHeaderReference()
     {
         var archive = LoadRepaired("n100f");
-        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
 
         using var session = archive.OpenAssets();
 
@@ -262,7 +262,7 @@ public class AssetSessionTests
     public void OpenAssets_LocksCapturedAssetDebugReference()
     {
         var archive = LoadRepaired("n100f");
-        var debug = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single().Debug;
+        var debug = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single().Debug;
 
         using var session = archive.OpenAssets();
 
@@ -284,7 +284,7 @@ public class AssetSessionTests
     public void OpenAssets_LocksDictionaryAgainstReplacingAssetTable()
     {
         var archive = LoadRepaired("n100f");
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var replacement = archive.Serializer.CreateBlock<AssetTable>();
 
         using var session = archive.OpenAssets();
@@ -320,7 +320,7 @@ public class AssetSessionTests
     public void Commit_ReattachesAssetAndLayerTables()
     {
         var archive = LoadRepaired("n100f");
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var session = archive.OpenAssets();
 
         session.Commit();
@@ -332,7 +332,7 @@ public class AssetSessionTests
     public void Commit_LeavesDictionaryAndAssetStreamSettableAgain()
     {
         var archive = LoadRepaired("n100f");
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var stream = archive.Roots.OfType<AssetStream>().Single();
         var session = archive.OpenAssets();
 
@@ -350,7 +350,7 @@ public class AssetSessionTests
         byte[] canonical = Canonical("n100f");
         var archive = Archive.Load(new MemoryStream(canonical), new N100FSerializer());
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
-        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
 
         Assert.Equal(canonical.Length - streamData.Data.Length, (int)header.Offset);
     }
@@ -437,7 +437,7 @@ public class AssetSessionTests
     public void Commit_UpdatesPackageCounts_ForSingleAssetArchive()
     {
         var archive = LoadRepaired("n100f");
-        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
         uint expectedSize = header.Size;
         var counts = archive.Roots.OfType<Package>().Single().Counts;
 
@@ -500,7 +500,7 @@ public class AssetSessionTests
 
         using (archive.OpenAssets()) { }
 
-        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var headers = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.ToList();
         var firstLayerAsset = headers[0];
         var secondLayerAsset = headers[1];
         uint expectedNextOffset = firstLayerAsset.Offset + firstLayerAsset.Size;
@@ -541,7 +541,7 @@ public class AssetSessionTests
     {
         using (archive.OpenAssets()) { }
 
-        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var headers = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.ToList();
         uint expectedOffset = headers[0].Offset + headers[0].Size;
         expectedOffset += (alignment - expectedOffset % alignment) % alignment;
 
@@ -563,7 +563,7 @@ public class AssetSessionTests
 
         var archive = Archive.Load(new MemoryStream(bytes), serializer);
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
 
         var originalHeader = dictionary.AssetTable.Headers.Single();
         var originalLayer = dictionary.LayerTable.Headers.Single();
@@ -602,7 +602,7 @@ public class AssetSessionTests
 
         using (archive.OpenAssets()) { }
 
-        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var headers = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.ToList();
         Assert.Equal(originalOffset, headers[1].Offset);
     }
 
@@ -629,7 +629,7 @@ public class AssetSessionTests
             session.Layers.Single().Add(added);
         }
 
-        var headers = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.ToList();
+        var headers = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.ToList();
         var firstHeader = headers.Single(h => h.Id == originalId);
         var secondHeader = headers.Single(h => h.Id == originalId + 1);
         uint expectedOffset = firstHeader.Offset + firstHeader.Size;
@@ -647,7 +647,7 @@ public class AssetSessionTests
     public void OpenAssets_ZeroSizeAsset_ProducesEmptyAsset()
     {
         var archive = ArchiveWithZeroSizeSecondAsset(originalOffset: 0);
-        var expectedType = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.First().Type;
+        var expectedType = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.First().Type;
 
         using var session = archive.OpenAssets();
 
@@ -736,7 +736,7 @@ public class AssetSessionTests
 
         using (archive.OpenAssets()) { }
 
-        var firstLayerAsset = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.First();
+        var firstLayerAsset = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.First();
 
         Assert.Equal(2u, counts.AssetCount);
         Assert.Equal(2u, counts.LayerCount);
@@ -787,7 +787,7 @@ public class AssetSessionTests
         using (var session = archive.OpenAssets())
             ((PayloadAsset)session.Layers[0].Assets[0]).Data = new byte[64];
 
-        var header = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single();
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
 
         Assert.Equal(64u, header.Size);
     }
@@ -809,7 +809,7 @@ public class AssetSessionTests
     public void Dispose_WithoutExplicitCommit_StillCommits()
     {
         var archive = LoadRepaired("n100f");
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
 
         using (archive.OpenAssets()) { }
 
@@ -846,7 +846,7 @@ public class AssetSessionTests
         using (var session = archive.OpenAssets())
             session.CreateLayer(LayerType.Cutscene);
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         Assert.Equal(LayerType.Cutscene, dictionary.LayerTable.Headers.Last().Type);
     }
 
@@ -867,7 +867,7 @@ public class AssetSessionTests
             session.CreateLayer(LayerType.Default).Add(surface);
         }
 
-        var dictionary = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single();
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var header = dictionary.AssetTable.Headers.Single(h => h.Debug.Name == "probe_surface");
         Assert.Equal(AssetType.Surface, header.Type);
     }

@@ -24,8 +24,8 @@ public sealed partial class UIFontAsset
         asset.BottomRightUV = reader.ReadVector2();
         asset.BottomLeftUV = reader.ReadVector2();
 
-        asset.FontFlags = (UIFontFlags)reader.ReadUInt16();
-        asset.Mode = (UIFontMode)reader.ReadByte();
+        asset.FontFlags = (Behavior)reader.ReadUInt16();
+        asset.Mode = (FormattingMode)reader.ReadByte();
         asset.FontId = reader.ReadByte();
         asset.TextId = reader.ReadAssetId();
         asset.BackdropColor = reader.ReadRgba32();

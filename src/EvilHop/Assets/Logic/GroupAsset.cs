@@ -20,7 +20,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), P
     public Collection<AssetId> Items { get; } = [];
 
     /// <summary>Which of <see cref="Items"/> a received event is forwarded to.</summary>
-    public GroupEventMode GroupFlags { get; set; }
+    public EventMode GroupFlags { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IGroupAsset Physical => this;
@@ -52,7 +52,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), P
         BaseAssetPrefix.Read(asset, reader);
 
         ushort itemCount = reader.ReadUInt16();
-        asset.GroupFlags = (GroupEventMode)reader.ReadInt16();
+        asset.GroupFlags = (EventMode)reader.ReadInt16();
 
         for (int i = 0; i < itemCount; i++)
             asset.Items.Add(reader.ReadAssetId());
@@ -81,7 +81,7 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), P
     }
 
     /// <summary>Which of a <see cref="GroupAsset"/>'s <see cref="Items"/> a received event is forwarded to.</summary>
-    public enum GroupEventMode : short
+    public enum EventMode : short
     {
         /// <summary>The event is forwarded to every item.</summary>
         All = 0,

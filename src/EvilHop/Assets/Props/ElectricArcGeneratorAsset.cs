@@ -28,7 +28,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
     /// <summary>
     /// Behavior flags for this <see cref="ElectricArcGeneratorAsset"/>.
     /// </summary>
-    public ElectricArcGeneratorFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>
     /// How long the arc stays active, in seconds, once turned on.
@@ -64,7 +64,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
 
         asset.SourceOffset = reader.ReadVector3();
         asset.DamageType = reader.ReadByte();
-        asset.Flags = (ElectricArcGeneratorFlags)reader.ReadByte();
+        asset.Flags = (Behavior)reader.ReadByte();
         reader.ReadInt16(); // 2 bytes of padding, always zero
         asset.ActiveTime = reader.ReadSingle();
         asset.OnAnimationId = reader.ReadAssetId();
@@ -97,7 +97,7 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
     /// Flags controlling the activation, visual style, and damage behavior of an electric arc generator.
     /// </summary>
     [Flags]
-    public enum ElectricArcGeneratorFlags : byte
+    public enum Behavior : byte
     {
         /// <summary>
         /// No flags are set.

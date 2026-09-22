@@ -15,10 +15,10 @@ public abstract partial class EntityMotion : Motion
     /// <summary>
     /// The type this motion stores in its Motion block.
     /// </summary>
-    private protected abstract MotionType Type { get; }
+    private protected abstract Kind Type { get; }
 
     /// <remarks>
-    /// Every <see cref="MotionType"/> but <see cref="MotionType.None"/> shares its value with the
+    /// Every <see cref="Kind"/> but <see cref="Kind.None"/> shares its value with the
     /// <see cref="Assets.PlatformType"/> it drives.
     /// </remarks>
     internal sealed override PlatformType PlatformType => (PlatformType)Type;
@@ -31,26 +31,26 @@ public abstract partial class EntityMotion : Motion
     /// <summary>
     /// Reads one Motion block.
     /// </summary>
-    /// <exception cref="InvalidDataException">The block's type is <see cref="MotionType.None"/> or unknown.</exception>
+    /// <exception cref="InvalidDataException">The block's type is <see cref="Kind.None"/> or unknown.</exception>
     internal static EntityMotion Read(EndianReader reader, FormatProfile profile)
     {
         using var block = ReadBlock(reader, BlockSize(profile.Game));
-        var type = (MotionType)block.ReadByte();
+        var type = (Kind)block.ReadByte();
         byte useBanking = block.ReadByte();
-        var flags = (MotionFlags)block.ReadUInt16();
+        var flags = (Behavior)block.ReadUInt16();
 
         EntityMotion motion = type switch
         {
-            MotionType.ExtendRetract => ExtendRetractMotion.Read(block, profile),
-            MotionType.Orbit => OrbitMotion.Read(block, profile),
-            MotionType.Spline => SplineMotion.Read(block, profile),
-            MotionType.MovePoint => MovePointMotion.Read(block, profile),
-            MotionType.Mechanism => MechanismMotion.Read(block, profile),
-            MotionType.Pendulum => PendulumMotion.Read(block, profile),
+            Kind.ExtendRetract => ExtendRetract.Read(block, profile),
+            Kind.Orbit => Orbit.Read(block, profile),
+            Kind.Spline => Spline.Read(block, profile),
+            Kind.MovePoint => MovePoint.Read(block, profile),
+            Kind.Mechanism => Mechanism.Read(block, profile),
+            Kind.Pendulum => Pendulum.Read(block, profile),
             _ => throw new InvalidDataException($"Motion type 0x{(byte)type:X2} has no {nameof(EntityMotion)}."),
         };
 
-        if (motion is MovePointMotion movePoint)
+        if (motion is MovePoint movePoint)
             movePoint.UseBanking = useBanking == 1;
         motion.Flags = flags;
         return motion;
@@ -63,42 +63,42 @@ public abstract partial class EntityMotion : Motion
         WriteBlock(writer, BlockSize(profile.Game), block =>
         {
             block.Write((byte)value.Type);
-            block.Write((byte)(value is MovePointMotion { UseBanking: true } ? 1 : 0));
+            block.Write((byte)(value is MovePoint { UseBanking: true } ? 1 : 0));
             block.Write((ushort)value.Flags);
             switch (value)
             {
-                case ExtendRetractMotion m: ExtendRetractMotion.Write(m, block, profile); break;
-                case OrbitMotion m: OrbitMotion.Write(m, block, profile); break;
-                case SplineMotion m: SplineMotion.Write(m, block, profile); break;
-                case MovePointMotion m: MovePointMotion.Write(m, block, profile); break;
-                case MechanismMotion m: MechanismMotion.Write(m, block, profile); break;
-                case PendulumMotion m: PendulumMotion.Write(m, block, profile); break;
+                case ExtendRetract m: ExtendRetract.Write(m, block, profile); break;
+                case Orbit m: Orbit.Write(m, block, profile); break;
+                case Spline m: Spline.Write(m, block, profile); break;
+                case MovePoint m: MovePoint.Write(m, block, profile); break;
+                case Mechanism m: Mechanism.Write(m, block, profile); break;
+                case Pendulum m: Pendulum.Write(m, block, profile); break;
             }
         });
 
     /// <summary>
-    /// Reads a Motion block of type <see cref="MotionType.None"/>, as stored alongside a
+    /// Reads a Motion block of type <see cref="Kind.None"/>, as stored alongside a
     /// <see cref="PlatformMotion"/>, returning the only thing it holds - its flags.
     /// </summary>
-    /// <exception cref="InvalidDataException">The block's type isn't <see cref="MotionType.None"/>.</exception>
-    internal static MotionFlags ReadEmpty(EndianReader reader, FormatProfile profile)
+    /// <exception cref="InvalidDataException">The block's type isn't <see cref="Kind.None"/>.</exception>
+    internal static Behavior ReadEmpty(EndianReader reader, FormatProfile profile)
     {
         using var block = ReadBlock(reader, BlockSize(profile.Game));
-        var type = (MotionType)block.ReadByte();
-        if (type is not MotionType.None)
+        var type = (Kind)block.ReadByte();
+        if (type is not Kind.None)
             throw new InvalidDataException($"Expected an empty Motion block, found motion type 0x{(byte)type:X2}.");
 
         block.ReadByte(); // use_banking, always zero
-        return (MotionFlags)block.ReadUInt16();
+        return (Behavior)block.ReadUInt16();
     }
 
     /// <summary>
-    /// Writes a Motion block of type <see cref="MotionType.None"/> holding only <paramref name="flags"/>.
+    /// Writes a Motion block of type <see cref="Kind.None"/> holding only <paramref name="flags"/>.
     /// </summary>
-    internal static void WriteEmpty(EndianWriter writer, FormatProfile profile, MotionFlags flags) =>
+    internal static void WriteEmpty(EndianWriter writer, FormatProfile profile, Behavior flags) =>
         WriteBlock(writer, BlockSize(profile.Game), block =>
         {
-            block.Write((byte)MotionType.None);
+            block.Write((byte)Kind.None);
             block.Write((byte)0); // use_banking
             block.Write((ushort)flags);
         });
@@ -106,7 +106,7 @@ public abstract partial class EntityMotion : Motion
     /// <summary>
     /// Every type a Motion block can store.
     /// </summary>
-    internal enum MotionType : byte
+    internal enum Kind : byte
     {
         ExtendRetract = 0,
         Orbit = 1,

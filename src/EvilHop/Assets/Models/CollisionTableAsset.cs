@@ -23,7 +23,7 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
     /// <summary>
     /// The table's entries.
     /// </summary>
-    public Collection<CollisionTableEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ICollisionTableAsset Physical => this;
@@ -54,7 +54,7 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
 
         var count = reader.ReadUInt32();
         for (var i = 0; i < count; i++)
-            asset.Entries.Add(CollisionTableEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -65,7 +65,7 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-            CollisionTableEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -74,7 +74,7 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
     /// One <see cref="CollisionTableAsset"/> entry, overriding the collision meshes used against a single
     /// <see cref="AssetType.Model"/>.
     /// </summary>
-    public record struct CollisionTableEntry
+    public record struct Entry
     {
         /// <summary>
         /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
@@ -94,14 +94,14 @@ public sealed class CollisionTableAsset() : Asset(AssetType.CollisionTable), Phy
         /// </summary>
         public AssetId CameraCollisionModelId { get; set; }
 
-        internal static CollisionTableEntry Read(EndianReader reader, FormatProfile _) => new()
+        internal static Entry Read(EndianReader reader, FormatProfile _) => new()
         {
             ModelId = reader.ReadAssetId(),
             CollisionModelId = reader.ReadAssetId(),
             CameraCollisionModelId = reader.ReadAssetId(),
         };
 
-        internal static void Write(CollisionTableEntry value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Entry value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.ModelId);
             writer.Write(value.CollisionModelId);

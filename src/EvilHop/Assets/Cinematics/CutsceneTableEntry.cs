@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 public sealed class CutsceneTableEntry : ICutsceneHeader, Physical.ICutsceneHeader
 {
     /// <inheritdoc cref="CutsceneAsset.Data"/>
-    public Collection<CutsceneAsset.CutsceneDataEntry> Data { get; } = [];
+    public Collection<CutsceneAsset.Entry> Data { get; } = [];
 
     /// <inheritdoc cref="CutsceneAsset.SoundLeft"/>
     public string SoundLeft { get; set; } = string.Empty;
@@ -25,7 +25,7 @@ public sealed class CutsceneTableEntry : ICutsceneHeader, Physical.ICutsceneHead
     public string SoundRight { get; set; } = string.Empty;
 
     /// <inheritdoc cref="CutsceneAsset.AudioTracks"/>
-    public Collection<CutsceneAsset.CutsceneAudioTrack> AudioTracks { get; } = [];
+    public Collection<CutsceneAsset.AudioTrack> AudioTracks { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public Physical.ICutsceneHeader Physical => this;

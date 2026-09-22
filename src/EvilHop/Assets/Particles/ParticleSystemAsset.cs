@@ -28,7 +28,7 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
     public AssetId TextureId { get; set; }
 
     /// <summary>This system's flags.</summary>
-    public ParticleSystemFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>This system's rendering and update priority relative to other particle systems.</summary>
     public byte Priority { get; set; }
@@ -37,7 +37,7 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
     public ushort MaxParticles { get; set; }
 
     /// <summary>How this system's particles are rendered.</summary>
-    public ParticleSystemRenderFunction RenderFunction { get; set; }
+    public RenderingFunction RenderFunction { get; set; }
 
     /// <summary>The source <see cref="RwBlendFunction"/> used when blending particles.</summary>
     public RwBlendFunction SourceBlend { get; set; }
@@ -78,10 +78,10 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
         asset.Physical.SystemType = reader.ReadInt32();
         asset.ParentId = reader.ReadAssetId();
         asset.TextureId = reader.ReadAssetId();
-        asset.Flags = (ParticleSystemFlags)reader.ReadByte();
+        asset.Flags = (Behavior)reader.ReadByte();
         asset.Priority = reader.ReadByte();
         asset.MaxParticles = reader.ReadUInt16();
-        asset.RenderFunction = (ParticleSystemRenderFunction)reader.ReadByte();
+        asset.RenderFunction = (RenderingFunction)reader.ReadByte();
         asset.SourceBlend = (RwBlendFunction)(byte)(reader.ReadByte() + 1);
         asset.DestinationBlend = (RwBlendFunction)(byte)(reader.ReadByte() + 1);
         asset.Physical.CommandCount = reader.ReadByte();
@@ -122,7 +122,7 @@ public sealed partial class ParticleSystemAsset() : BaseAsset(AssetType.Particle
     /// <summary>
     /// Identifies the rendering pipeline function used to draw the particle system.
     /// </summary>
-    public enum ParticleSystemRenderFunction : byte
+    public enum RenderingFunction : byte
     {
         /// <summary>Renders particles as camera-facing sprites.</summary>
         Sprite = 0,

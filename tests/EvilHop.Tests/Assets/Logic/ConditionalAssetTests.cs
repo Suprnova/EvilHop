@@ -92,8 +92,8 @@ public class ConditionalAssetTests
         var asset = (ConditionalAsset)Read(data, BFBBSerializer.DefaultProfile);
 
         Assert.Equal(10u, asset.EvaluationAmount);
-        Assert.Equal(ConditionalVariable.CounterValue, asset.Variable);
-        Assert.Equal(ConditionalOperation.GreaterThan, asset.Operation);
+        Assert.Equal(VariableKind.CounterValue, asset.Variable);
+        Assert.Equal(Operational.GreaterThan, asset.Operation);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.TargetId);
     }
 
@@ -103,8 +103,8 @@ public class ConditionalAssetTests
         var asset = (ConditionalAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
 
         Assert.Equal(10u, asset.EvaluationAmount);
-        Assert.Equal(ConditionalVariable.CounterValue, asset.Variable);
-        Assert.Equal(ConditionalOperation.GreaterThan, asset.Operation);
+        Assert.Equal(VariableKind.CounterValue, asset.Variable);
+        Assert.Equal(Operational.GreaterThan, asset.Operation);
         Assert.Equal(default, asset.TargetId);
     }
 

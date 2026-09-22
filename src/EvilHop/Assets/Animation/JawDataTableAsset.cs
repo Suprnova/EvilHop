@@ -20,7 +20,7 @@ public sealed partial class JawDataTableAsset() : Asset(AssetType.JawDataTable),
     /// <summary>
     /// The table's entries, each holding one sound's jaw data.
     /// </summary>
-    public Collection<JawDataTableEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IJawDataTableAsset Physical => this;
@@ -57,7 +57,7 @@ public sealed partial class JawDataTableAsset() : Asset(AssetType.JawDataTable),
         }
 
         foreach (var soundId in soundIds)
-            asset.Entries.Add(JawDataTableEntry.Read(reader, soundId, profile));
+            asset.Entries.Add(Entry.Read(reader, soundId, profile));
 
         asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -79,7 +79,7 @@ public sealed partial class JawDataTableAsset() : Asset(AssetType.JawDataTable),
             dataStart = Align4(dataStart + dataLength);
         }
 
-        foreach (var entry in asset.Entries) JawDataTableEntry.Write(entry, writer, profile);
+        foreach (var entry in asset.Entries) Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

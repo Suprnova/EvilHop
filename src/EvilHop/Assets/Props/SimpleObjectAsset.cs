@@ -27,11 +27,11 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
 
     /// <summary>
     /// This object's collision type. Shares its bit values with every other entity type's collision
-    /// type, though only <see cref="SimpleObjectCollisionType.None"/> and
-    /// <see cref="SimpleObjectCollisionType.Static"/> are ever meaningful (or observed) here - the
+    /// type, though only <see cref="CollisionKind.None"/> and
+    /// <see cref="CollisionKind.Static"/> are ever meaningful (or observed) here - the
     /// remaining bits are part of the shared scheme but do not affect a <see cref="SimpleObjectAsset"/>.
     /// </summary>
-    public SimpleObjectCollisionType CollisionType { get; set; }
+    public CollisionKind Collision { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISimpleObjectAsset Physical => this;
@@ -65,7 +65,7 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
 
         asset.AnimationSpeed = reader.ReadSingle();
         asset.InitialAnimationState = reader.ReadUInt32();
-        asset.CollisionType = (SimpleObjectCollisionType)reader.ReadByte();
+        asset.Collision = (CollisionKind)reader.ReadByte();
         asset.Physical.SimpleFlags = reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
 
@@ -83,7 +83,7 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
 
         writer.Write(asset.AnimationSpeed);
         writer.Write(asset.InitialAnimationState);
-        writer.Write((byte)asset.CollisionType);
+        writer.Write((byte)asset.Collision);
         writer.Write(asset.Physical.SimpleFlags);
         writer.Write((short)0); // padding
 
@@ -96,7 +96,7 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     /// Defines the collision classification and interaction behavior for a simple object.
     /// </summary>
     [Flags]
-    public enum SimpleObjectCollisionType : byte
+    public enum CollisionKind : byte
     {
         /// <summary>
         /// No collision.

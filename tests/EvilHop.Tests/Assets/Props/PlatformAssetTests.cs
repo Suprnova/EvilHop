@@ -17,7 +17,7 @@ public class PlatformAssetTests
 
     public PlatformAssetTests()
     {
-        platform = new PlatformAsset { Motion = new ExtendRetractMotion() };
+        platform = new PlatformAsset { Motion = new ExtendRetract() };
     }
 
     private static FormatProfile ProfileFor(GameVersion game) => game switch
@@ -196,38 +196,38 @@ public class PlatformAssetTests
 
     public static readonly IEnumerable<object[]> MotionPlatformTypes =
     [
-        [new ExtendRetractMotion(), PlatformType.ExtendRetract],
-        [new OrbitMotion(), PlatformType.Orbit],
-        [new SplineMotion(), PlatformType.Spline],
-        [new MovePointMotion(), PlatformType.MovePoint],
-        [new MechanismMotion(), PlatformType.Mechanism],
-        [new PendulumMotion(), PlatformType.Pendulum],
-        [new ConveyorBeltMotion(), PlatformType.ConveyorBelt],
-        [new FallingMotion(), PlatformType.Falling],
-        [new ForwardReturnMotion(), PlatformType.ForwardReturn],
-        [new BreakawayMotion(), PlatformType.Breakaway],
-        [new SpringboardMotion(), PlatformType.Springboard],
-        [new TeeterTotterMotion(), PlatformType.TeeterTotter],
-        [new PaddleMotion(), PlatformType.Paddle],
-        [new FullyManipulableMotion(), PlatformType.FullyManipulable],
+        [new ExtendRetract(), PlatformType.ExtendRetract],
+        [new Orbit(), PlatformType.Orbit],
+        [new Spline(), PlatformType.Spline],
+        [new MovePoint(), PlatformType.MovePoint],
+        [new Mechanism(), PlatformType.Mechanism],
+        [new Pendulum(), PlatformType.Pendulum],
+        [new ConveyorBelt(), PlatformType.ConveyorBelt],
+        [new Falling(), PlatformType.Falling],
+        [new ForwardReturn(), PlatformType.ForwardReturn],
+        [new Breakaway(), PlatformType.Breakaway],
+        [new Springboard(), PlatformType.Springboard],
+        [new TeeterTotter(), PlatformType.TeeterTotter],
+        [new Paddle(), PlatformType.Paddle],
+        [new FullyManipulable(), PlatformType.FullyManipulable],
     ];
 
     public static readonly IEnumerable<object[]> MotionSubtypes =
     [
-        [new ExtendRetractMotion(), (byte)0],
-        [new OrbitMotion(), (byte)0],
-        [new SplineMotion(), (byte)0],
-        [new MovePointMotion(), (byte)0],
-        [new MechanismMotion(), (byte)4],
-        [new PendulumMotion(), (byte)5],
-        [new ConveyorBeltMotion(), (byte)6],
-        [new FallingMotion(), (byte)7],
-        [new ForwardReturnMotion(), (byte)8],
-        [new BreakawayMotion(), (byte)9],
-        [new SpringboardMotion(), (byte)10],
-        [new TeeterTotterMotion(), (byte)11],
-        [new PaddleMotion(), (byte)12],
-        [new FullyManipulableMotion(), (byte)0],
+        [new ExtendRetract(), (byte)0],
+        [new Orbit(), (byte)0],
+        [new Spline(), (byte)0],
+        [new MovePoint(), (byte)0],
+        [new Mechanism(), (byte)4],
+        [new Pendulum(), (byte)5],
+        [new ConveyorBelt(), (byte)6],
+        [new Falling(), (byte)7],
+        [new ForwardReturn(), (byte)8],
+        [new Breakaway(), (byte)9],
+        [new Springboard(), (byte)10],
+        [new TeeterTotter(), (byte)11],
+        [new Paddle(), (byte)12],
+        [new FullyManipulable(), (byte)0],
     ];
 
     [Theory]
@@ -268,7 +268,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, ExtendRetract(GameVersion.BFBB));
 
-        Assert.Equal(PlatformAsset.PlatformFlags.Solid, asset.Flags);
+        Assert.Equal(PlatformAsset.Behavior.Solid, asset.Flags);
         Assert.Equal(new AssetId(0xAAAA0001), ((IHasSurface)asset).SurfaceId);
         Assert.Equal(new AssetId(0xAAAA0002), ((IHasModel)asset).ModelId);
         Assert.Equal(new AssetId(0xAAAA0003), ((IHasAnimList)asset).AnimListId);
@@ -279,8 +279,8 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, ExtendRetract(GameVersion.BFBB));
 
-        var motion = Assert.IsType<ExtendRetractMotion>(asset.Motion);
-        Assert.Equal(MotionFlags.Stopped, motion.Flags);
+        var motion = Assert.IsType<ExtendRetract>(asset.Motion);
+        Assert.Equal(Behavior.Stopped, motion.Flags);
         Assert.Equal(new Vector3(1, 2, 3), motion.RetractPosition);
         Assert.Equal(new Vector3(0, 5, 0), motion.ExtendOffset);
         Assert.Equal(1f, motion.ExtendTime);
@@ -294,10 +294,10 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, MovePoint(GameVersion.BFBB));
 
-        var motion = Assert.IsType<MovePointMotion>(asset.Motion);
-        Assert.Equal(MotionFlags.FaceTravelDirection, motion.Flags);
+        var motion = Assert.IsType<MovePoint>(asset.Motion);
+        Assert.Equal(Behavior.FaceTravelDirection, motion.Flags);
         Assert.True(motion.UseBanking);
-        Assert.Equal(MovePointFlags.StopAtEachPoint, motion.MovePointFlags);
+        Assert.Equal(EntityMotion.MovePoint.PauseBehavior.StopAtEachPoint, motion.Pause);
         Assert.Equal(new AssetId(0xCCCC0002), motion.MovePointId);
         Assert.Equal(5f, motion.Speed);
     }
@@ -307,7 +307,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Spline(GameVersion.BFBB));
 
-        var motion = Assert.IsType<SplineMotion>(asset.Motion);
+        var motion = Assert.IsType<Spline>(asset.Motion);
         Assert.Equal(new AssetId(0xCCCC0001), motion.SplineId);
         Assert.Equal(0f, motion.Speed);
     }
@@ -317,7 +317,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.TSSM, Spline(GameVersion.TSSM));
 
-        var motion = Assert.IsType<SplineMotion>(asset.Motion);
+        var motion = Assert.IsType<Spline>(asset.Motion);
         Assert.Equal(new AssetId(0xCCCC0001), motion.SplineId);
         Assert.Equal(12f, motion.Speed);
     }
@@ -327,11 +327,11 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Mechanism(GameVersion.BFBB));
 
-        var motion = Assert.IsType<MechanismMotion>(asset.Motion);
-        Assert.Equal(MechanismMotion.MechanismMovement.Rotate, motion.Movement);
-        Assert.Equal(MechanismFlags.ReturnToStart, motion.MechanismFlags);
-        Assert.Equal(MechanismMotion.MotionAxis.X, motion.SlideAxis);
-        Assert.Equal(MechanismMotion.MotionAxis.Z, motion.RotateAxis);
+        var motion = Assert.IsType<Mechanism>(asset.Motion);
+        Assert.Equal(EntityMotion.Mechanism.Sequence.Rotate, motion.Movement);
+        Assert.Equal(EntityMotion.Mechanism.LoopBehavior.ReturnToStart, motion.Loop);
+        Assert.Equal(EntityMotion.Mechanism.Axis.X, motion.SlideAxis);
+        Assert.Equal(EntityMotion.Mechanism.Axis.Z, motion.RotateAxis);
         Assert.Equal(1f, motion.SlideDistance);
         Assert.Equal(10f, motion.PostReturnDelay);
         Assert.Equal(0f, motion.ScaleAmount);
@@ -342,7 +342,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.TSSM, Mechanism(GameVersion.TSSM));
 
-        var motion = Assert.IsType<MechanismMotion>(asset.Motion);
+        var motion = Assert.IsType<Mechanism>(asset.Motion);
         Assert.Equal(6, motion.ScaleAxis);
         Assert.Equal(1f, motion.SlideDistance);
         Assert.Equal(10f, motion.PostReturnDelay);
@@ -355,9 +355,9 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, ConveyorBelt(GameVersion.BFBB));
 
-        var motion = Assert.IsType<ConveyorBeltMotion>(asset.Motion);
+        var motion = Assert.IsType<ConveyorBelt>(asset.Motion);
         Assert.Equal(4f, motion.Speed);
-        Assert.Equal(MotionFlags.Stopped, motion.Flags);
+        Assert.Equal(Behavior.Stopped, motion.Flags);
     }
 
     [Fact]
@@ -365,11 +365,11 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.N100F, Breakaway(GameVersion.N100F));
 
-        var motion = Assert.IsType<BreakawayMotion>(asset.Motion);
+        var motion = Assert.IsType<Breakaway>(asset.Motion);
         Assert.Equal(1.5f, motion.BreakDelay);
         Assert.Equal(new AssetId(0xCE7F8131), motion.BustModelId);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayMotion.BreakawayFlags.None, motion.BreakFlags);
+        Assert.Equal(PlatformMotion.Breakaway.BreakawayBehavior.None, motion.BreakFlags);
     }
 
     [Fact]
@@ -377,10 +377,10 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Breakaway(GameVersion.BFBB));
 
-        var motion = Assert.IsType<BreakawayMotion>(asset.Motion);
+        var motion = Assert.IsType<Breakaway>(asset.Motion);
         Assert.Equal(new AssetId(0xCE7F8131), motion.BustModelId);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayMotion.BreakawayFlags.AllowSneak, motion.BreakFlags);
+        Assert.Equal(PlatformMotion.Breakaway.BreakawayBehavior.AllowSneak, motion.BreakFlags);
     }
 
     [Fact]
@@ -388,10 +388,10 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.TSSM, Breakaway(GameVersion.TSSM));
 
-        var motion = Assert.IsType<BreakawayMotion>(asset.Motion);
+        var motion = Assert.IsType<Breakaway>(asset.Motion);
         Assert.Equal(1.5f, motion.BreakDelay);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayMotion.BreakawayFlags.AllowSneak, motion.BreakFlags);
+        Assert.Equal(PlatformMotion.Breakaway.BreakawayBehavior.AllowSneak, motion.BreakFlags);
         Assert.Equal(0.1f, motion.CollisionOffTime);
         Assert.Equal(AssetId.None, motion.BustModelId);
     }
@@ -401,7 +401,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.N100F, Springboard(GameVersion.N100F));
 
-        var motion = Assert.IsType<SpringboardMotion>(asset.Motion);
+        var motion = Assert.IsType<Springboard>(asset.Motion);
         Assert.Equal([6f, 6f, 6f], motion.JumpHeights);
         Assert.Equal(new AssetId(0xCCCC0004), motion.SpringAnimationId);
         Assert.Equal(new AssetId(0xCCCC0005), motion.IdleAnimationId);
@@ -413,11 +413,11 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Springboard(GameVersion.BFBB));
 
-        var motion = Assert.IsType<SpringboardMotion>(asset.Motion);
+        var motion = Assert.IsType<Springboard>(asset.Motion);
         Assert.Equal([6f, 0f, 0f], motion.JumpHeights);
         Assert.Equal(2f, motion.BounceHeight);
         Assert.Equal(new Vector3(0, 1, 0), motion.JumpDirection);
-        Assert.Equal(SpringboardMotion.SpringboardFlags.LockView | SpringboardMotion.SpringboardFlags.LockMovement, motion.SpringFlags);
+        Assert.Equal(PlatformMotion.Springboard.LockingBehavior.LockView | PlatformMotion.Springboard.LockingBehavior.LockMovement, motion.SpringFlags);
     }
 
     [Fact]
@@ -425,7 +425,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.ROTU, TeeterTotter(GameVersion.ROTU));
 
-        var motion = Assert.IsType<TeeterTotterMotion>(asset.Motion);
+        var motion = Assert.IsType<TeeterTotter>(asset.Motion);
         Assert.Equal(0.5f, motion.MaxTilt);
         Assert.Equal(3f, motion.InverseMass);
         Assert.Equal(0x69EC5797u, motion.Unknown);
@@ -436,24 +436,24 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Paddle(GameVersion.BFBB));
 
-        var motion = Assert.IsType<PaddleMotion>(asset.Motion);
+        var motion = Assert.IsType<Paddle>(asset.Motion);
         Assert.Equal(1, motion.StartOrientation);
         Assert.Equal([0f, 90f, 180f], motion.Orientations);
         Assert.Equal(360f, motion.OrientationLoop);
-        Assert.Equal((PaddleFlags)0x13, motion.PaddleFlags);
+        Assert.Equal((Paddle.PaddleBehavior)0x13, motion.PaddleFlags);
         Assert.Equal(4f, motion.HubRadius);
     }
 
     [Fact]
     public void Read_FullyManipulable_ProducesFullyManipulableMotion() =>
-        Assert.IsType<FullyManipulableMotion>(((PlatformAsset)Read(GameVersion.TSSM, FullyManipulable(GameVersion.TSSM))).Motion);
+        Assert.IsType<FullyManipulable>(((PlatformAsset)Read(GameVersion.TSSM, FullyManipulable(GameVersion.TSSM))).Motion);
 
     [Fact]
     public void Read_PlatformTypeDisagreeingWithMotion_PreservesPlatformType()
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Platform(GameVersion.BFBB, 0, 0, [], OrbitBlock));
 
-        Assert.IsType<OrbitMotion>(asset.Motion);
+        Assert.IsType<Orbit>(asset.Motion);
         Assert.Equal(PlatformType.ExtendRetract, asset.Physical.PlatformType);
     }
 
@@ -476,7 +476,7 @@ public class PlatformAssetTests
     [Fact]
     public void Write_NewPlatform_WritesTypeAndSubtypeFromMotion()
     {
-        var asset = new PlatformAsset { Type = AssetType.Platform, Motion = new MechanismMotion() };
+        var asset = new PlatformAsset { Type = AssetType.Platform, Motion = new Mechanism() };
 
         byte[] written = Write(GameVersion.BFBB, asset);
 
@@ -490,7 +490,7 @@ public class PlatformAssetTests
         var asset = new PlatformAsset
         {
             Type = AssetType.Platform,
-            Motion = new PaddleMotion { Orientations = [0f, 90f], RotateSpeed = 2f },
+            Motion = new Paddle { Orientations = [0f, 90f], RotateSpeed = 2f },
         };
 
         byte[] written = Write(GameVersion.N100F, asset);
@@ -522,7 +522,7 @@ public class PlatformAssetTests
     {
         platform.Physical.PlatformType = PlatformType.Orbit;
 
-        platform.Motion = new MechanismMotion();
+        platform.Motion = new Mechanism();
 
         Assert.Equal(PlatformType.Orbit, platform.Physical.PlatformType);
     }
@@ -532,7 +532,7 @@ public class PlatformAssetTests
     {
         platform.Physical.PlatformType = PlatformType.ExtendRetract;
 
-        platform.Motion = new MechanismMotion();
+        platform.Motion = new Mechanism();
 
         Assert.Equal(PlatformType.Mechanism, platform.Physical.PlatformType);
     }
@@ -550,7 +550,7 @@ public class PlatformAssetTests
     {
         platform.Physical.Subtype = 9;
 
-        platform.Motion = new MechanismMotion();
+        platform.Motion = new Mechanism();
 
         Assert.Equal((byte)9, platform.Physical.Subtype);
     }
@@ -560,7 +560,7 @@ public class PlatformAssetTests
     [InlineData(4)]
     public void JumpHeights_SetWithWrongLength_ThrowsArgumentException(int length)
     {
-        var motion = new SpringboardMotion();
+        var motion = new Springboard();
 
         Assert.Throws<ArgumentException>(() => motion.JumpHeights = [.. new float[length]]);
     }
@@ -570,7 +570,7 @@ public class PlatformAssetTests
     [InlineData(6)]
     public void Orientations_SetWithinMax_StoresValue(int length)
     {
-        var motion = new PaddleMotion
+        var motion = new Paddle
         {
             Orientations = [.. new float[length]]
         };
@@ -583,7 +583,7 @@ public class PlatformAssetTests
     [InlineData(12)]
     public void Orientations_SetBeyondMax_ThrowsArgumentException(int length)
     {
-        var motion = new PaddleMotion();
+        var motion = new Paddle();
 
         Assert.Throws<ArgumentException>(() => motion.Orientations = [.. new float[length]]);
     }

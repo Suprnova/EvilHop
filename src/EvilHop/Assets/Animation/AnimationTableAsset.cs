@@ -13,8 +13,8 @@ namespace EvilHop.Assets;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each <see cref="AnimationTableFile"/> references its raw animation data - and each
-/// <see cref="AnimationTableState"/> its playback effects, if any - via offsets into a trailing pool
+/// Each <see cref="File"/> references its raw animation data - and each
+/// <see cref="State"/> its playback effects, if any - via offsets into a trailing pool
 /// this type does not individually parse; see <see cref="Asset.GetUnparsedTail"/>.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/ATBL">Heavy Iron Modding documentation</seealso>
@@ -35,12 +35,12 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
     /// <summary>
     /// The table's animation files, each wrapping one or more of <see cref="Raw"/>'s entries.
     /// </summary>
-    public Collection<AnimationTableFile> Files { get; } = [];
+    public Collection<File> Files { get; } = [];
 
     /// <summary>
     /// The table's named states, each playing one of <see cref="Files"/>' entries.
     /// </summary>
-    public Collection<AnimationTableState> States { get; } = [];
+    public Collection<State> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IAnimationTableAsset Physical => this;
@@ -95,9 +95,9 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
 
         for (uint i = 0; i < rawCount; i++) asset.Raw.Add(reader.ReadAssetId());
 
-        for (uint i = 0; i < fileCount; i++) asset.Files.Add(AnimationTableFile.Read(reader, _));
+        for (uint i = 0; i < fileCount; i++) asset.Files.Add(File.Read(reader, _));
 
-        for (uint i = 0; i < stateCount; i++) asset.States.Add(AnimationTableState.Read(reader, _));
+        for (uint i = 0; i < stateCount; i++) asset.States.Add(State.Read(reader, _));
 
         asset.Physical.RawCount = rawCount;
         asset.Physical.FileCount = fileCount;
@@ -116,9 +116,9 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
 
         foreach (var id in asset.Raw) writer.Write(id);
 
-        foreach (var file in asset.Files) AnimationTableFile.Write(file, writer, _);
+        foreach (var file in asset.Files) File.Write(file, writer, _);
 
-        foreach (var state in asset.States) AnimationTableState.Write(state, writer, _);
+        foreach (var state in asset.States) State.Write(state, writer, _);
 
         writer.Write(asset.GetUnparsedTail());
     }

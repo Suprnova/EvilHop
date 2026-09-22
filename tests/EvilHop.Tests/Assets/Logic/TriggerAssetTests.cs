@@ -107,13 +107,13 @@ public class TriggerAssetTests
     {
         var asset = (TriggerAsset)Read(BoxData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(TriggerShape.Box, asset.Shape);
+        Assert.Equal(Shape.Box, asset.Kind);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
         Assert.Equal(new Vector3(4, 5, 6), asset.TriggerPosition1);
         Assert.Equal(new Vector3(7, 8, 9), asset.Physical.TriggerPosition2);
         Assert.Equal(new Vector3(10, 11, 12), asset.Physical.TriggerPosition3);
         Assert.Equal(UsualDirection, asset.Direction);
-        Assert.Equal(TriggerFlags.None, asset.Flags);
+        Assert.Equal(Behavior.None, asset.Flags);
     }
 
     [Fact]
@@ -121,18 +121,18 @@ public class TriggerAssetTests
     {
         var asset = (TriggerAsset)Read(SphereData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(TriggerShape.Sphere, asset.Shape);
+        Assert.Equal(Shape.Sphere, asset.Kind);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
         Assert.Equal(5f, asset.TriggerPosition1.X);
         Assert.Equal(Vector3.Zero, asset.Physical.TriggerPosition2);
         Assert.Equal(Vector3.Zero, asset.Physical.TriggerPosition3);
-        Assert.Equal(TriggerFlags.DirectionGate, asset.Flags);
+        Assert.Equal(Behavior.DirectionGate, asset.Flags);
     }
 
     [Fact]
     public void Shape_SetDirectly_ProjectsOntoPhysicalSubtype()
     {
-        var asset = new TriggerAsset { Shape = TriggerShape.Sphere };
+        var asset = new TriggerAsset { Kind = Shape.Sphere };
 
         Assert.Equal(1, asset.Physical.Subtype);
     }
@@ -194,7 +194,7 @@ public class TriggerAssetTests
         var asset = (TriggerAsset)Read(data, profile);
 
         Assert.Equal(new Vector3(0f, 0f, 0f), asset.Direction);
-        Assert.Equal(TriggerFlags.None, asset.Flags);
+        Assert.Equal(Behavior.None, asset.Flags);
         Assert.Single(asset.Links);
         Assert.Equal(6, asset.Links[0].SourceEvent);
         Assert.Equal(1, asset.Links[0].DestinationEvent);
@@ -222,7 +222,7 @@ public class TriggerAssetTests
         var asset = (TriggerAsset)Read(data, profile);
 
         Assert.Equal(UsualDirection, asset.Direction);
-        Assert.Equal(TriggerFlags.None, asset.Flags);
+        Assert.Equal(Behavior.None, asset.Flags);
         Assert.Equal(data, Write(asset, profile));
     }
 

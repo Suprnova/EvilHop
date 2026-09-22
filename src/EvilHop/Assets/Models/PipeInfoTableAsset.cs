@@ -20,7 +20,7 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
     /// The table's entries, each applying rendering information to one <see cref="AssetType.Model"/>
     /// asset or a subset of its atomics.
     /// </summary>
-    public Collection<PipeInfoEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IPipeInfoTableAsset Physical => this;
@@ -51,7 +51,7 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
 
         int count = reader.ReadInt32();
         for (int i = 0; i < count; i++)
-            asset.Entries.Add(PipeInfoEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -62,14 +62,14 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-            PipeInfoEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 
     /// <summary>
     /// Defines the lighting mode applied to a model's selected atomics.
     /// </summary>
-    public enum PipeLightingMode : byte
+    public enum LightingMode : byte
     {
         /// <summary>Lit by the level's light kit only.</summary>
         LightKitOnly = 0,
@@ -84,7 +84,7 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
     /// <summary>
     /// Defines the face culling mode applied to a model's selected atomics.
     /// </summary>
-    public enum PipeCullMode : byte
+    public enum CullMode : byte
     {
         /// <summary>Unknown.</summary>
         Unknown = 0,
@@ -99,7 +99,7 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
     /// <summary>
     /// Defines the depth-buffer write behavior applied to a model's selected atomics.
     /// </summary>
-    public enum PipeZWriteMode : byte
+    public enum ZWriteMode : byte
     {
         /// <summary>Z-write is enabled.</summary>
         Enabled = 0,

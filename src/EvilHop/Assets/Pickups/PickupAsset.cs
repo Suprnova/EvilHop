@@ -32,7 +32,7 @@ public sealed partial class PickupAsset() : EntityAsset(AssetType.Pickup, baseTy
     /// <summary>
     /// This pickup's flags.
     /// </summary>
-    public PickupFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>
     /// A context-dependent value: the Scooby Snack count for a snack gate, or 4 for most other
@@ -58,7 +58,7 @@ public sealed partial class PickupAsset() : EntityAsset(AssetType.Pickup, baseTy
         EntityAssetPrefix.Read(asset, reader, profile);
 
         asset.PickupHash = reader.ReadUInt32();
-        asset.Flags = (PickupFlags)reader.ReadInt16();
+        asset.Flags = (Behavior)reader.ReadInt16();
         asset.PickupValue = reader.ReadInt16();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
@@ -86,7 +86,7 @@ public sealed partial class PickupAsset() : EntityAsset(AssetType.Pickup, baseTy
     /// Flags controlling pickup spawning, persistence, and collection state.
     /// </summary>
     [Flags]
-    public enum PickupFlags : short
+    public enum Behavior : short
     {
         /// <summary>No flags are set.</summary>
         None = 0,

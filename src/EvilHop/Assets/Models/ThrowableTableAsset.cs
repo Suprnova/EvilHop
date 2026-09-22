@@ -16,7 +16,7 @@ namespace EvilHop.Assets;
 public sealed partial class ThrowableTableAsset() : BaseAsset(AssetType.ThrowableTable, baseType: 0x00), Physical.IThrowableTableAsset
 {
     /// <summary>
-    /// The table's format version. Version 3 includes <see cref="ThrowableTableRow.DamageRadius"/>,
+    /// The table's format version. Version 3 includes <see cref="Entry.DamageRadius"/>,
     /// while version 2 (used in prototypes) omits it.
     /// </summary>
     public int Version { get; set; } = 3;
@@ -24,7 +24,7 @@ public sealed partial class ThrowableTableAsset() : BaseAsset(AssetType.Throwabl
     /// <summary>
     /// The throwable rows in the table.
     /// </summary>
-    public Collection<ThrowableTableRow> Rows { get; } = [];
+    public Collection<Entry> Rows { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IThrowableTableAsset Physical => this;
@@ -54,7 +54,7 @@ public sealed partial class ThrowableTableAsset() : BaseAsset(AssetType.Throwabl
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
         for (int i = 0; i < rowCount; i++)
-            asset.Rows.Add(ThrowableTableRow.Read(reader, profile, asset.Version));
+            asset.Rows.Add(Entry.Read(reader, profile, asset.Version));
 
         asset.Physical.RowCount = rowCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -68,7 +68,7 @@ public sealed partial class ThrowableTableAsset() : BaseAsset(AssetType.Throwabl
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
         foreach (var row in asset.Rows)
-            ThrowableTableRow.Write(row, writer, profile, asset.Version);
+            Entry.Write(row, writer, profile, asset.Version);
 
         writer.Write(asset.GetUnparsedTail());
     }

@@ -96,7 +96,7 @@ public class CameraCurveAssetTests
 
         Assert.Equal(4, asset.Physical.Version);
         Assert.Equal(CameraKind.Follow, asset.CameraType);
-        Assert.Equal(CameraTransitionType.Linear, asset.TransitionType);
+        Assert.Equal(CameraTransitionKind.Linear, asset.TransitionType);
         Assert.Equal(0.5f, asset.TransitionTime);
         Assert.Equal(new AssetId(0x11111111), asset.CurveId1);
         Assert.Equal(new AssetId(0x22222222), asset.CurveId2);
@@ -183,7 +183,7 @@ public class CameraCurveAssetTests
     public void NumBeads_SetToMatchingValue_ClearsOverride()
     {
         var asset = new CameraCurveAsset();
-        asset.Beads.Add(new CameraCurveBead());
+        asset.Beads.Add(new Bead());
         asset.Physical.NumBeads = 5;
 
         asset.Physical.NumBeads = 1;

@@ -36,7 +36,7 @@ public sealed partial class DiscoFloorAsset
 
         long bodyStart = reader.BaseStream.Position;
 
-        asset.Flags = (DiscoFloorFlags)reader.ReadUInt32();
+        asset.Flags = (Behavior)reader.ReadUInt32();
         asset.TransitionDuration = reader.ReadSingle();
         asset.StateDuration = reader.ReadSingle();
         uint offPrefixOffset = reader.ReadUInt32();
@@ -65,7 +65,7 @@ public sealed partial class DiscoFloorAsset
         asset._rawOnPrefix = reader.ReadBytes((int)(statesOffset - onPrefixOffset));
         asset.OnPrefix = DecodeNullTerminated(asset._rawOnPrefix);
 
-        int maskByteSize = DiscoFloorState.MaskByteSize(tileCount);
+        int maskByteSize = State.MaskByteSize(tileCount);
         long maxOffsetTouched = statesOffset + 4L * stateCount;
 
         reader.BaseStream.Position = bodyStart + statesOffset;
@@ -76,7 +76,7 @@ public sealed partial class DiscoFloorAsset
         for (int i = 0; i < stateCount; i++)
         {
             reader.BaseStream.Position = bodyStart + stateOffsets[i];
-            asset.States.Add(DiscoFloorState.Read(reader, tileCount, profile));
+            asset.States.Add(State.Read(reader, tileCount, profile));
 
             maxOffsetTouched = Math.Max(maxOffsetTouched, stateOffsets[i] + maskByteSize);
         }
@@ -99,7 +99,7 @@ public sealed partial class DiscoFloorAsset
         uint linkCount = asset.Physical.LinkCount;
         uint tileCount = asset.Physical.TileCount;
         uint stateCount = asset.Physical.StateCount;
-        int maskByteSize = DiscoFloorState.MaskByteSize(tileCount);
+        int maskByteSize = State.MaskByteSize(tileCount);
 
         byte[] offPrefixBytes = EncodePrefix(asset.OffPrefix, asset._rawOffPrefix);
         byte[] transitionPrefixBytes = EncodePrefix(asset.TransitionPrefix, asset._rawTransitionPrefix);
@@ -134,8 +134,8 @@ public sealed partial class DiscoFloorAsset
         int totalMaskBytes = 0;
         for (int i = 0; i < stateCount; i++)
         {
-            var state = i < asset.States.Count ? asset.States[i] : new DiscoFloorState();
-            DiscoFloorState.Write(state, writer, tileCount, profile);
+            var state = i < asset.States.Count ? asset.States[i] : new State();
+            State.Write(state, writer, tileCount, profile);
             totalMaskBytes += maskByteSize;
         }
 

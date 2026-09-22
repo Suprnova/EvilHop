@@ -89,9 +89,9 @@ public class LightAssetTests
     {
         var asset = (LightAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
 
-        Assert.Equal(LightType.Point3, asset.Kind);
-        Assert.Equal(LightEffect.FlickerErratic, asset.Effect);
-        Assert.Equal(LightFlags.On | LightFlags.Environment, asset.Flags);
+        Assert.Equal(Shape.Point3, asset.Kind);
+        Assert.Equal(Pattern.FlickerErratic, asset.Effect);
+        Assert.Equal(Behavior.On | Behavior.Environment, asset.Flags);
         Assert.Equal(new Rgba(0.98f, 0.69f, 0.016f, 1.0f), asset.Color);
         Assert.Equal(new Vector3(0.0f, 0.0f, 1.0f), asset.Direction);
         Assert.Equal(45.0f, asset.ConeAngle);

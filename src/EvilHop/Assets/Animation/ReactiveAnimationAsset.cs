@@ -24,7 +24,7 @@ public sealed partial class ReactiveAnimationAsset() : BaseAsset(AssetType.React
     /// <summary>
     /// The table's rows, each describing one reactive behavior.
     /// </summary>
-    public Collection<ReactiveAnimationRow> Rows { get; } = [];
+    public Collection<Row> Rows { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IReactiveAnimationAsset Physical => this;
@@ -54,7 +54,7 @@ public sealed partial class ReactiveAnimationAsset() : BaseAsset(AssetType.React
 
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
-        for (int i = 0; i < rowCount; i++) asset.Rows.Add(ReactiveAnimationRow.Read(reader, profile));
+        for (int i = 0; i < rowCount; i++) asset.Rows.Add(Row.Read(reader, profile));
 
         asset.Physical.RowCount = asset.Rows.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -67,7 +67,7 @@ public sealed partial class ReactiveAnimationAsset() : BaseAsset(AssetType.React
 
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
-        foreach (var row in asset.Rows) ReactiveAnimationRow.Write(row, writer, profile);
+        foreach (var row in asset.Rows) Row.Write(row, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

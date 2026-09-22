@@ -99,7 +99,7 @@ public class AnimationAssetTests
         var asset = (AnimationAsset)Read(OneBoneOneFrameData());
         Assert.Equal(1u, asset.Physical.KeyCount);
 
-        asset.Keys.Add(new AnimationKey());
+        asset.Keys.Add(new Key());
 
         Assert.Equal(2u, asset.Physical.KeyCount);
     }
@@ -108,7 +108,7 @@ public class AnimationAssetTests
     public void KeyCount_DisagreeingWithKeys_IsStoredIndependently()
     {
         var asset = new AnimationAsset();
-        asset.Keys.Add(new AnimationKey());
+        asset.Keys.Add(new Key());
 
         asset.Physical.KeyCount = 5;
 

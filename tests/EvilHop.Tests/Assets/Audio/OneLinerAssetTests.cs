@@ -47,7 +47,7 @@ public class OneLinerAssetTests
     private static byte[] Entry(
         uint soundGroupId, float soundStartDelay, float timeSpan, float timeLastPlayed, uint numPlays,
         float delayBetweenPlays, float probability, float defaultDuration, float lastDuration, uint maxPlays,
-        short eventType, bool playsInMusicChannel, OneLinerPlayerType playerType, int firstParam, float secondParam) =>
+        short eventType, bool playsInMusicChannel, PlayerKind playerType, int firstParam, float secondParam) =>
     [
         .. U32(soundGroupId), .. F32(soundStartDelay), .. F32(timeSpan), .. F32(timeLastPlayed),
         .. U32(numPlays), .. F32(delayBetweenPlays), .. F32(probability), .. F32(defaultDuration),
@@ -73,8 +73,8 @@ public class OneLinerAssetTests
     public void Read_OneLiner_PopulatesEntries()
     {
         byte[] data = Data(2,
-            Entry(0x03A934D6, 0f, 0f, 0f, 0u, 0f, 1f, 0f, 0f, 0u, 7, false, OneLinerPlayerType.Tester, 0, 0f),
-            Entry(0x77AB0A67, 0f, 0f, 0f, 0u, 3f, 0.5f, 0f, 0f, 0u, 26, true, OneLinerPlayerType.Tester, 1, 3f));
+            Entry(0x03A934D6, 0f, 0f, 0f, 0u, 0f, 1f, 0f, 0f, 0u, 7, false, PlayerKind.Tester, 0, 0f),
+            Entry(0x77AB0A67, 0f, 0f, 0f, 0u, 3f, 0.5f, 0f, 0f, 0u, 26, true, PlayerKind.Tester, 1, 3f));
 
         var asset = (OneLinerAsset)Read(data);
 
@@ -85,7 +85,7 @@ public class OneLinerAssetTests
         Assert.Equal(1f, first.Probability);
         Assert.Equal((short)7, first.EventType);
         Assert.False(first.PlaysInMusicChannel);
-        Assert.Equal(OneLinerPlayerType.Tester, first.PlayerType);
+        Assert.Equal(PlayerKind.Tester, first.Kind);
         Assert.Equal(0, first.FirstParam);
         Assert.Equal(0f, first.SecondParam);
 
@@ -102,12 +102,12 @@ public class OneLinerAssetTests
     [Fact]
     public void Read_OneLiner_EntryCountKeepsDerivingAfterEntriesAreMutated()
     {
-        byte[] data = Data(1, Entry(0x1, 0f, 0f, 0f, 0u, 0f, 0f, 0f, 0f, 0u, 0, false, OneLinerPlayerType.Always, 0, 0f));
+        byte[] data = Data(1, Entry(0x1, 0f, 0f, 0f, 0u, 0f, 0f, 0f, 0f, 0u, 0, false, PlayerKind.Always, 0, 0f));
 
         var asset = (OneLinerAsset)Read(data);
         Assert.Equal(1u, asset.Physical.EntryCount);
 
-        asset.Entries.Add(new OneLinerEntry());
+        asset.Entries.Add(new Entry());
 
         Assert.Equal(2u, asset.Physical.EntryCount);
     }
@@ -124,8 +124,8 @@ public class OneLinerAssetTests
     public void Read_ThenWrite_OneLinerWithEntries_ReproducesInputBytes()
     {
         byte[] data = Data(2,
-            Entry(0x03A934D6, 0f, 0f, 0f, 0u, 0f, 1f, 0f, 0f, 0u, 7, false, OneLinerPlayerType.Tester, 0, 0f),
-            Entry(0x77AB0A67, 0f, 0f, 0f, 0u, 3f, 0.5f, 0f, 0f, 0u, 26, true, OneLinerPlayerType.Tester, 1, 3f));
+            Entry(0x03A934D6, 0f, 0f, 0f, 0u, 0f, 1f, 0f, 0f, 0u, 7, false, PlayerKind.Tester, 0, 0f),
+            Entry(0x77AB0A67, 0f, 0f, 0f, 0u, 3f, 0.5f, 0f, 0f, 0u, 26, true, PlayerKind.Tester, 1, 3f));
 
         Assert.Equal(data, Write(Read(data)));
     }

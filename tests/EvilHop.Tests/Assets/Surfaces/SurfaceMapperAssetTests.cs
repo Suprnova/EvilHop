@@ -92,7 +92,7 @@ public class SurfaceMapperAssetTests
         var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
         Assert.Equal(2u, asset.Physical.Count);
 
-        asset.Entries.Add(new SurfaceMapperAsset.SurfaceMapperEntry());
+        asset.Entries.Add(new SurfaceMapperAsset.Entry());
 
         Assert.Equal(3u, asset.Physical.Count);
     }

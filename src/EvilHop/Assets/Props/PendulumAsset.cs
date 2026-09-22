@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// <summary>
 /// An <see cref="EntityAsset"/> that swings back and forth about a pivot. Not present in any
 /// official level outside <see cref="GameVersion.N100F"/> - other games use an
-/// <see cref="AssetType.Platform"/> with a <see cref="EntityMotion.PendulumMotion"/> for the same effect instead -
+/// <see cref="AssetType.Platform"/> with a <see cref="EntityMotion.Pendulum"/> for the same effect instead -
 /// but every later game's engine still reads and drives one correctly.
 /// </summary>
 /// <remarks>
@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 0x12), IHasModel
 {
     /// <summary>How this pendulum swings.</summary>
-    public EntityMotion.PendulumMotion Motion { get; set; } = new();
+    public EntityMotion.Pendulum Motion { get; set; } = new();
 
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
 
@@ -42,7 +42,7 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.Motion = (EntityMotion.PendulumMotion)EntityMotion.Read(reader, profile);
+        asset.Motion = (EntityMotion.Pendulum)EntityMotion.Read(reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile));

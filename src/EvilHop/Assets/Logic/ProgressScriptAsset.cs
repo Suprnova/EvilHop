@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 
 /// <summary>
 /// Fires events for other assets as a percentage - such as an animation's progress, or a cutscene's
-/// playback position - walks forward or backward past each <see cref="ProgressScriptEvent.Percent"/>.
+/// playback position - walks forward or backward past each <see cref="ProgressEvent.Percent"/>.
 /// </summary>
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PGRS">Heavy Iron Modding documentation</seealso>
@@ -17,9 +17,9 @@ namespace EvilHop.Assets;
 public sealed partial class ProgressScriptAsset() : BaseAsset(AssetType.ProgressScript, baseType: 0x75), Physical.IProgressScriptAsset
 {
     /// <summary>
-    /// This script's events, in ascending <see cref="ProgressScriptEvent.Percent"/> order.
+    /// This script's events, in ascending <see cref="ProgressEvent.Percent"/> order.
     /// </summary>
-    public Collection<ProgressScriptEvent> Events { get; } = [];
+    public Collection<ProgressEvent> Events { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IProgressScriptAsset Physical => this;
@@ -48,7 +48,7 @@ public sealed partial class ProgressScriptAsset() : BaseAsset(AssetType.Progress
 
         uint eventCount = reader.ReadUInt32();
         for (uint i = 0; i < eventCount; i++)
-            asset.Events.Add(ProgressScriptEvent.Read(reader, profile));
+            asset.Events.Add(ProgressEvent.Read(reader, profile));
         asset.Physical.EventCount = (uint)asset.Events.Count;
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
@@ -64,7 +64,7 @@ public sealed partial class ProgressScriptAsset() : BaseAsset(AssetType.Progress
 
         writer.Write(asset.Physical.EventCount);
         foreach (var evt in asset.Events)
-            ProgressScriptEvent.Write(evt, writer, profile);
+            ProgressEvent.Write(evt, writer, profile);
 
         foreach (var link in asset.Links)
             Link.Write(link, writer, profile);

@@ -17,18 +17,18 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <summary>
     /// What touching this surface does to the player.
     /// </summary>
-    public SurfaceGameDamageType GameDamageType { get; set; }
+    public DamageKind Damage { get; set; }
 
     /// <summary>
     /// Whether the player passes through this surface instead of colliding with it, while still
-    /// taking its <see cref="GameDamageType"/> damage on contact.
+    /// taking its <see cref="Damage"/> damage on contact.
     /// </summary>
     public bool DamagePassthrough
     {
-        get => Physical.GameDamageFlags.HasFlag(SurfaceGameDamageFlags.DamagePassthrough);
+        get => Physical.GameDamageFlags.HasFlag(DamageBehavior.DamagePassthrough);
         set => Physical.GameDamageFlags = value
-            ? Physical.GameDamageFlags | SurfaceGameDamageFlags.DamagePassthrough
-            : Physical.GameDamageFlags & ~SurfaceGameDamageFlags.DamagePassthrough;
+            ? Physical.GameDamageFlags | DamageBehavior.DamagePassthrough
+            : Physical.GameDamageFlags & ~DamageBehavior.DamagePassthrough;
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <summary>
     /// This surface's physics behavior.
     /// </summary>
-    public SurfacePhysicsFlags PhysFlags { get; set; }
+    public PhysicsBehavior PhysFlags { get; set; }
 
     /// <summary>
     /// This surface's friction, from 0 to 1.
@@ -67,21 +67,21 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <summary>
     /// This surface's material appearance (bump/environment mapping, shininess).
     /// </summary>
-    public SurfaceMaterialFx MaterialFx { get; set; } = new();
+    public MaterialEffect MaterialFx { get; set; } = new();
 
     /// <summary>
     /// This surface's color animation.
     /// </summary>
-    public SurfaceColorFx ColorFx { get; set; } = new();
+    public ColorEffect ColorFx { get; set; } = new();
 
-    private ImmutableArray<SurfaceTextureAnim> _textureAnims = DefaultTextureAnims();
+    private ImmutableArray<TextureEffect> _textureAnims = DefaultTextureAnims();
 
     /// <summary>
     /// This surface's two independent texture animations. Each element's own
-    /// <see cref="SurfaceTextureAnim.IsEnabled"/> says whether it is active.
+    /// <see cref="TextureEffect.IsEnabled"/> says whether it is active.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 2.</exception>
-    public ImmutableArray<SurfaceTextureAnim> TextureAnims
+    public ImmutableArray<TextureEffect> TextureAnims
     {
         get => _textureAnims;
         set => _textureAnims = value.Length == 2
@@ -89,14 +89,14 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
             : throw new ArgumentException($"{nameof(TextureAnims)} must contain exactly 2 elements.", nameof(value));
     }
 
-    private ImmutableArray<SurfaceUvfx> _uvfxs = DefaultUvfxs();
+    private ImmutableArray<UVEffect> _uvfxs = DefaultUvfxs();
 
     /// <summary>
     /// This surface's two independent UV animations. Each element's own
-    /// <see cref="SurfaceUvfx.IsEnabled"/> says whether it is active.
+    /// <see cref="UVEffect.IsEnabled"/> says whether it is active.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 2.</exception>
-    public ImmutableArray<SurfaceUvfx> Uvfxs
+    public ImmutableArray<UVEffect> Uvfxs
     {
         get => _uvfxs;
         set => _uvfxs = value.Length == 2
@@ -115,7 +115,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
 
     /// <summary>
     /// The time, in seconds, the player can remain out of bounds on this surface before being reset.
-    /// Only takes effect when <see cref="SurfacePhysicsFlags.OutOfBounds"/> is set.
+    /// Only takes effect when <see cref="PhysicsBehavior.OutOfBounds"/> is set.
     /// </summary>
     /// <remarks>
     /// -1 defers to the game ini's <c>player.state.out_of_bounds.out_time</c>.
@@ -124,13 +124,13 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
 
     /// <summary>
     /// Scales the player's horizontal wall-jump velocity off this surface. Applies only when
-    /// <see cref="SurfacePhysicsFlags.WallJump"/> is set.
+    /// <see cref="PhysicsBehavior.WallJump"/> is set.
     /// </summary>
     public float WallJumpScaleXZ { get; set; }
 
     /// <summary>
     /// Scales the player's vertical wall-jump velocity off this surface. Applies only when
-    /// <see cref="SurfacePhysicsFlags.WallJump"/> is set.
+    /// <see cref="PhysicsBehavior.WallJump"/> is set.
     /// </summary>
     public float WallJumpScaleY { get; set; }
 
@@ -145,8 +145,8 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISurfaceAsset Physical => this;
 
-    private SurfaceGameDamageFlags _gameDamageFlags;
-    SurfaceGameDamageFlags Physical.ISurfaceAsset.GameDamageFlags { get => _gameDamageFlags; set => _gameDamageFlags = value; }
+    private DamageBehavior _gameDamageFlags;
+    DamageBehavior Physical.ISurfaceAsset.GameDamageFlags { get => _gameDamageFlags; set => _gameDamageFlags = value; }
 
     private byte _surfType;
     byte Physical.ISurfaceAsset.SurfType { get => _surfType; set => _surfType = value; }
@@ -157,30 +157,30 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     private byte _isEnabled = 1;
     byte Physical.ISurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
 
-    private SurfaceTextureAnimFlags? _overriddenTextureAnimFlags;
-    SurfaceTextureAnimFlags Physical.ISurfaceAsset.TextureAnimFlags
+    private AnimationSlot? _overriddenTextureAnimFlags;
+    AnimationSlot Physical.ISurfaceAsset.TextureAnimFlags
     {
         get => _overriddenTextureAnimFlags ?? DerivedTextureAnimFlags;
         set => _overriddenTextureAnimFlags = value == DerivedTextureAnimFlags ? null : value;
     }
 
-    private SurfaceTextureAnimFlags DerivedTextureAnimFlags =>
-        (TextureAnims[0].IsEnabled ? SurfaceTextureAnimFlags.Slot0 : SurfaceTextureAnimFlags.None) |
-        (TextureAnims[1].IsEnabled ? SurfaceTextureAnimFlags.Slot1 : SurfaceTextureAnimFlags.None);
+    private AnimationSlot DerivedTextureAnimFlags =>
+        (TextureAnims[0].IsEnabled ? AnimationSlot.Slot0 : AnimationSlot.None) |
+        (TextureAnims[1].IsEnabled ? AnimationSlot.Slot1 : AnimationSlot.None);
 
-    private SurfaceUvfxFlags? _overriddenUvfxFlags;
-    SurfaceUvfxFlags Physical.ISurfaceAsset.UvfxFlags
+    private UVSlot? _overriddenUvfxFlags;
+    UVSlot Physical.ISurfaceAsset.UvfxFlags
     {
         get => _overriddenUvfxFlags ?? DerivedUvfxFlags;
         set => _overriddenUvfxFlags = value == DerivedUvfxFlags ? null : value;
     }
 
-    private SurfaceUvfxFlags DerivedUvfxFlags =>
-        (Uvfxs[0].IsEnabled ? SurfaceUvfxFlags.Slot0 : SurfaceUvfxFlags.None) |
-        (Uvfxs[1].IsEnabled ? SurfaceUvfxFlags.Slot1 : SurfaceUvfxFlags.None);
+    private UVSlot DerivedUvfxFlags =>
+        (Uvfxs[0].IsEnabled ? UVSlot.Slot0 : UVSlot.None) |
+        (Uvfxs[1].IsEnabled ? UVSlot.Slot1 : UVSlot.None);
 
-    private static ImmutableArray<SurfaceTextureAnim> DefaultTextureAnims() => [new(), new()];
-    private static ImmutableArray<SurfaceUvfx> DefaultUvfxs() => [new(), new()];
+    private static ImmutableArray<TextureEffect> DefaultTextureAnims() => [new(), new()];
+    private static ImmutableArray<UVEffect> DefaultUvfxs() => [new(), new()];
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Surface"/> is known to be read by.
@@ -203,7 +203,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Flags controlling collision and pass-through behavior when applying surface damage.
     /// </summary>
     [Flags]
-    public enum SurfaceGameDamageFlags : byte
+    public enum DamageBehavior : byte
     {
         /// <summary>
         /// No flags are set.
@@ -211,7 +211,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         None = 0,
         /// <summary>
         /// The player passes through this surface instead of colliding with it, while still taking its
-        /// <see cref="SurfaceAsset.GameDamageType"/> damage on contact.
+        /// <see cref="Damage"/> damage on contact.
         /// </summary>
         DamagePassthrough = 1 << 0,
     }
@@ -220,15 +220,15 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Flags governing player physics and mobility interactions with a surface.
     /// </summary>
     [Flags]
-    public enum SurfacePhysicsFlags : byte
+    public enum PhysicsBehavior : byte
     {
         /// <summary>
         /// No flags are set.
         /// </summary>
         None = 0,
         /// <summary>
-        /// The player slides off this surface, per <see cref="SurfaceAsset.SlideStartAngle"/>/
-        /// <see cref="SurfaceAsset.SlideStopAngle"/>.
+        /// The player slides off this surface, per <see cref="SlideStartAngle"/>/
+        /// <see cref="SlideStopAngle"/>.
         /// </summary>
         Slide = 1 << 0,
         /// <summary>
@@ -246,12 +246,12 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         PreventStanding = 1 << 3,
         /// <summary>
         /// The player is considered out of bounds while on this surface, and is reset after
-        /// <see cref="SurfaceAsset.OutOfBoundsDelay"/>.
+        /// <see cref="OutOfBoundsDelay"/>.
         /// </summary>
         OutOfBounds = 1 << 4,
         /// <summary>
         /// The player can wall jump off this surface. Required for
-        /// <see cref="SurfaceAsset.WallJumpScaleXZ"/> and <see cref="SurfaceAsset.WallJumpScaleY"/> to
+        /// <see cref="WallJumpScaleXZ"/> and <see cref="WallJumpScaleY"/> to
         /// apply - without it the move does not trigger at all.
         /// </summary>
         WallJump = 1 << 5,
@@ -261,7 +261,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Flags governing active texture animations on a surface.
     /// </summary>
     [Flags]
-    public enum SurfaceTextureAnimFlags : uint
+    public enum AnimationSlot : uint
     {
         /// <summary>
         /// Neither texture animation is active.
@@ -269,12 +269,12 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         None = 0,
 
         /// <summary>
-        /// The first texture animation (<see cref="SurfaceAsset.TextureAnims"/>[0]) is active.
+        /// The first texture animation (<see cref="TextureAnims"/>[0]) is active.
         /// </summary>
         Slot0 = 1 << 0,
 
         /// <summary>
-        /// The second texture animation (<see cref="SurfaceAsset.TextureAnims"/>[1]) is active.
+        /// The second texture animation (<see cref="TextureAnims"/>[1]) is active.
         /// </summary>
         Slot1 = 1 << 1,
     }
@@ -283,7 +283,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Flags governing active UV coordinate animation effects on a surface.
     /// </summary>
     [Flags]
-    public enum SurfaceUvfxFlags : uint
+    public enum UVSlot : uint
     {
         /// <summary>
         /// Neither UV animation is active.
@@ -291,12 +291,12 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         None = 0,
 
         /// <summary>
-        /// The first UV animation (<see cref="SurfaceAsset.Uvfxs"/>[0]) is active.
+        /// The first UV animation (<see cref="Uvfxs"/>[0]) is active.
         /// </summary>
         Slot0 = 1 << 0,
 
         /// <summary>
-        /// The second UV animation (<see cref="SurfaceAsset.Uvfxs"/>[1]) is active.
+        /// The second UV animation (<see cref="Uvfxs"/>[1]) is active.
         /// </summary>
         Slot1 = 1 << 1,
     }
@@ -313,10 +313,10 @@ public static partial class Physical
         /// Flags controlling how this surface's damage is applied, read directly from disk.
         /// </summary>
         /// <remarks>
-        /// <see cref="SurfaceAsset.SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
+        /// <see cref="SurfaceAsset.DamageBehavior.DamagePassthrough"/> is exposed logically as
         /// <see cref="SurfaceAsset.DamagePassthrough"/>.
         /// </remarks>
-        SurfaceAsset.SurfaceGameDamageFlags GameDamageFlags { get; set; }
+        SurfaceAsset.DamageBehavior GameDamageFlags { get; set; }
 
         /// <summary>
         /// Unknown.
@@ -341,21 +341,21 @@ public static partial class Physical
 
         /// <summary>
         /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
-        /// <see cref="SurfaceAsset.SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
+        /// <see cref="SurfaceAsset.TextureEffect.IsEnabled"/> (bit 0 for the first element, bit 1 for the
         /// second).
         /// </summary>
         /// <remarks>
         /// When disagreements with the derived value exist, this field wins during serialization.
         /// </remarks>
-        SurfaceAsset.SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
+        SurfaceAsset.AnimationSlot TextureAnimFlags { get; set; }
 
         /// <summary>
-        /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceAsset.SurfaceUvfx.IsEnabled"/>
+        /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceAsset.UVEffect.IsEnabled"/>
         /// (bit 0 for the first element, bit 1 for the second).
         /// </summary>
         /// <remarks>
         /// When disagreements with the derived value exist, this field wins during serialization.
         /// </remarks>
-        SurfaceAsset.SurfaceUvfxFlags UvfxFlags { get; set; }
+        SurfaceAsset.UVSlot UvfxFlags { get; set; }
     }
 }

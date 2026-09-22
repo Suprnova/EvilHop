@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), Physical.IMorphTargetAsset
 {
     /// <summary>
-    /// Scales each <see cref="MorphTarget.Vertices"/> component when they're packed as 16-bit
+    /// Scales each <see cref="Target.Vertices"/> component when they're packed as 16-bit
     /// integers on disk, or zero when they're stored as full-precision floats instead.
     /// </summary>
     public float Scale { get; set; }
@@ -32,7 +32,7 @@ public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), P
     /// <summary>
     /// The morph targets, each holding one alternate position per vertex of the base mesh.
     /// </summary>
-    public Collection<MorphTarget> Targets { get; } = [];
+    public Collection<Target> Targets { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IMorphTargetAsset Physical => this;
@@ -83,7 +83,7 @@ public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), P
         int paddingSize = (int)((rawSize + 15) / 16 * 16 - rawSize);
 
         for (int t = 0; t < targetCount; t++)
-            asset.Targets.Add(MorphTarget.Read(reader, profile, vertexCount, asset.Scale, paddingSize));
+            asset.Targets.Add(Target.Read(reader, profile, vertexCount, asset.Scale, paddingSize));
 
         asset.Physical.TargetCount = targetCount;
         asset.Physical.VertexCount = vertexCount;
@@ -106,7 +106,7 @@ public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), P
         int paddingSize = (int)((rawSize + 15) / 16 * 16 - rawSize);
 
         foreach (var target in asset.Targets)
-            MorphTarget.Write(target, writer, profile, asset.Scale, paddingSize);
+            Target.Write(target, writer, profile, asset.Scale, paddingSize);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -115,21 +115,21 @@ public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), P
     /// One <see cref="MorphTargetAsset"/> target: one alternate position per vertex of the base mesh,
     /// in the same order.
     /// </summary>
-    public sealed class MorphTarget
+    public sealed class Target
     {
         /// <summary>This target's vertex positions.</summary>
         public Collection<Vector3> Vertices { get; } = [];
 
-        internal static MorphTarget Read(EndianReader reader, FormatProfile profile, int vertexCount, float scale, int paddingSize)
+        internal static Target Read(EndianReader reader, FormatProfile profile, int vertexCount, float scale, int paddingSize)
         {
-            var target = new MorphTarget();
+            var target = new Target();
             for (int v = 0; v < vertexCount; v++)
                 target.Vertices.Add(scale == 0f ? reader.ReadVector3() : ReadScaledVertex(reader, profile, scale));
             reader.ReadBytes(paddingSize); // alignment padding, always zero
             return target;
         }
 
-        internal static void Write(MorphTarget value, EndianWriter writer, FormatProfile profile, float scale, int paddingSize)
+        internal static void Write(Target value, EndianWriter writer, FormatProfile profile, float scale, int paddingSize)
         {
             foreach (var vertex in value.Vertices)
             {
@@ -182,7 +182,7 @@ public static partial class Physical
         /// </summary>
         /// <remarks>
         /// When disagreements with the first <see cref="MorphTargetAsset.Targets"/> entry's
-        /// <see cref="MorphTargetAsset.MorphTarget.Vertices"/>.Count exist, this field wins during serialization.
+        /// <see cref="MorphTargetAsset.Target.Vertices"/>.Count exist, this field wins during serialization.
         /// </remarks>
         ushort VertexCount { get; set; }
     }

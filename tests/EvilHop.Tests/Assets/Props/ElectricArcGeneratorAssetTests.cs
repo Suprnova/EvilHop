@@ -103,7 +103,7 @@ public class ElectricArcGeneratorAssetTests
 
         Assert.Equal(new System.Numerics.Vector3(1.0f, 2.0f, 3.0f), asset.SourceOffset);
         Assert.Equal(6, asset.DamageType);
-        Assert.Equal(ElectricArcGeneratorAsset.ElectricArcGeneratorFlags.StartsOn, asset.Flags);
+        Assert.Equal(ElectricArcGeneratorAsset.Behavior.StartsOn, asset.Flags);
         Assert.Equal(2.5f, asset.ActiveTime);
         Assert.Equal(new AssetId(0xCE7F8131), asset.OnAnimationId);
         Assert.Equal(new AssetId(0x11111111), asset.Physical.ModelId);
@@ -116,7 +116,7 @@ public class ElectricArcGeneratorAssetTests
 
         Assert.Equal(new System.Numerics.Vector3(1.0f, 2.0f, 3.0f), asset.SourceOffset);
         Assert.Equal(6, asset.DamageType);
-        Assert.Equal(ElectricArcGeneratorAsset.ElectricArcGeneratorFlags.StartsOn, asset.Flags);
+        Assert.Equal(ElectricArcGeneratorAsset.Behavior.StartsOn, asset.Flags);
         Assert.Equal(2.5f, asset.ActiveTime);
         Assert.Equal(new AssetId(0xCE7F8131), asset.OnAnimationId);
     }

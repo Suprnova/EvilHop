@@ -84,18 +84,18 @@ public class ParticleSystemAssetTests
     {
         byte[] data = Data(
             systemType: 0, parentId: 0xAABBCCDD, textureId: 0x11223344,
-            flags: (byte)(ParticleSystemFlags.Visible | ParticleSystemFlags.UsePTankRender),
-            priority: 5, maxParticles: 200, renderFunc: (byte)ParticleSystemRenderFunction.QuadStreak,
+            flags: (byte)(Behavior.Visible | Behavior.UsePTankRender),
+            priority: 5, maxParticles: 200, renderFunc: (byte)RenderingFunction.QuadStreak,
             srcBlend: 4, dstBlend: 0, commandCount: 2, commandData: [0x01, 0x02, 0x03, 0x04]);
 
         var asset = (ParticleSystemAsset)Read(data);
 
         Assert.Equal(new AssetId(0xAABBCCDD), asset.ParentId);
         Assert.Equal(new AssetId(0x11223344), asset.TextureId);
-        Assert.Equal(ParticleSystemFlags.Visible | ParticleSystemFlags.UsePTankRender, asset.Flags);
+        Assert.Equal(Behavior.Visible | Behavior.UsePTankRender, asset.Flags);
         Assert.Equal(5, asset.Priority);
         Assert.Equal((ushort)200, asset.MaxParticles);
-        Assert.Equal(ParticleSystemRenderFunction.QuadStreak, asset.RenderFunction);
+        Assert.Equal(RenderingFunction.QuadStreak, asset.RenderFunction);
         Assert.Equal(RwBlendFunction.SourceAlpha, asset.SourceBlend);
         Assert.Equal(RwBlendFunction.Zero, asset.DestinationBlend);
         Assert.Equal(2, ((Physical.IParticleSystemAsset)asset).CommandCount);
@@ -114,8 +114,8 @@ public class ParticleSystemAssetTests
     {
         byte[] data =
         [
-            .. Data(0, 0xAABBCCDD, 0x11223344, (byte)ParticleSystemFlags.Visible, 3, 100,
-                (byte)ParticleSystemRenderFunction.Sprite, 4, 1, 2, [0x00, 0x00, 0x00, 0x0C, 0x01, 0x00, 0x00, 0x00], linkCount: 1),
+            .. Data(0, 0xAABBCCDD, 0x11223344, (byte)Behavior.Visible, 3, 100,
+                (byte)RenderingFunction.Sprite, 4, 1, 2, [0x00, 0x00, 0x00, 0x0C, 0x01, 0x00, 0x00, 0x00], linkCount: 1),
             .. LinkBytes(1, 2, 0x55667788),
         ];
 
@@ -158,10 +158,10 @@ public class ParticleSystemAssetTests
         Assert.Equal(new AssetId(0x63C124FD), asset.Physical.BaseId);
         Assert.Equal(0x27, asset.Physical.BaseType);
         Assert.Equal(new AssetId(0xAB1D26F6), asset.TextureId);
-        Assert.Equal(ParticleSystemFlags.Visible, asset.Flags);
+        Assert.Equal(Behavior.Visible, asset.Flags);
         Assert.Equal(0, asset.Priority);
         Assert.Equal((ushort)0, asset.MaxParticles);
-        Assert.Equal(ParticleSystemRenderFunction.Sprite, asset.RenderFunction);
+        Assert.Equal(RenderingFunction.Sprite, asset.RenderFunction);
         Assert.Equal(RwBlendFunction.SourceAlpha, asset.SourceBlend);
         Assert.Equal(RwBlendFunction.One, asset.DestinationBlend);
         Assert.Equal(4, ((Physical.IParticleSystemAsset)asset).CommandCount);

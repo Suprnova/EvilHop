@@ -69,7 +69,7 @@ public sealed partial class DestructibleAsset() : Asset(AssetType.DestructibleAs
     /// <summary>
     /// This destructible's states, ordered from least to most damaged.
     /// </summary>
-    public Collection<DestructibleAssetState> States { get; } = [];
+    public Collection<State> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IDestructibleAsset Physical => this;
@@ -141,7 +141,7 @@ public sealed partial class DestructibleAsset() : Asset(AssetType.DestructibleAs
         asset.Physical.Padding = reader.ReadBytes(PaddingSize);
 
         for (int i = 0; i < stateCount; i++)
-            asset.States.Add(DestructibleAssetState.Read(reader, profile));
+            asset.States.Add(State.Read(reader, profile));
 
         asset.Physical.StateCount = (uint)asset.States.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -173,7 +173,7 @@ public sealed partial class DestructibleAsset() : Asset(AssetType.DestructibleAs
         writer.Write(asset.Physical.Padding);
 
         foreach (var state in asset.States)
-            DestructibleAssetState.Write(state, writer, profile);
+            State.Write(state, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 /// <see cref="EntityAsset.Angle"/>, rather than a corner or center of its own.
 /// </para>
 /// <para>
-/// <see cref="Shape"/> selects how <see cref="TriggerPosition0"/> and <see cref="TriggerPosition1"/>
+/// <see cref="Kind"/> selects how <see cref="TriggerPosition0"/> and <see cref="TriggerPosition1"/>
 /// are interpreted: absolute box corners, or a sphere's center and radius.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/TRIG">Heavy Iron Modding documentation</seealso>
@@ -41,33 +41,33 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
     /// Which shape this trigger's volume is, and how <see cref="TriggerPosition0"/>/
     /// <see cref="TriggerPosition1"/> are interpreted.
     /// </summary>
-    public TriggerShape Shape { get; set; }
+    public Shape Kind { get; set; }
 
-    private protected override byte Subtype { get => (byte)Shape; set => Shape = (TriggerShape)value; }
+    private protected override byte Subtype { get => (byte)Kind; set => Kind = (Shape)value; }
 
     /// <summary>
-    /// For <see cref="TriggerShape.Box"/>, the front-bottom-left corner, in absolute coordinates.
-    /// For <see cref="TriggerShape.Sphere"/>, the center, in absolute coordinates.
+    /// For <see cref="Shape.Box"/>, the front-bottom-left corner, in absolute coordinates.
+    /// For <see cref="Shape.Sphere"/>, the center, in absolute coordinates.
     /// </summary>
     public Vector3 TriggerPosition0 { get; set; }
 
     /// <summary>
-    /// For <see cref="TriggerShape.Box"/>, the back-top-right corner, in absolute coordinates. For
-    /// <see cref="TriggerShape.Sphere"/>, the radius in <see cref="Vector3.X"/>; <see cref="Vector3.Y"/>
+    /// For <see cref="Shape.Box"/>, the back-top-right corner, in absolute coordinates. For
+    /// <see cref="Shape.Sphere"/>, the radius in <see cref="Vector3.X"/>; <see cref="Vector3.Y"/>
     /// and <see cref="Vector3.Z"/> are always 0.
     /// </summary>
     public Vector3 TriggerPosition1 { get; set; }
 
     /// <summary>
     /// The direction this trigger must be approached from for <see cref="Flags"/>'s
-    /// <see cref="TriggerFlags.DirectionGate"/> to pass.
+    /// <see cref="Behavior.DirectionGate"/> to pass.
     /// </summary>
     public Vector3 Direction { get; set; }
 
     /// <summary>
     /// This trigger's flags.
     /// </summary>
-    public TriggerFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ITriggerAsset Physical => this;
@@ -92,7 +92,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
         if (profile.TriggerHasDirectionAndFlags)
         {
             asset.Direction = reader.ReadVector3();
-            asset.Flags = (TriggerFlags)reader.ReadUInt32();
+            asset.Flags = (Behavior)reader.ReadUInt32();
         }
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
@@ -125,7 +125,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
     /// <summary>
     /// Defines the geometric volume shape (box, sphere, or cylinder) used for trigger collision detection.
     /// </summary>
-    public enum TriggerShape : byte
+    public enum Shape : byte
     {
         /// <summary>
         /// An axis-aligned box between <see cref="TriggerPosition0"/> and
@@ -151,7 +151,7 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
     /// Flags controlling trigger activation criteria, directionality, and player interaction.
     /// </summary>
     [Flags]
-    public enum TriggerFlags : uint
+    public enum Behavior : uint
     {
         /// <summary>
         /// No flags are set.

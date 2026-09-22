@@ -152,7 +152,7 @@ public class ModelInfoAssetTests
         var asset = (ModelInfoAsset)Read(BfbbSampleData(), BFBBSerializer.DefaultProfile);
         Assert.Equal(1u, asset.Physical.ModelInstanceCount);
 
-        asset.ModelInstances.Add(new ModelInfoAsset.ModelInfoInstance());
+        asset.ModelInstances.Add(new ModelInfoAsset.Instance());
 
         Assert.Equal(2u, asset.Physical.ModelInstanceCount);
     }

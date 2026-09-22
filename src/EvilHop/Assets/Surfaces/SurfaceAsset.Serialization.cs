@@ -14,32 +14,32 @@ public sealed partial class SurfaceAsset
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.GameDamageType = (SurfaceGameDamageType)reader.ReadByte();
+        asset.Damage = (DamageKind)reader.ReadByte();
         asset.Physical.GameSticky = reader.ReadByte();
-        asset.Physical.GameDamageFlags = (SurfaceGameDamageFlags)reader.ReadByte();
+        asset.Physical.GameDamageFlags = (DamageBehavior)reader.ReadByte();
         asset.Physical.SurfType = reader.ReadByte();
         reader.ReadByte(); // padding, always zero
         asset.SlideStartAngle = reader.ReadByte();
         asset.SlideStopAngle = reader.ReadByte();
-        asset.PhysFlags = (SurfacePhysicsFlags)reader.ReadByte();
+        asset.PhysFlags = (PhysicsBehavior)reader.ReadByte();
         asset.Friction = reader.ReadSingle();
 
-        asset.MaterialFx = SurfaceMaterialFx.Read(reader, profile);
-        asset.ColorFx = SurfaceColorFx.Read(reader, profile);
+        asset.MaterialFx = MaterialEffect.Read(reader, profile);
+        asset.ColorFx = ColorEffect.Read(reader, profile);
 
-        var textureAnimFlags = (SurfaceTextureAnimFlags)reader.ReadUInt32();
-        var textureAnim0 = SurfaceTextureAnim.Read(reader, profile);
-        var textureAnim1 = SurfaceTextureAnim.Read(reader, profile);
-        textureAnim0.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot0);
-        textureAnim1.IsEnabled = textureAnimFlags.HasFlag(SurfaceTextureAnimFlags.Slot1);
+        var textureAnimFlags = (AnimationSlot)reader.ReadUInt32();
+        var textureAnim0 = TextureEffect.Read(reader, profile);
+        var textureAnim1 = TextureEffect.Read(reader, profile);
+        textureAnim0.IsEnabled = textureAnimFlags.HasFlag(AnimationSlot.Slot0);
+        textureAnim1.IsEnabled = textureAnimFlags.HasFlag(AnimationSlot.Slot1);
         asset.TextureAnims = [textureAnim0, textureAnim1];
         asset.Physical.TextureAnimFlags = textureAnimFlags;
 
-        var uvfxFlags = (SurfaceUvfxFlags)reader.ReadUInt32();
-        var uvfx0 = SurfaceUvfx.Read(reader, profile);
-        var uvfx1 = SurfaceUvfx.Read(reader, profile);
-        uvfx0.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot0);
-        uvfx1.IsEnabled = uvfxFlags.HasFlag(SurfaceUvfxFlags.Slot1);
+        var uvfxFlags = (UVSlot)reader.ReadUInt32();
+        var uvfx0 = UVEffect.Read(reader, profile);
+        var uvfx1 = UVEffect.Read(reader, profile);
+        uvfx0.IsEnabled = uvfxFlags.HasFlag(UVSlot.Slot0);
+        uvfx1.IsEnabled = uvfxFlags.HasFlag(UVSlot.Slot1);
         asset.Uvfxs = [uvfx0, uvfx1];
         asset.Physical.UvfxFlags = uvfxFlags;
 
@@ -70,7 +70,7 @@ public sealed partial class SurfaceAsset
     {
         BaseAssetPrefix.Write(asset, writer);
 
-        writer.Write((byte)asset.GameDamageType);
+        writer.Write((byte)asset.Damage);
         writer.Write(asset.Physical.GameSticky);
         writer.Write((byte)asset.Physical.GameDamageFlags);
         writer.Write(asset.Physical.SurfType);
@@ -80,16 +80,16 @@ public sealed partial class SurfaceAsset
         writer.Write((byte)asset.PhysFlags);
         writer.Write(asset.Friction);
 
-        SurfaceMaterialFx.Write(asset.MaterialFx, writer, profile);
-        SurfaceColorFx.Write(asset.ColorFx, writer, profile);
+        MaterialEffect.Write(asset.MaterialFx, writer, profile);
+        ColorEffect.Write(asset.ColorFx, writer, profile);
 
         writer.Write((uint)asset.Physical.TextureAnimFlags);
-        SurfaceTextureAnim.Write(asset.TextureAnims[0], writer, profile);
-        SurfaceTextureAnim.Write(asset.TextureAnims[1], writer, profile);
+        TextureEffect.Write(asset.TextureAnims[0], writer, profile);
+        TextureEffect.Write(asset.TextureAnims[1], writer, profile);
 
         writer.Write((uint)asset.Physical.UvfxFlags);
-        SurfaceUvfx.Write(asset.Uvfxs[0], writer, profile);
-        SurfaceUvfx.Write(asset.Uvfxs[1], writer, profile);
+        UVEffect.Write(asset.Uvfxs[0], writer, profile);
+        UVEffect.Write(asset.Uvfxs[1], writer, profile);
 
         writer.Write(asset.Physical.IsEnabled);
         writer.Write(new byte[3]); // padding

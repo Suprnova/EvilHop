@@ -3,7 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
-using static EvilHop.Assets.SoundInfoAsset.SoundBankEntry;
+using static EvilHop.Assets.SoundInfoAsset.Sound;
 
 namespace EvilHop.Assets;
 
@@ -51,9 +51,9 @@ public sealed partial class SoundInfoAsset
         int streamCount = reader.ReadInt32();
         int cutsceneCount = profile.Game is GameVersion.BFBB ? reader.ReadInt32() : 0;
 
-        for (int i = 0; i < effectCount; i++) asset.Effects.Add(DspSoundHeader.Read(reader, profile));
-        for (int i = 0; i < streamCount; i++) asset.Streams.Add(DspSoundHeader.Read(reader, profile));
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspSoundHeader.Read(reader, profile));
+        for (int i = 0; i < effectCount; i++) asset.Effects.Add(DspHeader.Read(reader, profile));
+        for (int i = 0; i < streamCount; i++) asset.Streams.Add(DspHeader.Read(reader, profile));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspHeader.Read(reader, profile));
 
         asset.Physical.EffectCount = asset.Effects.Count;
         asset.Physical.StreamCount = asset.Streams.Count;
@@ -69,9 +69,9 @@ public sealed partial class SoundInfoAsset
         writer.Write(asset.Physical.StreamCount);
         if (profile.Game is GameVersion.BFBB) writer.Write(asset.Physical.CutsceneCount);
 
-        foreach (var effect in asset.Effects) DspSoundHeader.Write(effect, writer, profile);
-        foreach (var stream in asset.Streams) DspSoundHeader.Write(stream, writer, profile);
-        foreach (var cutscene in asset.Cutscenes) DspSoundHeader.Write(cutscene, writer, profile);
+        foreach (var effect in asset.Effects) DspHeader.Write(effect, writer, profile);
+        foreach (var stream in asset.Streams) DspHeader.Write(stream, writer, profile);
+        foreach (var cutscene in asset.Cutscenes) DspHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -97,9 +97,9 @@ public sealed partial class SoundInfoAsset
         var bankOffsets = new uint[soundBankCount];
         for (int i = 0; i < soundBankCount; i++) bankOffsets[i] = reader.ReadUInt32();
 
-        for (int i = 0; i < soundCount; i++) asset.Sounds.Add(SoundBankEntry.Read(reader, profile));
+        for (int i = 0; i < soundCount; i++) asset.Sounds.Add(Sound.Read(reader, profile));
 
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspSoundHeader.Read(reader, profile));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspHeader.Read(reader, profile));
 
         long footerEnd = reader.BaseStream.Position;
 
@@ -132,8 +132,8 @@ public sealed partial class SoundInfoAsset
         writer.Write(footerOffset);
         writer.Write(new byte[16]); // runtime-resolved
         writer.Write((ushort)asset.Physical.SoundCount);
-        writer.Write((ushort)asset.Sounds.Count(sound => !sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nSounds
-        writer.Write((ushort)asset.Sounds.Count(sound => sound.Flags.HasFlag(SoundBankEntryFlags.Streaming))); // nStreams
+        writer.Write((ushort)asset.Sounds.Count(sound => !sound.Flags.HasFlag(Identity.Streaming))); // nSounds
+        writer.Write((ushort)asset.Sounds.Count(sound => sound.Flags.HasFlag(Identity.Streaming))); // nStreams
         writer.Write((byte)asset.Physical.SoundBankCount);
         writer.Write((byte)asset.Physical.CutsceneCount);
 
@@ -148,7 +148,7 @@ public sealed partial class SoundInfoAsset
             writer.Write(sound.SoundBankIndex);
             writer.Write(sound.SoundInfoIndex);
         }
-        foreach (var cutscene in asset.Cutscenes) DspSoundHeader.Write(cutscene, writer, profile);
+        foreach (var cutscene in asset.Cutscenes) DspHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

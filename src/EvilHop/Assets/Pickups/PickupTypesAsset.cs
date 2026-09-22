@@ -24,7 +24,7 @@ public sealed partial class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes
     /// <summary>
     /// The pickup type entries in the table.
     /// </summary>
-    public Collection<PickupTypeEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IPickupTypesAsset Physical => this;
@@ -55,7 +55,7 @@ public sealed partial class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes
         asset.Version = reader.ReadInt32();
         int rowCount = reader.ReadInt32();
         for (int i = 0; i < rowCount; i++)
-            asset.Entries.Add(PickupTypeEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.RowCount = rowCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -69,7 +69,7 @@ public sealed partial class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes
         writer.Write(asset.Version);
         writer.Write(asset.Physical.RowCount);
         foreach (var entry in asset.Entries)
-            PickupTypeEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

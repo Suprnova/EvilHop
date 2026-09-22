@@ -227,7 +227,7 @@ public class AssetCodecsTests
         var asset = (BaseAsset)Read(type, new byte[16]);
         byte[] beforeRegistration = Write(asset);
 
-        AssetCodecs.Register<StubAsset>(
+        AssetCodecs.Register(
             type,
             (data, header, debug, profile) => new StubAsset(header.Type),
             (stub, writer, profile) => writer.Write("stub"u8));
@@ -251,7 +251,7 @@ public class AssetCodecsTests
         const AssetType type = AssetType.CutsceneStreamingSound;
         Assert.IsType<GenericAsset>(Read(type, new byte[4]));
 
-        AssetCodecs.Register<StubAsset>(
+        AssetCodecs.Register(
             type,
             (data, header, debug, profile) => new StubAsset(header.Type),
             (asset, writer, profile) => writer.Write("stub"u8));

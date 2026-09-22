@@ -57,12 +57,12 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont, baseTy
     /// <summary>
     /// Behavior flags specific to this <see cref="UIFontAsset"/>.
     /// </summary>
-    public UIFontFlags FontFlags { get; set; }
+    public Behavior FontFlags { get; set; }
 
     /// <summary>
     /// Which built-in rendering mode this <see cref="UIFontAsset"/> uses.
     /// </summary>
-    public UIFontMode Mode { get; set; }
+    public FormattingMode Mode { get; set; }
 
     /// <summary>
     /// The font to render this <see cref="UIFontAsset"/>'s text with.
@@ -76,7 +76,7 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont, baseTy
     public AssetId TextId { get; set; }
 
     /// <summary>
-    /// The color of the backdrop drawn behind the text when <see cref="UIFontFlags.HasBackdrop"/> is
+    /// The color of the backdrop drawn behind the text when <see cref="Behavior.HasBackdrop"/> is
     /// set.
     /// </summary>
     public Rgba BackdropColor { get; set; }
@@ -113,8 +113,8 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont, baseTy
     public short CharacterHeight { get; set; }
 
     /// <summary>
-    /// The maximum height, in pixels, the text box grows to when <see cref="UIFontFlags.GrowUpward"/>
-    /// or <see cref="UIFontFlags.GrowDownward"/> is set. Only present in <see cref="GameVersion.BFBB"/>.
+    /// The maximum height, in pixels, the text box grows to when <see cref="Behavior.GrowUpward"/>
+    /// or <see cref="Behavior.GrowDownward"/> is set. Only present in <see cref="GameVersion.BFBB"/>.
     /// </summary>
     public uint MaxHeight { get; set; }
 
@@ -130,7 +130,7 @@ public sealed partial class UIFontAsset() : EntityAsset(AssetType.UIFont, baseTy
     /// <summary>
     /// Specifies the built-in text rendering layout and formatting mode.
     /// </summary>
-    public enum UIFontMode : byte
+    public enum FormattingMode : byte
     {
         /// <summary>Unknown.</summary>
         Mode1 = 1,

@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// Only the GameCube layout is modeled; every other platform round-trips through
 /// <see cref="Asset.GetUnparsedTail"/>. On <see cref="GameVersion.N100F"/> and
-/// <see cref="GameVersion.BFBB"/>, this asset holds one <see cref="DspSoundHeader"/> per SND/SNDS
+/// <see cref="GameVersion.BFBB"/>, this asset holds one <see cref="DspHeader"/> per SND/SNDS
 /// asset. On every other GameCube-supported game, sounds are instead stored directly in this asset as
 /// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
@@ -23,14 +23,14 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     /// Headers for this level's sound effects, one per <see cref="AssetType.Sound"/> asset.
     /// </summary>
     /// <remarks>Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.</remarks>
-    public Collection<DspSoundHeader> Effects { get; } = [];
+    public Collection<DspHeader> Effects { get; } = [];
 
     /// <summary>
     /// Headers for this level's streaming sounds (voice lines and music), one per
     /// <see cref="AssetType.StreamingSound"/> asset.
     /// </summary>
     /// <remarks>Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.</remarks>
-    public Collection<DspSoundHeader> Streams { get; } = [];
+    public Collection<DspHeader> Streams { get; } = [];
 
     /// <summary>
     /// Headers linking to this level's cutscene audio, one per <see cref="AssetType.CutsceneStreamingSound"/>
@@ -40,7 +40,7 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     /// Populated for <see cref="GameVersion.BFBB"/>'s header-table layout, and for every game using
     /// the FSB3-embedded layout - both store cutscene headers in this same shape.
     /// </remarks>
-    public Collection<DspSoundHeader> Cutscenes { get; } = [];
+    public Collection<DspHeader> Cutscenes { get; } = [];
 
     /// <summary>
     /// The raw FMOD "FSB3" sample bank files embedded directly in this asset. The first bank is
@@ -58,7 +58,7 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     /// Metadata for every sound stored across <see cref="SoundBanks"/>.
     /// </summary>
     /// <remarks>Populated alongside <see cref="SoundBanks"/>.</remarks>
-    public Collection<SoundBankEntry> Sounds { get; } = [];
+    public Collection<Sound> Sounds { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISoundInfoAsset Physical => this;

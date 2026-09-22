@@ -4,7 +4,6 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -18,7 +17,7 @@ namespace EvilHop.Assets;
 public sealed partial class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physical.IShrapnelAsset
 {
     /// <summary>This shrapnel asset's fragments.</summary>
-    public Collection<ShrapnelFrag> Frags { get; } = [];
+    public Collection<Fragment> Frags { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IShrapnelAsset Physical => this;
@@ -51,32 +50,32 @@ public sealed partial class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physica
 
     internal static int GetFragSize(
         GameVersion game,
-        ShrapnelFragType type,
+        FragmentKind type,
         bool hasExtendedFragFields = true,
         bool soundHasExtendedFields = true,
         bool projectileHasIntermediateFields = false) => type switch
         {
-            ShrapnelFragType.Shrapnel => 0x20,
-            ShrapnelFragType.Particle => game == GameVersion.BFBB ? (hasExtendedFragFields ? 0x1D4 : 0x1D0) : 0x1F4,
-            ShrapnelFragType.Projectile => game == GameVersion.BFBB
+            FragmentKind.Shrapnel => 0x20,
+            FragmentKind.Particle => game == GameVersion.BFBB ? (hasExtendedFragFields ? 0x1D4 : 0x1D0) : 0x1F4,
+            FragmentKind.Projectile => game == GameVersion.BFBB
                 ? (hasExtendedFragFields ? 0x90 : (projectileHasIntermediateFields ? 0x6C : 0x58))
                 : (game is GameVersion.ROTU or GameVersion.Ratatouille ? 0x158 : 0x110),
-            ShrapnelFragType.Lightning => game == GameVersion.BFBB ? 0x68 : 0x70,
-            ShrapnelFragType.Sound => game == GameVersion.BFBB ? (soundHasExtendedFields ? 0x4C : 0x40) : 0x44,
-            ShrapnelFragType.Shockwave => 0x54,
-            ShrapnelFragType.Explosion when game != GameVersion.BFBB => 0x48,
-            ShrapnelFragType.Distortion when game != GameVersion.BFBB => 0x5C,
-            ShrapnelFragType.Fire when game != GameVersion.BFBB =>
+            FragmentKind.Lightning => game == GameVersion.BFBB ? 0x68 : 0x70,
+            FragmentKind.Sound => game == GameVersion.BFBB ? (soundHasExtendedFields ? 0x4C : 0x40) : 0x44,
+            FragmentKind.Shockwave => 0x54,
+            FragmentKind.Explosion when game != GameVersion.BFBB => 0x48,
+            FragmentKind.Distortion when game != GameVersion.BFBB => 0x5C,
+            FragmentKind.Fire when game != GameVersion.BFBB =>
                 game is GameVersion.ROTU or GameVersion.Ratatouille ? 0xB4 : 0x5C,
-            ShrapnelFragType.Light when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x60,
-            ShrapnelFragType.Smoke when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x50,
-            ShrapnelFragType.Goo when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x88,
+            FragmentKind.Light when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x60,
+            FragmentKind.Smoke when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x50,
+            FragmentKind.Goo when game is GameVersion.ROTU or GameVersion.Ratatouille => 0x88,
             _ => -1,
         };
 
     /// <summary>
-    /// The on-disk size of an <see cref="ShrapnelFragType.Inactive"/> fragment, keyed by its
-    /// otherwise-unused <see cref="ShrapnelFrag.Id"/> field.
+    /// The on-disk size of an <see cref="FragmentKind.Inactive"/> fragment, keyed by its
+    /// otherwise-unused <see cref="Fragment.Id"/> field.
     /// </summary>
     internal static int GetInactiveFragSize(GameVersion game, uint id) => (game, id) switch
     {
@@ -97,7 +96,7 @@ public sealed partial class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physica
         reader.ReadUInt32(); // initCB (runtime pointer, constant 0 on disk)
 
         for (int i = 0; i < fragCount; i++)
-            asset.Frags.Add(ShrapnelFrag.Read(reader, profile));
+            asset.Frags.Add(Fragment.Read(reader, profile));
 
         asset.Physical.FragCount = asset.Frags.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -111,7 +110,7 @@ public sealed partial class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physica
         writer.Write(0u); // initCB (runtime pointer, constant 0 on disk)
 
         foreach (var frag in asset.Frags)
-            ShrapnelFrag.Write(frag, writer, profile);
+            Fragment.Write(frag, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

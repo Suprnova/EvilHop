@@ -17,11 +17,11 @@ namespace EvilHop.Assets;
 /// </remarks>
 public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 0xCD), Physical.IGrassMeshAsset
 {
-    /// <summary>The mesh's vertices, indexed by <see cref="GrassMeshFace"/>.</summary>
-    public Collection<GrassMeshVertex> Vertices { get; } = [];
+    /// <summary>The mesh's vertices, indexed by <see cref="Face"/>.</summary>
+    public Collection<Vertex> Vertices { get; } = [];
 
     /// <summary>The mesh's triangular faces.</summary>
-    public Collection<GrassMeshFace> Faces { get; } = [];
+    public Collection<Face> Faces { get; } = [];
 
     /// <summary>The minimum corner of the mesh's bounding box.</summary>
     public Vector3 MinBounds { get; set; }
@@ -66,10 +66,10 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
         asset.MaxBounds = reader.ReadVector3();
 
         for (int i = 0; i < vertexCount; i++)
-            asset.Vertices.Add(GrassMeshVertex.Read(reader, profile));
+            asset.Vertices.Add(Vertex.Read(reader, profile));
 
         for (int i = 0; i < faceCount; i++)
-            asset.Faces.Add(GrassMeshFace.Read(reader, profile));
+            asset.Faces.Add(Face.Read(reader, profile));
 
         asset.Physical.VertexCount = vertexCount;
         asset.Physical.FaceCount = faceCount;
@@ -86,16 +86,16 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
         writer.Write(asset.MaxBounds);
 
         foreach (var vertex in asset.Vertices)
-            GrassMeshVertex.Write(vertex, writer, profile);
+            Vertex.Write(vertex, writer, profile);
 
         foreach (var face in asset.Faces)
-            GrassMeshFace.Write(face, writer, profile);
+            Face.Write(face, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
 
     /// <summary>One <see cref="GrassMeshAsset"/> vertex.</summary>
-    public record struct GrassMeshVertex
+    public record struct Vertex
     {
         /// <summary>The vertex's position, relative to the mesh's origin.</summary>
         public Vector3 Position { get; set; }
@@ -109,7 +109,7 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
         /// <summary>The vertex's color.</summary>
         public Rgba Color { get; set; }
 
-        internal static GrassMeshVertex Read(EndianReader reader, FormatProfile _) => new()
+        internal static Vertex Read(EndianReader reader, FormatProfile _) => new()
         {
             Position = reader.ReadVector3(),
             Height = reader.ReadSingle(),
@@ -117,7 +117,7 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
             Color = reader.ReadRgba32(),
         };
 
-        internal static void Write(GrassMeshVertex value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Vertex value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.Position);
             writer.Write(value.Height);
@@ -130,7 +130,7 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
     /// One <see cref="GrassMeshAsset"/> face: three <see cref="Vertices"/> indices forming
     /// a triangle.
     /// </summary>
-    public record struct GrassMeshFace
+    public record struct Face
     {
         /// <summary>The first of the face's three <see cref="Vertices"/> indices.</summary>
         public ushort VertexA { get; set; }
@@ -141,14 +141,14 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
         /// <summary>The third of the face's three <see cref="Vertices"/> indices.</summary>
         public ushort VertexC { get; set; }
 
-        internal static GrassMeshFace Read(EndianReader reader, FormatProfile _) => new()
+        internal static Face Read(EndianReader reader, FormatProfile _) => new()
         {
             VertexA = reader.ReadUInt16(),
             VertexB = reader.ReadUInt16(),
             VertexC = reader.ReadUInt16(),
         };
 
-        internal static void Write(GrassMeshFace value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Face value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.VertexA);
             writer.Write(value.VertexB);

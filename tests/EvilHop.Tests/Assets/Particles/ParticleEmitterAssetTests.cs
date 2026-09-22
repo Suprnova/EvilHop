@@ -112,15 +112,15 @@ public class ParticleEmitterAssetTests
     public void Read_ParticleEmitter_UnderBFBB_PopulatesCommonFields()
     {
         byte[] data = BFBBData(
-            flags: 0x01, kind: (byte)ParticleEmitterKind.Point, propId: 0xAABBCCDD, shapeFields: [],
+            flags: 0x01, kind: (byte)ShapeKind.Point, propId: 0xAABBCCDD, shapeFields: [],
             attachToId: 0x11223344, pos: new Vector3(1, 2, 3), vel: new Vector3(4, 5, 6),
             velAngleVariation: 0.5f, cullMode: 3, cullDistSqr: 100f);
 
         var asset = (ParticleEmitterAsset)Read(data);
 
-        Assert.Equal(ParticleEmitterFlags.On, asset.Flags);
-        Assert.Equal(ParticleEmitterKind.Point, asset.Kind);
-        Assert.IsType<PointEmitterShape>(asset.Shape);
+        Assert.Equal(Behavior.On, asset.Flags);
+        Assert.Equal(ShapeKind.Point, asset.Kind);
+        Assert.IsType<Point>(asset.Shape);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.PropId);
         Assert.Equal(new AssetId(0x11223344), asset.AttachToId);
         Assert.Equal(new Vector3(1, 2, 3), asset.Position);
@@ -134,10 +134,10 @@ public class ParticleEmitterAssetTests
     public void Read_ParticleEmitter_UnderBFBB_CircleKind_PopulatesCircleShape()
     {
         byte[] shapeFields = [.. F32(5.0f), .. F32(0.25f), .. Vec3(new Vector3(0, 1, 0))];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.Circle, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.Circle, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         var asset = (ParticleEmitterAsset)Read(data);
-        var shape = Assert.IsType<CircleEmitterShape>(asset.Shape);
+        var shape = Assert.IsType<Circle>(asset.Shape);
 
         Assert.Equal(5.0f, shape.Radius);
         Assert.Equal(0.25f, shape.Deflection);
@@ -153,10 +153,10 @@ public class ParticleEmitterAssetTests
             .. Vec3(new Vector3(1, 2, 3)),
             .. F32(4.0f), .. F32(0.5f),
         ];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.EntityBone, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.EntityBone, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         var asset = (ParticleEmitterAsset)Read(data);
-        var shape = Assert.IsType<EntityBoneEmitterShape>(asset.Shape);
+        var shape = Assert.IsType<EntityBone>(asset.Shape);
 
         Assert.Equal(1, shape.Flags);
         Assert.Equal(2, shape.AttachType);
@@ -171,7 +171,7 @@ public class ParticleEmitterAssetTests
     {
         byte[] shapeFields = [.. F32(2.5f), .. F32(0.1f)];
         byte[] data = N100FData(
-            flags: 0x01, kind: (byte)ParticleEmitterKind.Circle, count: 5, countVariation: 1, interval: 0.2f,
+            flags: 0x01, kind: (byte)ShapeKind.Circle, count: 5, countVariation: 1, interval: 0.2f,
             shapeFields: shapeFields, attachToId: 0, parSysId: 0xCAFEBEEF, pos: new Vector3(1, 2, 3),
             vel: new Vector3(0, 1, 0), velAngleVariation: 0.1f,
             colorBirth: new Rgba(1f, 1f, 1f, 1f), colorDeath: new Rgba(1f, 1f, 1f, 0f),
@@ -179,7 +179,7 @@ public class ParticleEmitterAssetTests
             cullMode: 3, cullDistSqr: 100f, maxEmit: 20);
 
         var asset = (ParticleEmitterAsset)Read(data, N100FSerializer.DefaultProfile);
-        var shape = Assert.IsType<CircleEmitterShape>(asset.Shape);
+        var shape = Assert.IsType<Circle>(asset.Shape);
 
         Assert.Equal(2.5f, shape.Radius);
         Assert.Equal(0.1f, shape.Deflection);
@@ -206,7 +206,7 @@ public class ParticleEmitterAssetTests
     {
         byte[] data =
         [
-            .. BFBBData(0x01, (byte)ParticleEmitterKind.Point, 0xAABBCCDD, [], 0x11223344,
+            .. BFBBData(0x01, (byte)ShapeKind.Point, 0xAABBCCDD, [], 0x11223344,
                 new Vector3(1, 2, 3), new Vector3(4, 5, 6), 0.5f, 3, 100f, linkCount: 1),
             .. LinkBytes(1, 2, 0x55667788),
         ];
@@ -218,7 +218,7 @@ public class ParticleEmitterAssetTests
     public void Read_ThenWrite_ParticleEmitterUnderBFBB_CircleKind_ReproducesInputBytes()
     {
         byte[] shapeFields = [.. F32(5.0f), .. F32(0.25f), .. Vec3(new Vector3(0, 1, 0))];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.Circle, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.Circle, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         Assert.Equal(data, Write(Read(data)));
     }
@@ -227,7 +227,7 @@ public class ParticleEmitterAssetTests
     public void Read_ThenWrite_ParticleEmitterUnderBFBB_VolumeKind_ReproducesInputBytes()
     {
         byte[] shapeFields = [.. U32(0xDEADBEEF)];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.Volume, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.Volume, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         Assert.Equal(data, Write(Read(data)));
     }
@@ -236,7 +236,7 @@ public class ParticleEmitterAssetTests
     public void Read_ThenWrite_ParticleEmitterUnderBFBB_LineKind_ReproducesInputBytes()
     {
         byte[] shapeFields = [.. Vec3(new Vector3(1, 2, 3)), .. Vec3(new Vector3(4, 5, 6)), .. F32(0.5f)];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.Line, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.Line, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         Assert.Equal(data, Write(Read(data)));
     }
@@ -245,7 +245,7 @@ public class ParticleEmitterAssetTests
     public void Read_ThenWrite_ParticleEmitterUnderBFBB_EntityBoundKind_ReproducesInputBytes()
     {
         byte[] shapeFields = [0x01, 0x02, 0x00, 0x00, .. F32(1.5f), .. F32(0.5f)];
-        byte[] data = BFBBData(0, (byte)ParticleEmitterKind.EntityBound, 0, shapeFields, 0, default, default, 0, 3, 0);
+        byte[] data = BFBBData(0, (byte)ShapeKind.EntityBound, 0, shapeFields, 0, default, default, 0, 3, 0);
 
         Assert.Equal(data, Write(Read(data)));
     }
@@ -256,7 +256,7 @@ public class ParticleEmitterAssetTests
         byte[] shapeFields = [.. F32(2.5f), .. F32(0.1f)];
         byte[] data =
         [
-            .. N100FData(0x01, (byte)ParticleEmitterKind.Circle, 5, 1, 0.2f, shapeFields, 0, 0xCAFEBEEF,
+            .. N100FData(0x01, (byte)ShapeKind.Circle, 5, 1, 0.2f, shapeFields, 0, 0xCAFEBEEF,
                 new Vector3(1, 2, 3), new Vector3(0, 1, 0), 0.1f, new Rgba(1f, 1f, 1f, 1f), new Rgba(1f, 1f, 1f, 0f),
                 1.0f, 0.1f, 0.5f, 2.0f, 0.2f, 3, 100f, 20, linkCount: 1),
             .. LinkBytes(1, 2, 0x55667788),

@@ -98,9 +98,9 @@ public class UIMotionAssetTests
     public void Read_UIMotion_PopulatesMoveCommand()
     {
         var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
-        var command = Assert.IsType<MoveCommand>(asset.Commands[0]);
+        var command = Assert.IsType<Move>(asset.Commands[0]);
 
-        Assert.Equal(UIMotionCommandType.Move, command.Type);
+        Assert.Equal(Command.Move, command.Type);
         Assert.Equal(0.0f, command.StartTime);
         Assert.Equal(1.0f, command.EndTime);
         Assert.True(command.Enabled);
@@ -118,7 +118,7 @@ public class UIMotionAssetTests
         ];
 
         var asset = (UIMotionAsset)Read(data, TSSMSerializer.DefaultProfile);
-        var command = Assert.IsType<ColorCommand>(asset.Commands[0]);
+        var command = Assert.IsType<Color>(asset.Commands[0]);
 
         Assert.Equal(new Rgb(0xFF / 255f, 0x80 / 255f, 0x00 / 255f), command.StartColor);
         Assert.Equal(new Rgb(0x00 / 255f, 0x80 / 255f, 0xFF / 255f), command.EndColor);
@@ -176,15 +176,15 @@ public class UIMotionAssetTests
 
         var asset = (UIMotionAsset)Read(data, profile);
         Assert.Equal(8, asset.Commands.Count);
-        Assert.IsType<MoveCommand>(asset.Commands[0]);
-        Assert.IsType<ScaleCommand>(asset.Commands[1]);
-        Assert.IsType<RotateCommand>(asset.Commands[2]);
-        Assert.IsType<OpacityCommand>(asset.Commands[3]);
-        Assert.IsType<AbsoluteScaleCommand>(asset.Commands[4]);
-        Assert.IsType<BrightnessCommand>(asset.Commands[5]);
-        Assert.IsType<ColorCommand>(asset.Commands[6]);
-        Assert.IsType<UVScrollCommand>(asset.Commands[7]);
-        Assert.False(((UVScrollCommand)asset.Commands[7]).Enabled);
+        Assert.IsType<Move>(asset.Commands[0]);
+        Assert.IsType<Scale>(asset.Commands[1]);
+        Assert.IsType<Rotate>(asset.Commands[2]);
+        Assert.IsType<Opacity>(asset.Commands[3]);
+        Assert.IsType<AbsoluteScale>(asset.Commands[4]);
+        Assert.IsType<Brightness>(asset.Commands[5]);
+        Assert.IsType<Color>(asset.Commands[6]);
+        Assert.IsType<UVScroll>(asset.Commands[7]);
+        Assert.False(((UVScroll)asset.Commands[7]).Enabled);
 
         Assert.Equal(data, Write(asset, profile));
     }
@@ -251,7 +251,7 @@ public class UIMotionAssetTests
     {
         var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
 
-        asset.Commands.Add(new MoveCommand());
+        asset.Commands.Add(new Move());
 
         Assert.Equal((byte)2, ((Physical.IUIMotionAsset)asset).CommandCount);
     }
@@ -261,7 +261,7 @@ public class UIMotionAssetTests
     {
         var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
 
-        asset.Commands.Add(new ScaleCommand());
+        asset.Commands.Add(new Scale());
 
         Assert.Equal((uint)(32 + 44), ((Physical.IUIMotionAsset)asset).CommandsSize);
     }

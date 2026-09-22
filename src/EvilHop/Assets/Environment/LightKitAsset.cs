@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 namespace EvilHop.Assets;
 
 /// <summary>
-/// A set of <see cref="LightKitLight"/>s applied together to a <see cref="AssetType.JSP"/> or the
+/// A set of <see cref="Light"/>s applied together to a <see cref="AssetType.JSP"/> or the
 /// entities placed within it.
 /// </summary>
 /// <remarks>
@@ -25,7 +25,7 @@ public sealed partial class LightKitAsset() : Asset(AssetType.LightKit), Physica
     /// <summary>
     /// The kit's lights.
     /// </summary>
-    public Collection<LightKitLight> Lights { get; } = [];
+    public Collection<Light> Lights { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ILightKitAsset Physical => this;
@@ -66,7 +66,7 @@ public sealed partial class LightKitAsset() : Asset(AssetType.LightKit), Physica
             reader.ReadUInt32(); // "blended" - always 0xCDCDCDCD (uninitialized) on disk, reset to false at load
 
         for (int i = 0; i < lightCount; i++)
-            asset.Lights.Add(LightKitLight.Read(reader, profile));
+            asset.Lights.Add(Light.Read(reader, profile));
 
         asset.Physical.LightCount = lightCount;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -84,7 +84,7 @@ public sealed partial class LightKitAsset() : Asset(AssetType.LightKit), Physica
             writer.Write(0xCDCDCDCDu); // "blended"
 
         foreach (var light in asset.Lights)
-            LightKitLight.Write(light, writer, profile);
+            Light.Write(light, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

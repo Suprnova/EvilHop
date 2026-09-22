@@ -20,7 +20,7 @@ public sealed partial class LODTableAsset() : Asset(AssetType.LODTable), Physica
     /// <summary>
     /// The table's entries, each mapping one base model to its levels of detail.
     /// </summary>
-    public Collection<LODTableEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ILODTableAsset Physical => this;
@@ -50,7 +50,7 @@ public sealed partial class LODTableAsset() : Asset(AssetType.LODTable), Physica
 
         int count = reader.ReadInt32();
         for (int i = 0; i < count; i++)
-            asset.Entries.Add(LODTableEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -61,7 +61,7 @@ public sealed partial class LODTableAsset() : Asset(AssetType.LODTable), Physica
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-            LODTableEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
 }

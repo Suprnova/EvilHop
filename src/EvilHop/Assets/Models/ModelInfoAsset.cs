@@ -4,7 +4,6 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
-using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -35,9 +34,9 @@ public sealed partial class ModelInfoAsset() : Asset(AssetType.ModelInfo), Physi
 
     /// <summary>
     /// The model hierarchy's instances. The first entry is the root; every other entry attaches to
-    /// <see cref="ModelInfoInstance.Parent"/>, an index into this same collection.
+    /// <see cref="Instance.Parent"/>, an index into this same collection.
     /// </summary>
-    public Collection<ModelInfoInstance> ModelInstances { get; } = [];
+    public Collection<Instance> ModelInstances { get; } = [];
 
     /// <summary>Named parameters this model's NPC AI code reads by hash.</summary>
     public Collection<ModelInfoParameter> Parameters { get; } = [];
@@ -84,7 +83,7 @@ public sealed partial class ModelInfoAsset() : Asset(AssetType.ModelInfo), Physi
         }
 
         for (int i = 0; i < modelInstanceCount; i++)
-            asset.ModelInstances.Add(ModelInfoInstance.Read(reader, profile));
+            asset.ModelInstances.Add(Instance.Read(reader, profile));
 
         while (reader.BaseStream.Length - reader.BaseStream.Position >= 5)
         {
@@ -121,7 +120,7 @@ public sealed partial class ModelInfoAsset() : Asset(AssetType.ModelInfo), Physi
         }
 
         foreach (var instance in asset.ModelInstances)
-            ModelInfoInstance.Write(instance, writer, profile);
+            Instance.Write(instance, writer, profile);
 
         foreach (var parameter in asset.Parameters)
             ModelInfoParameter.Write(parameter, writer, profile);

@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 
 /// <summary>
 /// The end-credits sequence played after completing the game: a set of independently-scrolling
-/// <see cref="CreditsSection"/>s, optionally encrypted on disk.
+/// <see cref="Section"/>s, optionally encrypted on disk.
 /// </summary>
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/CRDT">Heavy Iron Modding documentation</seealso>
@@ -31,8 +31,8 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     /// </summary>
     public bool IsEncrypted
     {
-        get => Physical.State == CreditsState.Encrypted;
-        set => Physical.State = value ? CreditsState.Encrypted : CreditsState.NotEncrypted;
+        get => Physical.State == State.Encrypted;
+        set => Physical.State = value ? State.Encrypted : State.NotEncrypted;
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     /// <summary>
     /// This <see cref="CreditsAsset"/>'s independently-scrolling sections, shown one after another.
     /// </summary>
-    public Collection<CreditsSection> Sections { get; } = [];
+    public Collection<Section> Sections { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ICreditsAsset Physical => this;
@@ -57,8 +57,8 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     private AssetId _creditsId;
     AssetId Physical.ICreditsAsset.CreditsId { get => _creditsId; set => _creditsId = value; }
 
-    private CreditsState _state;
-    CreditsState Physical.ICreditsAsset.State { get => _state; set => _state = value; }
+    private State _state;
+    State Physical.ICreditsAsset.State { get => _state; set => _state = value; }
 
     private uint? _overriddenTotalSize;
     uint Physical.ICreditsAsset.TotalSize
@@ -80,7 +80,7 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     };
 
     private uint ComputedTotalSize =>
-        (uint)(HeaderSize + Sections.Sum(CreditsSection.SectionByteLength) + GetUnparsedTail().Length);
+        (uint)(HeaderSize + Sections.Sum(Section.SectionByteLength) + GetUnparsedTail().Length);
 
     internal static CreditsAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
@@ -90,17 +90,17 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
         asset.Physical.Magic = reader.ReadUInt32();
         asset.Physical.Version = reader.ReadUInt32();
         asset.Physical.CreditsId = reader.ReadAssetId();
-        asset.Physical.State = (CreditsState)reader.ReadUInt32();
+        asset.Physical.State = (State)reader.ReadUInt32();
         asset.Duration = reader.ReadSingle();
         asset.Physical.TotalSize = reader.ReadUInt32();
 
         byte[] body = reader.ReadRemainingBytes();
-        if (asset.Physical.State is CreditsState.Encrypted)
+        if (asset.Physical.State is State.Encrypted)
             Decrypt(body);
 
         using var bodyReader = new EndianReader(new MemoryStream(body), profile.Endianness);
         while (body.Length - bodyReader.BaseStream.Position >= SectionHeaderSize)
-            asset.Sections.Add(CreditsSection.Read(bodyReader, profile));
+            asset.Sections.Add(Section.Read(bodyReader, profile));
 
         asset.SetUnparsedTail(body[(int)bodyReader.BaseStream.Position..]);
         asset.Physical.TotalSize = asset.ComputedTotalSize;
@@ -120,12 +120,12 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
         using (var bodyWriter = new EndianWriter(bodyStream, profile.Endianness, leaveOpen: true))
         {
             foreach (var section in asset.Sections)
-                CreditsSection.Write(section, bodyWriter, profile);
+                Section.Write(section, bodyWriter, profile);
             bodyWriter.Write(asset.GetUnparsedTail());
         }
 
         byte[] body = bodyStream.ToArray();
-        if (asset.Physical.State is CreditsState.Encrypted)
+        if (asset.Physical.State is State.Encrypted)
             Encrypt(body);
 
         writer.Write(body);
@@ -155,7 +155,7 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     /// <summary>
     /// Defines the playback and display state of a credits entry.
     /// </summary>
-    public enum CreditsState : uint
+    public enum State : uint
     {
         /// <summary>The body following the header is stored as-is.</summary>
         NotEncrypted = 1,
@@ -174,17 +174,17 @@ public sealed partial class CreditsAsset() : Asset(AssetType.Credits), Physical.
     /// <summary>
     /// Specifies text alignment and layout positioning for credits lines.
     /// </summary>
-    public enum CreditsPresetAlignment : ushort
+    public enum Alignment : ushort
     {
-        /// <summary>A single, centered <see cref="CreditsTextbox"/>.</summary>
+        /// <summary>A single, centered <see cref="Textbox"/>.</summary>
         Center = 0,
-        /// <summary>Two <see cref="CreditsTextbox"/>s, both left-aligned.</summary>
+        /// <summary>Two <see cref="Textbox"/>s, both left-aligned.</summary>
         Left = 1,
-        /// <summary>Two <see cref="CreditsTextbox"/>s, both right-aligned.</summary>
+        /// <summary>Two <see cref="Textbox"/>s, both right-aligned.</summary>
         Right = 2,
-        /// <summary>Two <see cref="CreditsTextbox"/>s, facing each other across the gap between them.</summary>
+        /// <summary>Two <see cref="Textbox"/>s, facing each other across the gap between them.</summary>
         Inner = 3,
-        /// <summary>A single <see cref="CreditsTexture"/>.</summary>
+        /// <summary>A single <see cref="CreditsAsset.Texture"/>.</summary>
         Texture = 4,
     }
 }
@@ -215,7 +215,7 @@ public static partial class Physical
         /// <summary>
         /// Whether the body following this header is encrypted.
         /// </summary>
-        CreditsAsset.CreditsState State { get; set; }
+        CreditsAsset.State State { get; set; }
 
         /// <summary>
         /// The total size, in bytes, of this <see cref="CreditsAsset"/>'s entire on-disk representation,

@@ -36,16 +36,16 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
     public AssetId SubtitlesId { get; set; }
 
     /// <summary>
-    /// Always exactly 15 <see cref="CutsceneEmitterCue"/> slots.
+    /// Always exactly 15 <see cref="EmitterCue"/> slots.
     /// </summary>
     /// <exception cref="ArgumentException">The assigned value's length isn't 15.</exception>
-    public ImmutableArray<CutsceneEmitterCue> EmitterCues
+    public ImmutableArray<EmitterCue> EmitterCues
     {
         get;
         set => field = value.Length == EmitterCueSlotCount
             ? value
             : throw new ArgumentException($"{nameof(EmitterCues)} must contain exactly {EmitterCueSlotCount} elements.", nameof(value));
-    } = [.. new CutsceneEmitterCue[EmitterCueSlotCount]];
+    } = [.. new EmitterCue[EmitterCueSlotCount]];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ICutsceneManagerAsset Physical => this;
@@ -86,10 +86,10 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
         for (int i = 0; i < EmitterCueSlotCount; i++)
             endTimes[i] = reader.ReadSingle();
 
-        var cues = new CutsceneEmitterCue[EmitterCueSlotCount];
+        var cues = new EmitterCue[EmitterCueSlotCount];
         for (int i = 0; i < EmitterCueSlotCount; i++)
         {
-            cues[i] = new CutsceneEmitterCue
+            cues[i] = new EmitterCue
             {
                 EmitterId = reader.ReadAssetId(),
                 StartTime = startTimes[i],
@@ -132,7 +132,7 @@ public sealed class CutsceneManagerAsset() : BaseAsset(AssetType.CutsceneManager
     /// One particle emitter cue in a <see cref="CutsceneManagerAsset"/>, enabling <see cref="EmitterId"/>
     /// between <see cref="StartTime"/> and <see cref="EndTime"/> while the cutscene plays.
     /// </summary>
-    public record struct CutsceneEmitterCue
+    public record struct EmitterCue
     {
         /// <summary>
         /// The particle emitter this cue targets, or <see cref="AssetId.None"/> if this slot is unused.

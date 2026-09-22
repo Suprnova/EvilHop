@@ -38,7 +38,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     /// <summary>
     /// Which kinds of hits this object reacts to.
     /// </summary>
-    public DestructibleHitFlags HitFlags { get; set; }
+    public DamageSource HitFlags { get; set; }
 
     /// <summary>
     /// This object's collision type, separate from <see cref="Physical.IEntityAsset.CollisionFlags"/>.
@@ -48,7 +48,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     /// <summary>
     /// Which particle effect plays when this object is destroyed.
     /// </summary>
-    public DestructibleFxType FxType { get; set; }
+    public Effect FxType { get; set; }
 
     /// <summary>
     /// The radius, in world units, of the blast damage dealt when this object is destroyed.
@@ -126,9 +126,9 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
         asset.InitialAnimationState = reader.ReadUInt32();
         asset.Health = reader.ReadUInt32();
         asset.SpawnItemId = reader.ReadAssetId();
-        asset.HitFlags = (DestructibleHitFlags)reader.ReadUInt32();
+        asset.HitFlags = (DamageSource)reader.ReadUInt32();
         asset.CollisionType = reader.ReadByte();
-        asset.FxType = (DestructibleFxType)reader.ReadByte();
+        asset.FxType = (Effect)reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
         asset.BlastRadius = reader.ReadSingle();
         asset.BlastStrength = reader.ReadSingle();
@@ -193,7 +193,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     /// Flags determining which player attacks or physics impacts can damage this destructible object.
     /// </summary>
     [Flags]
-    public enum DestructibleHitFlags : uint
+    public enum DamageSource : uint
     {
         /// <summary>
         /// No flags are set.
@@ -225,7 +225,7 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
     /// <summary>
     /// Specifies the visual and sound effect spawned upon destruction.
     /// </summary>
-    public enum DestructibleFxType : byte
+    public enum Effect : byte
     {
         /// <summary>
         /// No effect plays.

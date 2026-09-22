@@ -150,7 +150,7 @@ public class SoundGroupAssetTests
     [Fact]
     public void Entries_WhenEntryAdded_ContainsSameEntryInstance()
     {
-        var entry = new SoundGroupEntry();
+        var entry = new Entry();
 
         _asset.Entries.Add(entry);
 
@@ -163,7 +163,7 @@ public class SoundGroupAssetTests
     [InlineData(0xFFFFFFFFu)]
     public void SoundId_WhenAssigned_SetsValue(uint idValue)
     {
-        var entry = new SoundGroupEntry();
+        var entry = new Entry();
         var id = new AssetId(idValue);
 
         entry.SoundId = id;
@@ -177,7 +177,7 @@ public class SoundGroupAssetTests
     [InlineData(1.0f)]
     public void Volume_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry
+        var entry = new Entry
         {
             Volume = value
         };
@@ -191,7 +191,7 @@ public class SoundGroupAssetTests
     [InlineData(2.0f)]
     public void MinPitchMultiplier_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry
+        var entry = new Entry
         {
             MinPitchMultiplier = value
         };
@@ -205,7 +205,7 @@ public class SoundGroupAssetTests
     [InlineData(2.0f)]
     public void MaxPitchMultiplier_WhenAssigned_SetsValue(float value)
     {
-        var entry = new SoundGroupEntry
+        var entry = new Entry
         {
             MaxPitchMultiplier = value
         };
@@ -217,8 +217,8 @@ public class SoundGroupAssetTests
     [Fact]
     public void EntryCount_WhenNotOverridden_DerivesFromEntriesCount()
     {
-        _asset.Entries.Add(new SoundGroupEntry());
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
+        _asset.Entries.Add(new Entry());
 
         Assert.Equal((byte)2, _asset.Physical.EntryCount);
     }
@@ -226,7 +226,7 @@ public class SoundGroupAssetTests
     [Fact]
     public void EntryCount_WhenOverridden_DivergesFromEntriesCount()
     {
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
         _asset.Physical.EntryCount = 7;
 
         Assert.Single(_asset.Entries);
@@ -236,10 +236,10 @@ public class SoundGroupAssetTests
     [Fact]
     public void EntryCount_SetToMatchEntriesCount_KeepsDerivingAfterwards()
     {
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
         _asset.Physical.EntryCount = 1;
 
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
 
         Assert.Equal((byte)2, _asset.Physical.EntryCount);
     }
@@ -247,10 +247,10 @@ public class SoundGroupAssetTests
     [Fact]
     public void EntryCount_WhenOverridden_StopsFollowingEntriesCount()
     {
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
         _asset.Physical.EntryCount = 10;
 
-        _asset.Entries.Add(new SoundGroupEntry());
+        _asset.Entries.Add(new Entry());
 
         Assert.Equal((byte)10, _asset.Physical.EntryCount);
     }
@@ -427,7 +427,7 @@ public class SoundGroupAssetTests
         var asset = (SoundGroupAsset)Read(data);
         Assert.Equal((byte)1, asset.Physical.EntryCount);
 
-        asset.Entries.Add(new SoundGroupEntry());
+        asset.Entries.Add(new Entry());
 
         Assert.Equal((byte)2, asset.Physical.EntryCount);
     }

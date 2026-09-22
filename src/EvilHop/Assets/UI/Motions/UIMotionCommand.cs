@@ -33,7 +33,7 @@ public abstract partial class UIMotionCommand
     public bool Enabled { get; set; }
 
     /// <summary>Which concrete <see cref="UIMotionCommand"/> subclass this is.</summary>
-    public abstract UIMotionCommandType Type { get; }
+    public abstract Command Type { get; }
 
     /// <summary>This command's total serialized size, in bytes, header included.</summary>
     internal int SerializedSize => HeaderSize + FieldsSize;
@@ -43,10 +43,10 @@ public abstract partial class UIMotionCommand
     /// <summary>
     /// Reads one command, including its shared header.
     /// </summary>
-    /// <exception cref="InvalidDataException">The stored command type is not a known <see cref="UIMotionCommandType"/>.</exception>
+    /// <exception cref="InvalidDataException">The stored command type is not a known <see cref="Command"/>.</exception>
     internal static UIMotionCommand Read(EndianReader reader, FormatProfile profile)
     {
-        var type = (UIMotionCommandType)reader.ReadUInt32();
+        var type = (Command)reader.ReadUInt32();
         float startTime = reader.ReadSingle();
         float endTime = reader.ReadSingle();
         float accelTime = reader.ReadSingle();
@@ -56,14 +56,14 @@ public abstract partial class UIMotionCommand
 
         UIMotionCommand command = type switch
         {
-            UIMotionCommandType.Move => MoveCommand.Read(reader, profile),
-            UIMotionCommandType.Scale => ScaleCommand.Read(reader, profile),
-            UIMotionCommandType.Rotate => RotateCommand.Read(reader, profile),
-            UIMotionCommandType.Opacity => OpacityCommand.Read(reader, profile),
-            UIMotionCommandType.AbsoluteScale => AbsoluteScaleCommand.Read(reader, profile),
-            UIMotionCommandType.Brightness => BrightnessCommand.Read(reader, profile),
-            UIMotionCommandType.Color => ColorCommand.Read(reader, profile),
-            UIMotionCommandType.UVScroll => UVScrollCommand.Read(reader, profile),
+            Command.Move => Move.Read(reader, profile),
+            Command.Scale => Scale.Read(reader, profile),
+            Command.Rotate => Rotate.Read(reader, profile),
+            Command.Opacity => Opacity.Read(reader, profile),
+            Command.AbsoluteScale => AbsoluteScale.Read(reader, profile),
+            Command.Brightness => Brightness.Read(reader, profile),
+            Command.Color => Color.Read(reader, profile),
+            Command.UVScroll => UVScroll.Read(reader, profile),
             _ => throw new InvalidDataException($"Unknown UI Motion command type 0x{(uint)type:X8}."),
         };
 
@@ -90,37 +90,37 @@ public abstract partial class UIMotionCommand
 
         switch (command)
         {
-            case MoveCommand c: MoveCommand.Write(c, writer, profile); break;
-            case ScaleCommand c: ScaleCommand.Write(c, writer, profile); break;
-            case RotateCommand c: RotateCommand.Write(c, writer, profile); break;
-            case OpacityCommand c: OpacityCommand.Write(c, writer, profile); break;
-            case AbsoluteScaleCommand c: AbsoluteScaleCommand.Write(c, writer, profile); break;
-            case BrightnessCommand c: BrightnessCommand.Write(c, writer, profile); break;
-            case ColorCommand c: ColorCommand.Write(c, writer, profile); break;
-            case UVScrollCommand c: UVScrollCommand.Write(c, writer, profile); break;
+            case Move c: Move.Write(c, writer, profile); break;
+            case Scale c: Scale.Write(c, writer, profile); break;
+            case Rotate c: Rotate.Write(c, writer, profile); break;
+            case Opacity c: Opacity.Write(c, writer, profile); break;
+            case AbsoluteScale c: AbsoluteScale.Write(c, writer, profile); break;
+            case Brightness c: Brightness.Write(c, writer, profile); break;
+            case Color c: Color.Write(c, writer, profile); break;
+            case UVScroll c: UVScroll.Write(c, writer, profile); break;
         }
     }
 
     /// <summary>
     /// Defines the type of animated property transformation applied to a UI element.
     /// </summary>
-    public enum UIMotionCommandType : uint
+    public enum Command : uint
     {
-        /// <summary>A <see cref="MoveCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.Move"/>.</summary>
         Move = 0,
-        /// <summary>A <see cref="ScaleCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.Scale"/>.</summary>
         Scale = 1,
-        /// <summary>A <see cref="RotateCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.Rotate"/>.</summary>
         Rotate = 2,
-        /// <summary>An <see cref="OpacityCommand"/>.</summary>
+        /// <summary>An <see cref="UIMotionCommand.Opacity"/>.</summary>
         Opacity = 3,
-        /// <summary>An <see cref="AbsoluteScaleCommand"/>.</summary>
+        /// <summary>An <see cref="UIMotionCommand.AbsoluteScale"/>.</summary>
         AbsoluteScale = 4,
-        /// <summary>A <see cref="BrightnessCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.Brightness"/>.</summary>
         Brightness = 5,
-        /// <summary>A <see cref="ColorCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.Color"/>.</summary>
         Color = 6,
-        /// <summary>A <see cref="UVScrollCommand"/>.</summary>
+        /// <summary>A <see cref="UIMotionCommand.UVScroll"/>.</summary>
         UVScroll = 7,
     }
 }

@@ -22,9 +22,9 @@ public abstract class Motion
     /// <remarks>
     /// Stored in the Motion block's header even for a <see cref="PlatformMotion"/>, whose Motion
     /// block is otherwise empty. A platform's <b>Run</b> and <b>Stop</b> events toggle
-    /// <see cref="MotionFlags.Stopped"/> whatever its motion.
+    /// <see cref="Behavior.Stopped"/> whatever its motion.
     /// </remarks>
-    public MotionFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>
     /// The <see cref="Assets.PlatformType"/> a <see cref="PlatformAsset"/> with this motion stores.
@@ -61,14 +61,14 @@ public abstract class Motion
     /// Flags controlling motion playback, entity orientation, and initial stopped state for a <see cref="Motion"/>.
     /// </summary>
     [Flags]
-    public enum MotionFlags : ushort
+    public enum Behavior : ushort
     {
         /// <summary>
         /// No flags are set.
         /// </summary>
         None = 0,
         /// <summary>
-        /// A <see cref="EntityMotion.MovePointMotion"/> turns its entity to face the direction it travels.
+        /// A <see cref="EntityMotion.MovePoint"/> turns its entity to face the direction it travels.
         /// </summary>
         FaceTravelDirection = 1 << 0,
         /// <summary>

@@ -1,0 +1,76 @@
+using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
+
+namespace EvilHop.Assets;
+
+public partial class SurfaceAsset
+{
+    /// <summary>
+    /// A <see cref="SurfaceAsset"/>'s material appearance.
+    /// </summary>
+    public sealed class MaterialEffect
+    {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        public MaterialFlags Flags { get; set; }
+
+        /// <summary>
+        /// The bump map applied to this surface, if any.
+        /// </summary>
+        public AssetId BumpMapId { get; set; }
+
+        /// <summary>
+        /// The environment map applied to this surface, if any.
+        /// </summary>
+        public AssetId EnvMapId { get; set; }
+
+        /// <summary>
+        /// How shiny this surface's environment reflection is.
+        /// </summary>
+        public float Shininess { get; set; }
+
+        /// <summary>
+        /// How bumpy this surface's bump map is.
+        /// </summary>
+        public float Bumpiness { get; set; }
+
+        /// <summary>
+        /// A secondary map applied to this surface, if any.
+        /// </summary>
+        public AssetId DualMapId { get; set; }
+
+        internal static MaterialEffect Read(EndianReader reader, FormatProfile _) => new()
+        {
+            Flags = (MaterialFlags)reader.ReadUInt32(),
+            BumpMapId = reader.ReadAssetId(),
+            EnvMapId = reader.ReadAssetId(),
+            Shininess = reader.ReadSingle(),
+            Bumpiness = reader.ReadSingle(),
+            DualMapId = reader.ReadAssetId(),
+        };
+
+        internal static void Write(MaterialEffect material, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write((uint)material.Flags);
+            writer.Write(material.BumpMapId);
+            writer.Write(material.EnvMapId);
+            writer.Write(material.Shininess);
+            writer.Write(material.Bumpiness);
+            writer.Write(material.DualMapId);
+        }
+
+        /// <summary>
+        /// Flags governing material shader and texture mapping effects applied to a surface.
+        /// </summary>
+        [Flags]
+        public enum MaterialFlags : uint
+        {
+            /// <summary>
+            /// No flags are set.
+            /// </summary>
+            None = 0,
+        }
+    }
+}

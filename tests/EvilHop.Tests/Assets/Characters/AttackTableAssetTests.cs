@@ -279,7 +279,7 @@ public class AttackTableAssetTests
     public void EntryCount_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new AttackTableAsset();
-        asset.Entries.Add(new AttackTableEntry());
+        asset.Entries.Add(new Entry());
 
         asset.Physical.EntryCount = 5;
 
@@ -291,11 +291,11 @@ public class AttackTableAssetTests
     public void EntryCount_MatchingEntries_DerivesFromEntries()
     {
         var asset = new AttackTableAsset();
-        asset.Entries.Add(new AttackTableEntry());
-        asset.Entries.Add(new AttackTableEntry());
+        asset.Entries.Add(new Entry());
+        asset.Entries.Add(new Entry());
 
         asset.Physical.EntryCount = 2;
-        asset.Entries.Add(new AttackTableEntry());
+        asset.Entries.Add(new Entry());
 
         Assert.Equal(3, asset.Physical.EntryCount);
     }
@@ -303,8 +303,8 @@ public class AttackTableAssetTests
     [Fact]
     public void HitBones_AssignedWithWrongLength_Throws()
     {
-        var state = new AttackTableState();
+        var state = new State();
 
-        Assert.Throws<ArgumentException>(() => state.HitBones = [new HitBoneInfo()]);
+        Assert.Throws<ArgumentException>(() => state.HitBones = [new HitBone()]);
     }
 }

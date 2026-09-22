@@ -5,7 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using static EvilHop.Assets.SoundInfoAsset;
-using static EvilHop.Assets.SoundInfoAsset.SoundBankEntry;
+using static EvilHop.Assets.SoundInfoAsset.Sound;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -199,7 +199,7 @@ public class SoundInfoAssetTests
             offset += (uint)banks[i].Length;
         }
 
-        int ramSoundCount = soundEntries.Count(entry => (entry[4] & (byte)SoundBankEntryFlags.Streaming) == 0); // flags byte
+        int ramSoundCount = soundEntries.Count(entry => (entry[4] & (byte)Identity.Streaming) == 0); // flags byte
         int streamedSoundCount = soundEntries.Length - ramSoundCount;
 
         return
@@ -223,8 +223,8 @@ public class SoundInfoAssetTests
         byte[] bank1 = [0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
         byte[] data = Fsb3Data(
             [bank0, bank1],
-            [SoundBankEntry(0x11111111, (byte)SoundBankEntryFlags.None, 0, 0, 0),
-             SoundBankEntry(0x22222222, (byte)SoundBankEntryFlags.Streaming, 0, 1, 0)],
+            [SoundBankEntry(0x11111111, (byte)Identity.None, 0, 0, 0),
+             SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
 
         var asset = (SoundInfoAsset)Read(data, TSSMSerializer.DefaultProfile);
@@ -235,10 +235,10 @@ public class SoundInfoAssetTests
 
         Assert.Equal(2, asset.Sounds.Count);
         Assert.Equal(new AssetId(0x11111111), asset.Sounds[0].SoundAssetId);
-        Assert.Equal(SoundBankEntryFlags.None, asset.Sounds[0].Flags);
+        Assert.Equal(Identity.None, asset.Sounds[0].Flags);
         Assert.Equal(0, asset.Sounds[0].SoundBankIndex);
         Assert.Equal(new AssetId(0x22222222), asset.Sounds[1].SoundAssetId);
-        Assert.Equal(SoundBankEntryFlags.Streaming, asset.Sounds[1].Flags);
+        Assert.Equal(Identity.Streaming, asset.Sounds[1].Flags);
         Assert.Equal(1, asset.Sounds[1].SoundBankIndex);
     }
 
@@ -260,8 +260,8 @@ public class SoundInfoAssetTests
         byte[] bank1 = [0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
         byte[] data = Fsb3Data(
             [bank0, bank1],
-            [SoundBankEntry(0x11111111, (byte)SoundBankEntryFlags.None, 0, 0, 0),
-             SoundBankEntry(0x22222222, (byte)SoundBankEntryFlags.Streaming, 0, 1, 0)],
+            [SoundBankEntry(0x11111111, (byte)Identity.None, 0, 0, 0),
+             SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
         var profile = TSSMSerializer.DefaultProfile;
 
@@ -269,9 +269,9 @@ public class SoundInfoAssetTests
     }
 
     /// <summary>
-    /// Real archives carry a sound in bank 0 flagged <see cref="SoundBankEntryFlags.Streaming"/>
+    /// Real archives carry a sound in bank 0 flagged <see cref="Identity.Streaming"/>
     /// (TSSM's <c>mnus.HOP</c>) - <c>nSounds</c>/<c>nStreams</c> must classify it by
-    /// <see cref="SoundBankEntry.Flags"/>, not by <see cref="SoundBankEntry.SoundBankIndex"/>, or the
+    /// <see cref="Sound.Flags"/>, not by <see cref="Sound.SoundBankIndex"/>, or the
     /// counts land one off in each direction.
     /// </summary>
     [Fact]
@@ -280,7 +280,7 @@ public class SoundInfoAssetTests
         byte[] bank0 = [0x01, 0x02, 0x03, 0x04];
         byte[] data = Fsb3Data(
             [bank0],
-            [SoundBankEntry(0x11111111, (byte)SoundBankEntryFlags.Streaming, 0, 0, 0)],
+            [SoundBankEntry(0x11111111, (byte)Identity.Streaming, 0, 0, 0)],
             []);
         var profile = TSSMSerializer.DefaultProfile;
 
@@ -349,7 +349,7 @@ public class SoundInfoAssetTests
     public void EffectCount_DisagreeingWithEffects_IsStoredIndependently()
     {
         var asset = new SoundInfoAsset();
-        asset.Effects.Add(new DspSoundHeader());
+        asset.Effects.Add(new DspHeader());
 
         asset.Physical.EffectCount = 5;
 
@@ -361,11 +361,11 @@ public class SoundInfoAssetTests
     public void EffectCount_MatchingEffects_DerivesFromEffects()
     {
         var asset = new SoundInfoAsset();
-        asset.Effects.Add(new DspSoundHeader());
-        asset.Effects.Add(new DspSoundHeader());
+        asset.Effects.Add(new DspHeader());
+        asset.Effects.Add(new DspHeader());
 
         asset.Physical.EffectCount = 2;
-        asset.Effects.Add(new DspSoundHeader());
+        asset.Effects.Add(new DspHeader());
 
         Assert.Equal(3, asset.Physical.EffectCount);
     }

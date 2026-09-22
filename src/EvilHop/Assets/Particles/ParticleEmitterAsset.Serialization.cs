@@ -14,8 +14,8 @@ public sealed partial class ParticleEmitterAsset
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Flags = (ParticleEmitterFlags)reader.ReadByte();
-        asset.Kind = (ParticleEmitterKind)reader.ReadByte();
+        asset.Flags = (Behavior)reader.ReadByte();
+        asset.Kind = (ShapeKind)reader.ReadByte();
 
         if (profile.Game is GameVersion.N100F)
         {

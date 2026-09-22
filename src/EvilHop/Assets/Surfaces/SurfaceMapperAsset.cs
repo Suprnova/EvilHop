@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 
 /// <summary>
 /// Assigns a <see cref="AssetType.Surface"/> to specific parts of a <see cref="AssetType.JSP"/>'s
-/// mesh, by matching each entry's <see cref="SurfaceMapperEntry.MaterialIndex"/> against the JSP
+/// mesh, by matching each entry's <see cref="Entry.MaterialIndex"/> against the JSP
 /// info nodes' own material index.
 /// </summary>
 /// <remarks>
@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physical.ISurfaceMapperAsset
 {
     /// <summary>The asset's entries, each assigning one surface to a JSP material index.</summary>
-    public Collection<SurfaceMapperEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISurfaceMapperAsset Physical => this;
@@ -59,7 +59,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
         uint count = reader.ReadUInt32();
 
         for (int i = 0; i < count; i++)
-            asset.Entries.Add(SurfaceMapperEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -72,7 +72,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
         writer.Write(asset.Physical.Count);
 
         foreach (var entry in asset.Entries)
-            SurfaceMapperEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -85,7 +85,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
     /// In <see cref="GameVersion.TSSM"/> and later, <see cref="MaterialIndex"/> is instead a BKDR hash of
     /// the target JSP info's asset name concatenated with its index, matching more than one JSP at once.
     /// </remarks>
-    public sealed class SurfaceMapperEntry
+    public sealed class Entry
     {
         /// <summary>The <see cref="AssetType.Surface"/> applied to matching JSP info nodes.</summary>
         public AssetId SurfaceId { get; set; }
@@ -96,13 +96,13 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
         /// </summary>
         public uint MaterialIndex { get; set; }
 
-        internal static SurfaceMapperEntry Read(EndianReader reader, FormatProfile _) => new()
+        internal static Entry Read(EndianReader reader, FormatProfile _) => new()
         {
             SurfaceId = reader.ReadAssetId(),
             MaterialIndex = reader.ReadUInt32(),
         };
 
-        internal static void Write(SurfaceMapperEntry value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Entry value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.SurfaceId);
             writer.Write(value.MaterialIndex);

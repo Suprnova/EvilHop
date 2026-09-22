@@ -17,7 +17,7 @@ namespace EvilHop.Assets;
 public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physical.IOneLinerAsset
 {
     /// <summary>The table's entries, each triggered independently.</summary>
-    public Collection<OneLinerEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IOneLinerAsset Physical => this;
@@ -44,7 +44,7 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physica
 
         uint entryCount = reader.ReadUInt32();
         for (int i = 0; i < entryCount; i++)
-            asset.Entries.Add(OneLinerEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.EntryCount = (uint)asset.Entries.Count;
         // TODO: Partial implementation - trailing 67-byte trailer is not modeled
@@ -57,15 +57,15 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physica
         writer.Write(asset.Physical.EntryCount);
 
         foreach (var entry in asset.Entries)
-            OneLinerEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
 
     /// <summary>
-    /// Identifies the type of criteria for which this <see cref="OneLinerEntry"/> will play.
+    /// Identifies the type of criteria for which this <see cref="Entry"/> will play.
     /// </summary>
-    public enum OneLinerPlayerType
+    public enum PlayerKind
     {
         /// <summary>This entry has no gating condition - it is always eligible to play.</summary>
         Always = 0,
@@ -77,8 +77,8 @@ public sealed partial class OneLinerAsset() : Asset(AssetType.OneLiner), Physica
         Checker = 2,
 
         /// <summary>
-        /// This entry's eligibility is gated by evaluating <see cref="OneLinerEntry.FirstParam"/> and
-        /// <see cref="OneLinerEntry.SecondParam"/> against an unconfirmed condition.
+        /// This entry's eligibility is gated by evaluating <see cref="Entry.FirstParam"/> and
+        /// <see cref="Entry.SecondParam"/> against an unconfirmed condition.
         /// </summary>
         Tester = 3,
     }

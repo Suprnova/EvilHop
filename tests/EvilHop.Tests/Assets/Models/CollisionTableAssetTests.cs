@@ -109,7 +109,7 @@ public class CollisionTableAssetTests
     public void Write_CollisionTableAsset_UnderN100F_StillWritesItsOwnFields()
     {
         var asset = new CollisionTableAsset { Type = AssetType.CollisionTable };
-        asset.Entries.Add(new CollisionTableAsset.CollisionTableEntry { ModelId = new AssetId(1), CameraCollisionModelId = new AssetId(3) });
+        asset.Entries.Add(new CollisionTableAsset.Entry { ModelId = new AssetId(1), CameraCollisionModelId = new AssetId(3) });
 
         Assert.Equal(TableBytes(EntryBytes(1, 0, 3)), Write(asset, N100FSerializer.DefaultProfile));
     }
@@ -122,7 +122,7 @@ public class CollisionTableAssetTests
 
         Assert.Equal(1u, asset.Physical.Count);
 
-        asset.Entries.Add(new CollisionTableAsset.CollisionTableEntry());
+        asset.Entries.Add(new CollisionTableAsset.Entry());
 
         Assert.Equal(2u, asset.Physical.Count);
     }

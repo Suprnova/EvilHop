@@ -84,7 +84,7 @@ public class GustAssetTests
     {
         var asset = (GustAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
 
-        Assert.Equal(GustAsset.GustFlags.On | GustAsset.GustFlags.Dust, asset.Flags);
+        Assert.Equal(GustAsset.Behavior.On | GustAsset.Behavior.Dust, asset.Flags);
         Assert.Equal(new AssetId(0x05FA0A9E), asset.VolumeId);
         Assert.Equal(AssetId.None, asset.EffectVolumeId);
         Assert.Equal(new Vector3(0.0f, 4.0f, 0.0f), asset.Velocity);

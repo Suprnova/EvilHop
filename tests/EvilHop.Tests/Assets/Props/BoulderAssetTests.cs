@@ -129,7 +129,7 @@ public class BoulderAssetTests
         Assert.Equal(18.0f, asset.MaxAngularVelocity);
         Assert.Equal(0.15f, asset.Stickiness);
         Assert.Equal(0.0f, asset.BounceDamping);
-        Assert.Equal(BoulderAsset.BoulderFlags.DamagePlayer | BoulderAsset.BoulderFlags.DieOnOutOfBoundsSurfaces | BoulderAsset.BoulderFlags.DieAfterKillTimer, asset.Flags);
+        Assert.Equal(BoulderAsset.Behavior.DamagePlayer | BoulderAsset.Behavior.DieOnOutOfBoundsSurfaces | BoulderAsset.Behavior.DieAfterKillTimer, asset.Flags);
         Assert.Equal(5.0f, asset.KillTimer);
         Assert.Equal(3u, asset.Hitpoints);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.BounceSoundId);

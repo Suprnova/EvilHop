@@ -22,7 +22,7 @@ public sealed partial class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve
     public CameraKind CameraType { get; set; }
 
     /// <summary>How the camera eases into this curve over <see cref="TransitionTime"/>.</summary>
-    public CameraTransitionType TransitionType { get; set; }
+    public CameraTransitionKind TransitionType { get; set; }
 
     /// <summary>The time, in seconds, it takes to move the camera onto this curve.</summary>
     public float TransitionTime { get; set; }
@@ -40,7 +40,7 @@ public sealed partial class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve
     /// <summary>
     /// The tuning points placed along the curve's length.
     /// </summary>
-    public Collection<CameraCurveBead> Beads { get; } = [];
+    public Collection<Bead> Beads { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ICameraCurveAsset Physical => this;
@@ -77,14 +77,14 @@ public sealed partial class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve
         reader.ReadBytes(3); // padding, always zero
         asset.CameraType = (CameraKind)reader.ReadInt32();
         asset.Physical.CameraFlags = reader.ReadUInt32();
-        asset.TransitionType = (CameraTransitionType)reader.ReadInt32();
+        asset.TransitionType = (CameraTransitionKind)reader.ReadInt32();
         asset.TransitionTime = reader.ReadSingle();
         asset.CurveId1 = reader.ReadAssetId();
         asset.CurveId2 = reader.ReadAssetId();
 
         int numBeads = reader.ReadInt32();
         for (int i = 0; i < numBeads; i++)
-            asset.Beads.Add(CameraCurveBead.Read(reader, profile));
+            asset.Beads.Add(Bead.Read(reader, profile));
         asset.Physical.NumBeads = numBeads;
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
@@ -109,7 +109,7 @@ public sealed partial class CameraCurveAsset() : BaseAsset(AssetType.CameraCurve
 
         writer.Write(asset.Physical.NumBeads);
         foreach (var bead in asset.Beads)
-            CameraCurveBead.Write(bead, writer, profile);
+            Bead.Write(bead, writer, profile);
 
         foreach (var link in asset.Links)
             Link.Write(link, writer, profile);

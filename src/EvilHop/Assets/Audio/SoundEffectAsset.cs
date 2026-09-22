@@ -31,17 +31,17 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
     /// </summary>
     public bool PlayFromEntity
     {
-        get => Physical.SoundFlags.HasFlag(SoundFlags.PlayFromEntity);
+        get => Physical.SoundFlags.HasFlag(Behavior.PlayFromEntity);
         set => Physical.SoundFlags = value
-            ? Physical.SoundFlags | SoundFlags.PlayFromEntity
-            : Physical.SoundFlags & ~SoundFlags.PlayFromEntity;
+            ? Physical.SoundFlags | Behavior.PlayFromEntity
+            : Physical.SoundFlags & ~Behavior.PlayFromEntity;
     }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISoundEffectAsset Physical => this;
 
-    private SoundFlags _soundFlags;
-    SoundFlags Physical.ISoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
+    private Behavior _soundFlags;
+    Behavior Physical.ISoundEffectAsset.SoundFlags { get => _soundFlags; set => _soundFlags = value; }
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundEffect"/> is known to be read by.
@@ -63,7 +63,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
         asset.SoundGroupId = reader.ReadAssetId();
         asset.AttachId = reader.ReadAssetId();
         asset.Position = reader.ReadVector3();
-        asset.Physical.SoundFlags = (SoundFlags)reader.ReadUInt32();
+        asset.Physical.SoundFlags = (Behavior)reader.ReadUInt32();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile));
@@ -90,7 +90,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
     /// Flags controlling playback behavior for a <see cref="SoundEffectAsset"/>.
     /// </summary>
     [Flags]
-    public enum SoundFlags : uint
+    public enum Behavior : uint
     {
         /// <summary>No flags are set.</summary>
         None = 0,
@@ -112,8 +112,8 @@ public static partial class Physical
     {
         /// <summary>The sound's raw flags word, read directly from disk.</summary>
         /// <remarks>
-        /// <see cref="SoundEffectAsset.SoundFlags.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
+        /// <see cref="SoundEffectAsset.Behavior.PlayFromEntity"/> is exposed logically as <see cref="SoundEffectAsset.PlayFromEntity"/>.
         /// </remarks>
-        SoundEffectAsset.SoundFlags SoundFlags { get; set; }
+        SoundEffectAsset.Behavior SoundFlags { get; set; }
     }
 }

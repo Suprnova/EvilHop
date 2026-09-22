@@ -94,7 +94,7 @@ public class ProgressScriptAssetTests
 
         Assert.Single(asset.Events);
         Assert.Equal(100.0f, asset.Events[0].Percent);
-        Assert.Equal(ProgressScriptEventFlags.Once, asset.Events[0].Flags);
+        Assert.Equal(Behavior.Once, asset.Events[0].Flags);
         Assert.Equal(new AssetId(0xBE00E1C8), asset.Events[0].WidgetId);
         Assert.Equal(0x54u, asset.Events[0].ParamEvent);
         Assert.Equal(AssetId.None, asset.Events[0].ParamWidgetId);
@@ -164,7 +164,7 @@ public class ProgressScriptAssetTests
         Assert.Equal(0x75, asset.Physical.BaseType);
         Assert.Single(asset.Events);
         Assert.Equal(100.0f, asset.Events[0].Percent);
-        Assert.Equal(ProgressScriptEventFlags.Once, asset.Events[0].Flags);
+        Assert.Equal(Behavior.Once, asset.Events[0].Flags);
         Assert.Equal(new AssetId(0xBE00E1C8), asset.Events[0].WidgetId);
         Assert.Equal(0x54u, asset.Events[0].ParamEvent);
 

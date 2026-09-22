@@ -120,8 +120,8 @@ public class UIFontAssetTests
         Assert.Equal(new Vector2(0.0f, 0.0f), asset.TopLeftUV);
         Assert.Equal(new Vector2(0.0f, 1.0f), asset.BottomLeftUV);
 
-        Assert.Equal(UIFontAsset.UIFontFlags.AlignRight | UIFontAsset.UIFontFlags.HasBackdrop, asset.FontFlags);
-        Assert.Equal(UIFontAsset.UIFontMode.Mode1, asset.Mode);
+        Assert.Equal(UIFontAsset.Behavior.AlignRight | UIFontAsset.Behavior.HasBackdrop, asset.FontFlags);
+        Assert.Equal(UIFontAsset.FormattingMode.Mode1, asset.Mode);
         Assert.Equal((byte)1, asset.FontId);
         Assert.Equal(new AssetId(0x93615FD2), asset.TextId);
         Assert.Equal(new Rgba(0x80 / 255f, 0x80 / 255f, 0x80 / 255f, 0x80 / 255f), asset.BackdropColor);

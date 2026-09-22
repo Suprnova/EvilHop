@@ -46,7 +46,7 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseTy
     public float TransitionTime { get; set; }
 
     /// <summary>How the camera eases into position over <see cref="TransitionTime"/>.</summary>
-    public CameraTransitionType TransitionType { get; set; }
+    public CameraTransitionKind TransitionType { get; set; }
 
     /// <summary>Unknown.</summary>
     public float FadeUp { get; set; }
@@ -142,7 +142,7 @@ public enum CameraKind : byte
 /// <summary>
 /// Defines how a camera interpolates its view when transitioning between cameras.
 /// </summary>
-public enum CameraTransitionType
+public enum CameraTransitionKind
 {
     /// <summary>No transition.</summary>
     None = 0,

@@ -23,7 +23,7 @@ namespace EvilHop.Assets;
 public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAnimationAsset
 {
     /// <summary>
-    /// A per-axis scale applied when decoding <see cref="AnimationKey.Quat"/>/<see cref="AnimationKey.Tran"/>'s
+    /// A per-axis scale applied when decoding <see cref="Key.Quat"/>/<see cref="Key.Tran"/>'s
     /// fixed-point values back to real rotation/translation units.
     /// </summary>
     public Vector3 Scale { get; set; }
@@ -31,7 +31,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
     /// <summary>
     /// The animation's keyframes, indexed into by <see cref="Offsets"/>.
     /// </summary>
-    public Collection<AnimationKey> Keys { get; } = [];
+    public Collection<Key> Keys { get; } = [];
 
     /// <summary>
     /// The times (in seconds) this animation has a frame at. The last entry is the animation's
@@ -102,7 +102,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         uint keyCount = reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
 
-        for (uint i = 0; i < keyCount; i++) asset.Keys.Add(AnimationKey.Read(reader, _));
+        for (uint i = 0; i < keyCount; i++) asset.Keys.Add(Key.Read(reader, _));
 
         for (int i = 0; i < timeCount; i++) asset.Times.Add(reader.ReadSingle());
 
@@ -124,7 +124,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         writer.Write(asset.Physical.KeyCount);
         writer.Write(asset.Scale);
 
-        foreach (var key in asset.Keys) AnimationKey.Write(key, writer, _);
+        foreach (var key in asset.Keys) Key.Write(key, writer, _);
 
         foreach (float time in asset.Times) writer.Write(time);
         foreach (ushort offset in asset.Offsets) writer.Write(offset);
@@ -135,7 +135,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
     /// <summary>
     /// One <see cref="AnimationAsset"/> keyframe: a bone's rotation and translation at a given time.
     /// </summary>
-    public sealed class AnimationKey
+    public sealed class Key
     {
         /// <summary>
         /// The index into the owning <see cref="Times"/> this keyframe applies at.
@@ -154,14 +154,14 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         /// </summary>
         public Vector3 Tran { get; set; }
 
-        internal static AnimationKey Read(EndianReader reader, FormatProfile _) => new()
+        internal static Key Read(EndianReader reader, FormatProfile _) => new()
         {
             TimeIndex = reader.ReadUInt16(),
             Quat = new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
             Tran = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()),
         };
 
-        internal static void Write(AnimationKey value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Key value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.TimeIndex);
             writer.Write((short)value.Quat.X); writer.Write((short)value.Quat.Y); writer.Write((short)value.Quat.Z); writer.Write((short)value.Quat.W);

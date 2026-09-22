@@ -23,12 +23,12 @@ public sealed partial class ConditionalAsset() : BaseAsset(AssetType.Conditional
     /// <summary>
     /// The named game variable to check.
     /// </summary>
-    public ConditionalVariable Variable { get; set; }
+    public VariableKind Variable { get; set; }
 
     /// <summary>
     /// How <see cref="Variable"/> is compared against <see cref="EvaluationAmount"/>.
     /// </summary>
-    public ConditionalOperation Operation { get; set; }
+    public Operational Operation { get; set; }
 
     /// <summary>
     /// The asset <see cref="Variable"/> is evaluated on, for variables that query another object's
@@ -57,8 +57,8 @@ public sealed partial class ConditionalAsset() : BaseAsset(AssetType.Conditional
         BaseAssetPrefix.Read(asset, reader);
 
         asset.EvaluationAmount = reader.ReadUInt32();
-        asset.Variable = (ConditionalVariable)reader.ReadUInt32();
-        asset.Operation = (ConditionalOperation)reader.ReadUInt32();
+        asset.Variable = (VariableKind)reader.ReadUInt32();
+        asset.Operation = (Operational)reader.ReadUInt32();
 
         if (profile.Game is not GameVersion.N100F)
             asset.TargetId = reader.ReadAssetId();
@@ -89,7 +89,7 @@ public sealed partial class ConditionalAsset() : BaseAsset(AssetType.Conditional
     /// <summary>
     /// The comparison or evaluation operation used by a <see cref="ConditionalAsset"/> to test its variables.
     /// </summary>
-    public enum ConditionalOperation : uint
+    public enum Operational : uint
     {
         /// <summary>The variable must equal the evaluation amount.</summary>
         EqualTo = 0,

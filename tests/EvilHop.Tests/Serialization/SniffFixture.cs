@@ -33,7 +33,7 @@ internal sealed class SniffFixture
 
     private IEnumerable<byte> BuildPackChildren()
     {
-        if (ClientVersion is EvilHop.Blocks.ClientVersion clientVersion)
+        if (ClientVersion is ClientVersion clientVersion)
             foreach (byte b in BlockBytes.Build("PVER", BlockBytes.Content(w =>
             {
                 w.Write(2u); // SubVersion, unused by Sniff

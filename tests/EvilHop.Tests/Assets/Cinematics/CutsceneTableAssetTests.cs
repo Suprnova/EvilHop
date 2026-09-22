@@ -112,7 +112,7 @@ public class CutsceneTableAssetTests
         Assert.Equal(new AssetId(0x11111111), first.Physical.AssetId);
         Assert.Equal("boss_intro", first.SoundLeft);
         var entry = Assert.Single(first.Data);
-        Assert.Equal(CutsceneAsset.CutsceneDataType.RWModel, entry.DataType);
+        Assert.Equal(CutsceneAsset.ModelKind.RWModel, entry.ModelKind);
         Assert.Equal(new AssetId(0xAABBCCDD), entry.AssetId);
 
         var second = asset.Cutscenes[1];

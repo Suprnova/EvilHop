@@ -24,7 +24,7 @@ public sealed partial class BoulderAsset
         asset.MaxAngularVelocity = reader.ReadSingle();
         asset.Stickiness = reader.ReadSingle();
         asset.BounceDamping = reader.ReadSingle();
-        asset.Flags = (BoulderFlags)reader.ReadUInt32();
+        asset.Flags = (Behavior)reader.ReadUInt32();
         asset.KillTimer = reader.ReadSingle();
         asset.Hitpoints = reader.ReadUInt32();
         asset.BounceSoundId = reader.ReadAssetId();

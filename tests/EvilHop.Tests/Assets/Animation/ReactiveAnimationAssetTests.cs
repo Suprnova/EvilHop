@@ -119,7 +119,7 @@ public class ReactiveAnimationAssetTests
         var asset = (ReactiveAnimationAsset)Read(data);
         Assert.Equal(1, asset.Physical.RowCount);
 
-        asset.Rows.Add(new ReactiveAnimationRow());
+        asset.Rows.Add(new Row());
 
         Assert.Equal(2, asset.Physical.RowCount);
     }

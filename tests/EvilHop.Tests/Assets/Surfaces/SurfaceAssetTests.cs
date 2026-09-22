@@ -127,21 +127,21 @@ public class SurfaceAssetTests
     {
         var asset = (SurfaceAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(SurfaceGameDamageType.Damage6, asset.GameDamageType);
+        Assert.Equal(DamageKind.Damage6, asset.Damage);
         Assert.False(asset.DamagePassthrough);
-        Assert.Equal(SurfaceGameDamageFlags.None, asset.Physical.GameDamageFlags);
+        Assert.Equal(DamageBehavior.None, asset.Physical.GameDamageFlags);
         Assert.Equal(0, asset.Physical.GameSticky);
         Assert.Equal(0, asset.Physical.SurfType);
         Assert.Equal(20, asset.SlideStartAngle);
         Assert.Equal(10, asset.SlideStopAngle);
-        Assert.Equal(SurfacePhysicsFlags.OutOfBounds, asset.PhysFlags);
+        Assert.Equal(PhysicsBehavior.OutOfBounds, asset.PhysFlags);
         Assert.Equal(1.0f, asset.Friction);
-        Assert.Equal(SurfaceColorFx.SurfaceColorFxFlags.Valid, asset.ColorFx.Flags);
+        Assert.Equal(ColorEffect.ColorFlags.Valid, asset.ColorFx.Flags);
         Assert.Equal(30f, asset.ColorFx.Speed);
         Assert.Equal(2, asset.TextureAnims.Length);
-        Assert.Equal(SurfaceTextureAnimFlags.None, asset.Physical.TextureAnimFlags);
+        Assert.Equal(AnimationSlot.None, asset.Physical.TextureAnimFlags);
         Assert.Equal(2, asset.Uvfxs.Length);
-        Assert.Equal(SurfaceUvfxFlags.Slot0, asset.Physical.UvfxFlags);
+        Assert.Equal(UVSlot.Slot0, asset.Physical.UvfxFlags);
         Assert.Equal(new Vector3(1, 1, 0), asset.Uvfxs[0].Scale);
         Assert.True(asset.Uvfxs[0].IsEnabled);
         Assert.False(asset.Uvfxs[1].IsEnabled);
@@ -255,7 +255,7 @@ public class SurfaceAssetTests
         var asset = new SurfaceAsset();
 
         Assert.False(asset.DamagePassthrough);
-        Assert.Equal(SurfaceGameDamageFlags.None, asset.Physical.GameDamageFlags);
+        Assert.Equal(DamageBehavior.None, asset.Physical.GameDamageFlags);
     }
 
     [Fact]
@@ -264,7 +264,7 @@ public class SurfaceAssetTests
         var asset = new SurfaceAsset { DamagePassthrough = true };
 
         Assert.True(asset.DamagePassthrough);
-        Assert.Equal(SurfaceGameDamageFlags.DamagePassthrough, asset.Physical.GameDamageFlags);
+        Assert.Equal(DamageBehavior.DamagePassthrough, asset.Physical.GameDamageFlags);
     }
 
     [Fact]
@@ -277,23 +277,23 @@ public class SurfaceAssetTests
         asset.DamagePassthrough = false;
 
         Assert.False(asset.DamagePassthrough);
-        Assert.Equal(SurfaceGameDamageFlags.None, asset.Physical.GameDamageFlags);
+        Assert.Equal(DamageBehavior.None, asset.Physical.GameDamageFlags);
     }
 
     [Fact]
     public void DamagePassthrough_Toggling_PreservesOtherFlagsOnPhysical()
     {
         var asset = new SurfaceAsset();
-        asset.Physical.GameDamageFlags = (SurfaceGameDamageFlags)0xFE;
+        asset.Physical.GameDamageFlags = (DamageBehavior)0xFE;
 
         Assert.False(asset.DamagePassthrough);
 
         asset.DamagePassthrough = true;
-        Assert.Equal((SurfaceGameDamageFlags)0xFF, asset.Physical.GameDamageFlags);
+        Assert.Equal((DamageBehavior)0xFF, asset.Physical.GameDamageFlags);
         Assert.True(asset.DamagePassthrough);
 
         asset.DamagePassthrough = false;
-        Assert.Equal((SurfaceGameDamageFlags)0xFE, asset.Physical.GameDamageFlags);
+        Assert.Equal((DamageBehavior)0xFE, asset.Physical.GameDamageFlags);
         Assert.False(asset.DamagePassthrough);
     }
 
@@ -301,7 +301,7 @@ public class SurfaceAssetTests
     public void DamagePassthrough_ReflectsPhysicalGameDamageFlags()
     {
         var asset = new SurfaceAsset();
-        asset.Physical.GameDamageFlags = SurfaceGameDamageFlags.DamagePassthrough;
+        asset.Physical.GameDamageFlags = DamageBehavior.DamagePassthrough;
 
         Assert.True(asset.DamagePassthrough);
     }
@@ -311,10 +311,10 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset
         {
-            TextureAnims = [new SurfaceTextureAnim { IsEnabled = false }, new SurfaceTextureAnim { IsEnabled = true }]
+            TextureAnims = [new TextureEffect { IsEnabled = false }, new TextureEffect { IsEnabled = true }]
         };
 
-        Assert.Equal(SurfaceTextureAnimFlags.Slot1, asset.Physical.TextureAnimFlags);
+        Assert.Equal(AnimationSlot.Slot1, asset.Physical.TextureAnimFlags);
     }
 
     [Fact]
@@ -322,9 +322,9 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset();
 
-        asset.Physical.TextureAnimFlags = (SurfaceTextureAnimFlags)0xFFu;
+        asset.Physical.TextureAnimFlags = (AnimationSlot)0xFFu;
 
-        Assert.Equal((SurfaceTextureAnimFlags)0xFFu, asset.Physical.TextureAnimFlags);
+        Assert.Equal((AnimationSlot)0xFFu, asset.Physical.TextureAnimFlags);
         Assert.False(asset.TextureAnims[0].IsEnabled);
     }
 
@@ -333,10 +333,10 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset
         {
-            Uvfxs = [new SurfaceUvfx { IsEnabled = true }, new SurfaceUvfx { IsEnabled = false }]
+            Uvfxs = [new UVEffect { IsEnabled = true }, new UVEffect { IsEnabled = false }]
         };
 
-        Assert.Equal(SurfaceUvfxFlags.Slot0, asset.Physical.UvfxFlags);
+        Assert.Equal(UVSlot.Slot0, asset.Physical.UvfxFlags);
     }
 
     [Fact]
@@ -344,9 +344,9 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset();
 
-        asset.Physical.UvfxFlags = (SurfaceUvfxFlags)0xFFu;
+        asset.Physical.UvfxFlags = (UVSlot)0xFFu;
 
-        Assert.Equal((SurfaceUvfxFlags)0xFFu, asset.Physical.UvfxFlags);
+        Assert.Equal((UVSlot)0xFFu, asset.Physical.UvfxFlags);
         Assert.False(asset.Uvfxs[0].IsEnabled);
     }
 
@@ -355,7 +355,7 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset();
 
-        Assert.Throws<ArgumentException>(() => asset.TextureAnims = [new SurfaceTextureAnim()]);
+        Assert.Throws<ArgumentException>(() => asset.TextureAnims = [new TextureEffect()]);
     }
 
     [Fact]
@@ -363,6 +363,6 @@ public class SurfaceAssetTests
     {
         var asset = new SurfaceAsset();
 
-        Assert.Throws<ArgumentException>(() => asset.Uvfxs = [new SurfaceUvfx(), new SurfaceUvfx(), new SurfaceUvfx()]);
+        Assert.Throws<ArgumentException>(() => asset.Uvfxs = [new UVEffect(), new UVEffect(), new UVEffect()]);
     }
 }

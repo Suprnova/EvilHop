@@ -21,22 +21,22 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
     /// <summary>
     /// The table's named categories, each grouping a contiguous range of <see cref="Entries"/>.
     /// </summary>
-    public Collection<AttackTableSection> Sections { get; } = [];
+    public Collection<Section> Sections { get; } = [];
 
     /// <summary>
     /// The table's controller-input-selectable attacks, each playing one of <see cref="States"/>.
     /// </summary>
-    public Collection<AttackTableEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <summary>
     /// The transitions allowed between <see cref="States"/>.
     /// </summary>
-    public Collection<AttackTableTransition> Transitions { get; } = [];
+    public Collection<Transition> Transitions { get; } = [];
 
     /// <summary>
     /// The table's named attack states, each describing damage, hitboxes, and effects for one attack.
     /// </summary>
-    public Collection<AttackTableState> States { get; } = [];
+    public Collection<State> States { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IAttackTableAsset Physical => this;
@@ -88,16 +88,16 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
         ushort stateCount = reader.ReadUInt16();
 
         for (int i = 0; i < sectionCount; i++)
-            asset.Sections.Add(AttackTableSection.Read(reader, profile));
+            asset.Sections.Add(Section.Read(reader, profile));
 
         for (int i = 0; i < entryCount; i++)
-            asset.Entries.Add(AttackTableEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         for (int i = 0; i < transitionCount; i++)
-            asset.Transitions.Add(AttackTableTransition.Read(reader, profile));
+            asset.Transitions.Add(Transition.Read(reader, profile));
 
         for (int i = 0; i < stateCount; i++)
-            asset.States.Add(AttackTableState.Read(reader, profile));
+            asset.States.Add(State.Read(reader, profile));
 
         asset.Physical.SectionCount = sectionCount;
         asset.Physical.EntryCount = entryCount;
@@ -115,16 +115,16 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
         writer.Write(asset.Physical.StateCount);
 
         foreach (var section in asset.Sections)
-            AttackTableSection.Write(section, writer, profile);
+            Section.Write(section, writer, profile);
 
         foreach (var entry in asset.Entries)
-            AttackTableEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         foreach (var transition in asset.Transitions)
-            AttackTableTransition.Write(transition, writer, profile);
+            Transition.Write(transition, writer, profile);
 
         foreach (var state in asset.States)
-            AttackTableState.Write(state, writer, profile);
+            State.Write(state, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -133,7 +133,7 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
     /// One <see cref="AttackTableAsset"/> section: a named category grouping a contiguous range of the
     /// owning table's <see cref="Entries"/>.
     /// </summary>
-    public sealed class AttackTableSection
+    public sealed class Section
     {
         /// <summary>
         /// A hash identifying this section, matched against link/animation lookups by name.
@@ -152,14 +152,14 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
         /// </summary>
         public ushort Count { get; set; }
 
-        internal static AttackTableSection Read(EndianReader reader, FormatProfile _) => new()
+        internal static Section Read(EndianReader reader, FormatProfile _) => new()
         {
             SectionId = reader.ReadUInt32(),
             Start = reader.ReadUInt16(),
             Count = reader.ReadUInt16(),
         };
 
-        internal static void Write(AttackTableSection section, EndianWriter writer, FormatProfile _)
+        internal static void Write(Section section, EndianWriter writer, FormatProfile _)
         {
             writer.Write(section.SectionId);
             writer.Write(section.Start);

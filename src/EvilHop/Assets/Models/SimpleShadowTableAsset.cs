@@ -18,7 +18,7 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
     /// <summary>
     /// The table's entries.
     /// </summary>
-    public Collection<SimpleShadowTableEntry> Entries { get; } = [];
+    public Collection<Entry> Entries { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISimpleShadowTableAsset Physical => this;
@@ -45,7 +45,7 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
 
         var count = reader.ReadUInt32();
         for (var i = 0; i < count; i++)
-            asset.Entries.Add(SimpleShadowTableEntry.Read(reader, profile));
+            asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
@@ -56,7 +56,7 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
     {
         writer.Write(asset.Physical.Count);
         foreach (var entry in asset.Entries)
-            SimpleShadowTableEntry.Write(entry, writer, profile);
+            Entry.Write(entry, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -65,7 +65,7 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
     /// One <see cref="SimpleShadowTableAsset"/> entry, assigning a shadow model to a single
     /// <see cref="AssetType.Model"/>.
     /// </summary>
-    public record struct SimpleShadowTableEntry
+    public record struct Entry
     {
         /// <summary>
         /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> this entry applies to.
@@ -83,14 +83,14 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
         /// </summary>
         public uint Unknown { get; set; }
 
-        internal static SimpleShadowTableEntry Read(EndianReader reader, FormatProfile _) => new()
+        internal static Entry Read(EndianReader reader, FormatProfile _) => new()
         {
             ModelId = reader.ReadAssetId(),
             ShadowModelId = reader.ReadAssetId(),
             Unknown = reader.ReadUInt32(),
         };
 
-        internal static void Write(SimpleShadowTableEntry value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Entry value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.ModelId);
             writer.Write(value.ShadowModelId);

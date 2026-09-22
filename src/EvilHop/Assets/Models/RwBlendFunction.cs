@@ -4,7 +4,7 @@ namespace EvilHop.Assets;
 /// Defines the RenderWare blend function applied to source or destination pixels.
 /// </summary>
 /// <remarks>
-/// Shared by <see cref="PipeInfoTableAsset.PipeRenderFlags"/> and
+/// Shared by <see cref="PipeInfoTableAsset.RenderBehavior"/> and
 /// <see cref="ParticleSystemAsset"/>, so it stays top-level rather than nesting into either.
 /// </remarks>
 public enum RwBlendFunction : byte

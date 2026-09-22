@@ -21,18 +21,18 @@ namespace EvilHop.Assets;
 public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), Physical.IDashTrackAsset
 {
     /// <summary>
-    /// The mesh's vertices, indexed by <see cref="DashTrackTriangle.VertexA"/>/<see cref="DashTrackTriangle.VertexB"/>/<see cref="DashTrackTriangle.VertexC"/>.
+    /// The mesh's vertices, indexed by <see cref="Triangle.VertexA"/>/<see cref="Triangle.VertexB"/>/<see cref="Triangle.VertexC"/>.
     /// </summary>
     public Collection<Vector3> Vertices { get; } = [];
 
     /// <summary>The mesh's triangles.</summary>
-    public Collection<DashTrackTriangle> Triangles { get; } = [];
+    public Collection<Triangle> Triangles { get; } = [];
 
     /// <summary>
     /// One entry per <see cref="Triangles"/> entry, giving the neighboring triangle across each of
     /// its three edges.
     /// </summary>
-    public Collection<DashTrackPortal> Portals { get; } = [];
+    public Collection<Portal> Portals { get; } = [];
 
     /// <summary>The index into <see cref="Triangles"/> where the player may land onto the track.</summary>
     public int LandableStart { get; set; }
@@ -92,13 +92,13 @@ public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, ba
             asset.Vertices.Add(reader.ReadVector3());
 
         for (int i = 0; i < triangleCount; i++)
-            asset.Triangles.Add(DashTrackTriangle.Read(reader, profile));
+            asset.Triangles.Add(Triangle.Read(reader, profile));
 
         // Portals have no leading count of their own - they fill whatever's left of the payload.
         byte[] portalBytes = reader.ReadRemainingBytes();
         using var portalReader = new EndianReader(new MemoryStream(portalBytes), profile.Endianness);
         while (portalBytes.Length - portalReader.BaseStream.Position >= 6)
-            asset.Portals.Add(DashTrackPortal.Read(portalReader, profile));
+            asset.Portals.Add(Portal.Read(portalReader, profile));
 
         asset.Physical.VertexCount = vertexCount;
         asset.Physical.TriangleCount = triangleCount;
@@ -121,10 +121,10 @@ public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, ba
             writer.Write(vertex);
 
         foreach (var triangle in asset.Triangles)
-            DashTrackTriangle.Write(triangle, writer, profile);
+            Triangle.Write(triangle, writer, profile);
 
         foreach (var portal in asset.Portals)
-            DashTrackPortal.Write(portal, writer, profile);
+            Portal.Write(portal, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -134,25 +134,25 @@ public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, ba
     /// edges, used to walk from one triangle to the next as the player crosses it. A value of
     /// <c>0xFFFF</c> marks an edge with no neighbor.
     /// </summary>
-    public record struct DashTrackPortal
+    public record struct Portal
     {
-        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>
+        /// <summary>The neighboring triangle across the edge opposite <see cref="Triangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>
         public ushort Neighbor0 { get; set; }
 
-        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexB"/>, or <c>0xFFFF</c> if none.</summary>
+        /// <summary>The neighboring triangle across the edge opposite <see cref="Triangle.VertexB"/>, or <c>0xFFFF</c> if none.</summary>
         public ushort Neighbor1 { get; set; }
 
-        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexC"/>, or <c>0xFFFF</c> if none.</summary>
+        /// <summary>The neighboring triangle across the edge opposite <see cref="Triangle.VertexC"/>, or <c>0xFFFF</c> if none.</summary>
         public ushort Neighbor2 { get; set; }
 
-        internal static DashTrackPortal Read(EndianReader reader, FormatProfile _) => new()
+        internal static Portal Read(EndianReader reader, FormatProfile _) => new()
         {
             Neighbor0 = reader.ReadUInt16(),
             Neighbor1 = reader.ReadUInt16(),
             Neighbor2 = reader.ReadUInt16(),
         };
 
-        internal static void Write(DashTrackPortal value, EndianWriter writer, FormatProfile _)
+        internal static void Write(Portal value, EndianWriter writer, FormatProfile _)
         {
             writer.Write(value.Neighbor0);
             writer.Write(value.Neighbor1);

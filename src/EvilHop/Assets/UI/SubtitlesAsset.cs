@@ -19,7 +19,7 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
     /// <summary>
     /// The subtitle lines in this asset, displayed in sequence.
     /// </summary>
-    public Collection<SubtitleLine> Lines { get; } = [];
+    public Collection<Line> Lines { get; } = [];
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISubtitlesAsset Physical => this;
@@ -86,7 +86,7 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
                 int length = nullIndex >= 0 ? nullIndex - start : stringPool.Length - start;
                 text = Encoding.Latin1.GetString(stringPool, start, length);
             }
-            asset.Lines.Add(new SubtitleLine
+            asset.Lines.Add(new Line
             {
                 StartTime = StartTime,
                 StopTime = StopTime,
@@ -138,7 +138,7 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
     /// <summary>
     /// A single timed subtitle line within a <see cref="SubtitlesAsset"/>.
     /// </summary>
-    public sealed class SubtitleLine
+    public sealed class Line
     {
         /// <summary>The time, in seconds, when this subtitle line begins displaying.</summary>
         public float StartTime { get; set; }

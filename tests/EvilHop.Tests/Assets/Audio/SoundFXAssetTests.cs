@@ -130,7 +130,7 @@ public class SoundFXAssetTests
 
         asset.Positional = true;
 
-        Assert.Equal((SFXFlags)0x402, ((Physical.ISoundFXAsset)asset).SFXFlags);
+        Assert.Equal((Behavior)0x402, ((Physical.ISoundFXAsset)asset).SFXFlags);
     }
 
     [Fact]
@@ -140,16 +140,16 @@ public class SoundFXAssetTests
 
         asset.Positional = false;
 
-        Assert.Equal((SFXFlags)0x400, ((Physical.ISoundFXAsset)asset).SFXFlags);
+        Assert.Equal((Behavior)0x400, ((Physical.ISoundFXAsset)asset).SFXFlags);
     }
 
     [Fact]
     public void SFXFlags_Values_MatchDocumentedBits()
     {
-        Assert.Equal((ushort)0, (ushort)SFXFlags.None);
-        Assert.Equal((ushort)0x2, (ushort)SFXFlags.Positional);
-        Assert.Equal((ushort)0x4, (ushort)SFXFlags.Loop);
-        Assert.Equal((ushort)0x8, (ushort)SFXFlags.PlayFromEntity);
+        Assert.Equal((ushort)0, (ushort)Behavior.None);
+        Assert.Equal((ushort)0x2, (ushort)Behavior.Positional);
+        Assert.Equal((ushort)0x4, (ushort)Behavior.Loop);
+        Assert.Equal((ushort)0x8, (ushort)Behavior.PlayFromEntity);
     }
 
     [Fact]

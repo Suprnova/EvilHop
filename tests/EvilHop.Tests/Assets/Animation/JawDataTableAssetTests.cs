@@ -184,7 +184,7 @@ public class JawDataTableAssetTests
     public void Count_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new JawDataTableAsset();
-        asset.Entries.Add(new JawDataTableEntry());
+        asset.Entries.Add(new Entry());
 
         asset.Physical.Count = 5;
 
@@ -196,11 +196,11 @@ public class JawDataTableAssetTests
     public void Count_MatchingEntries_DerivesFromEntries()
     {
         var asset = new JawDataTableAsset();
-        asset.Entries.Add(new JawDataTableEntry());
-        asset.Entries.Add(new JawDataTableEntry());
+        asset.Entries.Add(new Entry());
+        asset.Entries.Add(new Entry());
 
         asset.Physical.Count = 2;
-        asset.Entries.Add(new JawDataTableEntry());
+        asset.Entries.Add(new Entry());
 
         Assert.Equal(3, asset.Physical.Count);
     }

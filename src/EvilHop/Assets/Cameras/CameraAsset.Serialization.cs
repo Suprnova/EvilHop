@@ -26,7 +26,7 @@ public abstract partial class CameraAsset
         var offsetEndFrames = reader.ReadInt16();
         var fov = reader.ReadSingle();
         var transitionTime = reader.ReadSingle();
-        var transitionType = (CameraTransitionType)reader.ReadInt32();
+        var transitionType = (CameraTransitionKind)reader.ReadInt32();
         var cameraFlags = reader.ReadUInt32();
         var fadeUp = reader.ReadSingle();
         var fadeDown = reader.ReadSingle();

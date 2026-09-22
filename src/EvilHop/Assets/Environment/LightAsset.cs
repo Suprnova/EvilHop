@@ -16,13 +16,13 @@ namespace EvilHop.Assets;
 public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
 {
     /// <summary>This light's type.</summary>
-    public LightType Kind { get; set; }
+    public Shape Kind { get; set; }
 
     /// <summary>Which flickering, strobing, dimming, or color-cycling effect this light plays.</summary>
-    public LightEffect Effect { get; set; }
+    public Pattern Effect { get; set; }
 
     /// <summary>Whether this light is turned on, and whether it affects level geometry.</summary>
-    public LightFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>This light's color.</summary>
     public Rgba Color { get; set; }
@@ -30,7 +30,7 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
     /// <summary>This light's rotation.</summary>
     public Vector3 Direction { get; set; }
 
-    /// <summary>The cone angle of a <see cref="LightType.Spot"/> light.</summary>
+    /// <summary>The cone angle of a <see cref="Shape.Spot"/> light.</summary>
     public float ConeAngle { get; set; }
 
     /// <summary>This light's position, ignored while attached to <see cref="AttachedEntityId"/>.</summary>
@@ -59,10 +59,10 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Kind = (LightType)reader.ReadByte();
-        asset.Effect = (LightEffect)reader.ReadByte();
+        asset.Kind = (Shape)reader.ReadByte();
+        asset.Effect = (Pattern)reader.ReadByte();
         reader.ReadInt16(); // padding, always zero
-        asset.Flags = (LightFlags)reader.ReadUInt32();
+        asset.Flags = (Behavior)reader.ReadUInt32();
         asset.Color = reader.ReadRgba();
         asset.Direction = reader.ReadVector3();
         asset.ConeAngle = reader.ReadSingle();
@@ -98,7 +98,7 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
     }
 
     /// <summary>A <see cref="LightAsset"/>'s type.</summary>
-    public enum LightType : byte
+    public enum Shape : byte
     {
         /// <summary>A light radiating from <see cref="Position"/> in every direction, out to <see cref="Radius"/>.</summary>
         Point = 0,
@@ -118,7 +118,7 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
     }
 
     /// <summary>Which flickering, strobing, dimming, or color-cycling effect a <see cref="LightAsset"/> plays.</summary>
-    public enum LightEffect : byte
+    public enum Pattern : byte
     {
         /// <summary>No effect.</summary>
         None = 0,
@@ -176,7 +176,7 @@ public sealed class LightAsset() : BaseAsset(AssetType.Light, baseType: 0x25)
     /// Flags toggling light state and scene interaction behavior for a <see cref="LightAsset"/>.
     /// </summary>
     [Flags]
-    public enum LightFlags : uint
+    public enum Behavior : uint
     {
         /// <summary>The light is turned off.</summary>
         None = 0,

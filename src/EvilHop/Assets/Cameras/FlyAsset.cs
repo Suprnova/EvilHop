@@ -9,19 +9,19 @@ using System.Diagnostics.CodeAnalysis;
 namespace EvilHop.Assets;
 
 /// <summary>
-/// A recorded camera path made up of one <see cref="FlyKey"/> per frame at 30 FPS, each carrying the
+/// A recorded camera path made up of one <see cref="Key"/> per frame at 30 FPS, each carrying the
 /// camera's transform, aperture, and focal length. Drives <c>game_object:Flythrough</c>, the in-game
 /// object that overrides the active camera to play the recording back.
 /// </summary>
 /// <remarks>
-/// Has no header of its own - the payload is nothing but contiguous <see cref="FlyKey"/> entries, and
+/// Has no header of its own - the payload is nothing but contiguous <see cref="Key"/> entries, and
 /// its <see cref="Keys"/> count derives entirely from the asset's size.
 /// <seealso href="https://heavyironmodding.org/wiki/FLY">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed partial class FlyAsset() : Asset(AssetType.Fly)
 {
     /// <summary>The recorded keyframes, one per frame of the flythrough.</summary>
-    public Collection<FlyKey> Keys { get; } = [];
+    public Collection<Key> Keys { get; } = [];
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Fly"/> is known to be read by.
@@ -34,7 +34,7 @@ public sealed partial class FlyAsset() : Asset(AssetType.Fly)
         GameVersion.Ratatouille,
     };
 
-    /// <summary>The on-disk size, in bytes, of one <see cref="FlyKey"/>.</summary>
+    /// <summary>The on-disk size, in bytes, of one <see cref="Key"/>.</summary>
     private const int KeySize = 64;
 
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "LittleEndianReader's result never owns a resource worth disposing - see its remarks.")]
@@ -45,7 +45,7 @@ public sealed partial class FlyAsset() : Asset(AssetType.Fly)
 
         reader = LittleEndianReader(reader);
         while (reader.BaseStream.Length - reader.BaseStream.Position >= KeySize)
-            asset.Keys.Add(FlyKey.Read(reader, profile));
+            asset.Keys.Add(Key.Read(reader, profile));
 
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
@@ -56,14 +56,14 @@ public sealed partial class FlyAsset() : Asset(AssetType.Fly)
     {
         writer = LittleEndianWriter(writer);
         foreach (var key in asset.Keys)
-            FlyKey.Write(key, writer, profile);
+            Key.Write(key, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
 
     /// <summary>
     /// Wraps <paramref name="reader"/> to force <see cref="Endianness.Little"/> - unlike every other
-    /// asset type, a <see cref="FlyAsset"/>'s <see cref="FlyKey"/> entries are written little-endian on
+    /// asset type, a <see cref="FlyAsset"/>'s <see cref="Key"/> entries are written little-endian on
     /// every platform, including GameCube.
     /// </summary>
     /// <remarks>

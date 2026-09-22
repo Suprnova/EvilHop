@@ -280,7 +280,7 @@ public class DestructibleAssetTests
     public void StateCount_DisagreeingWithStates_IsStoredIndependently()
     {
         var asset = new DestructibleAsset();
-        asset.States.Add(new DestructibleAsset.DestructibleAssetState());
+        asset.States.Add(new DestructibleAsset.State());
 
         asset.Physical.StateCount = 5;
 
@@ -292,11 +292,11 @@ public class DestructibleAssetTests
     public void StateCount_MatchingStates_DerivesFromStates()
     {
         var asset = new DestructibleAsset();
-        asset.States.Add(new DestructibleAsset.DestructibleAssetState());
-        asset.States.Add(new DestructibleAsset.DestructibleAssetState());
+        asset.States.Add(new DestructibleAsset.State());
+        asset.States.Add(new DestructibleAsset.State());
 
         asset.Physical.StateCount = 2;
-        asset.States.Add(new DestructibleAsset.DestructibleAssetState());
+        asset.States.Add(new DestructibleAsset.State());
 
         Assert.Equal(3u, asset.Physical.StateCount);
     }

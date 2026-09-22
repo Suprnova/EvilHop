@@ -62,17 +62,17 @@ public sealed partial class BoulderAsset() : EntityAsset(AssetType.Boulder, base
     /// <summary>
     /// This boulder's behavior flags.
     /// </summary>
-    public BoulderFlags Flags { get; set; }
+    public Behavior Flags { get; set; }
 
     /// <summary>
     /// The lifetime, in seconds, before this boulder is destroyed, if
-    /// <see cref="BoulderFlags.DieAfterKillTimer"/> is set. If 0, the lifetime is infinite.
+    /// <see cref="Behavior.DieAfterKillTimer"/> is set. If 0, the lifetime is infinite.
     /// </summary>
     public float KillTimer { get; set; }
 
     /// <summary>
     /// The number of hits this boulder can take from a damaging surface (see
-    /// <see cref="BoulderFlags.DieOnDamagingSurface"/>) before it is destroyed.
+    /// <see cref="Behavior.DieOnDamagingSurface"/>) before it is destroyed.
     /// </summary>
     public uint Hitpoints { get; set; }
 

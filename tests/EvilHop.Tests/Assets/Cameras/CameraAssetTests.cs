@@ -151,7 +151,7 @@ public class CameraAssetTests
         Assert.Equal(30, asset.OffsetStartFrames);
         Assert.Equal(45, asset.OffsetEndFrames);
         Assert.Equal(85f, asset.Fov);
-        Assert.Equal(CameraTransitionType.None, asset.TransitionType);
+        Assert.Equal(CameraTransitionKind.None, asset.TransitionType);
         Assert.Equal(0x0001018Fu, asset.Physical.ValidFlags);
         Assert.Equal(CameraKind.Follow, asset.Kind);
     }
@@ -182,7 +182,7 @@ public class CameraAssetTests
         Assert.Equal(2f, asset.Height);
         Assert.Equal(3f, asset.RealignSpeed);
         Assert.Equal(0.1f, asset.RealignDelay);
-        Assert.Equal(CameraTransitionType.Linear, asset.TransitionType);
+        Assert.Equal(CameraTransitionKind.Linear, asset.TransitionType);
     }
 
     [Fact]

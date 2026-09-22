@@ -26,14 +26,14 @@ public abstract partial class PlatformMotion : Motion
         using var block = ReadBlock(reader, BlockSize(profile.Game));
         return discriminator switch
         {
-            PlatformType.ConveyorBelt => ConveyorBeltMotion.Read(block, profile),
-            PlatformType.Falling => FallingMotion.Read(block, profile),
-            PlatformType.ForwardReturn => ForwardReturnMotion.Read(block, profile),
-            PlatformType.Breakaway => BreakawayMotion.Read(block, profile),
-            PlatformType.Springboard => SpringboardMotion.Read(block, profile),
-            PlatformType.TeeterTotter => TeeterTotterMotion.Read(block, profile),
-            PlatformType.Paddle => PaddleMotion.Read(block, profile),
-            PlatformType.FullyManipulable => FullyManipulableMotion.Read(block, profile),
+            PlatformType.ConveyorBelt => ConveyorBelt.Read(block, profile),
+            PlatformType.Falling => Falling.Read(block, profile),
+            PlatformType.ForwardReturn => ForwardReturn.Read(block, profile),
+            PlatformType.Breakaway => Breakaway.Read(block, profile),
+            PlatformType.Springboard => Springboard.Read(block, profile),
+            PlatformType.TeeterTotter => TeeterTotter.Read(block, profile),
+            PlatformType.Paddle => Paddle.Read(block, profile),
+            PlatformType.FullyManipulable => FullyManipulable.Read(block, profile),
             _ => throw new InvalidDataException($"Unknown platform type 0x{(byte)discriminator:X2}."),
         };
     }
@@ -46,14 +46,14 @@ public abstract partial class PlatformMotion : Motion
         {
             switch (value)
             {
-                case ConveyorBeltMotion m: ConveyorBeltMotion.Write(m, block, profile); break;
-                case FallingMotion m: FallingMotion.Write(m, block, profile); break;
-                case ForwardReturnMotion m: ForwardReturnMotion.Write(m, block, profile); break;
-                case BreakawayMotion m: BreakawayMotion.Write(m, block, profile); break;
-                case SpringboardMotion m: SpringboardMotion.Write(m, block, profile); break;
-                case TeeterTotterMotion m: TeeterTotterMotion.Write(m, block, profile); break;
-                case PaddleMotion m: PaddleMotion.Write(m, block, profile); break;
-                case FullyManipulableMotion m: FullyManipulableMotion.Write(m, block, profile); break;
+                case ConveyorBelt m: ConveyorBelt.Write(m, block, profile); break;
+                case Falling m: Falling.Write(m, block, profile); break;
+                case ForwardReturn m: ForwardReturn.Write(m, block, profile); break;
+                case Breakaway m: Breakaway.Write(m, block, profile); break;
+                case Springboard m: Springboard.Write(m, block, profile); break;
+                case TeeterTotter m: TeeterTotter.Write(m, block, profile); break;
+                case Paddle m: Paddle.Write(m, block, profile); break;
+                case FullyManipulable m: FullyManipulable.Write(m, block, profile); break;
             }
         });
 

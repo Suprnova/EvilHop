@@ -116,7 +116,7 @@ public class DiscoFloorAssetTests
     {
         var asset = (DiscoFloorAsset)Read(SampleData());
 
-        Assert.Equal(DiscoFloorFlags.Loop | DiscoFloorFlags.Enabled, asset.Flags);
+        Assert.Equal(Behavior.Loop | Behavior.Enabled, asset.Flags);
         Assert.Equal(0.25f, asset.TransitionDuration);
         Assert.Equal(1.0f, asset.StateDuration);
         Assert.Equal("OFF0", asset.OffPrefix);
@@ -380,7 +380,7 @@ public class DiscoFloorAssetTests
         ];
 
         var asset = (DiscoFloorAsset)Read(data);
-        asset.States.Add(new DiscoFloorState { Tiles = { TileState.On, TileState.On, TileState.On, TileState.On } });
+        asset.States.Add(new State { Tiles = { TileState.On, TileState.On, TileState.On, TileState.On } });
 
         byte[] rewritten = Write(asset);
 
@@ -393,7 +393,7 @@ public class DiscoFloorAssetTests
     public void TileCount_DisagreeingWithStates_IsStoredIndependently()
     {
         var asset = new DiscoFloorAsset();
-        asset.States.Add(new DiscoFloorState());
+        asset.States.Add(new State());
         asset.States[0].Tiles.Add(TileState.Off);
 
         asset.Physical.TileCount = 5;
@@ -406,7 +406,7 @@ public class DiscoFloorAssetTests
     public void TileCount_MatchingStates_DerivesFromFirstState()
     {
         var asset = new DiscoFloorAsset();
-        asset.States.Add(new DiscoFloorState());
+        asset.States.Add(new State());
         asset.States[0].Tiles.Add(TileState.On);
         asset.States[0].Tiles.Add(TileState.Off);
 
@@ -420,7 +420,7 @@ public class DiscoFloorAssetTests
     public void StateCount_DisagreeingWithStates_IsStoredIndependently()
     {
         var asset = new DiscoFloorAsset();
-        asset.States.Add(new DiscoFloorState());
+        asset.States.Add(new State());
 
         asset.Physical.StateCount = 5;
 
@@ -432,11 +432,11 @@ public class DiscoFloorAssetTests
     public void StateCount_MatchingStates_DerivesFromStates()
     {
         var asset = new DiscoFloorAsset();
-        asset.States.Add(new DiscoFloorState());
-        asset.States.Add(new DiscoFloorState());
+        asset.States.Add(new State());
+        asset.States.Add(new State());
 
         asset.Physical.StateCount = 2;
-        asset.States.Add(new DiscoFloorState());
+        asset.States.Add(new State());
 
         Assert.Equal(3u, asset.Physical.StateCount);
     }

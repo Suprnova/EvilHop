@@ -113,7 +113,7 @@ public class PickupTableAssetTests
     public void EntryCount_DisagreeingWithEntries_IsStoredIndependently()
     {
         var asset = new PickupTableAsset();
-        asset.Entries.Add(new PickupTableAsset.PickupTableEntry());
+        asset.Entries.Add(new PickupTableAsset.Entry());
 
         asset.Physical.EntryCount = 5;
 
@@ -125,11 +125,11 @@ public class PickupTableAssetTests
     public void EntryCount_MatchingEntries_DerivesFromEntries()
     {
         var asset = new PickupTableAsset();
-        asset.Entries.Add(new PickupTableAsset.PickupTableEntry());
-        asset.Entries.Add(new PickupTableAsset.PickupTableEntry());
+        asset.Entries.Add(new PickupTableAsset.Entry());
+        asset.Entries.Add(new PickupTableAsset.Entry());
 
         asset.Physical.EntryCount = 2;
-        asset.Entries.Add(new PickupTableAsset.PickupTableEntry());
+        asset.Entries.Add(new PickupTableAsset.Entry());
 
         Assert.Equal(3u, asset.Physical.EntryCount);
     }
