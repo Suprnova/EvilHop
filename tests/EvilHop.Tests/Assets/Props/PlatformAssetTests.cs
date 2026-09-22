@@ -5,6 +5,9 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.Motion;
+using static EvilHop.Assets.EntityMotion;
+using static EvilHop.Assets.PlatformMotion;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -325,10 +328,10 @@ public class PlatformAssetTests
         var asset = (PlatformAsset)Read(GameVersion.BFBB, Mechanism(GameVersion.BFBB));
 
         var motion = Assert.IsType<MechanismMotion>(asset.Motion);
-        Assert.Equal(MechanismMovement.Rotate, motion.Movement);
+        Assert.Equal(MechanismMotion.MechanismMovement.Rotate, motion.Movement);
         Assert.Equal(MechanismFlags.ReturnToStart, motion.MechanismFlags);
-        Assert.Equal(MotionAxis.X, motion.SlideAxis);
-        Assert.Equal(MotionAxis.Z, motion.RotateAxis);
+        Assert.Equal(MechanismMotion.MotionAxis.X, motion.SlideAxis);
+        Assert.Equal(MechanismMotion.MotionAxis.Z, motion.RotateAxis);
         Assert.Equal(1f, motion.SlideDistance);
         Assert.Equal(10f, motion.PostReturnDelay);
         Assert.Equal(0f, motion.ScaleAmount);
@@ -366,7 +369,7 @@ public class PlatformAssetTests
         Assert.Equal(1.5f, motion.BreakDelay);
         Assert.Equal(new AssetId(0xCE7F8131), motion.BustModelId);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayFlags.None, motion.BreakFlags);
+        Assert.Equal(BreakawayMotion.BreakawayFlags.None, motion.BreakFlags);
     }
 
     [Fact]
@@ -377,7 +380,7 @@ public class PlatformAssetTests
         var motion = Assert.IsType<BreakawayMotion>(asset.Motion);
         Assert.Equal(new AssetId(0xCE7F8131), motion.BustModelId);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayFlags.AllowSneak, motion.BreakFlags);
+        Assert.Equal(BreakawayMotion.BreakawayFlags.AllowSneak, motion.BreakFlags);
     }
 
     [Fact]
@@ -388,7 +391,7 @@ public class PlatformAssetTests
         var motion = Assert.IsType<BreakawayMotion>(asset.Motion);
         Assert.Equal(1.5f, motion.BreakDelay);
         Assert.Equal(3f, motion.ResetDelay);
-        Assert.Equal(BreakawayFlags.AllowSneak, motion.BreakFlags);
+        Assert.Equal(BreakawayMotion.BreakawayFlags.AllowSneak, motion.BreakFlags);
         Assert.Equal(0.1f, motion.CollisionOffTime);
         Assert.Equal(AssetId.None, motion.BustModelId);
     }
@@ -414,7 +417,7 @@ public class PlatformAssetTests
         Assert.Equal([6f, 0f, 0f], motion.JumpHeights);
         Assert.Equal(2f, motion.BounceHeight);
         Assert.Equal(new Vector3(0, 1, 0), motion.JumpDirection);
-        Assert.Equal(SpringboardFlags.LockView | SpringboardFlags.LockMovement, motion.SpringFlags);
+        Assert.Equal(SpringboardMotion.SpringboardFlags.LockView | SpringboardMotion.SpringboardFlags.LockMovement, motion.SpringFlags);
     }
 
     [Fact]

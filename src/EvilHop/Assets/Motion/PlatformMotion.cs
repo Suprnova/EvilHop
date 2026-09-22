@@ -8,7 +8,7 @@ namespace EvilHop.Assets;
 /// A <see cref="Motion"/> only a <see cref="PlatformAsset"/> can have, stored in its type-specific
 /// block rather than its Motion block.
 /// </summary>
-public abstract class PlatformMotion : Motion
+public abstract partial class PlatformMotion : Motion
 {
     private protected PlatformMotion() { }
 

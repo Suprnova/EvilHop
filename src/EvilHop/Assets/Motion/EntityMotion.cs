@@ -8,7 +8,7 @@ namespace EvilHop.Assets;
 /// A <see cref="Motion"/> stored in the Motion block the format shares between
 /// <see cref="AssetType.Platform"/> and <see cref="AssetType.Button"/>, moving its entity by itself.
 /// </summary>
-public abstract class EntityMotion : Motion
+public abstract partial class EntityMotion : Motion
 {
     private protected EntityMotion() { }
 
@@ -102,18 +102,18 @@ public abstract class EntityMotion : Motion
             block.Write((byte)0); // use_banking
             block.Write((ushort)flags);
         });
-}
 
-/// <summary>
-/// Every type a Motion block can store.
-/// </summary>
-internal enum MotionType : byte
-{
-    ExtendRetract = 0,
-    Orbit = 1,
-    Spline = 2,
-    MovePoint = 3,
-    Mechanism = 4,
-    Pendulum = 5,
-    None = 6,
+    /// <summary>
+    /// Every type a Motion block can store.
+    /// </summary>
+    internal enum MotionType : byte
+    {
+        ExtendRetract = 0,
+        Orbit = 1,
+        Spline = 2,
+        MovePoint = 3,
+        Mechanism = 4,
+        Pendulum = 5,
+        None = 6,
+    }
 }

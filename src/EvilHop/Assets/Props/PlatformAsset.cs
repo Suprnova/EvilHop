@@ -23,7 +23,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     /// <summary>
     /// How this platform moves or reacts. Determines <see cref="Physical.IPlatformAsset.PlatformType"/>.
     /// </summary>
-    public Motion Motion { get; set; } = new FullyManipulableMotion();
+    public Motion Motion { get; set; } = new PlatformMotion.FullyManipulableMotion();
 
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Platform"/> is known to be read by.
@@ -158,33 +158,33 @@ public static partial class Physical
 /// </summary>
 public enum PlatformType : byte
 {
-    /// <summary>An <see cref="ExtendRetractMotion"/>.</summary>
+    /// <summary>An <see cref="EntityMotion.ExtendRetractMotion"/>.</summary>
     ExtendRetract = 0,
-    /// <summary>An <see cref="OrbitMotion"/>.</summary>
+    /// <summary>An <see cref="EntityMotion.OrbitMotion"/>.</summary>
     Orbit = 1,
-    /// <summary>A <see cref="SplineMotion"/>.</summary>
+    /// <summary>A <see cref="EntityMotion.SplineMotion"/>.</summary>
     Spline = 2,
-    /// <summary>A <see cref="MovePointMotion"/>.</summary>
+    /// <summary>A <see cref="EntityMotion.MovePointMotion"/>.</summary>
     MovePoint = 3,
-    /// <summary>A <see cref="MechanismMotion"/>.</summary>
+    /// <summary>A <see cref="EntityMotion.MechanismMotion"/>.</summary>
     Mechanism = 4,
-    /// <summary>A <see cref="PendulumMotion"/>.</summary>
+    /// <summary>A <see cref="EntityMotion.PendulumMotion"/>.</summary>
     Pendulum = 5,
-    /// <summary>A <see cref="ConveyorBeltMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.ConveyorBeltMotion"/>.</summary>
     ConveyorBelt = 6,
-    /// <summary>A <see cref="FallingMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.FallingMotion"/>.</summary>
     Falling = 7,
-    /// <summary>A <see cref="ForwardReturnMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.ForwardReturnMotion"/>.</summary>
     ForwardReturn = 8,
-    /// <summary>A <see cref="BreakawayMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.BreakawayMotion"/>.</summary>
     Breakaway = 9,
-    /// <summary>A <see cref="SpringboardMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.SpringboardMotion"/>.</summary>
     Springboard = 10,
-    /// <summary>A <see cref="TeeterTotterMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.TeeterTotterMotion"/>.</summary>
     TeeterTotter = 11,
-    /// <summary>A <see cref="PaddleMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.PaddleMotion"/>.</summary>
     Paddle = 12,
-    /// <summary>A <see cref="FullyManipulableMotion"/>.</summary>
+    /// <summary>A <see cref="PlatformMotion.FullyManipulableMotion"/>.</summary>
     FullyManipulable = 13,
 }
 

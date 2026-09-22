@@ -56,25 +56,25 @@ public abstract class Motion
         writer.Write(stream.ToArray());
         writer.Write(new byte[size - (int)stream.Length]);
     }
-}
 
-/// <summary>
-/// Flags controlling motion playback, entity orientation, and initial stopped state for a <see cref="Motion"/>.
-/// </summary>
-[Flags]
-public enum MotionFlags : ushort
-{
     /// <summary>
-    /// No flags are set.
+    /// Flags controlling motion playback, entity orientation, and initial stopped state for a <see cref="Motion"/>.
     /// </summary>
-    None = 0,
-    /// <summary>
-    /// A <see cref="MovePointMotion"/> turns its entity to face the direction it travels.
-    /// </summary>
-    FaceTravelDirection = 1 << 0,
-    /// <summary>
-    /// The motion starts stopped, waiting for a <b>Run</b> event. If unset, it starts moving as
-    /// soon as the scene is prepared.
-    /// </summary>
-    Stopped = 1 << 2,
+    [Flags]
+    public enum MotionFlags : ushort
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// A <see cref="EntityMotion.MovePointMotion"/> turns its entity to face the direction it travels.
+        /// </summary>
+        FaceTravelDirection = 1 << 0,
+        /// <summary>
+        /// The motion starts stopped, waiting for a <b>Run</b> event. If unset, it starts moving as
+        /// soon as the scene is prepared.
+        /// </summary>
+        Stopped = 1 << 2,
+    }
 }
