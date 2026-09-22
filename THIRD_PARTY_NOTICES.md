@@ -5,7 +5,7 @@ This repository contains third-party assets licensed under terms distinct from [
 ---
 
 ### _Bathtime with Chris_
-* **File Location:** `tests/EvilHop.Tests/TextData/unofficial/tssm.hip`
+* **File Location:** `tests/EvilHop.Tests/TestData/unofficial/tssm.hip`
 * **Original Author:** [actualchatterteeth](https://heavyironmodding.org/wiki/User:Actualchatterteeth)
 * **Upstream Grant of Rights:** https://youtu.be/1CIjbBrE3LU
 

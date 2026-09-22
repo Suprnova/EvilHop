@@ -2,7 +2,30 @@
 
 EvilHop is a C# .NET library for reading, writing, and manipulating **HIP archive files**, the binary asset container format used in several games developed by Heavy Iron Studios.
 
-> **Status: alpha.** Both layers are functional: the block layer round-trips every archive tested byte-for-byte, and the asset layer opens archives as assets through a session, rebuilding the archive on commit. Asset codecs are a work in progress: a growing set of types are modelled field-for-field, everything else falls back to a generic codec for its shape, and unparsed bytes are always carried through untouched. Breaking changes are expected, and there is no NuGet package yet.
+## Status
+
+EvilHop is alpha software. Breaking changes are expected, and there is no NuGet package yet.
+
+The block layer is complete: every serializer round-trips every archive tested byte-for-byte, including unknown fields and padding. The asset layer opens an archive through a session, parsing its blocks into typed `Asset`s and rebuilding them unconditionally on commit.
+
+Asset codec support falls into three states, per type:
+
+- **Typed** - the asset's fields are modeled and read/written individually. Most gameplay-relevant types are here.
+- **Payload** - the asset wraps an embedded file (a RenderWare model, a Bink video, audio) that is imported and exported as a whole blob rather than parsed field-by-field. This is the intended shape for these types, not a gap: `BinkVideo`, `BSP`, `JSP`, `Model`, `RawImage`, `Sound`, `StreamingSound`, `StreamingTexture`, `Texture`.
+- **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: `Button`, `CutsceneStreamingSound`, `Duplicator`, `Dynamic`, `NavigationMesh`, `Portal`, `SceneSettings`, `SlideProperty`, `Spline`, `VillainProperties`, `Volume`, `Wireframe`, `ZipLine`.
+
+A handful of Typed assets are only partially modeled, marked with a `// TODO: Partial implementation` comment at their definition:
+
+- `AnimationAsset` - ROTU and Ratatouille's revised SKB layout isn't modeled.
+- `AnimationTableAsset` - N100F's revised States layout isn't modeled.
+- `CameraAsset` - N100F's shorter, differently laid out format isn't modeled.
+- `CutsceneAsset` - chunked media data is unmodeled and preserved as unparsed bytes.
+- `CutsceneTableAsset` - trailing TimeChunk-offset, visibility, and break tables are unmodeled.
+- `NPCAsset` - N100F Prototype-only fields aren't parsed.
+- `OneLinerAsset` - a trailing 67-byte trailer isn't modeled.
+- `ParticleSystemAsset` - particle commands are undecoded and stored as raw bytes.
+- `SoundInfoAsset` - non-GameCube platforms aren't implemented.
+- `SurfaceAsset` - N100F's smaller SURF layout isn't modeled.
 
 ## Supported Games
 
@@ -13,47 +36,37 @@ EvilHop is a C# .NET library for reading, writing, and manipulating **HIP archiv
 - The Incredibles: Rise of the Underminer
 - Ratatouille (January 18, 2006 prototype)
 
-## Two Layers
-
-EvilHop exposes the same bytes two ways, and treats both audiences as first-class:
-
-- **Block layer** - the HIP container exactly as it exists on disk: a tree of tagged blocks with their fields. Complete and permissive. Anything expressible in a HIP file is expressible here, including states the game would reject.
-- **Asset layer** - the game objects those blocks describe, as typed objects with names, positions, and links to one another. Offsets, sizes, and checksums are maintained for you rather than being yours to get wrong.
-
-The two are mutually exclusive: while an asset session is open, it owns the blocks that describe assets.
-
 ## Example
 
-Reading an archive and listing what it contains, at the block layer:
+EvilHop exposes a HIP archive's bytes two ways. The block layer is the container exactly as it sits on disk - a tree of tagged blocks - and is complete and permissive. The asset layer sits on top of it: opening a session parses those blocks into typed `Asset`s with names, positions, and links, maintaining offsets, sizes, and checksums for you rather than leaving them for you to get wrong. The two are mutually exclusive - while a session is open, it owns the blocks that describe assets.
+
+Reading an archive, listing its pickups, and doubling the Scooby Snack count of every snack gate:
 
 ```csharp
 using EvilHop;
-using EvilHop.Blocks;
+using EvilHop.Assets;
 using EvilHop.Serialization;
 
 using var file = File.OpenRead("hb01.HIP");
 var archive = Archive.Load(file, new BFBBSerializer());
 
-var dictionary = archive.Roots.OfType<Dictionary>().Single();
-foreach (var header in dictionary.AssetTable.Headers)
-    Console.WriteLine($"{header.Debug.Name} ({header.Type}) - {header.Size} bytes");
+using var session = archive.OpenAssets();
+
+var pickups = session.Layers.SelectMany(layer => layer.Assets).OfType<PickupAsset>();
+
+foreach (var pickup in pickups)
+{
+    Console.WriteLine($"{pickup.Name} ({pickup.Kind}) at {pickup.Position} - worth {pickup.PickupValue}");
+
+    if (pickup.Kind == PickupAsset.PickupKind.SnackGate)
+        pickup.PickupValue *= 2;
+}
+
+session.Commit();
 
 using var output = File.Create("hb01.out.HIP");
 archive.Save(output);
 ```
-
-## Design Principles
-
-- **Write anything, validate optionally.** Nothing stops you from producing a state the game would reject, so long as it can be serialized. `Validate()` reports problems; it never blocks a write.
-- **Round-trip fidelity.** Reading an archive and writing it back unmodified reproduces the original bytes, down to padding and fill. Every serializer is held to this against real archives.
-- **Unknown is preserved, not discarded.** Bytes the library does not yet understand are carried through untouched rather than dropped, so partial understanding never costs data.
-- **Tolerant reading.** A file that violates an expectation is still a file. Malformed input degrades to a lower-fidelity representation with a diagnostic rather than throwing.
-
-## Planned
-
-- More per-type asset codecs. A growing subset of the type catalogue has typed field models; the rest currently read through a generic codec for their shape, with unparsed bytes preserved. Types are added one at a time.
-- Cross-version conversion, upgrading and downgrading archives between the supported games.
-- Native field definitions for embedded payload formats (RenderWare streams, Bink video, audio), which today import and export as whole files.
 
 ## Documentation
 
@@ -73,8 +86,8 @@ dotnet build
 dotnet test
 ```
 
-The test suite is hermetic and needs no game files.
-
 ## License
 
-EvilHop is licensed under the [MIT License](LICENSE).
+EvilHop's code is licensed under the [MIT License](LICENSE). A small number of third-party test
+fixtures are licensed separately under more restrictive, project-only terms - see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for details.
