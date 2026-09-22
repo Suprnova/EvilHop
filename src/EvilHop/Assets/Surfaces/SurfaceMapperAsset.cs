@@ -76,6 +76,38 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
 
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// One <see cref="SurfaceMapperAsset"/> entry, assigning <see cref="SurfaceId"/> to every JSP info
+    /// node whose own material index matches <see cref="MaterialIndex"/>.
+    /// </summary>
+    /// <remarks>
+    /// In <see cref="GameVersion.TSSM"/> and later, <see cref="MaterialIndex"/> is instead a BKDR hash of
+    /// the target JSP info's asset name concatenated with its index, matching more than one JSP at once.
+    /// </remarks>
+    public sealed class SurfaceMapperEntry
+    {
+        /// <summary>The <see cref="AssetType.Surface"/> applied to matching JSP info nodes.</summary>
+        public AssetId SurfaceId { get; set; }
+
+        /// <summary>
+        /// The value matched against a JSP info node's own material index to decide whether
+        /// <see cref="SurfaceId"/> applies to it.
+        /// </summary>
+        public uint MaterialIndex { get; set; }
+
+        internal static SurfaceMapperEntry Read(EndianReader reader, FormatProfile _) => new()
+        {
+            SurfaceId = reader.ReadAssetId(),
+            MaterialIndex = reader.ReadUInt32(),
+        };
+
+        internal static void Write(SurfaceMapperEntry value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.SurfaceId);
+            writer.Write(value.MaterialIndex);
+        }
+    }
 }
 
 public static partial class Physical
@@ -102,37 +134,5 @@ public static partial class Physical
         /// during serialization.
         /// </remarks>
         uint Count { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="SurfaceMapperAsset"/> entry, assigning <see cref="SurfaceId"/> to every JSP info
-/// node whose own material index matches <see cref="MaterialIndex"/>.
-/// </summary>
-/// <remarks>
-/// In <see cref="GameVersion.TSSM"/> and later, <see cref="MaterialIndex"/> is instead a BKDR hash of
-/// the target JSP info's asset name concatenated with its index, matching more than one JSP at once.
-/// </remarks>
-public sealed class SurfaceMapperEntry
-{
-    /// <summary>The <see cref="AssetType.Surface"/> applied to matching JSP info nodes.</summary>
-    public AssetId SurfaceId { get; set; }
-
-    /// <summary>
-    /// The value matched against a JSP info node's own material index to decide whether
-    /// <see cref="SurfaceId"/> applies to it.
-    /// </summary>
-    public uint MaterialIndex { get; set; }
-
-    internal static SurfaceMapperEntry Read(EndianReader reader, FormatProfile _) => new()
-    {
-        SurfaceId = reader.ReadAssetId(),
-        MaterialIndex = reader.ReadUInt32(),
-    };
-
-    internal static void Write(SurfaceMapperEntry value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.SurfaceId);
-        writer.Write(value.MaterialIndex);
     }
 }

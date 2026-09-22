@@ -134,6 +134,21 @@ public sealed class SubtitlesAsset() : BaseAsset(AssetType.Subtitles, baseType: 
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// A single timed subtitle line within a <see cref="SubtitlesAsset"/>.
+    /// </summary>
+    public sealed class SubtitleLine
+    {
+        /// <summary>The time, in seconds, when this subtitle line begins displaying.</summary>
+        public float StartTime { get; set; }
+
+        /// <summary>The time, in seconds, when this subtitle line stops displaying.</summary>
+        public float StopTime { get; set; }
+
+        /// <summary>The text displayed for this subtitle line.</summary>
+        public string Text { get; set; } = string.Empty;
+    }
 }
 
 public static partial class Physical
@@ -159,19 +174,4 @@ public static partial class Physical
         /// </remarks>
         ushort ByteCount { get; set; }
     }
-}
-
-/// <summary>
-/// A single timed subtitle line within a <see cref="SubtitlesAsset"/>.
-/// </summary>
-public sealed class SubtitleLine
-{
-    /// <summary>The time, in seconds, when this subtitle line begins displaying.</summary>
-    public float StartTime { get; set; }
-
-    /// <summary>The time, in seconds, when this subtitle line stops displaying.</summary>
-    public float StopTime { get; set; }
-
-    /// <summary>The text displayed for this subtitle line.</summary>
-    public string Text { get; set; } = string.Empty;
 }

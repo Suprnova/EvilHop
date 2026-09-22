@@ -198,6 +198,108 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
+
+    /// <summary>
+    /// Flags controlling collision and pass-through behavior when applying surface damage.
+    /// </summary>
+    [Flags]
+    public enum SurfaceGameDamageFlags : byte
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// The player passes through this surface instead of colliding with it, while still taking its
+        /// <see cref="SurfaceAsset.GameDamageType"/> damage on contact.
+        /// </summary>
+        DamagePassthrough = 1 << 0,
+    }
+
+    /// <summary>
+    /// Flags governing player physics and mobility interactions with a surface.
+    /// </summary>
+    [Flags]
+    public enum SurfacePhysicsFlags : byte
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// The player slides off this surface, per <see cref="SurfaceAsset.SlideStartAngle"/>/
+        /// <see cref="SurfaceAsset.SlideStopAngle"/>.
+        /// </summary>
+        Slide = 1 << 0,
+        /// <summary>
+        /// The player's orientation matches this surface's angle.
+        /// </summary>
+        MatchOrient = 1 << 1,
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        Step = 1 << 2,
+        /// <summary>
+        /// The player cannot stand on this surface: contact with it from above is treated as airborne
+        /// rather than grounded, and the player is pushed off rather than coming to rest.
+        /// </summary>
+        PreventStanding = 1 << 3,
+        /// <summary>
+        /// The player is considered out of bounds while on this surface, and is reset after
+        /// <see cref="SurfaceAsset.OutOfBoundsDelay"/>.
+        /// </summary>
+        OutOfBounds = 1 << 4,
+        /// <summary>
+        /// The player can wall jump off this surface. Required for
+        /// <see cref="SurfaceAsset.WallJumpScaleXZ"/> and <see cref="SurfaceAsset.WallJumpScaleY"/> to
+        /// apply - without it the move does not trigger at all.
+        /// </summary>
+        WallJump = 1 << 5,
+    }
+
+    /// <summary>
+    /// Flags governing active texture animations on a surface.
+    /// </summary>
+    [Flags]
+    public enum SurfaceTextureAnimFlags : uint
+    {
+        /// <summary>
+        /// Neither texture animation is active.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The first texture animation (<see cref="SurfaceAsset.TextureAnims"/>[0]) is active.
+        /// </summary>
+        Slot0 = 1 << 0,
+
+        /// <summary>
+        /// The second texture animation (<see cref="SurfaceAsset.TextureAnims"/>[1]) is active.
+        /// </summary>
+        Slot1 = 1 << 1,
+    }
+
+    /// <summary>
+    /// Flags governing active UV coordinate animation effects on a surface.
+    /// </summary>
+    [Flags]
+    public enum SurfaceUvfxFlags : uint
+    {
+        /// <summary>
+        /// Neither UV animation is active.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The first UV animation (<see cref="SurfaceAsset.Uvfxs"/>[0]) is active.
+        /// </summary>
+        Slot0 = 1 << 0,
+
+        /// <summary>
+        /// The second UV animation (<see cref="SurfaceAsset.Uvfxs"/>[1]) is active.
+        /// </summary>
+        Slot1 = 1 << 1,
+    }
 }
 
 public static partial class Physical
@@ -211,10 +313,10 @@ public static partial class Physical
         /// Flags controlling how this surface's damage is applied, read directly from disk.
         /// </summary>
         /// <remarks>
-        /// <see cref="SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
+        /// <see cref="SurfaceAsset.SurfaceGameDamageFlags.DamagePassthrough"/> is exposed logically as
         /// <see cref="SurfaceAsset.DamagePassthrough"/>.
         /// </remarks>
-        SurfaceGameDamageFlags GameDamageFlags { get; set; }
+        SurfaceAsset.SurfaceGameDamageFlags GameDamageFlags { get; set; }
 
         /// <summary>
         /// Unknown.
@@ -239,164 +341,21 @@ public static partial class Physical
 
         /// <summary>
         /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s
-        /// <see cref="SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
+        /// <see cref="SurfaceAsset.SurfaceTextureAnim.IsEnabled"/> (bit 0 for the first element, bit 1 for the
         /// second).
         /// </summary>
         /// <remarks>
         /// When disagreements with the derived value exist, this field wins during serialization.
         /// </remarks>
-        SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
+        SurfaceAsset.SurfaceTextureAnimFlags TextureAnimFlags { get; set; }
 
         /// <summary>
-        /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceUvfx.IsEnabled"/>
+        /// The raw flags word backing <see cref="SurfaceAsset.Uvfxs"/>'s <see cref="SurfaceAsset.SurfaceUvfx.IsEnabled"/>
         /// (bit 0 for the first element, bit 1 for the second).
         /// </summary>
         /// <remarks>
         /// When disagreements with the derived value exist, this field wins during serialization.
         /// </remarks>
-        SurfaceUvfxFlags UvfxFlags { get; set; }
+        SurfaceAsset.SurfaceUvfxFlags UvfxFlags { get; set; }
     }
-}
-
-/// <summary>
-/// Defines the damage and hazard behavior applied to the player upon contacting a surface.
-/// </summary>
-/// <remarks>
-/// Each value is a category every consumer interprets for itself, so values the player cannot tell
-/// apart are not necessarily equivalent elsewhere: <see cref="AssetType.Boulder"/> destroys itself
-/// on <see cref="FatalDeathPlane"/> but merely loses a hit point on every other non-zero value.
-/// </remarks>
-public enum SurfaceGameDamageType : byte
-{
-    /// <summary>
-    /// Harmless.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// Kills the player outright.
-    /// </summary>
-    Fatal1 = 1,
-    /// <summary>
-    /// Kills the player outright.
-    /// </summary>
-    Fatal2 = 2,
-    /// <summary>
-    /// Kills the player outright.
-    /// </summary>
-    Fatal3 = 3,
-    /// <summary>
-    /// Costs the player one hit point.
-    /// </summary>
-    Damage4 = 4,
-    /// <summary>
-    /// Kills the player outright, and destroys a <see cref="AssetType.Boulder"/> rather than
-    /// costing it a hit point.
-    /// </summary>
-    FatalDeathPlane = 5,
-    /// <summary>
-    /// Costs the player one hit point.
-    /// </summary>
-    Damage6 = 6,
-}
-
-/// <summary>
-/// Flags controlling collision and pass-through behavior when applying surface damage.
-/// </summary>
-[Flags]
-public enum SurfaceGameDamageFlags : byte
-{
-    /// <summary>
-    /// No flags are set.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// The player passes through this surface instead of colliding with it, while still taking its
-    /// <see cref="SurfaceAsset.GameDamageType"/> damage on contact.
-    /// </summary>
-    DamagePassthrough = 1 << 0,
-}
-
-/// <summary>
-/// Flags governing player physics and mobility interactions with a surface.
-/// </summary>
-[Flags]
-public enum SurfacePhysicsFlags : byte
-{
-    /// <summary>
-    /// No flags are set.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// The player slides off this surface, per <see cref="SurfaceAsset.SlideStartAngle"/>/
-    /// <see cref="SurfaceAsset.SlideStopAngle"/>.
-    /// </summary>
-    Slide = 1 << 0,
-    /// <summary>
-    /// The player's orientation matches this surface's angle.
-    /// </summary>
-    MatchOrient = 1 << 1,
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Step = 1 << 2,
-    /// <summary>
-    /// The player cannot stand on this surface: contact with it from above is treated as airborne
-    /// rather than grounded, and the player is pushed off rather than coming to rest.
-    /// </summary>
-    PreventStanding = 1 << 3,
-    /// <summary>
-    /// The player is considered out of bounds while on this surface, and is reset after
-    /// <see cref="SurfaceAsset.OutOfBoundsDelay"/>.
-    /// </summary>
-    OutOfBounds = 1 << 4,
-    /// <summary>
-    /// The player can wall jump off this surface. Required for
-    /// <see cref="SurfaceAsset.WallJumpScaleXZ"/> and <see cref="SurfaceAsset.WallJumpScaleY"/> to
-    /// apply - without it the move does not trigger at all.
-    /// </summary>
-    WallJump = 1 << 5,
-}
-
-/// <summary>
-/// Flags governing active texture animations on a surface.
-/// </summary>
-[Flags]
-public enum SurfaceTextureAnimFlags : uint
-{
-    /// <summary>
-    /// Neither texture animation is active.
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// The first texture animation (<see cref="SurfaceAsset.TextureAnims"/>[0]) is active.
-    /// </summary>
-    Slot0 = 1 << 0,
-
-    /// <summary>
-    /// The second texture animation (<see cref="SurfaceAsset.TextureAnims"/>[1]) is active.
-    /// </summary>
-    Slot1 = 1 << 1,
-}
-
-/// <summary>
-/// Flags governing active UV coordinate animation effects on a surface.
-/// </summary>
-[Flags]
-public enum SurfaceUvfxFlags : uint
-{
-    /// <summary>
-    /// Neither UV animation is active.
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// The first UV animation (<see cref="SurfaceAsset.Uvfxs"/>[0]) is active.
-    /// </summary>
-    Slot0 = 1 << 0,
-
-    /// <summary>
-    /// The second UV animation (<see cref="SurfaceAsset.Uvfxs"/>[1]) is active.
-    /// </summary>
-    Slot1 = 1 << 1,
 }

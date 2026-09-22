@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// interpolating a property of the UI between a start and end state over
 /// <see cref="StartTime"/>-<see cref="EndTime"/>.
 /// </summary>
-public abstract class UIMotionCommand
+public abstract partial class UIMotionCommand
 {
     /// <summary>The size, in bytes, of the header shared by every <see cref="UIMotionCommand"/>.</summary>
     internal const int HeaderSize = 24;
@@ -100,27 +100,27 @@ public abstract class UIMotionCommand
             case UVScrollCommand c: UVScrollCommand.Write(c, writer, profile); break;
         }
     }
-}
 
-/// <summary>
-/// Defines the type of animated property transformation applied to a UI element.
-/// </summary>
-public enum UIMotionCommandType : uint
-{
-    /// <summary>A <see cref="MoveCommand"/>.</summary>
-    Move = 0,
-    /// <summary>A <see cref="ScaleCommand"/>.</summary>
-    Scale = 1,
-    /// <summary>A <see cref="RotateCommand"/>.</summary>
-    Rotate = 2,
-    /// <summary>An <see cref="OpacityCommand"/>.</summary>
-    Opacity = 3,
-    /// <summary>An <see cref="AbsoluteScaleCommand"/>.</summary>
-    AbsoluteScale = 4,
-    /// <summary>A <see cref="BrightnessCommand"/>.</summary>
-    Brightness = 5,
-    /// <summary>A <see cref="ColorCommand"/>.</summary>
-    Color = 6,
-    /// <summary>A <see cref="UVScrollCommand"/>.</summary>
-    UVScroll = 7,
+    /// <summary>
+    /// Defines the type of animated property transformation applied to a UI element.
+    /// </summary>
+    public enum UIMotionCommandType : uint
+    {
+        /// <summary>A <see cref="MoveCommand"/>.</summary>
+        Move = 0,
+        /// <summary>A <see cref="ScaleCommand"/>.</summary>
+        Scale = 1,
+        /// <summary>A <see cref="RotateCommand"/>.</summary>
+        Rotate = 2,
+        /// <summary>An <see cref="OpacityCommand"/>.</summary>
+        Opacity = 3,
+        /// <summary>An <see cref="AbsoluteScaleCommand"/>.</summary>
+        AbsoluteScale = 4,
+        /// <summary>A <see cref="BrightnessCommand"/>.</summary>
+        Brightness = 5,
+        /// <summary>A <see cref="ColorCommand"/>.</summary>
+        Color = 6,
+        /// <summary>A <see cref="UVScrollCommand"/>.</summary>
+        UVScroll = 7,
+    }
 }

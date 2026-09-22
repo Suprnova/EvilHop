@@ -101,10 +101,10 @@ public class SubtitlesAssetTests
     {
         Assert.Equal((ushort)0, _asset.Physical.NumLines);
 
-        _asset.Lines.Add(new SubtitleLine());
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine());
         Assert.Equal((ushort)1, _asset.Physical.NumLines);
 
-        _asset.Lines.Add(new SubtitleLine());
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine());
         Assert.Equal((ushort)2, _asset.Physical.NumLines);
     }
 
@@ -113,7 +113,7 @@ public class SubtitlesAssetTests
     {
         Assert.Equal((ushort)0, _asset.Physical.ByteCount);
 
-        _asset.Lines.Add(new SubtitleLine
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine
         {
             StartTime = 1.0f,
             StopTime = 2.5f,
@@ -123,7 +123,7 @@ public class SubtitlesAssetTests
         // 12 bytes descriptor + 5 bytes "Hello" + 1 byte null = 18 bytes, padded to 20
         Assert.Equal((ushort)20, _asset.Physical.ByteCount);
 
-        _asset.Lines.Add(new SubtitleLine
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine
         {
             StartTime = 3.0f,
             StopTime = 5.0f,
@@ -140,13 +140,13 @@ public class SubtitlesAssetTests
         _asset.Physical.NumLines = 10;
         Assert.Equal((ushort)10, _asset.Physical.NumLines);
 
-        _asset.Lines.Add(new SubtitleLine());
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine());
         Assert.Equal((ushort)10, _asset.Physical.NumLines);
 
         _asset.Physical.NumLines = 1;
         Assert.Equal((ushort)1, _asset.Physical.NumLines);
 
-        _asset.Lines.Add(new SubtitleLine());
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine());
         Assert.Equal((ushort)2, _asset.Physical.NumLines);
     }
 
@@ -156,14 +156,14 @@ public class SubtitlesAssetTests
         _asset.Physical.ByteCount = 200;
         Assert.Equal((ushort)200, _asset.Physical.ByteCount);
 
-        _asset.Lines.Add(new SubtitleLine { Text = "Test" });
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine { Text = "Test" });
         Assert.Equal((ushort)200, _asset.Physical.ByteCount);
 
         // 12 + 4 + 1 = 17 bytes, padded to 20
         _asset.Physical.ByteCount = 20;
         Assert.Equal((ushort)20, _asset.Physical.ByteCount);
 
-        _asset.Lines.Add(new SubtitleLine { Text = "A" });
+        _asset.Lines.Add(new SubtitlesAsset.SubtitleLine { Text = "A" });
         // 24 + 5 + 2 = 31 bytes, padded to 32
         Assert.Equal((ushort)32, _asset.Physical.ByteCount);
     }
@@ -171,7 +171,7 @@ public class SubtitlesAssetTests
     [Fact]
     public void SubtitleLine_PropertiesSetAndGet()
     {
-        var line = new SubtitleLine
+        var line = new SubtitlesAsset.SubtitleLine
         {
             StartTime = 2.5f,
             StopTime = 7.8f,
@@ -268,7 +268,7 @@ public class SubtitlesAssetTests
         Assert.Equal((ushort)1, asset.Physical.NumLines);
         Assert.Equal(byteCount, asset.Physical.ByteCount);
 
-        asset.Lines.Add(new SubtitleLine { StartTime = 3.5f, StopTime = 6.0f, Text = "Line 2" });
+        asset.Lines.Add(new SubtitlesAsset.SubtitleLine { StartTime = 3.5f, StopTime = 6.0f, Text = "Line 2" });
         Assert.Equal((ushort)2, asset.Physical.NumLines);
         Assert.Equal(Align4(24 + pool0.Length + 7), asset.Physical.ByteCount);
     }

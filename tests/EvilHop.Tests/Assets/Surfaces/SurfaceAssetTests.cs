@@ -5,6 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.SurfaceAsset;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -135,7 +136,7 @@ public class SurfaceAssetTests
         Assert.Equal(10, asset.SlideStopAngle);
         Assert.Equal(SurfacePhysicsFlags.OutOfBounds, asset.PhysFlags);
         Assert.Equal(1.0f, asset.Friction);
-        Assert.Equal(SurfaceColorFxFlags.Valid, asset.ColorFx.Flags);
+        Assert.Equal(SurfaceColorFx.SurfaceColorFxFlags.Valid, asset.ColorFx.Flags);
         Assert.Equal(30f, asset.ColorFx.Speed);
         Assert.Equal(2, asset.TextureAnims.Length);
         Assert.Equal(SurfaceTextureAnimFlags.None, asset.Physical.TextureAnimFlags);
