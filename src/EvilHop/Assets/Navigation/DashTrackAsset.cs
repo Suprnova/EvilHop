@@ -18,7 +18,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/DTRK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), Physical.IDashTrackAsset
+public sealed partial class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 0xCD), Physical.IDashTrackAsset
 {
     /// <summary>
     /// The mesh's vertices, indexed by <see cref="DashTrackTriangle.VertexA"/>/<see cref="DashTrackTriangle.VertexB"/>/<see cref="DashTrackTriangle.VertexC"/>.
@@ -128,7 +128,38 @@ public sealed class DashTrackAsset() : BaseAsset(AssetType.DashTrack, baseType: 
 
         writer.Write(asset.GetUnparsedTail());
     }
-};
+
+    /// <summary>
+    /// The triangles neighboring one <see cref="DashTrackAsset"/> triangle across each of its three
+    /// edges, used to walk from one triangle to the next as the player crosses it. A value of
+    /// <c>0xFFFF</c> marks an edge with no neighbor.
+    /// </summary>
+    public record struct DashTrackPortal
+    {
+        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>
+        public ushort Neighbor0 { get; set; }
+
+        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexB"/>, or <c>0xFFFF</c> if none.</summary>
+        public ushort Neighbor1 { get; set; }
+
+        /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexC"/>, or <c>0xFFFF</c> if none.</summary>
+        public ushort Neighbor2 { get; set; }
+
+        internal static DashTrackPortal Read(EndianReader reader, FormatProfile _) => new()
+        {
+            Neighbor0 = reader.ReadUInt16(),
+            Neighbor1 = reader.ReadUInt16(),
+            Neighbor2 = reader.ReadUInt16(),
+        };
+
+        internal static void Write(DashTrackPortal value, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(value.Neighbor0);
+            writer.Write(value.Neighbor1);
+            writer.Write(value.Neighbor2);
+        }
+    }
+}
 
 public static partial class Physical
 {
@@ -165,81 +196,5 @@ public static partial class Physical
 
         /// <summary>Unknown.</summary>
         uint Unknown3 { get; set; }
-    }
-}
-
-/// <summary>
-/// One <see cref="DashTrackAsset"/> triangle: three <see cref="DashTrackAsset.Vertices"/> indices,
-/// plus the per-edge coefficients used to test whether a point lies within it.
-/// </summary>
-public record struct DashTrackTriangle
-{
-    /// <summary>The first of the triangle's three <see cref="DashTrackAsset.Vertices"/> indices.</summary>
-    public ushort VertexA { get; set; }
-
-    /// <summary>The second of the triangle's three <see cref="DashTrackAsset.Vertices"/> indices.</summary>
-    public ushort VertexB { get; set; }
-
-    /// <summary>The third of the triangle's three <see cref="DashTrackAsset.Vertices"/> indices.</summary>
-    public ushort VertexC { get; set; }
-
-    /// <summary>Unknown.</summary>
-    public ushort Flags { get; set; }
-
-    /// <summary>Unknown.</summary>
-    public Vector3 U { get; set; }
-
-    /// <summary>Unknown.</summary>
-    public Vector3 V { get; set; }
-
-    internal static DashTrackTriangle Read(EndianReader reader, FormatProfile _) => new()
-    {
-        VertexA = reader.ReadUInt16(),
-        VertexB = reader.ReadUInt16(),
-        VertexC = reader.ReadUInt16(),
-        Flags = reader.ReadUInt16(),
-        U = reader.ReadVector3(),
-        V = reader.ReadVector3(),
-    };
-
-    internal static void Write(DashTrackTriangle value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.VertexA);
-        writer.Write(value.VertexB);
-        writer.Write(value.VertexC);
-        writer.Write(value.Flags);
-        writer.Write(value.U);
-        writer.Write(value.V);
-    }
-}
-
-/// <summary>
-/// The triangles neighboring one <see cref="DashTrackAsset"/> triangle across each of its three
-/// edges, used to walk from one triangle to the next as the player crosses it. A value of
-/// <c>0xFFFF</c> marks an edge with no neighbor.
-/// </summary>
-public record struct DashTrackPortal
-{
-    /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexA"/>, or <c>0xFFFF</c> if none.</summary>
-    public ushort Neighbor0 { get; set; }
-
-    /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexB"/>, or <c>0xFFFF</c> if none.</summary>
-    public ushort Neighbor1 { get; set; }
-
-    /// <summary>The neighboring triangle across the edge opposite <see cref="DashTrackTriangle.VertexC"/>, or <c>0xFFFF</c> if none.</summary>
-    public ushort Neighbor2 { get; set; }
-
-    internal static DashTrackPortal Read(EndianReader reader, FormatProfile _) => new()
-    {
-        Neighbor0 = reader.ReadUInt16(),
-        Neighbor1 = reader.ReadUInt16(),
-        Neighbor2 = reader.ReadUInt16(),
-    };
-
-    internal static void Write(DashTrackPortal value, EndianWriter writer, FormatProfile _)
-    {
-        writer.Write(value.Neighbor0);
-        writer.Write(value.Neighbor1);
-        writer.Write(value.Neighbor2);
     }
 }

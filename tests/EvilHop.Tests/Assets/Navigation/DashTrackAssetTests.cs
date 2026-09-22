@@ -128,7 +128,7 @@ public class DashTrackAssetTests
         Assert.Equal(1, asset.Physical.TriangleCount);
 
         asset.Vertices.Add(new System.Numerics.Vector3());
-        asset.Triangles.Add(new DashTrackTriangle());
+        asset.Triangles.Add(new DashTrackAsset.DashTrackTriangle());
 
         Assert.Equal(4, asset.Physical.VertexCount);
         Assert.Equal(2, asset.Physical.TriangleCount);

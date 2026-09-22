@@ -138,6 +138,47 @@ public sealed partial class MovePointAsset() : BaseAsset(AssetType.MovePoint, ba
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Defines whether an occupant moves along or patrols within the area of a <see cref="MovePointAsset"/>.
+    /// </summary>
+    public enum MovePointKind : byte
+    {
+        /// <summary>
+        /// This move point does not define the area an occupant moves within; instead,
+        /// <see cref="ArenaRadius"/> defines the area within which it can detect the
+        /// player, much like a sphere <see cref="AssetType.Trigger"/>. An arena move point will
+        /// typically have no <see cref="SiblingIds"/>.
+        /// </summary>
+        Arena = 0,
+
+        /// <summary>
+        /// Occupants start at, or move toward, this move point. After first reaching it, an occupant
+        /// with no <see cref="SiblingIds"/> stops; otherwise it proceeds to each sibling
+        /// in turn, looping back to the first after the last.
+        /// </summary>
+        Zone = 1,
+    }
+
+    /// <summary>
+    /// Defines how a <see cref="MovePointAsset"/> participates in a bezier curve path.
+    /// </summary>
+    public enum MovePointBezierRole : byte
+    {
+        /// <summary>This move point is not part of a bezier curve.</summary>
+        None = 0,
+
+        /// <summary>
+        /// A bezier curve is built using this move point, its previous move point, and its first
+        /// sibling.
+        /// </summary>
+        Curve = 1,
+
+        /// <summary>
+        /// This move point serves as a secondary control point along the bezier curve.
+        /// </summary>
+        ControlPoint = 2,
+    }
 }
 
 public static partial class Physical
@@ -162,45 +203,4 @@ public static partial class Physical
         /// </remarks>
         ushort NumPoints { get; set; }
     }
-}
-
-/// <summary>
-/// Defines whether an occupant moves along or patrols within the area of a <see cref="MovePointAsset"/>.
-/// </summary>
-public enum MovePointKind : byte
-{
-    /// <summary>
-    /// This move point does not define the area an occupant moves within; instead,
-    /// <see cref="MovePointAsset.ArenaRadius"/> defines the area within which it can detect the
-    /// player, much like a sphere <see cref="AssetType.Trigger"/>. An arena move point will
-    /// typically have no <see cref="MovePointAsset.SiblingIds"/>.
-    /// </summary>
-    Arena = 0,
-
-    /// <summary>
-    /// Occupants start at, or move toward, this move point. After first reaching it, an occupant
-    /// with no <see cref="MovePointAsset.SiblingIds"/> stops; otherwise it proceeds to each sibling
-    /// in turn, looping back to the first after the last.
-    /// </summary>
-    Zone = 1,
-}
-
-/// <summary>
-/// Defines how a <see cref="MovePointAsset"/> participates in a bezier curve path.
-/// </summary>
-public enum MovePointBezierRole : byte
-{
-    /// <summary>This move point is not part of a bezier curve.</summary>
-    None = 0,
-
-    /// <summary>
-    /// A bezier curve is built using this move point, its previous move point, and its first
-    /// sibling.
-    /// </summary>
-    Curve = 1,
-
-    /// <summary>
-    /// This move point serves as a secondary control point along the bezier curve.
-    /// </summary>
-    ControlPoint = 2,
 }

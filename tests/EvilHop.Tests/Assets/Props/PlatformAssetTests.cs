@@ -5,8 +5,8 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
-using static EvilHop.Assets.Motion;
 using static EvilHop.Assets.EntityMotion;
+using static EvilHop.Assets.Motion;
 using static EvilHop.Assets.PlatformMotion;
 
 namespace EvilHop.Tests.Serialization;

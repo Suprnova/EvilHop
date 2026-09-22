@@ -108,8 +108,8 @@ public class MovePointAssetTests
 
         Assert.Equal(new Vector3(1.0f, 2.0f, 3.0f), asset.Position);
         Assert.Equal(10000, asset.Weight);
-        Assert.Equal(MovePointKind.Zone, asset.Kind);
-        Assert.Equal(MovePointBezierRole.None, asset.BezierRole);
+        Assert.Equal(MovePointAsset.MovePointKind.Zone, asset.Kind);
+        Assert.Equal(MovePointAsset.MovePointBezierRole.None, asset.BezierRole);
         Assert.Equal(0, asset.Physical.FlagsProps);
         Assert.Equal(-1.0f, asset.Delay);
         Assert.Equal(default, asset.ZoneRadius);
@@ -124,8 +124,8 @@ public class MovePointAssetTests
     {
         var asset = Read(BFBBData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(MovePointKind.Arena, asset.Kind);
-        Assert.Equal(MovePointBezierRole.Curve, asset.BezierRole);
+        Assert.Equal(MovePointAsset.MovePointKind.Arena, asset.Kind);
+        Assert.Equal(MovePointAsset.MovePointBezierRole.Curve, asset.BezierRole);
         Assert.Equal(2, asset.Physical.FlagsProps);
         Assert.Equal(5.0f, asset.Delay);
         Assert.Equal(3.0f, asset.ZoneRadius);
