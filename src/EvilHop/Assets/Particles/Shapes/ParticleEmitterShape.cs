@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// A <see cref="ParticleEmitterAsset.Kind"/>-specific description of the shape particles are emitted
 /// from or along, stored in a fixed-size block regardless of which shape is active.
 /// </summary>
-public abstract class ParticleEmitterShape
+public abstract partial class ParticleEmitterShape
 {
     private protected ParticleEmitterShape() { }
 
@@ -21,24 +21,24 @@ public abstract class ParticleEmitterShape
     /// Reads one shape block for <paramref name="kind"/>.
     /// </summary>
     /// <exception cref="InvalidDataException"><paramref name="kind"/> has no known shape.</exception>
-    internal static ParticleEmitterShape Read(EndianReader reader, ParticleEmitterKind kind, FormatProfile profile)
+    internal static ParticleEmitterShape Read(EndianReader reader, ParticleEmitterAsset.ParticleEmitterKind kind, FormatProfile profile)
     {
         using var block = new EndianReader(new MemoryStream(reader.ReadBytes(BlockSize)), reader.Endianness);
 
         return kind switch
         {
-            ParticleEmitterKind.Point => PointEmitterShape.Read(block, profile),
-            ParticleEmitterKind.CircleEdge or ParticleEmitterKind.Circle
-                or ParticleEmitterKind.OCircleEdge or ParticleEmitterKind.OCircle => CircleEmitterShape.Read(block, profile),
-            ParticleEmitterKind.RectEdge or ParticleEmitterKind.Rect => RectEmitterShape.Read(block, profile),
-            ParticleEmitterKind.Line => LineEmitterShape.Read(block, profile),
-            ParticleEmitterKind.Volume => VolumeEmitterShape.Read(block, profile),
-            ParticleEmitterKind.SphereEdge1 or ParticleEmitterKind.Sphere
-                or ParticleEmitterKind.SphereEdge2 or ParticleEmitterKind.SphereEdge3 => SphereEmitterShape.Read(block, profile),
-            ParticleEmitterKind.OffsetPoint => OffsetPointEmitterShape.Read(block, profile),
-            ParticleEmitterKind.VCylEdge => VCylEmitterShape.Read(block, profile),
-            ParticleEmitterKind.EntityBone => EntityBoneEmitterShape.Read(block, profile),
-            ParticleEmitterKind.EntityBound => EntityBoundEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.Point => PointEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.CircleEdge or ParticleEmitterAsset.ParticleEmitterKind.Circle
+                or ParticleEmitterAsset.ParticleEmitterKind.OCircleEdge or ParticleEmitterAsset.ParticleEmitterKind.OCircle => CircleEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.RectEdge or ParticleEmitterAsset.ParticleEmitterKind.Rect => RectEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.Line => LineEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.Volume => VolumeEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.SphereEdge1 or ParticleEmitterAsset.ParticleEmitterKind.Sphere
+                or ParticleEmitterAsset.ParticleEmitterKind.SphereEdge2 or ParticleEmitterAsset.ParticleEmitterKind.SphereEdge3 => SphereEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.OffsetPoint => OffsetPointEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.VCylEdge => VCylEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.EntityBone => EntityBoneEmitterShape.Read(block, profile),
+            ParticleEmitterAsset.ParticleEmitterKind.EntityBound => EntityBoundEmitterShape.Read(block, profile),
             _ => throw new InvalidDataException($"Particle emitter kind 0x{(byte)kind:X2} has no {nameof(ParticleEmitterShape)}."),
         };
     }

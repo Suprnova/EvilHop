@@ -4,6 +4,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.ParticleSystemAsset;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -98,7 +99,7 @@ public class ParticleSystemAssetTests
         Assert.Equal(RwBlendFunction.SourceAlpha, asset.SourceBlend);
         Assert.Equal(RwBlendFunction.Zero, asset.DestinationBlend);
         Assert.Equal(2, ((Physical.IParticleSystemAsset)asset).CommandCount);
-        Assert.Equal<byte[]>([0x01, 0x02, 0x03, 0x04], ((Physical.IParticleSystemAsset)asset).CommandData);
+        Assert.Equal([0x01, 0x02, 0x03, 0x04], ((Physical.IParticleSystemAsset)asset).CommandData);
     }
 
     [Fact]

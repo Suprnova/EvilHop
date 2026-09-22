@@ -106,17 +106,17 @@ namespace EvilHop.Serialization;
 /// at a layout that predates the three fields.
 /// </param>
 /// <param name="ShrapnelHasExtendedFragFields">
-/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelFragType.Particle"/> and
-/// <see cref="ShrapnelFragType.Projectile"/> fragments are their full on-disk size (0x1D4/0x90). True
+/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelAsset.ShrapnelFragType.Particle"/> and
+/// <see cref="ShrapnelAsset.ShrapnelFragType.Projectile"/> fragments are their full on-disk size (0x1D4/0x90). True
 /// for every real build; false only via a <c>BuildProfiles.json</c> override for BFBB's leftover
 /// <c>gl/Working</c>/<c>gl/New Folder</c> and Xbox <c>db05</c> archives, whose <c>SHRP</c>s are frozen at a layout that
 /// predates several fields both types later grew - 0x1D0/0x58 (or 0x1D0/0x6C when
 /// <see cref="ShrapnelProjectileHasIntermediateFields"/> is set) there instead. The fragment payload is
-/// stored opaquely (<see cref="ShrapnelFrag.Data"/>), so only the smaller total size needs to be
+/// stored opaquely (<see cref="ShrapnelAsset.ShrapnelFrag.Data"/>), so only the smaller total size needs to be
 /// known, not which specific fields the size difference corresponds to.
 /// </param>
 /// <param name="ShrapnelSoundHasExtendedFields">
-/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelFragType.Sound"/> fragment is
+/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelAsset.ShrapnelFragType.Sound"/> fragment is
 /// 0x4C rather than 0x40. True for every real build; false only via a <c>BuildProfiles.json</c>
 /// override for BFBB's <c>db05</c> and its leftover <c>gl/Working</c>/<c>gl/New Folder</c> archives.
 /// Tracked separately from <see cref="ShrapnelHasExtendedFragFields"/> because the two do not move
@@ -124,7 +124,7 @@ namespace EvilHop.Serialization;
 /// and <c>db02</c> carry 0x4C sounds - so 0x4C is right by default and GameCube <c>db05</c> is the exception.
 /// </param>
 /// <param name="ShrapnelProjectileHasIntermediateFields">
-/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelFragType.Projectile"/> fragment is
+/// Whether a <see cref="ShrapnelAsset"/>'s BFBB <see cref="ShrapnelAsset.ShrapnelFragType.Projectile"/> fragment is
 /// its intermediate on-disk size (0x6C / 108 bytes) when <see cref="ShrapnelHasExtendedFragFields"/> is
 /// <see langword="false"/>, rather than its earliest prototype size (0x58 / 88 bytes). False by default;
 /// true only via a <c>BuildProfiles.json</c> override for BFBB's leftover Xbox <c>db05</c> archive, whose

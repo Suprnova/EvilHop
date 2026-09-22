@@ -5,6 +5,8 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.ParticleEmitterAsset;
+using static EvilHop.Assets.ParticleEmitterShape;
 
 namespace EvilHop.Tests.Serialization;
 

@@ -69,7 +69,7 @@ public class ShrapnelAssetTests
     ];
 
     private static byte[] FragBytes(
-        ShrapnelFragType type,
+        ShrapnelAsset.ShrapnelFragType type,
         uint id,
         uint parentId0 = 0,
         uint parentId1 = 0,
@@ -104,10 +104,10 @@ public class ShrapnelAssetTests
     {
         Assert.Equal(0, _asset.Physical.FragCount);
 
-        _asset.Frags.Add(new ShrapnelFrag());
+        _asset.Frags.Add(new ShrapnelAsset.ShrapnelFrag());
         Assert.Equal(1, _asset.Physical.FragCount);
 
-        _asset.Frags.Add(new ShrapnelFrag());
+        _asset.Frags.Add(new ShrapnelAsset.ShrapnelFrag());
         Assert.Equal(2, _asset.Physical.FragCount);
     }
 
@@ -126,13 +126,13 @@ public class ShrapnelAssetTests
         _asset.Physical.FragCount = 10;
         Assert.Equal(10, _asset.Physical.FragCount);
 
-        _asset.Frags.Add(new ShrapnelFrag());
+        _asset.Frags.Add(new ShrapnelAsset.ShrapnelFrag());
         Assert.Equal(10, _asset.Physical.FragCount);
 
         _asset.Physical.FragCount = 1;
         Assert.Equal(1, _asset.Physical.FragCount);
 
-        _asset.Frags.Add(new ShrapnelFrag());
+        _asset.Frags.Add(new ShrapnelAsset.ShrapnelFrag());
         Assert.Equal(2, _asset.Physical.FragCount);
     }
 
@@ -155,9 +155,9 @@ public class ShrapnelAssetTests
     [Fact]
     public void ShrapnelFrag_PropertiesSetAndGet()
     {
-        var frag = new ShrapnelFrag
+        var frag = new ShrapnelAsset.ShrapnelFrag
         {
-            Type = ShrapnelFragType.Shrapnel,
+            Type = ShrapnelAsset.ShrapnelFragType.Shrapnel,
             Id = new AssetId(0x11223344),
             ParentId0 = new AssetId(0x22334455),
             ParentId1 = new AssetId(0x33445566),
@@ -166,7 +166,7 @@ public class ShrapnelAssetTests
             Data = [0xAA, 0xBB, 0xCC, 0xDD],
         };
 
-        Assert.Equal(ShrapnelFragType.Shrapnel, frag.Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Shrapnel, frag.Type);
         Assert.Equal(new AssetId(0x11223344), frag.Id);
         Assert.Equal(new AssetId(0x22334455), frag.ParentId0);
         Assert.Equal(new AssetId(0x33445566), frag.ParentId1);
@@ -201,8 +201,8 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(2, shrapnelId: 0x12345678),
-            .. FragBytes(ShrapnelFragType.Shrapnel, 0x10101010, 0x20202020, 0x30303030, lifetime: 3.0f, delay: 0.25f, payload: frag2Payload),
-            .. FragBytes(ShrapnelFragType.Sound, 0x40404040, 0x50505050, 0x60606060, lifetime: 1.5f, delay: 0.1f, payload: frag6Payload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Shrapnel, 0x10101010, 0x20202020, 0x30303030, lifetime: 3.0f, delay: 0.25f, payload: frag2Payload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Sound, 0x40404040, 0x50505050, 0x60606060, lifetime: 1.5f, delay: 0.1f, payload: frag6Payload),
         ];
 
         var asset = (ShrapnelAsset)Read(data, id: 0x12345678);
@@ -210,7 +210,7 @@ public class ShrapnelAssetTests
         Assert.Equal(2, asset.Frags.Count);
 
         var f0 = asset.Frags[0];
-        Assert.Equal(ShrapnelFragType.Shrapnel, f0.Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Shrapnel, f0.Type);
         Assert.Equal(new AssetId(0x10101010), f0.Id);
         Assert.Equal(new AssetId(0x20202020), f0.ParentId0);
         Assert.Equal(new AssetId(0x30303030), f0.ParentId1);
@@ -219,7 +219,7 @@ public class ShrapnelAssetTests
         Assert.Equal(frag2Payload, f0.Data);
 
         var f1 = asset.Frags[1];
-        Assert.Equal(ShrapnelFragType.Sound, f1.Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Sound, f1.Type);
         Assert.Equal(new AssetId(0x40404040), f1.Id);
         Assert.Equal(new AssetId(0x50505050), f1.ParentId0);
         Assert.Equal(new AssetId(0x60606060), f1.ParentId1);
@@ -236,14 +236,14 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x12345678),
-            .. FragBytes(ShrapnelFragType.Shrapnel, 0x10101010, payload: new byte[8]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Shrapnel, 0x10101010, payload: new byte[8]),
         ];
 
         var asset = (ShrapnelAsset)Read(data, id: 0x12345678);
         Assert.Equal(1, asset.Physical.FragCount);
         Assert.Equal(new AssetId(0x12345678), asset.Physical.ShrapnelId);
 
-        asset.Frags.Add(new ShrapnelFrag { Type = ShrapnelFragType.Shrapnel, Data = new byte[8] });
+        asset.Frags.Add(new ShrapnelAsset.ShrapnelFrag { Type = ShrapnelAsset.ShrapnelFragType.Shrapnel, Data = new byte[8] });
         Assert.Equal(2, asset.Physical.FragCount);
 
         asset.Id = new AssetId(0x99999999);
@@ -283,7 +283,7 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x12345678),
-            .. FragBytes(ShrapnelFragType.Explosion, 0x10101010, payload: new byte[48]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Explosion, 0x10101010, payload: new byte[48]),
         ];
 
         Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
@@ -295,36 +295,36 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x12345678),
-            .. FragBytes((ShrapnelFragType)99, 0x10101010, payload: new byte[8]),
+            .. FragBytes((ShrapnelAsset.ShrapnelFragType)99, 0x10101010, payload: new byte[8]),
         ];
 
         Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
     }
 
     [Theory]
-    [InlineData(GameVersion.BFBB, ShrapnelFragType.Particle, 0x1D4)]
-    [InlineData(GameVersion.BFBB, ShrapnelFragType.Projectile, 0x90)]
-    [InlineData(GameVersion.BFBB, ShrapnelFragType.Lightning, 0x68)]
-    [InlineData(GameVersion.BFBB, ShrapnelFragType.Sound, 0x4C)]
-    [InlineData(GameVersion.BFBB, ShrapnelFragType.Shockwave, 0x54)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Particle, 0x1F4)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Projectile, 0x110)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Lightning, 0x70)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Sound, 0x44)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Explosion, 0x48)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Distortion, 0x5C)]
-    [InlineData(GameVersion.TSSM, ShrapnelFragType.Fire, 0x5C)]
-    [InlineData(GameVersion.Incredibles, ShrapnelFragType.Projectile, 0x110)]
-    [InlineData(GameVersion.Incredibles, ShrapnelFragType.Fire, 0x5C)]
-    [InlineData(GameVersion.ROTU, ShrapnelFragType.Projectile, 0x158)]
-    [InlineData(GameVersion.ROTU, ShrapnelFragType.Fire, 0xB4)]
-    [InlineData(GameVersion.ROTU, ShrapnelFragType.Light, 0x60)]
-    [InlineData(GameVersion.ROTU, ShrapnelFragType.Smoke, 0x50)]
-    [InlineData(GameVersion.ROTU, ShrapnelFragType.Goo, 0x88)]
-    [InlineData(GameVersion.Ratatouille, ShrapnelFragType.Projectile, 0x158)]
-    [InlineData(GameVersion.Ratatouille, ShrapnelFragType.Light, 0x60)]
-    [InlineData(GameVersion.Ratatouille, ShrapnelFragType.Goo, 0x88)]
-    public void Read_ThenWrite_EachFragType_RoundTripsAccurately(GameVersion game, ShrapnelFragType type, int totalSize)
+    [InlineData(GameVersion.BFBB, ShrapnelAsset.ShrapnelFragType.Particle, 0x1D4)]
+    [InlineData(GameVersion.BFBB, ShrapnelAsset.ShrapnelFragType.Projectile, 0x90)]
+    [InlineData(GameVersion.BFBB, ShrapnelAsset.ShrapnelFragType.Lightning, 0x68)]
+    [InlineData(GameVersion.BFBB, ShrapnelAsset.ShrapnelFragType.Sound, 0x4C)]
+    [InlineData(GameVersion.BFBB, ShrapnelAsset.ShrapnelFragType.Shockwave, 0x54)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Particle, 0x1F4)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Projectile, 0x110)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Lightning, 0x70)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Sound, 0x44)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Explosion, 0x48)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Distortion, 0x5C)]
+    [InlineData(GameVersion.TSSM, ShrapnelAsset.ShrapnelFragType.Fire, 0x5C)]
+    [InlineData(GameVersion.Incredibles, ShrapnelAsset.ShrapnelFragType.Projectile, 0x110)]
+    [InlineData(GameVersion.Incredibles, ShrapnelAsset.ShrapnelFragType.Fire, 0x5C)]
+    [InlineData(GameVersion.ROTU, ShrapnelAsset.ShrapnelFragType.Projectile, 0x158)]
+    [InlineData(GameVersion.ROTU, ShrapnelAsset.ShrapnelFragType.Fire, 0xB4)]
+    [InlineData(GameVersion.ROTU, ShrapnelAsset.ShrapnelFragType.Light, 0x60)]
+    [InlineData(GameVersion.ROTU, ShrapnelAsset.ShrapnelFragType.Smoke, 0x50)]
+    [InlineData(GameVersion.ROTU, ShrapnelAsset.ShrapnelFragType.Goo, 0x88)]
+    [InlineData(GameVersion.Ratatouille, ShrapnelAsset.ShrapnelFragType.Projectile, 0x158)]
+    [InlineData(GameVersion.Ratatouille, ShrapnelAsset.ShrapnelFragType.Light, 0x60)]
+    [InlineData(GameVersion.Ratatouille, ShrapnelAsset.ShrapnelFragType.Goo, 0x88)]
+    public void Read_ThenWrite_EachFragType_RoundTripsAccurately(GameVersion game, ShrapnelAsset.ShrapnelFragType type, int totalSize)
     {
         var profile = Serializer.DefaultProfileFor(game);
         byte[] payload = new byte[totalSize - 24];
@@ -365,13 +365,13 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x55667788),
-            .. FragBytes(ShrapnelFragType.Inactive, markerId, 0x22334455, 0x33445566, lifetime: 0.0f, delay: 0.5f, payload: payload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Inactive, markerId, 0x22334455, 0x33445566, lifetime: 0.0f, delay: 0.5f, payload: payload),
         ];
 
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
 
         Assert.Single(asset.Frags);
-        Assert.Equal(ShrapnelFragType.Inactive, asset.Frags[0].Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Inactive, asset.Frags[0].Type);
         Assert.Equal(new AssetId(markerId), asset.Frags[0].Id);
         Assert.Equal(payload, asset.Frags[0].Data);
 
@@ -384,7 +384,7 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x12345678),
-            .. FragBytes(ShrapnelFragType.Inactive, 0xDEADBEEF, payload: []),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Inactive, 0xDEADBEEF, payload: []),
         ];
 
         Assert.Throws<InvalidDataException>(() => Read(data, Serializer.DefaultProfileFor(GameVersion.TSSM), id: 0x12345678));
@@ -397,7 +397,7 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x12345678),
-            .. FragBytes(ShrapnelFragType.Inactive, 6, payload: new byte[0x48 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Inactive, 6, payload: new byte[0x48 - 24]),
         ];
 
         Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
@@ -412,31 +412,31 @@ public class ShrapnelAssetTests
         [
             .. HeaderBytes(7, shrapnelId: 0x4E11860F),
 
-            .. FragBytes(ShrapnelFragType.Projectile, 0x78EF8BB0, lifetime: 3.0f, payload: new byte[0x110 - 24]),
-            .. FragBytes(ShrapnelFragType.Projectile, 0x78EF8BB1, lifetime: 3.0f, payload: new byte[0x110 - 24]),
-            .. FragBytes(ShrapnelFragType.Projectile, 0xEB300BFD, lifetime: 3.0f, payload: new byte[0x110 - 24]),
-            .. FragBytes(ShrapnelFragType.Projectile, 0xEB300BFE, lifetime: 3.0f, payload: new byte[0x110 - 24]),
-            .. FragBytes(ShrapnelFragType.Particle, 0x38A9BED6, lifetime: 0.2f, payload: new byte[0x1F4 - 24]),
-            .. FragBytes(ShrapnelFragType.Inactive, 6, 0xD7AFC6CA, lifetime: 0.0f, delay: 3.0f, payload: new byte[0x48 - 24]),
-            .. FragBytes(ShrapnelFragType.Distortion, 0x831684E8, lifetime: 1.0f, payload: new byte[0x5C - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0x78EF8BB0, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0x78EF8BB1, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0xEB300BFD, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0xEB300BFE, lifetime: 3.0f, payload: new byte[0x110 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Particle, 0x38A9BED6, lifetime: 0.2f, payload: new byte[0x1F4 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Inactive, 6, 0xD7AFC6CA, lifetime: 0.0f, delay: 3.0f, payload: new byte[0x48 - 24]),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Distortion, 0x831684E8, lifetime: 1.0f, payload: new byte[0x5C - 24]),
         ];
 
         var profile = Serializer.DefaultProfileFor(GameVersion.TSSM);
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x4E11860F);
 
         Assert.Equal(7, asset.Frags.Count);
-        Assert.Equal(ShrapnelFragType.Inactive, asset.Frags[5].Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Inactive, asset.Frags[5].Type);
         Assert.Equal(new AssetId(6u), asset.Frags[5].Id);
-        Assert.Equal(ShrapnelFragType.Distortion, asset.Frags[6].Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Distortion, asset.Frags[6].Type);
         Assert.Equal(new AssetId(0x831684E8), asset.Frags[6].Id);
 
         Assert.Equal(data, Write(asset, profile));
     }
 
     [Theory]
-    [InlineData(ShrapnelFragType.Particle, 0x1D0)]
-    [InlineData(ShrapnelFragType.Projectile, 0x58)]
-    public void Read_ThenWrite_FragWithoutExtendedFields_ReproducesInputBytes(ShrapnelFragType type, int totalSize)
+    [InlineData(ShrapnelAsset.ShrapnelFragType.Particle, 0x1D0)]
+    [InlineData(ShrapnelAsset.ShrapnelFragType.Projectile, 0x58)]
+    public void Read_ThenWrite_FragWithoutExtendedFields_ReproducesInputBytes(ShrapnelAsset.ShrapnelFragType type, int totalSize)
     {
         // BFBB's leftover gl/Working and gl/New Folder archives predate several fields both of
         // these fragment types later grew - see BuildProfiles.json's
@@ -472,7 +472,7 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(1, shrapnelId: 0x55667788),
-            .. FragBytes(ShrapnelFragType.Projectile, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
         ];
         var profile = BFBBSerializer.DefaultProfile with
         {
@@ -483,7 +483,7 @@ public class ShrapnelAssetTests
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
 
         Assert.Single(asset.Frags);
-        Assert.Equal(ShrapnelFragType.Projectile, asset.Frags[0].Type);
+        Assert.Equal(ShrapnelAsset.ShrapnelFragType.Projectile, asset.Frags[0].Type);
         Assert.Equal(payload, asset.Frags[0].Data);
         Assert.Equal(data, Write(asset, profile));
     }
@@ -503,8 +503,8 @@ public class ShrapnelAssetTests
         byte[] data =
         [
             .. HeaderBytes(2, shrapnelId: 0x55667788),
-            .. FragBytes(ShrapnelFragType.Projectile, 0x11223344, lifetime: 5.0f, payload: projectilePayload),
-            .. FragBytes(ShrapnelFragType.Sound, 0x22334455, lifetime: 2.25f, payload: soundPayload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Projectile, 0x11223344, lifetime: 5.0f, payload: projectilePayload),
+            .. FragBytes(ShrapnelAsset.ShrapnelFragType.Sound, 0x22334455, lifetime: 2.25f, payload: soundPayload),
         ];
         var profile = BFBBSerializer.DefaultProfile with { ShrapnelSoundHasExtendedFields = false };
 

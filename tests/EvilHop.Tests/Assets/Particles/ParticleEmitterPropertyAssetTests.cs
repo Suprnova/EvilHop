@@ -5,6 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.ParticleInterpolation;
 
 namespace EvilHop.Tests.Serialization;
 
