@@ -86,9 +86,9 @@ public class PickupAssetTests
     {
         var asset = (PickupAsset)Read(Data(0x13, 0x28F55613, 2, 4));
 
-        Assert.Equal(PickupKind.Underwear, asset.Kind);
+        Assert.Equal(PickupAsset.PickupKind.Underwear, asset.Kind);
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
         Assert.Equal(new AssetId(0x94E25463), asset.Physical.ModelId);
     }
@@ -141,7 +141,7 @@ public class PickupAssetTests
         var asset = (PickupAsset)Read(data, profile);
 
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
         Assert.Equal(data, Write(asset, profile));
     }
@@ -162,7 +162,7 @@ public class PickupAssetTests
         // Real TSSM data carries a Subtype (0xB7) not in the wiki's known-kind table.
         var asset = (PickupAsset)Read(Data(0xB7, 0, 0, 4, hasPadding: false), TSSMSerializer.DefaultProfile);
 
-        Assert.Equal((PickupKind)0xB7, asset.Kind);
+        Assert.Equal((PickupAsset.PickupKind)0xB7, asset.Kind);
         Assert.Equal(0xB7, asset.Physical.Subtype);
     }
 
@@ -192,10 +192,10 @@ public class PickupAssetTests
 
         Assert.Equal(new AssetId(0x9426EFC0), asset.Physical.BaseId);
         Assert.Equal(0x04, asset.Physical.BaseType);
-        Assert.Equal(PickupKind.Underwear, asset.Kind);
+        Assert.Equal(PickupAsset.PickupKind.Underwear, asset.Kind);
         Assert.Equal(new AssetId(0x94E25463), asset.Physical.ModelId);
         Assert.Equal(0x28F55613u, asset.PickupHash);
-        Assert.Equal(PickupFlags.EnabledOnStart, asset.Flags);
+        Assert.Equal(PickupAsset.PickupFlags.EnabledOnStart, asset.Flags);
         Assert.Equal(4, asset.PickupValue);
 
         Assert.Equal(data, Write(asset));

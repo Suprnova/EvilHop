@@ -86,18 +86,18 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
-}
 
-/// <summary>Toggles a <see cref="GustAsset"/> on or off, and which particles it emits while on.</summary>
-[Flags]
-public enum GustFlags : uint
-{
-    /// <summary>The gust is turned off.</summary>
-    None = 0,
+    /// <summary>Toggles a <see cref="GustAsset"/> on or off, and which particles it emits while on.</summary>
+    [Flags]
+    public enum GustFlags : uint
+    {
+        /// <summary>The gust is turned off.</summary>
+        None = 0,
 
-    /// <summary>The gust is turned on and actively pushing entities.</summary>
-    On = 1 << 0,
+        /// <summary>The gust is turned on and actively pushing entities.</summary>
+        On = 1 << 0,
 
-    /// <summary>Emits dust particles instead of debris particles.</summary>
-    Dust = 1 << 1,
+        /// <summary>Emits dust particles instead of debris particles.</summary>
+        Dust = 1 << 1,
+    }
 }

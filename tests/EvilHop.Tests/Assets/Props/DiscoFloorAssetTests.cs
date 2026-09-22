@@ -5,6 +5,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Text;
+using static EvilHop.Assets.DiscoFloorAsset;
 
 namespace EvilHop.Tests.Serialization;
 

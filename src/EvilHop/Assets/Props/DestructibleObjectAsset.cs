@@ -188,60 +188,60 @@ public sealed class DestructibleObjectAsset() : EntityAsset(AssetType.Destructib
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
-}
 
-/// <summary>
-/// Flags determining which player attacks or physics impacts can damage this destructible object.
-/// </summary>
-[Flags]
-public enum DestructibleHitFlags : uint
-{
     /// <summary>
-    /// No flags are set.
+    /// Flags determining which player attacks or physics impacts can damage this destructible object.
     /// </summary>
-    None = 0,
-    /// <summary>
-    /// Reacts to Patrick's slam attack. <see cref="GameVersion.BFBB"/> only.
-    /// </summary>
-    PatrickSlam = 1 << 10,
-    /// <summary>
-    /// Reacts to being thrown. <see cref="GameVersion.BFBB"/> only.
-    /// </summary>
-    Throw = 1 << 11,
-    /// <summary>
-    /// Reacts to a bubble bounce. <see cref="GameVersion.BFBB"/> only.
-    /// </summary>
-    BubbleBounce = 1 << 13,
-    /// <summary>
-    /// Reacts to a bubble bash attack. <see cref="GameVersion.BFBB"/> only.
-    /// </summary>
-    BubbleBash = 1 << 14,
-    /// <summary>
-    /// Unknown. Plays a random hit sound stream when set alongside a reacted-to hit.
-    /// <see cref="GameVersion.BFBB"/> only.
-    /// </summary>
-    Unknown = 1 << 15,
-}
+    [Flags]
+    public enum DestructibleHitFlags : uint
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Reacts to Patrick's slam attack. <see cref="GameVersion.BFBB"/> only.
+        /// </summary>
+        PatrickSlam = 1 << 10,
+        /// <summary>
+        /// Reacts to being thrown. <see cref="GameVersion.BFBB"/> only.
+        /// </summary>
+        Throw = 1 << 11,
+        /// <summary>
+        /// Reacts to a bubble bounce. <see cref="GameVersion.BFBB"/> only.
+        /// </summary>
+        BubbleBounce = 1 << 13,
+        /// <summary>
+        /// Reacts to a bubble bash attack. <see cref="GameVersion.BFBB"/> only.
+        /// </summary>
+        BubbleBash = 1 << 14,
+        /// <summary>
+        /// Unknown. Plays a random hit sound stream when set alongside a reacted-to hit.
+        /// <see cref="GameVersion.BFBB"/> only.
+        /// </summary>
+        Unknown = 1 << 15,
+    }
 
-/// <summary>
-/// Specifies the visual and sound effect spawned upon destruction.
-/// </summary>
-public enum DestructibleFxType : byte
-{
     /// <summary>
-    /// No effect plays.
+    /// Specifies the visual and sound effect spawned upon destruction.
     /// </summary>
-    None = 0,
-    /// <summary>
-    /// A dust cloud effect plays.
-    /// </summary>
-    Dust = 1,
-    /// <summary>
-    /// An explosion effect plays.
-    /// </summary>
-    Explosion = 2,
-    /// <summary>
-    /// A web effect plays.
-    /// </summary>
-    Web = 3,
+    public enum DestructibleFxType : byte
+    {
+        /// <summary>
+        /// No effect plays.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// A dust cloud effect plays.
+        /// </summary>
+        Dust = 1,
+        /// <summary>
+        /// An explosion effect plays.
+        /// </summary>
+        Explosion = 2,
+        /// <summary>
+        /// A web effect plays.
+        /// </summary>
+        Web = 3,
+    }
 }

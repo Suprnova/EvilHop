@@ -92,6 +92,33 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
         GameVersion.BFBB,
         GameVersion.TSSM,
     };
+
+    /// <summary>
+    /// Behavior flags for a <see cref="DiscoFloorAsset"/>.
+    /// </summary>
+    [Flags]
+    public enum DiscoFloorFlags : uint
+    {
+        /// <summary>Neither flag is set.</summary>
+        None = 0,
+        /// <summary>The pattern loops back to its first step once it reaches the last, instead of pausing there.</summary>
+        Loop = 0x1,
+        /// <summary>The Disco Floor runs and its SIMPs render.</summary>
+        Enabled = 0x2,
+    }
+
+    /// <summary>
+    /// Defines the visual and active state assigned to an individual disco floor tile.
+    /// </summary>
+    public enum TileState : byte
+    {
+        /// <summary>The tile is off (white).</summary>
+        Off = 0,
+        /// <summary>The tile is on (red).</summary>
+        On = 1,
+        /// <summary>The tile is randomly either on or off, chosen independently each time it is reached.</summary>
+        Random = 2,
+    }
 }
 
 public static partial class Physical
@@ -121,18 +148,4 @@ public static partial class Physical
         /// </remarks>
         uint StateCount { get; set; }
     }
-}
-
-/// <summary>
-/// Behavior flags for a <see cref="DiscoFloorAsset"/>.
-/// </summary>
-[Flags]
-public enum DiscoFloorFlags : uint
-{
-    /// <summary>Neither flag is set.</summary>
-    None = 0,
-    /// <summary>The pattern loops back to its first step once it reaches the last, instead of pausing there.</summary>
-    Loop = 0x1,
-    /// <summary>The Disco Floor runs and its SIMPs render.</summary>
-    Enabled = 0x2,
 }

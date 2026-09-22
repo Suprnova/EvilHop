@@ -92,20 +92,20 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
-}
 
-/// <summary>
-/// Flags controlling the activation, visual style, and damage behavior of an electric arc generator.
-/// </summary>
-[Flags]
-public enum ElectricArcGeneratorFlags : byte
-{
     /// <summary>
-    /// No flags are set.
+    /// Flags controlling the activation, visual style, and damage behavior of an electric arc generator.
     /// </summary>
-    None = 0,
-    /// <summary>
-    /// The arc starts active instead of waiting for an <b>On</b> event.
-    /// </summary>
-    StartsOn = 1 << 0,
+    [Flags]
+    public enum ElectricArcGeneratorFlags : byte
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// The arc starts active instead of waiting for an <b>On</b> event.
+        /// </summary>
+        StartsOn = 1 << 0,
+    }
 }

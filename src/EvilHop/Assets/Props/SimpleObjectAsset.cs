@@ -91,6 +91,39 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Defines the collision classification and interaction behavior for a simple object.
+    /// </summary>
+    [Flags]
+    public enum SimpleObjectCollisionType : byte
+    {
+        /// <summary>
+        /// No collision.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Used by <see cref="AssetType.Trigger"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
+        /// </summary>
+        Trigger = 1 << 0,
+        /// <summary>
+        /// Collision matching this object's model.
+        /// </summary>
+        Static = 1 << 1,
+        /// <summary>
+        /// Used by dynamic entities (e.g. <see cref="AssetType.Platform"/>, <see cref="AssetType.Button"/>,
+        /// <see cref="AssetType.DestructibleObject"/>). Does not affect a <see cref="SimpleObjectAsset"/>.
+        /// </summary>
+        Dynamic = 1 << 2,
+        /// <summary>
+        /// Used by NPCs. Does not affect a <see cref="SimpleObjectAsset"/>.
+        /// </summary>
+        NPC = 1 << 3,
+        /// <summary>
+        /// Used by <see cref="AssetType.Player"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
+        /// </summary>
+        Player = 1 << 4,
+    }
 }
 
 public static partial class Physical
@@ -105,37 +138,4 @@ public static partial class Physical
         /// </summary>
         byte SimpleFlags { get; set; }
     }
-}
-
-/// <summary>
-/// Defines the collision classification and interaction behavior for a simple object.
-/// </summary>
-[Flags]
-public enum SimpleObjectCollisionType : byte
-{
-    /// <summary>
-    /// No collision.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// Used by <see cref="AssetType.Trigger"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
-    /// </summary>
-    Trigger = 1 << 0,
-    /// <summary>
-    /// Collision matching this object's model.
-    /// </summary>
-    Static = 1 << 1,
-    /// <summary>
-    /// Used by dynamic entities (e.g. <see cref="AssetType.Platform"/>, <see cref="AssetType.Button"/>,
-    /// <see cref="AssetType.DestructibleObject"/>). Does not affect a <see cref="SimpleObjectAsset"/>.
-    /// </summary>
-    Dynamic = 1 << 2,
-    /// <summary>
-    /// Used by NPCs. Does not affect a <see cref="SimpleObjectAsset"/>.
-    /// </summary>
-    NPC = 1 << 3,
-    /// <summary>
-    /// Used by <see cref="AssetType.Player"/>. Does not affect a <see cref="SimpleObjectAsset"/>.
-    /// </summary>
-    Player = 1 << 4,
 }

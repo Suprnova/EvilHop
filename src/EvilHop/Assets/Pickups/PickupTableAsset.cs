@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/PICK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PickupTableAsset() : Asset(AssetType.PickupTable), Physical.IPickupTableAsset
+public sealed partial class PickupTableAsset() : Asset(AssetType.PickupTable), Physical.IPickupTableAsset
 {
     /// <summary>
     /// The table's entries, one per pickup kind.

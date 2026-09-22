@@ -268,7 +268,7 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, ExtendRetract(GameVersion.BFBB));
 
-        Assert.Equal(PlatformFlags.Solid, asset.Flags);
+        Assert.Equal(PlatformAsset.PlatformFlags.Solid, asset.Flags);
         Assert.Equal(new AssetId(0xAAAA0001), ((IHasSurface)asset).SurfaceId);
         Assert.Equal(new AssetId(0xAAAA0002), ((IHasModel)asset).ModelId);
         Assert.Equal(new AssetId(0xAAAA0003), ((IHasAnimList)asset).AnimListId);

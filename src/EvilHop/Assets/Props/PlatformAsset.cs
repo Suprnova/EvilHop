@@ -131,6 +131,26 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
     }
+
+    /// <summary>
+    /// Flags controlling physical solidity, shake reaction, and player collision for a <see cref="PlatformAsset"/>.
+    /// </summary>
+    [Flags]
+    public enum PlatformFlags : ushort
+    {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// The platform shakes when the player lands on or leaves it.
+        /// </summary>
+        Shake = 1 << 0,
+        /// <summary>
+        /// The platform is solid.
+        /// </summary>
+        Solid = 1 << 2,
+    }
 }
 
 public static partial class Physical
@@ -186,24 +206,4 @@ public enum PlatformType : byte
     Paddle = 12,
     /// <summary>A <see cref="PlatformMotion.FullyManipulableMotion"/>.</summary>
     FullyManipulable = 13,
-}
-
-/// <summary>
-/// Flags controlling physical solidity, shake reaction, and player collision for a <see cref="PlatformAsset"/>.
-/// </summary>
-[Flags]
-public enum PlatformFlags : ushort
-{
-    /// <summary>
-    /// No flags are set.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// The platform shakes when the player lands on or leaves it.
-    /// </summary>
-    Shake = 1 << 0,
-    /// <summary>
-    /// The platform is solid.
-    /// </summary>
-    Solid = 1 << 2,
 }

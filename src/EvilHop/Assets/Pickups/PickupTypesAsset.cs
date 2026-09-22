@@ -14,7 +14,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/TPIK">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseType: 0x00), Physical.IPickupTypesAsset
+public sealed partial class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes, baseType: 0x00), Physical.IPickupTypesAsset
 {
     /// <summary>
     /// The table's format version.

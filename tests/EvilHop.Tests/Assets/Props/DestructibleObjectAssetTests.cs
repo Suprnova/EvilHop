@@ -118,9 +118,9 @@ public class DestructibleObjectAssetTests
         Assert.Equal(2u, asset.InitialAnimationState);
         Assert.Equal(1u, asset.Health);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.SpawnItemId);
-        Assert.Equal(DestructibleHitFlags.PatrickSlam | DestructibleHitFlags.Throw, asset.HitFlags);
+        Assert.Equal(DestructibleObjectAsset.DestructibleHitFlags.PatrickSlam | DestructibleObjectAsset.DestructibleHitFlags.Throw, asset.HitFlags);
         Assert.Equal(2, asset.CollisionType);
-        Assert.Equal(DestructibleFxType.Dust, asset.FxType);
+        Assert.Equal(DestructibleObjectAsset.DestructibleFxType.Dust, asset.FxType);
         Assert.Equal(4.0f, asset.BlastRadius);
         Assert.Equal(2.5f, asset.BlastStrength);
         Assert.Equal(new AssetId(0x11111111), asset.DestroyShrapnelId);

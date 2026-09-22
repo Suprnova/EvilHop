@@ -37,9 +37,9 @@ namespace EvilHop.Serialization;
 /// position, scale, and a model ID; true everywhere else, including every later N100F build.
 /// </param>
 /// <param name="PickupTypesHasPulseFields">
-/// Whether a <see cref="PickupTypeEntry"/> carries <see cref="PickupTypeEntry.PulseModelId"/>,
-/// <see cref="PickupTypeEntry.PulseTime"/>, <see cref="PickupTypeEntry.PulseAddScale"/>,
-/// <see cref="PickupTypeEntry.PulseMoveDown"/>, and <see cref="PickupTypeEntry.ColorMultiplier"/>.
+/// Whether a <see cref="PickupTypesAsset.PickupTypeEntry"/> carries <see cref="PickupTypesAsset.PickupTypeEntry.PulseModelId"/>,
+/// <see cref="PickupTypesAsset.PickupTypeEntry.PulseTime"/>, <see cref="PickupTypesAsset.PickupTypeEntry.PulseAddScale"/>,
+/// <see cref="PickupTypesAsset.PickupTypeEntry.PulseMoveDown"/>, and <see cref="PickupTypesAsset.PickupTypeEntry.ColorMultiplier"/>.
 /// True everywhere except Incredibles' <c>prototype_2004-07-19</c> build, whose pickup pulse effect
 /// and tint hadn't been added yet.
 /// </param>
