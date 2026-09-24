@@ -44,7 +44,7 @@ per-game quirks (platform, endianness, field order, padding) a serializer reads 
 counterpart. The hierarchy deepens through
 [`BaseAsset`](../src/EvilHop/Assets/BaseAsset.cs) (adds `Links`),
 [`EntityAsset`](../src/EvilHop/Assets/EntityAsset.cs), and
-[`DynaAsset`](../src/EvilHop/Assets/DynaAsset.cs); [`PayloadAsset`](../src/EvilHop/Assets/PayloadAsset.cs)
+[`DynamicAsset`](../src/EvilHop/Assets/DynamicAsset.cs); [`PayloadAsset`](../src/EvilHop/Assets/PayloadAsset.cs)
 is the separate shape for file-embedding types. Types with no concrete codec yet fall back to the
 `Generic*` classes in [`GenericAssets.cs`](../src/EvilHop/Assets/Fallbacks/GenericAssets.cs), preserving
 their bytes unparsed. Fields reserved for a family but used by only some of its types are exposed
@@ -62,12 +62,22 @@ generic form and is recorded on `Diagnostics` rather than thrown.
 [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs) maps each
 [`AssetType`](../src/EvilHop/Common/AssetType.cs) to the reader/writer that (de)serializes it.
 Every type is seeded at static construction with a generic handler for its shape
-(`BaseAsset`/`EntityAsset`/`DynaAsset`/`Payload`, per `ShapesByType`); a concrete codec calling
+(`BaseAsset`/`EntityAsset`/`DynamicAsset`/`Payload`, per `ShapesByType`); a concrete codec calling
 `Register<T>` overwrites that entry. A writer whose asset doesn't match its registered shape falls
 back to the generic writer for the asset's actual runtime shape (`Guarded<T>`).
 [`AssetFields`](../src/EvilHop/Assets/Serialization/AssetFields.cs) and
 [`AssetPrefixes`](../src/EvilHop/Assets/Serialization/AssetPrefixes.cs) hold the field-level
 read/write helpers each shape's codec is built from.
+
+`DYNA` dispatches a second time.
+[`DynamicAsset`](../src/EvilHop/Assets/DynamicAsset.cs) reads the shared prefix and the trailing
+`Links`, then asks [`DynamicCodecs`](../src/EvilHop/Assets/Serialization/DynamicCodecs.cs) for the
+subclass registered for its [`DynamicKind`](../src/EvilHop/Assets/Dynamics/DynamicKind.cs), game,
+and version, which reads only the fields between the two. Any combination with nothing registered
+reads as a [`GenericDynamicAsset`](../src/EvilHop/Assets/Dynamics/GenericDynamicAsset.cs) whose
+fields stay unparsed while its links are still modelled. Typed dynamics live under
+`Assets/Dynamics/<category>/` (the game's own name prefix: `Effect/`, `GameObject/`, `UI/`, ...) and
+are named `<Kind>DynamicAsset`.
 
 ## Primitives and Common
 

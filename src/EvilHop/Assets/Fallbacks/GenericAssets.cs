@@ -19,11 +19,6 @@ internal sealed class GenericBaseAsset(AssetType type) : BaseAsset(type);
 internal sealed class GenericEntityAsset(AssetType type) : EntityAsset(type);
 
 /// <summary>
-/// A <see cref="DynaAsset"/> with no implemented codec.
-/// </summary>
-internal sealed class GenericDynaAsset(AssetType type) : DynaAsset(type);
-
-/// <summary>
 /// A <see cref="PayloadAsset"/> with no implemented codec.
 /// </summary>
 internal sealed class GenericPayloadAsset(AssetType type) : PayloadAsset(type);

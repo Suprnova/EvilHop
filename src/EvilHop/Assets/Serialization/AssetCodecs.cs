@@ -81,6 +81,7 @@ internal static class AssetCodecs
         Register(AssetType.DiscoFloor, DiscoFloorAsset.Read, DiscoFloorAsset.Write, DiscoFloorAsset.SupportedGames);
         Register(AssetType.Dispatcher, DispatcherAsset.Read, DispatcherAsset.Write, DispatcherAsset.SupportedGames);
         Register(AssetType.Duplicator, DuplicatorAsset.Read, DuplicatorAsset.Write, DuplicatorAsset.SupportedGames);
+        Register(AssetType.Dynamic, DynamicAsset.Read, DynamicAsset.Write, DynamicAsset.SupportedGames);
         Register(AssetType.ElectricArcGenerator, ElectricArcGeneratorAsset.Read, ElectricArcGeneratorAsset.Write, ElectricArcGeneratorAsset.SupportedGames);
         Register(AssetType.Environment, EnvironmentAsset.Read, EnvironmentAsset.Write, EnvironmentAsset.SupportedGames);
         Register(AssetType.Fly, FlyAsset.Read, FlyAsset.Write, FlyAsset.SupportedGames);
@@ -208,7 +209,7 @@ internal static class AssetCodecs
     {
         AssetShape.BaseAsset => new CodecHandler(ZeroSizeAware(ReadBase), Guarded<BaseAsset>(WriteBase)),
         AssetShape.EntityAsset => new CodecHandler(ZeroSizeAware(ReadEntity), Guarded<EntityAsset>(WriteEntity)),
-        AssetShape.DynaAsset => new CodecHandler(ZeroSizeAware(ReadDyna), Guarded<DynaAsset>(WriteDyna)),
+        AssetShape.DynamicAsset => new CodecHandler(ZeroSizeAware(ReadDynamic), Guarded<DynamicAsset>(DynamicAsset.Write)),
         AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
         _ => Fallback
     };
@@ -248,7 +249,7 @@ internal static class AssetCodecs
         switch (asset)
         {
             case EntityAsset entity: WriteEntity(entity, writer, profile); break;
-            case DynaAsset dyna: WriteDyna(dyna, writer, profile); break;
+            case DynamicAsset dynamic: DynamicAsset.Write(dynamic, writer, profile); break;
             case BaseAsset baseAsset: WriteBase(baseAsset, writer, profile); break;
             case PayloadAsset payload: WritePayload(payload, writer, profile); break;
             default: WritePlain(asset, writer, profile); break;
@@ -312,19 +313,12 @@ internal static class AssetCodecs
         writer.Write(entity.GetUnparsedTail());
     }
 
-    private static GenericDynaAsset ReadDyna(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+    private static GenericDynamicAsset ReadDynamic(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
-        var asset = PopulateBase(new GenericDynaAsset(header.Type), header, debug, reader);
-        DynaAssetPrefix.Read(asset, reader);
+        var asset = PopulateBase(new GenericDynamicAsset(DynamicAssetPrefix.Peek(reader).Kind), header, debug, reader);
+        DynamicAssetPrefix.Read(asset, reader);
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
         return asset;
-    }
-
-    private static void WriteDyna(DynaAsset dyna, EndianWriter writer, FormatProfile profile)
-    {
-        BaseAssetPrefix.Write(dyna, writer);
-        DynaAssetPrefix.Write(dyna, writer);
-        writer.Write(dyna.GetUnparsedTail());
     }
 
     private static GenericPayloadAsset ReadPayload(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
@@ -338,7 +332,7 @@ internal static class AssetCodecs
     private static void WritePayload(PayloadAsset asset, EndianWriter writer, FormatProfile profile) =>
         writer.Write(asset.Data);
 
-    private enum AssetShape { BaseAsset, EntityAsset, DynaAsset, Payload }
+    private enum AssetShape { BaseAsset, EntityAsset, DynamicAsset, Payload }
 
     /// <summary>
     /// Which shape each known <see cref="AssetType"/> follows.
@@ -364,7 +358,7 @@ internal static class AssetCodecs
         [AssetType.UIFont] = AssetShape.EntityAsset,
         [AssetType.Villain] = AssetShape.EntityAsset,
 
-        [AssetType.Dynamic] = AssetShape.DynaAsset,
+        [AssetType.Dynamic] = AssetShape.DynamicAsset,
 
         [AssetType.BSP] = AssetShape.Payload,
         [AssetType.BinkVideo] = AssetShape.Payload,

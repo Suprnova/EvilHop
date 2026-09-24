@@ -108,17 +108,37 @@ internal static class EntityAssetPrefix
 }
 
 /// <summary>
-/// Reads and writes the prefix every <see cref="DynaAsset"/> carries after its
+/// Reads and writes the prefix every <see cref="DynamicAsset"/> carries after its
 /// <see cref="BaseAssetPrefix"/>.
 /// </summary>
-internal static class DynaAssetPrefix
+internal static class DynamicAssetPrefix
 {
+    private const int BaseAssetPrefixSize = 8;
+
+    /// <summary>
+    /// Returns the <see cref="DynamicKind"/> and version of the <see cref="DynamicAsset"/> starting at
+    /// <paramref name="reader"/>'s current position, without advancing it.
+    /// </summary>
+    /// <remarks>
+    /// Needed ahead of the rest of the prefix, since together with the game they decide which
+    /// <see cref="DynamicAsset"/> subclass to read into.
+    /// </remarks>
+    public static (DynamicKind Kind, short Version) Peek(EndianReader reader)
+    {
+        var start = reader.BaseStream.Position;
+        reader.BaseStream.Position = start + BaseAssetPrefixSize;
+        var kind = (DynamicKind)reader.ReadUInt32();
+        var version = reader.ReadInt16();
+        reader.BaseStream.Position = start;
+        return (kind, version);
+    }
+
     /// <summary>
     /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="asset"/>.
     /// </summary>
-    public static void Read(DynaAsset asset, EndianReader reader)
+    public static void Read(DynamicAsset asset, EndianReader reader)
     {
-        asset.Physical.DynaType = reader.ReadUInt32();
+        asset.Physical.Kind = (DynamicKind)reader.ReadUInt32();
         asset.Physical.Version = reader.ReadInt16();
         asset.Physical.Handle = reader.ReadInt16();
     }
@@ -126,9 +146,9 @@ internal static class DynaAssetPrefix
     /// <summary>
     /// Writes <paramref name="asset"/>'s prefix to <paramref name="writer"/>.
     /// </summary>
-    public static void Write(DynaAsset asset, EndianWriter writer)
+    public static void Write(DynamicAsset asset, EndianWriter writer)
     {
-        writer.Write(asset.Physical.DynaType);
+        writer.Write((uint)asset.Physical.Kind);
         writer.Write(asset.Physical.Version);
         writer.Write(asset.Physical.Handle);
     }

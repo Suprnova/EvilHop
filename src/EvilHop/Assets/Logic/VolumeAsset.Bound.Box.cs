@@ -9,7 +9,7 @@ public sealed partial class VolumeAsset
     public abstract partial class Bound
     {
         /// <summary>
-        /// An axis-aligned box <see cref="Bound"/>, before <see cref="VolumeAsset.Rotation"/> is applied.
+        /// An axis-aligned box <see cref="Bound"/>, before <see cref="Rotation"/> is applied.
         /// </summary>
         public sealed class Box : Bound
         {

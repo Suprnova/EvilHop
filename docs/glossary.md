@@ -72,9 +72,13 @@ instead of failing the whole archive to load.
   [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs). A codec can declare which
   `GameVersion`s its reader applies to; reading under an unlisted game degrades to the type's
   shape-generic handler instead.
-- **Shape** - which level of the asset hierarchy (`BaseAsset`, `EntityAsset`, `DynaAsset`, or
+- **Shape** - which level of the asset hierarchy (`BaseAsset`, `EntityAsset`, `DynamicAsset`, or
   `Payload`) a type's bytes are known to follow before a real codec is written for it. See
   `AssetShape` in [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs).
+- **Dynamic / DYNA kind** - a `DYNA` asset is a container for many unrelated object types; its
+  `DynamicKind` (the BKDR hash of a name like `game_object:talk_box`) says which, and together with
+  the game and its version selects the layout of its fields. See
+  [`DynamicAsset`](../src/EvilHop/Assets/DynamicAsset.cs).
 - **Motion** - how an entity moves or reacts. An `EntityMotion` lives in the Motion block shared by
   `PLAT` and `BUTN`; a `PlatformMotion` lives in a platform's own type-specific block. A
   `PlatformAsset` models both as its one `Motion`, from which its type byte and subtype follow. See

@@ -26,7 +26,7 @@ mistakes come out.
 
 - **Use** for a type that has a wiki page or provided layout describing its fields (e.g. an
   `EntityAsset`-shaped type like `BOUL`/`BUTN`, a `BaseAsset`-shaped type like `CAM`/`CNTR`, a
-  `DynaAsset` subtype, or a plain `Asset`-shaped type with no header at all like `MRKR`/`LODT`).
+  `DynamicAsset` subtype, or a plain `Asset`-shaped type with no header at all like `MRKR`/`LODT`).
 - **Don't** use for the RenderWare/payload types (`MODL`, `RWTX`, `JSP`, `BINK`, `SND`, ...). Those
   are `PayloadAsset`s whose body is an embedded file, already served by `SaveTo()`/`LoadFrom()` unless
   a native field model is specifically being scoped. Adding a *payload* type is: seed its `AssetType`
@@ -37,7 +37,7 @@ mistakes come out.
 
 | Thing | Path |
 |---|---|
-| Asset base classes | `src/EvilHop/Assets/Asset.cs`, `BaseAsset.cs`, `EntityAsset.cs`, `DynaAsset.cs` |
+| Asset base classes | `src/EvilHop/Assets/Asset.cs`, `BaseAsset.cs`, `EntityAsset.cs`, `DynamicAsset.cs` |
 | Trait interfaces (`IHasModel`, `IGrabbable`, ...) | `src/EvilHop/Assets/Traits.cs` |
 | Shared header readers/writers | `src/EvilHop/Assets/Serialization/AssetPrefixes.cs` |
 | Header-sourced field copy | `src/EvilHop/Assets/Serialization/AssetFields.cs` |
@@ -71,8 +71,10 @@ archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layo
   `CNTR`.
 - **`EntityAsset : BaseAsset`** — `BaseAsset` header + the entity prefix (flags, `Angle`, `Position`,
   `Scale`, color multiplier, `ModelId`, `AnimListId`, ...). E.g. `BOUL`, `BUTN`.
-- **`DynaAsset : BaseAsset`** — `BaseAsset` header + `uint DynaType, short Version, short Handle`, then
-  the dyna's own fields. `DYNA` subtypes dispatch twice (see `AssetCodecs` remarks).
+- **`DynamicAsset : BaseAsset`** — `BaseAsset` header + `DynamicKind Kind, short Version, short
+  Handle`, then the kind's own fields, then links. A `DYNA` subtype is one `DynamicKind`, not an
+  `AssetType`, and follows §[`DynamicAsset`](#dynamicasset--baseasset-the-dyna-dispatch-prefix)
+  rather than the folder and registration rules below.
 
 Concrete types live in family folders grouped by domain under `src/EvilHop/Assets/` (`Animation/`,
 `Audio/`, `Cameras/`, `Characters/`, `Cinematics/`, `Environment/`, `Logic/`, `Models/`, `Motion/`,
@@ -96,8 +98,8 @@ Applied in order:
 
 1. **Is the value already determined by something else on the object?** → physical, and *must not*
    also be logical. Known members: `BaseId` (a second copy of `Id`), `Type` (implied by the class),
-   `LinkCount` (implied by `Links`), `DynaAsset`'s `DynaType`/`Version` where a concrete dyna class
-   implies them, and — for a plain-`Asset` type holding a collection with its own on-disk leading count
+   `LinkCount` (implied by `Links`), `DynamicAsset`'s `Kind` (implied by a concrete dynamic class)
+   and — for a plain-`Asset` type holding a collection with its own on-disk leading count
    (`LODT`'s `numextra`) — that count, implied by the collection's length the same way `LinkCount` is.
 2. **Otherwise, is it of real interest to someone editing the game object?** → logical if yes;
    physical as a plain stored field if no. `Alignment`, `PFlags`, `Subtype`, `SeeThroughSpeed` sit here
@@ -218,7 +220,7 @@ meaning), model it as an opaque stored value rather than guessing at semantics �
 ## Reference: everything a codec needs
 
 This section exists so you do not need to open `Asset.cs`, `BaseAsset.cs`, `EntityAsset.cs`,
-`DynaAsset.cs`, `Traits.cs`, `AssetPrefixes.cs`, `AssetFields.cs`, `Link.cs`/`Parameter.cs`,
+`DynamicAsset.cs`, `Traits.cs`, `AssetPrefixes.cs`, `AssetFields.cs`, `Link.cs`/`Parameter.cs`,
 `GenericAssets.cs`, `FormatProfile.cs`, `EndianReader.cs`/`EndianWriter.cs`, or `AssetId.cs` just to
 learn their shape. It is a condensed index, not a replacement for reading the one or two files your
 specific type actually touches.
@@ -269,10 +271,50 @@ own data (`PlatformAsset`, `PickupAsset`). The logical side is mirrored by the i
 interface, which `EntityAsset` implements and `EntityAssetPrefix` reads and writes through — see
 §[Worked precedents](#worked-precedents-condensed) for an entity embedded inside another asset.
 
-### `DynaAsset : BaseAsset` (the `DYNA` dispatch prefix)
+### `DynamicAsset : BaseAsset` (the `DYNA` dispatch prefix)
 
-Physical only (`Physical.IDynaAsset : IBaseAsset`): `DynaType` (`uint`, selects the concrete
-subtype), `Version` (`short`), `Handle` (`short`, runtime-only).
+Logical: `Kind` (`DynamicKind`, abstract, fixed by each subclass). Physical
+(`Physical.IDynamicAsset : IBaseAsset`): `Kind` (defaults to the logical one,
+override-clears-on-match), `Version` (`short`), `Handle` (`short`, zero in every shipped archive).
+`DynamicKind`'s values are the BKDR hash of the game's name for the kind (`game_object:talk_box`),
+named by that string in PascalCase with `game_object:` dropped.
+
+`DynamicAsset.Read` already reads the prefix, sizes the kind's region as everything before the
+final `LinkCount × Link.SizeOf(profile)` bytes (links always end a `DYNA`), reads the links, and
+keeps whatever the kind's codec leaves unread as the unparsed tail, written *before* the links.
+Kinds with no typed model read as the public `GenericDynamicAsset`. A typed subtype therefore only
+reads and writes its own fields:
+
+- **Class:** `public sealed class FooDynamicAsset() : DynamicAsset(version: N),
+  Physical.IFooDynamicAsset` in `src/EvilHop/Assets/Dynamics/<Category>/FooDynamicAsset.cs`, where
+  `Foo` is the `DynamicKind` member, `N` is the version a new instance is written with, and
+  `<Category>` is the game's name prefix in PascalCase (`Effect/`, `GameObject/`, `HUD/`, `UI/`,
+  `Enemy/`, `Logic/`, `NPC/`, `Interaction/`, `Camera/`; a name with no prefix goes in `Dynamics/`
+  itself). Namespace `EvilHop.Assets`. `public override DynamicKind Kind => DynamicKind.Foo;`.
+  `TalkBoxDynamicAsset` is the reference implementation.
+- **Codec:** `internal static void Read(FooDynamicAsset asset, EndianReader reader, FormatProfile
+  profile)` and `internal static void Write(FooDynamicAsset asset, EndianWriter writer, FormatProfile
+  profile)`, populating the instance the dispatcher created (its prefix, including `Version`, is
+  already read). The reader is scoped to exactly the kind's region — don't touch the prefix or links.
+- **Registration:** `DynamicCodecs.Register<FooDynamicAsset>(DynamicKind.Foo, FooDynamicAsset.Read,
+  FooDynamicAsset.Write, FooDynamicAsset.SupportedLayouts)` in `DynamicCodecs.RegisterConcreteCodecs()`, alphabetical, where
+  `SupportedLayouts` is an `internal static IReadOnlySet<(GameVersion Game, short Version)>` on the
+  class. A layout is a **(game, version) pair, not a version**: the same version is laid out
+  differently across games (`game_object:Teleport` v2 is 20 bytes in BFBB, 16 in TSSM), and one game
+  can ship more than one version (BFBB's Teleport v1 and v2). Branch on `profile.Game` and
+  `asset.Physical.Version` as the layout requires, symmetrically in `Read` and `Write`. Any pair not
+  listed reads as `GenericDynamicAsset`, so list only what you validated.
+- **Validation:** `locate-asset.cs` can't pick one kind out of `DYNA`, so sweep (§[Sweeping every
+  occurrence](#sweeping-every-occurrence)) every `DYNA` whose `GenericDynamicAsset.Kind` matches and
+  tabulate its unparsed tail's length per (game, version). A length that varies within one pair
+  means a variable-length region (an array, or a count-driven tail) to model.
+- **Tests:** `tests/EvilHop.Tests/Assets/Dynamics/<Category>/FooDynamicAssetTests.cs`; reading a
+  registered layout produces the subclass, an unregistered version degrades to
+  `GenericDynamicAsset`, and the region round-trips with links after it.
+
+TODO: A fresh `FooDynamicAsset` doesn't know which game it will be written to, so which `Version` it
+writes is unsettled while the kind's version differs per game (`game_object:text_box` is v1 in BFBB,
+v3 in TSSM/Incredibles, v4 in ROTU/Rat). Settle it with the first such subtype.
 
 ### Traits (`Traits.cs`) — opt-in projections onto reserved `EntityAsset` fields
 
@@ -300,7 +342,7 @@ field name.
   → `SeeThroughSpeed` (`float`, 4B)† → `ModelId` (`AssetId`, 4B) → `AnimListId` (`AssetId`, 4B)†.
   72 bytes total, 76 with padding. † Only when `profile.EntityHasExtendedFields` — false only for
   N100F's 2001-06-11 prototype, whose entities are 44 bytes.
-- `DynaAssetPrefix.Read/Write`: `DynaType` (`uint`, 4B) → `Version` (`short`) → `Handle` (`short`).
+- `DynamicAssetPrefix.Read/Write`: `Kind` (`DynamicKind`, 4B) → `Version` (`short`) → `Handle` (`short`).
   8 bytes total.
 
 Call these; do not re-read their bytes field-by-field yourself.
@@ -352,9 +394,9 @@ collection container (`Collection<T>`), leading count fields, and looping over i
 
 Every `AssetType` without a concrete codec (or whose concrete codec declares a game unsupported) falls
 back to a generic reader for its **shape**: `GenericAsset` (plain `Asset`, whole slice unparsed),
-`GenericBaseAsset`, `GenericEntityAsset`, `GenericDynaAsset`, `GenericPayloadAsset`. `ShapesByType`
+`GenericBaseAsset`, `GenericEntityAsset`, `GenericDynamicAsset`, `GenericPayloadAsset`. `ShapesByType`
 is the table that says which shape a not-yet-typed member should degrade to; it only needs an entry
-for `BaseAsset`/`EntityAsset`/`DynaAsset`/`Payload`-shaped types. **A plain-`Asset`-shaped type needs
+for `BaseAsset`/`EntityAsset`/`DynamicAsset`/`Payload`-shaped types. **A plain-`Asset`-shaped type needs
 no `ShapesByType` entry at all** — the ungated `Fallback` handler (`ReadPlain`/`WritePlain`, which is
 exactly what `GenericAsset` does anyway) already produces the right degraded behavior. `MarkerAsset`
 and `LODTableAsset` are both examples of this: neither appears in `ShapesByType`.
@@ -505,6 +547,10 @@ zero" or "always the same size", sweep every occurrence: a throwaway `dotnet run
 shape, so `GetUnparsedTail()` on the `EntityAsset`/`BaseAsset` is exactly the bytes after the shared
 prefix - tabulate sizes, discriminator bytes, and which regions are ever nonzero from that.
 
+Keep a sweep's memory bounded: restrict it to the games that carry the type, and when it opens an
+`AssetSession` per archive, cap `Parallel.ForEach` with `MaxDegreeOfParallelism` (2 is plenty).
+Unbounded parallelism over thousands of archives, each holding a full session, runs to gigabytes.
+
 Build a sweep's profiles the way EvilHop.Corpus does, or it will misread archives that the library
 reads fine: the game's sniffed profile, then every matching override from
 `tools/EvilHop.Corpus/BuildProfiles.json` applied on top. Two corpus quirks that manifest covers, and
@@ -563,9 +609,9 @@ Treat these differently:
 
 ## Write the asset class
 
-Concrete example for an `EntityAsset`-shaped type (adapt for `BaseAsset`/`DynaAsset`/plain `Asset` per
+Concrete example for an `EntityAsset`-shaped type (adapt for `BaseAsset`/plain `Asset` per
 §[Reference](#reference-everything-a-codec-needs) — drop the entity bits if base, drop the base bits
-too if a plain `Asset`, and see `DynaAsset`'s two-level dispatch if dyna):
+too if a plain `Asset`; a `DYNA` subtype follows §[`DynamicAsset`](#dynamicasset--baseasset-the-dyna-dispatch-prefix) instead):
 
 ```csharp
 using EvilHop.Assets.Serialization;
@@ -845,7 +891,7 @@ out of scope until extraction lands.
 
 - [ ] Got the wiki page or layout doc from the request (pasted, attached, or linked) — there is
   nothing to look up locally.
-- [ ] Determined which base class (`Asset`/`BaseAsset`/`EntityAsset`/`DynaAsset`) from the wiki +
+- [ ] Determined which base class (`Asset`/`BaseAsset`/`EntityAsset`/`DynamicAsset`) from the wiki +
   validated `baseType` byte.
 - [ ] Ran `locate-asset.cs` for every game the wiki claims, and reconciled any discrepancy against its
   output (off-by-padding offsets, per-game field presence, a stride that doesn't match the declared

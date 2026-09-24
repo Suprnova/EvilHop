@@ -61,8 +61,8 @@ public class AssetCodecsTests
     }
 
     [Fact]
-    public void Read_Dynamic_ProducesADynaAsset() =>
-        Assert.IsType<DynaAsset>(Read(AssetType.Dynamic, new byte[16]), exactMatch: false);
+    public void Read_Dynamic_ProducesADynamicAsset() =>
+        Assert.IsType<DynamicAsset>(Read(AssetType.Dynamic, new byte[16]), exactMatch: false);
 
     [Theory]
     [InlineData(AssetType.Texture)]

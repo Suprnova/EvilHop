@@ -40,6 +40,11 @@ public sealed class Link()
     } = ZeroedParams();
 
     /// <summary>
+    /// The size, in bytes, of one <see cref="Link"/> on disk under <paramref name="profile"/>.
+    /// </summary>
+    internal static int SizeOf(FormatProfile profile) => profile.LinkHasExtendedFields ? 32 : 24;
+
+    /// <summary>
     /// A supplemental <see cref="AssetId"/> parameter for <see cref="DestinationEvent"/>.
     /// </summary>
     public AssetId ParamWidgetAssetId { get; set; }
