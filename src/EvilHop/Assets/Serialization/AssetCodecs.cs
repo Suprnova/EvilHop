@@ -140,6 +140,7 @@ internal static class AssetCodecs
         Register(AssetType.UIMotion, UIMotionAsset.Read, UIMotionAsset.Write, UIMotionAsset.SupportedGames);
         Register(AssetType.Villain, VillainAsset.Read, VillainAsset.Write, VillainAsset.SupportedGames);
         Register(AssetType.VillainProperties, VillainPropertiesAsset.Read, VillainPropertiesAsset.Write, VillainPropertiesAsset.SupportedGames);
+        Register(AssetType.Volume, VolumeAsset.Read, VolumeAsset.Write, VolumeAsset.SupportedGames);
     }
 
     /// <summary>

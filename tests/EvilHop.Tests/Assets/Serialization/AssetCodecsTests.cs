@@ -107,7 +107,7 @@ public class AssetCodecsTests
             0x00, 0x05,             // BaseFlags
         ];
 
-        var asset = (BaseAsset)Read(AssetType.Volume, data);
+        var asset = (BaseAsset)Read(AssetType.SceneSettings, data);
 
         Assert.Equal(0x1234u, asset.Physical.BaseId.Value);
         Assert.Equal(7, asset.Physical.BaseType);
@@ -116,7 +116,7 @@ public class AssetCodecsTests
     }
 
     [Theory]
-    [InlineData(AssetType.Volume, 16)]
+    [InlineData(AssetType.SceneSettings, 16)]
     [InlineData(AssetType.Villain, 96)]
     [InlineData(AssetType.Dynamic, 24)]
     [InlineData(AssetType.Texture, 16)]
