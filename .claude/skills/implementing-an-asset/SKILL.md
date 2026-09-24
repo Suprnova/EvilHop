@@ -152,8 +152,13 @@ checked them against real archives (see §[EvilHop.Corpus validation](#evilhopco
 In the meantime, see §[etiquette for physical fields and unknowns](#etiquette-what-to-expose-vs-ask).
 
 A field with a substructure of its own (an array of records, like `LODT`'s entries) is *not* itself an
-`Asset` and gets no `Physical` split — `Physical` only exists on `Asset` and its subclasses. Model the
-substructure with ordinary public properties and choose its type representation according to these criteria:
+`Asset` and gets no `Physical` split — `Physical` only exists on `Asset` and its subclasses, plus the
+rare asset-like type that embeds another asset's layout wholesale (`DuplicatorAsset.Villain`,
+`CutsceneTableEntry`; see §Worked precedents). Every other nested type exposes everything as ordinary
+public properties, including values that would be physical on an asset: raw tool leftovers
+(`NavigationMeshAsset.SubMesh.Pointers`), unknowns, and precomputed tables. A count that follows a
+nested type's own collection isn't stored at all — its writer derives it from the collection. Choose
+the substructure's type representation according to these criteria:
 
 - **`sealed class` for mutable entities, child collections, and polymorphic hierarchies**: Any type with mutable
   properties intended to be modified in-place within a collection (`Collection<T>`) must be a class to avoid
@@ -414,6 +419,15 @@ use it, only to see more context if something here doesn't match your case.
   `DuplicatorAsset.Avatar` carries only the NPC fields, so it implements `IVillain` but not
   `IEntity`. An embedded copy of the base header that always agrees with the outer one is physical
   and derives from it (`Physical.IDuplicatorAsset.TemplateBaseId`/`TemplateLinkCount`/`TemplateBaseFlags`).
+- **Tables the export tool precomputed from other fields, which EvilHop can't regenerate**
+  (`NavigationMeshAsset.SubMesh`'s `PortalLookup`/`Portal`/`EdgeShift`/`LevelTwoRouteExits`): raw
+  arrays, read and written verbatim. Each one's `<remarks>` states the length the game expects and
+  what edit corrupts it, and the fields they're computed from say so too, since that's where someone
+  about to edit will look.
+- **A format that's a memory image of the tool's structs** (`NavigationMeshAsset`): stored pointers
+  are the tool's own heap addresses, which the game never reads — it walks the blocks in order,
+  sized by the stored counts. Keep each pointer as an opaque `uint` (physical on an asset, a plain
+  property on a nested type) so it round-trips, and never derive anything from its value.
 - **Proven-always-zero padding, discarded rather than modelled** (`CounterAsset`, 2 bytes after
   `InitialValue`): `reader.ReadInt16(); // 2 bytes of padding, always zero` on read, `writer.Write(
   (short)0); // padding` on write. No property at all — there is nothing here worth exposing.
