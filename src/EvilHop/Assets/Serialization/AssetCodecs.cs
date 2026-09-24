@@ -65,6 +65,7 @@ internal static class AssetCodecs
         Register(AssetType.AnimationTable, AnimationTableAsset.Read, AnimationTableAsset.Write, AnimationTableAsset.SupportedGames);
         Register(AssetType.AttackTable, AttackTableAsset.Read, AttackTableAsset.Write, AttackTableAsset.SupportedGames);
         Register(AssetType.Boulder, BoulderAsset.Read, BoulderAsset.Write, BoulderAsset.SupportedGames);
+        Register(AssetType.Button, ButtonAsset.Read, ButtonAsset.Write, ButtonAsset.SupportedGames);
         Register(AssetType.Camera, CameraAsset.Read, CameraAsset.Write, CameraAsset.SupportedGames);
         Register(AssetType.CameraCurve, CameraCurveAsset.Read, CameraCurveAsset.Write, CameraCurveAsset.SupportedGames);
         Register(AssetType.CollisionTable, CollisionTableAsset.Read, CollisionTableAsset.Write, CollisionTableAsset.SupportedGames);
