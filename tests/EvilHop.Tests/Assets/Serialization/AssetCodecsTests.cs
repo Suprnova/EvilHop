@@ -223,7 +223,7 @@ public class AssetCodecsTests
     {
         // Chosen for its own sake, like Register_OverwritesTheSeededGenericHandler: this permanently
         // repoints the entry, so it must be a type nothing else in this class asserts on.
-        const AssetType type = AssetType.SlideProperty;
+        const AssetType type = AssetType.ZipLine;
         var asset = (BaseAsset)Read(type, new byte[16]);
         byte[] beforeRegistration = Write(asset);
 

@@ -116,10 +116,12 @@ internal static class AssetCodecs
         Register(AssetType.ProgressScript, ProgressScriptAsset.Read, ProgressScriptAsset.Write, ProgressScriptAsset.SupportedGames);
         Register(AssetType.Projectile, ProjectileAsset.Read, ProjectileAsset.Write, ProjectileAsset.SupportedGames);
         Register(AssetType.ReactiveAnimation, ReactiveAnimationAsset.Read, ReactiveAnimationAsset.Write, ReactiveAnimationAsset.SupportedGames);
+        Register(AssetType.SceneSettings, SceneSettingsAsset.Read, SceneSettingsAsset.Write, SceneSettingsAsset.SupportedGames);
         Register(AssetType.Script, ScriptAsset.Read, ScriptAsset.Write, ScriptAsset.SupportedGames);
         Register(AssetType.Shrapnel, ShrapnelAsset.Read, ShrapnelAsset.Write, ShrapnelAsset.SupportedGames);
         Register(AssetType.SimpleObject, SimpleObjectAsset.Read, SimpleObjectAsset.Write, SimpleObjectAsset.SupportedGames);
         Register(AssetType.SimpleShadowTable, SimpleShadowTableAsset.Read, SimpleShadowTableAsset.Write, SimpleShadowTableAsset.SupportedGames);
+        Register(AssetType.SlideProperty, SlidePropertyAsset.Read, SlidePropertyAsset.Write, SlidePropertyAsset.SupportedGames);
         Register(AssetType.SoundEffect, SoundEffectAsset.Read, SoundEffectAsset.Write, SoundEffectAsset.SupportedGames);
         Register(AssetType.SoundFX, SoundFXAsset.Read, SoundFXAsset.Write, SoundFXAsset.SupportedGames);
         Register(AssetType.SoundGroup, SoundGroupAsset.Read, SoundGroupAsset.Write, SoundGroupAsset.SupportedGames);
