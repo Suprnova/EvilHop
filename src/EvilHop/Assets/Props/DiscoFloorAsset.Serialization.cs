@@ -76,7 +76,7 @@ public sealed partial class DiscoFloorAsset
         for (int i = 0; i < stateCount; i++)
         {
             reader.BaseStream.Position = bodyStart + stateOffsets[i];
-            asset.States.Add(State.Read(reader, tileCount, profile));
+            asset.States.Add(State.Read(reader, profile, tileCount));
 
             maxOffsetTouched = Math.Max(maxOffsetTouched, stateOffsets[i] + maskByteSize);
         }
@@ -135,7 +135,7 @@ public sealed partial class DiscoFloorAsset
         for (int i = 0; i < stateCount; i++)
         {
             var state = i < asset.States.Count ? asset.States[i] : new State();
-            State.Write(state, writer, tileCount, profile);
+            State.Write(state, writer, profile, tileCount);
             totalMaskBytes += maskByteSize;
         }
 

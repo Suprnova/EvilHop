@@ -21,7 +21,7 @@ public abstract partial class PlatformMotion : Motion
     /// Reads the type-specific block <paramref name="discriminator"/> selects.
     /// </summary>
     /// <exception cref="InvalidDataException"><paramref name="discriminator"/> is unknown, or has no layout under this <see cref="FormatProfile"/>.</exception>
-    internal static PlatformMotion Read(EndianReader reader, PlatformType discriminator, FormatProfile profile)
+    internal static PlatformMotion Read(EndianReader reader, FormatProfile profile, PlatformType discriminator)
     {
         using var block = ReadBlock(reader, BlockSize(profile.Game));
         return discriminator switch

@@ -173,13 +173,13 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
     /// </summary>
     public readonly record struct AudioTrack(AssetId LeftSoundId, AssetId RightSoundId, string LeftSound, string RightSound)
     {
-        internal static AudioTrack Read(EndianReader reader, int soundLength, FormatProfile _) => new(
+        internal static AudioTrack Read(EndianReader reader, FormatProfile _, int soundLength) => new(
             reader.ReadAssetId(),
             reader.ReadAssetId(),
             ICutsceneHeader.ReadFixedString(reader, soundLength),
             ICutsceneHeader.ReadFixedString(reader, soundLength));
 
-        internal static void Write(AudioTrack value, EndianWriter writer, int soundLength, FormatProfile _)
+        internal static void Write(AudioTrack value, EndianWriter writer, FormatProfile _, int soundLength)
         {
             writer.Write(value.LeftSoundId);
             writer.Write(value.RightSoundId);

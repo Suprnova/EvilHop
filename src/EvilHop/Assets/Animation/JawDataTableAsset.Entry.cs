@@ -36,7 +36,7 @@ public partial class JawDataTableAsset
         /// table-of-contents pass; this reads the rest of the entry from the payload region that follows
         /// every entry's table-of-contents record.
         /// </remarks>
-        internal static Entry Read(EndianReader reader, AssetId soundId, FormatProfile profile)
+        internal static Entry Read(EndianReader reader, FormatProfile profile, AssetId soundId)
         {
             bool hasUnknownField = profile.Game is GameVersion.ROTU;
             int length = hasUnknownField ? reader.ReadInt32() : BinaryPrimitives.ReadInt32LittleEndian(reader.ReadBytes(4));

@@ -21,7 +21,7 @@ public abstract partial class ParticleEmitterShape
     /// Reads one shape block for <paramref name="kind"/>.
     /// </summary>
     /// <exception cref="InvalidDataException"><paramref name="kind"/> has no known shape.</exception>
-    internal static ParticleEmitterShape Read(EndianReader reader, ParticleEmitterAsset.ShapeKind kind, FormatProfile profile)
+    internal static ParticleEmitterShape Read(EndianReader reader, FormatProfile profile, ParticleEmitterAsset.ShapeKind kind)
     {
         using var block = new EndianReader(new MemoryStream(reader.ReadBytes(BlockSize)), reader.Endianness);
 

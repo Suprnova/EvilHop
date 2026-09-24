@@ -12,12 +12,13 @@ Asset codec support falls into three states, per type:
 
 - **Typed** - the asset's fields are modeled and read/written individually. Most gameplay-relevant types are here.
 - **Payload** - the asset wraps an embedded file (a RenderWare model, a Bink video, audio) that is imported and exported as a whole blob rather than parsed field-by-field. This is the intended shape for these types, not a gap: `BinkVideo`, `BSP`, `JSP`, `Model`, `RawImage`, `Sound`, `StreamingSound`, `StreamingTexture`, `Texture`.
-- **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: `Button`, `CutsceneStreamingSound`, `Duplicator`, `Dynamic`, `NavigationMesh`, `Portal`, `SceneSettings`, `SlideProperty`, `Spline`, `VillainProperties`, `Volume`, `Wireframe`, `ZipLine`.
+- **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: `CutsceneStreamingSound`, `Duplicator`, `Dynamic`, `NavigationMesh`, `Portal`, `SceneSettings`, `SlideProperty`, `Spline`, `VillainProperties`, `Volume`, `Wireframe`, `ZipLine`.
 
 A handful of Typed assets are only partially modeled, marked with a `// TODO: Partial implementation` comment at their definition:
 
 - `AnimationAsset` - ROTU and Ratatouille's revised SKB layout isn't modeled.
 - `AnimationTableAsset` - N100F's revised States layout isn't modeled.
+- `Button` - N100F's shorter, differently laid out format isn't modeled.
 - `CameraAsset` - N100F's shorter, differently laid out format isn't modeled.
 - `CutsceneAsset` - chunked media data is unmodeled and preserved as unparsed bytes.
 - `CutsceneTableAsset` - trailing TimeChunk-offset, visibility, and break tables are unmodeled.

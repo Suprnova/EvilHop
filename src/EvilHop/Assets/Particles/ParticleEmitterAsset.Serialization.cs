@@ -29,7 +29,7 @@ public sealed partial class ParticleEmitterAsset
             asset.PropId = reader.ReadAssetId();
         }
 
-        asset.Shape = ParticleEmitterShape.Read(reader, asset.Kind, profile);
+        asset.Shape = ParticleEmitterShape.Read(reader, profile, asset.Kind);
         asset.AttachToId = reader.ReadAssetId();
 
         if (profile.Game is GameVersion.N100F)

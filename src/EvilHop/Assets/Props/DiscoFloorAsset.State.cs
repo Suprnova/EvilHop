@@ -26,7 +26,7 @@ public partial class DiscoFloorAsset
         /// <summary>The byte length of one state's tile bitmask: 2 bits per tile, rounded up to a whole byte.</summary>
         internal static int MaskByteSize(uint tileCount) => (int)((tileCount * 2 + 7) / 8);
 
-        internal static State Read(EndianReader reader, uint tileCount, FormatProfile _)
+        internal static State Read(EndianReader reader, FormatProfile _, uint tileCount)
         {
             byte[] mask = reader.ReadBytes(MaskByteSize(tileCount));
 
@@ -43,7 +43,7 @@ public partial class DiscoFloorAsset
         /// as long as they still decode to its current <see cref="Tiles"/>. Falls back to a freshly
         /// zero-filled mask once <see cref="Tiles"/> no longer matches (or none was ever captured).
         /// </summary>
-        internal static void Write(State state, EndianWriter writer, uint tileCount, FormatProfile _)
+        internal static void Write(State state, EndianWriter writer, FormatProfile _, uint tileCount)
         {
             int maskByteSize = MaskByteSize(tileCount);
             byte[]? raw = state._rawMask;

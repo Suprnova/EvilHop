@@ -57,7 +57,7 @@ public sealed partial class JawDataTableAsset() : Asset(AssetType.JawDataTable),
         }
 
         foreach (var soundId in soundIds)
-            asset.Entries.Add(Entry.Read(reader, soundId, profile));
+            asset.Entries.Add(Entry.Read(reader, profile, soundId));
 
         asset.Physical.Count = asset.Entries.Count;
         asset.SetUnparsedTail(reader.ReadRemainingBytes());

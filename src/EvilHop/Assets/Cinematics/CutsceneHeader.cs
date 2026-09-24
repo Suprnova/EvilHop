@@ -149,7 +149,7 @@ internal interface ICutsceneHeader
     private static void ReadAudioTracks(ICutsceneHeader header, EndianReader reader, int soundLength, FormatProfile profile)
     {
         for (int i = 0; i < 32; i++)
-            header.AudioTracks.Add(CutsceneAsset.AudioTrack.Read(reader, soundLength, profile));
+            header.AudioTracks.Add(CutsceneAsset.AudioTrack.Read(reader, profile, soundLength));
     }
 
     private static void WriteAudioTracks(ICutsceneHeader header, EndianWriter writer, int soundLength, FormatProfile profile)
@@ -159,7 +159,7 @@ internal interface ICutsceneHeader
             var track = i < header.AudioTracks.Count
                 ? header.AudioTracks[i]
                 : new CutsceneAsset.AudioTrack(default, default, string.Empty, string.Empty);
-            CutsceneAsset.AudioTrack.Write(track, writer, soundLength, profile);
+            CutsceneAsset.AudioTrack.Write(track, writer, profile, soundLength);
         }
     }
 

@@ -91,7 +91,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
         }
         else
         {
-            var motion = PlatformMotion.Read(reader, platformType, profile);
+            var motion = PlatformMotion.Read(reader, profile, platformType);
             motion.Flags = EntityMotion.ReadEmpty(reader, profile);
             asset.Motion = motion;
         }

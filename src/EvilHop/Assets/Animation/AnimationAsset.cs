@@ -90,7 +90,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         GameVersion.Incredibles,
     };
 
-    internal static AnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static AnimationAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new AnimationAsset();
         AssetFields.Populate(asset, header, debug);
@@ -102,7 +102,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         uint keyCount = reader.ReadUInt32();
         asset.Scale = reader.ReadVector3();
 
-        for (uint i = 0; i < keyCount; i++) asset.Keys.Add(Key.Read(reader, _));
+        for (uint i = 0; i < keyCount; i++) asset.Keys.Add(Key.Read(reader, profile));
 
         for (int i = 0; i < timeCount; i++) asset.Times.Add(reader.ReadSingle());
 
@@ -115,7 +115,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         return asset;
     }
 
-    internal static void Write(AnimationAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(AnimationAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(asset.Physical.Magic);
         writer.Write(asset.Physical.AnimationFlags);
@@ -124,7 +124,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
         writer.Write(asset.Physical.KeyCount);
         writer.Write(asset.Scale);
 
-        foreach (var key in asset.Keys) Key.Write(key, writer, _);
+        foreach (var key in asset.Keys) Key.Write(key, writer, profile);
 
         foreach (float time in asset.Times) writer.Write(time);
         foreach (ushort offset in asset.Offsets) writer.Write(offset);

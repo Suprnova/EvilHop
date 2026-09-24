@@ -82,7 +82,7 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
-    internal static AnimationTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile _)
+    internal static AnimationTableAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new AnimationTableAsset();
         AssetFields.Populate(asset, header, debug);
@@ -95,9 +95,9 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
 
         for (uint i = 0; i < rawCount; i++) asset.Raw.Add(reader.ReadAssetId());
 
-        for (uint i = 0; i < fileCount; i++) asset.Files.Add(File.Read(reader, _));
+        for (uint i = 0; i < fileCount; i++) asset.Files.Add(File.Read(reader, profile));
 
-        for (uint i = 0; i < stateCount; i++) asset.States.Add(State.Read(reader, _));
+        for (uint i = 0; i < stateCount; i++) asset.States.Add(State.Read(reader, profile));
 
         asset.Physical.RawCount = rawCount;
         asset.Physical.FileCount = fileCount;
@@ -106,7 +106,7 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
         return asset;
     }
 
-    internal static void Write(AnimationTableAsset asset, EndianWriter writer, FormatProfile _)
+    internal static void Write(AnimationTableAsset asset, EndianWriter writer, FormatProfile profile)
     {
         writer.Write(0x4C425441u); // Magic
         writer.Write(asset.Physical.RawCount);
@@ -116,9 +116,9 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
 
         foreach (var id in asset.Raw) writer.Write(id);
 
-        foreach (var file in asset.Files) File.Write(file, writer, _);
+        foreach (var file in asset.Files) File.Write(file, writer, profile);
 
-        foreach (var state in asset.States) State.Write(state, writer, _);
+        foreach (var state in asset.States) State.Write(state, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

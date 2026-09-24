@@ -1,6 +1,6 @@
 ---
 name: implementing-an-asset
-description: Use this skill when implementing a single concrete HIP asset type in EvilHop — turning a Heavy Iron Modding wiki page (or any provided layout doc) into the asset class, its two surfaces (logical + IPhysical*), its codec registration, and its tests. Self-contained: every shared pattern (prefixes, traits, links, generic shapes, per-game profiles) is inlined below, and a script locates and dumps an asset type's real bytes across every game in one command.
+description: Use this skill when implementing a single concrete HIP asset type in EvilHop — turning a Heavy Iron Modding wiki page (or any provided layout doc) into the asset class, its two surfaces (logical + Physical.I*), its codec registration, and its tests. Self-contained: every shared pattern (prefixes, traits, links, generic shapes, per-game profiles) is inlined below, and a script locates and dumps an asset type's real bytes across every game in one command.
 ---
 
 # Implementing a single Asset
@@ -18,7 +18,7 @@ source files §[Where things live](#where-things-live) points at.
 
 **Workflow at a glance:** get the layout → run `locate-asset.cs` to see the type's real bytes across
 every game → write the asset class + codec using the patterns in §Reference → wire up traits and
-`IPhysical*` → build + test → (later) run the EvilHop.Corpus invariants. The middle piece — validating
+its `Physical.IFooAsset` interface → build + test → (later) run the EvilHop.Corpus invariants. The middle piece — validating
 against bytes before writing code — is the step almost everyone skips, and it is where the wiki's
 mistakes come out.
 
@@ -74,13 +74,21 @@ archive's `baseType` verifies it (see §[Validate the layout](#validate-the-layo
 - **`DynaAsset : BaseAsset`** — `BaseAsset` header + `uint DynaType, short Version, short Handle`, then
   the dyna's own fields. `DYNA` subtypes dispatch twice (see `AssetCodecs` remarks).
 
-Concrete types live in family folders grouped by shape and domain under `src/EvilHop/Assets/`
-(`Cameras/`, `Animation/`, `Audio/`, `Models/`, `Objects/`), not all in the root — tests mirror the
-same families under `tests/EvilHop.Tests/Assets/`. Match the naming: an asset that
-is a `BaseAsset` gets a `FooAsset : BaseAsset` class; one that is an `EntityAsset` gets
-`FooAsset : EntityAsset`; a plain `Asset` gets `FooAsset : Asset`. The class name mirrors the
-`AssetType` enum member exactly (`AssetType.LODTable` → `LODTableAsset`, `AssetType.Hangable` →
-`HangableAsset`).
+Concrete types live in family folders grouped by domain under `src/EvilHop/Assets/` (`Animation/`,
+`Audio/`, `Cameras/`, `Characters/`, `Cinematics/`, `Environment/`, `Logic/`, `Models/`, `Motion/`,
+`Navigation/`, `Particles/`, `Pickups/`, `Props/`, `Surfaces/`, `UI/`), not in the root — tests
+mirror the same families under `tests/EvilHop.Tests/Assets/`. Every asset type is in the
+`EvilHop.Assets` namespace regardless of folder. Match the naming: an asset that is a `BaseAsset`
+gets a `FooAsset : BaseAsset` class; one that is an `EntityAsset` gets `FooAsset : EntityAsset`; a
+plain `Asset` gets `FooAsset : Asset`. The class name mirrors the `AssetType` enum member exactly
+(`AssetType.LODTable` → `LODTableAsset`, `AssetType.Hangable` → `HangableAsset`).
+
+An asset type is normally one `sealed` class, even when a discriminator field changes how some of its
+fields behave: `ButtonAsset` keeps its latching/pressure-plate split as a `Kind` enum property, with
+the fields only one kind reads documented as such. An `abstract` base with a concrete subclass per
+discriminator value (`CameraAsset` → `FollowCameraAsset`, `StaticCameraAsset`, ...) is reserved for a
+discriminator that selects a genuinely different on-disk region per value, where each subclass has
+its own fields and its own `Read`/`Write` for that region.
 
 ### 2. Which fields are logical, which are physical, which are traits?
 
@@ -101,14 +109,37 @@ uses one opts in through a trait interface (`IHasSurface`, `IHasModel`, `IHasAni
 that projects onto the physical storage — it never stores a copy. See §Reference for the full trait
 list.
 
-A physical field is always an explicit `IPhysicalFooAsset` member backed by a private field — never a
-plain public property directly on the asset class, even when nothing else determines its value and
-there's no derived-value dance to do:
+A physical field is always an explicit `Physical.IFooAsset` member backed by a private field — never
+a plain public property directly on the asset class, even when nothing else determines its value and
+there's no derived-value dance to do. The interface is declared inside the shared
+`public static partial class Physical` (in the same file as the asset, after it), inherits the
+parent's interface (`Physical.IEntityAsset`, `Physical.IBaseAsset`, `Physical.IAsset`), and the
+asset narrows its `Physical` property to it:
 
 ```csharp
-private uint _magic = 0x31424B53;
-uint IPhysicalFooAsset.Magic { get => _magic; set => _magic = value; }
+public sealed class FooAsset() : BaseAsset(AssetType.Foo, baseType: 0x2A), Physical.IFooAsset
+{
+    /// <inheritdoc cref="Asset.Physical"/>
+    public override Physical.IFooAsset Physical => this;
+
+    private uint _magic = 0x31424B53; // "SKB1"
+    uint Physical.IFooAsset.Magic { get => _magic; set => _magic = value; }
+}
+
+public static partial class Physical
+{
+    /// <summary>
+    /// An explicit interface used to interact with <see cref="FooAsset"/>'s underlying values.
+    /// </summary>
+    public interface IFooAsset : IBaseAsset
+    {
+        /// <summary>A four-character magic number.</summary>
+        uint Magic { get; set; }
+    }
+}
 ```
+
+A type with no physical fields of its own adds no interface and doesn't override `Physical`.
 
 A raw four-character tag read back verbatim (not assumed — not every game agrees) is named `Magic` on
 the interface and documented as "A four-character magic number.", regardless of what the bytes spell
@@ -118,7 +149,7 @@ in the public doc.
 **Do not trust the wiki's "Used by" lists** for deciding which traits a type gets. Those lists are
 plausible but unverified — EvilHop.Corpus doesn't extract asset fields yet, so nothing has actually
 checked them against real archives (see §[EvilHop.Corpus validation](#evilhopcorpus-validation--deferred)).
-In the meantime, see §[etiquette for IPhysical* and unknowns](#etiquette-what-to-expose-vs-ask).
+In the meantime, see §[etiquette for physical fields and unknowns](#etiquette-what-to-expose-vs-ask).
 
 A field with a substructure of its own (an array of records, like `LODT`'s entries) is *not* itself an
 `Asset` and gets no `Physical` split — `Physical` only exists on `Asset` and its subclasses. Model the
@@ -127,20 +158,40 @@ substructure with ordinary public properties and choose its type representation 
 - **`sealed class` for mutable entities, child collections, and polymorphic hierarchies**: Any type with mutable
   properties intended to be modified in-place within a collection (`Collection<T>`) must be a class to avoid
   the C# indexer trap (`CS1612`: `asset.Links[i].Field = val` is illegal for value types because the indexer
-  returns a copy). Composite objects holding child collections of their own (such as `CreditsSection`) or
+  returns a copy). Composite objects holding child collections of their own (such as `CreditsAsset.Section`) or
   polymorphic hierarchies (such as `EntityMotion` or `PlatformMotion`) are also always classes.
-  *Precedents:* `Link`, `ScriptEvent`, `ProgressScriptEvent`, `LODTableEntry`, `FlyKey`, `CreditsSection`.
+  *Precedents:* `Link`, `ScriptAsset.ScriptEvent`, `ProgressScriptAsset.ProgressEvent`, `LODTableAsset.Entry`,
+  `FlyAsset.Key`, `CreditsAsset.Section`.
 - **`record struct` / `readonly record struct` for flat value tuples and table entries**: Small, flat records
   representing table rows or data pairs with value equality and no internal collections. Use `readonly record struct`
   when immutable; use `record struct` when property init/mutation syntax (`{ get; set; }`) is preferred.
-  *Precedents:* `CollisionTableEntry`, `SimpleShadowTableEntry`, `CutsceneDataEntry`, `CutsceneAudioTrack`, `AssetDiagnostic`.
+  *Precedents:* `CollisionTableAsset.Entry`, `SimpleShadowTableAsset.Entry`, `CutsceneAsset.Entry`,
+  `CutsceneAsset.AudioTrack`, `AssetDiagnostic`.
 - **`record struct` for high-density numerical geometry**: Mesh vertices, triangle faces, and topology
-  buffers (`GrassMeshVertex`, `GrassMeshFace`, `DashTrackTriangle`, `DashTrackPortal`) can number in the
-  thousands per asset. They are value types to eliminate heap allocation overhead and GC pressure.
+  buffers (`GrassMeshAsset.Vertex`, `GrassMeshAsset.Face`, `DashTrackAsset.Triangle`, `DashTrackAsset.Portal`)
+  can number in the thousands per asset. They are value types to eliminate heap allocation overhead and GC pressure.
 
-Satellite types follow an `internal static` codec convention directly on the type (`Foo.Read(reader, profile)`
-and `Foo.Write(value, writer, profile)`) with no interface contracts. The enclosing asset manages collection
-counts, loops, and container framing.
+**Nesting.** A satellite type or enum used by one asset type is nested inside that asset class, named
+for what it is *within* the asset rather than repeating the asset's name: `LODTableAsset.Entry`, not
+`LODTableEntry`; `PlatformAsset.Behavior`, not `PlatformBehavior`. A nested enum that would collide
+with a property of the same name takes a suffixed name instead (`PickupAsset.PickupKind` backing
+`PickupAsset.Kind`, `ButtonAsset.ButtonKind` backing `ButtonAsset.Kind`). A type or enum is only ever
+top-level when it's shared across more than one asset type — `UIFlags` (declared in `UIAsset.cs`,
+also used by `UIFontAsset`), `PlatformType`, `EntityFlags`/`CollisionFlags`, `EntityMotion`.
+
+**Files.** A nested type moves to its own `FooAsset.Bar.cs` partial beside `FooAsset.cs` (the asset
+class becomes `partial` to host it) only once it's 40 lines or more; below that, it stays inline in
+`FooAsset.cs`. `LODTableAsset.Entry.cs`, `SurfaceAsset.UVEffect.cs`, and `ButtonAsset.Activators.cs`
+are split out; `CollisionTableAsset.Entry` and `PlatformAsset.Behavior` stay inline. The exception is
+a polymorphic hierarchy: every subclass always gets its own file however short it is
+(`PlatformMotion.FullyManipulable.cs`, `ParticleEmitterShape.Point.cs`, `UIMotionCommand.Move.cs`).
+
+**Serialization.** Satellite types follow an `internal static` codec convention directly on the type
+(`Foo.Read(reader, profile)` and `Foo.Write(value, writer, profile)`) with no interface contracts — a
+nested type's reading and writing always lives inside the nested type itself, never inline in the
+enclosing asset's `Read`/`Write`, and never in the asset's `FooAsset.Serialization.cs` if it has one.
+The enclosing asset manages collection counts, loops, and container framing, and calls the nested
+type's `Read`/`Write` per element.
 
 ### 3. Which games does it diverge across? (and which is "the" game to write first)
 
@@ -170,14 +221,14 @@ specific type actually touches.
 ### `Asset` (every type has this)
 
 `Id` (`AssetId`), `Type` (`AssetType`, `internal set`), `Name`/`FileName` (`string`), `Layer`
-(`internal set`), `Physical` (`IPhysicalAsset`, override per subclass), `GetUnparsedTail()`/
-`SetUnparsedTail(byte[])`, `CalculateId()`. `IPhysicalAsset` adds `Type`, `Alignment` (`int`), `Flags`
+(`internal set`), `Physical` (`Physical.IAsset`, overridden per subclass), `GetUnparsedTail()`/
+`SetUnparsedTail(byte[])`, `CalculateId()`. `Physical.IAsset` adds `Type`, `Alignment` (`int`), `Flags`
 (`AssetFlags`) — all header-sourced, never touched by a codec directly (see `AssetFields.Populate`).
 
 ### `BaseAsset : Asset` (has the 8-byte header)
 
 Logical: `BaseFlags` (`BaseAssetFlags`), `Links` (`Collection<Link>`).
-Physical (`IPhysicalBaseAsset : IPhysicalAsset`): `BaseId` (`AssetId`), `BaseType` (`byte`),
+Physical (`Physical.IBaseAsset : IAsset`): `BaseId` (`AssetId`), `BaseType` (`byte`),
 `LinkCount` (`byte`).
 
 `BaseId`/`LinkCount` follow the same **override-clears-on-match** shape everywhere a physical field
@@ -186,7 +237,7 @@ count):
 
 ```csharp
 private byte? _overriddenLinkCount;
-byte IPhysicalBaseAsset.LinkCount
+byte Physical.IBaseAsset.LinkCount
 {
     get => _overriddenLinkCount ?? (byte)Links.Count;
     // prevents equivalent count assignments from being interpretted as an "override"
@@ -202,15 +253,17 @@ copy this exact line shape, substituting your own collection/count pair.
 
 Logical: `EntityFlags` (`EntityFlags`), `Angle`/`Position`/`Scale` (`Vector3`), `ColorMultiplier`
 (`Rgba`, R/G/B/A floats).
-Physical (`IPhysicalEntityAsset : IPhysicalBaseAsset`): `Subtype` (`byte`), `PFlags` (`byte`, "always
+Physical (`Physical.IEntityAsset : IBaseAsset`): `Subtype` (`byte`), `PFlags` (`byte`, "always
 0" per every sample checked so far), `CollisionFlags` (`CollisionFlags`), `SurfaceId`/`ModelId`/
 `AnimListId` (`AssetId`), `SeeThroughSpeed` (`float`, "always 255" per every sample checked so far).
 Backing fields are `private protected`, so a derived class can project a `CollisionFlags` bit or an
-`AssetId` straight into a trait without going through `Physical`.
+`AssetId` straight into a trait without going through `Physical`. `Subtype` is backed by a
+`private protected virtual byte Subtype` a derived type overrides when its subtype follows from its
+own data (`PlatformAsset`, `PickupAsset`).
 
 ### `DynaAsset : BaseAsset` (the `DYNA` dispatch prefix)
 
-Physical only (`IPhysicalDynaAsset : IPhysicalBaseAsset`): `DynaType` (`uint`, selects the concrete
+Physical only (`Physical.IDynaAsset : IBaseAsset`): `DynaType` (`uint`, selects the concrete
 subtype), `Version` (`short`), `Handle` (`short`, runtime-only).
 
 ### Traits (`Traits.cs`) — opt-in projections onto reserved `EntityAsset` fields
@@ -218,9 +271,9 @@ subtype), `Version` (`short`), `Handle` (`short`, runtime-only).
 | Trait | Property | Projects onto |
 |---|---|---|
 | `IGrabbable` | `bool IsGrabbable` | a `CollisionFlags` bit (`Grabbable`) |
-| `IHasSurface` | `AssetId SurfaceId` | `IPhysicalEntityAsset.SurfaceId` |
-| `IHasModel` | `AssetId ModelId` | `IPhysicalEntityAsset.ModelId` |
-| `IHasAnimList` | `AssetId AnimListId` | `IPhysicalEntityAsset.AnimListId` |
+| `IHasSurface` | `AssetId SurfaceId` | `Physical.IEntityAsset.SurfaceId` |
+| `IHasModel` | `AssetId ModelId` | `Physical.IEntityAsset.ModelId` |
+| `IHasAnimList` | `AssetId AnimListId` | `Physical.IEntityAsset.AnimListId` |
 
 Each trait member is implemented explicitly and one line long: `AssetId IHasModel.ModelId { get =>
 Physical.ModelId; set => Physical.ModelId = value; }`. The XML doc "Used by" lists on these interfaces
@@ -232,12 +285,13 @@ field name.
 
 - `BaseAssetPrefix.Read/Write`: `BaseId` (`AssetId`, 4B) → `BaseType` (`byte`) → `LinkCount` (`byte`)
   → `BaseFlags` (`short`, 2B). 8 bytes total.
-- `EntityAssetPrefix.Read/Write(asset, reader/writer, hasPadding)`: `EntityFlags` (`byte`) →
+- `EntityAssetPrefix.Read/Write(asset, reader/writer, profile)`: `EntityFlags` (`byte`) →
   `Subtype` (`byte`) → `PFlags` (`byte`) → `CollisionFlags` (`byte`) → *(4 bytes of zero padding, only
-  when `hasPadding` — see `FormatProfile.EntityHasPadding` below)* → `SurfaceId` (`AssetId`, 4B) →
-  `Angle` (`Vector3`, 12B) → `Position` (`Vector3`, 12B) → `Scale` (`Vector3`, 12B) →
-  `ColorMultiplier` (4 floats R/G/B/A, 16B) → `SeeThroughSpeed` (`float`, 4B) → `ModelId` (`AssetId`,
-  4B) → `AnimListId` (`AssetId`, 4B). 72 bytes total, 76 with padding.
+  when `profile.EntityHasPadding`)* → `SurfaceId` (`AssetId`, 4B)† → `Angle` (`Vector3`, 12B) →
+  `Position` (`Vector3`, 12B) → `Scale` (`Vector3`, 12B) → `ColorMultiplier` (4 floats R/G/B/A, 16B)†
+  → `SeeThroughSpeed` (`float`, 4B)† → `ModelId` (`AssetId`, 4B) → `AnimListId` (`AssetId`, 4B)†.
+  72 bytes total, 76 with padding. † Only when `profile.EntityHasExtendedFields` — false only for
+  N100F's 2001-06-11 prototype, whose entities are 44 bytes.
 - `DynaAssetPrefix.Read/Write`: `DynaType` (`uint`, 4B) → `Version` (`short`) → `Handle` (`short`).
   8 bytes total.
 
@@ -258,17 +312,33 @@ for unknown bytes, `FloatParameter`/`IntParameter`/`AssetIdParameter` where the 
 Read and write links using `Link.Read(reader, profile)` and `Link.Write(link, writer, profile)`. The caller
 loops over the count (from `BaseAssetPrefix`'s `LinkCount` or the physical field) and adds them to `asset.Links`.
 
-### Satellite and nested types — `Read`/`Write` pattern
+### Serialization method signatures
 
-Nested objects (table entries, keyframes, mesh geometry, etc.) do not use interface contracts. They implement `internal static` methods directly on the type:
+Every serialization method takes a `FormatProfile`, even when nothing in it varies per game, and the
+parameters always come in the same order:
 
 ```csharp
-internal static FooEntry Read(EndianReader reader, FormatProfile profile) => ...;
-internal static void Write(FooEntry value, EndianWriter writer, FormatProfile profile) { ... }
+// an asset
+internal static FooAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
+internal static void Write(FooAsset asset, EndianWriter writer, FormatProfile profile)
+
+// anything else - a nested type, a motion, a shape
+internal static Entry Read(EndianReader reader, FormatProfile profile)
+internal static void Write(Entry value, EndianWriter writer, FormatProfile profile)
 ```
 
-Discard unused `profile` arguments **in leaf types only** with `_`. The enclosing asset owns the collection container (`Collection<T>`),
-leading count fields, and looping over items.
+Any extra inputs a non-asset `Read`/`Write` needs (a discriminator, a count, a size) come *after*
+the `FormatProfile`: `Read(EndianReader reader, FormatProfile profile, uint tileCount)`,
+`Write(State value, EndianWriter writer, FormatProfile profile, uint tileCount)`.
+
+Name the `FormatProfile` `_` **only at a leaf** — a method whose body genuinely never touches it. A
+method that passes its profile on to anything else (a nested type's `Read`, `Link.Read`,
+`EntityMotion.Read`) keeps it named `profile`, even when the callee is itself known to discard it; the
+callee's needs can change without its callers having to.
+
+Nested objects (table entries, keyframes, mesh geometry, etc.) do not use interface contracts. They
+implement these `internal static` methods directly on the type. The enclosing asset owns the
+collection container (`Collection<T>`), leading count fields, and looping over items.
 
 ### Generic shape fallbacks & `ShapesByType` (`src/EvilHop/Assets/Fallbacks/GenericAssets.cs`, `src/EvilHop/Assets/Serialization/AssetCodecs.cs`)
 
@@ -297,8 +367,20 @@ profile in a test via `{Game}Serializer.DefaultProfile` (e.g. `BFBBSerializer.De
 `profile.Endianness` is `Big` on GameCube and `Little` otherwise — `EndianReader`/`EndianWriter` read
 this from the profile automatically, you never branch on it yourself. Branch on `profile.Game` (an
 equality check, same shape in `Read` and `Write` — see `DestructibleObjectAsset`) for genuine per-game
-field presence differences; branch on `profile.EntityHasPadding` only via `EntityAssetPrefix`, which
-already does it for you.
+field presence differences; branch on `profile.EntityHasPadding`/`EntityHasExtendedFields` only via
+`EntityAssetPrefix`, which already does it for you.
+
+**Per-build quirks.** A layout that differs only in one *build* rather than a whole game — a
+prototype, or BFBB's leftover `gl/Working`/`gl/New Folder`/`db05` archives — gets a `bool` quirk
+parameter on `FormatProfile` instead of a `Game` branch, defaulting to the value every normal build
+uses and overridden per build in `tools/EvilHop.Corpus/BuildProfiles.json` by path pattern. Existing
+quirks follow the naming `<Type>Has<Fields>`: `EntityHasExtendedFields`, `LinkHasExtendedFields`,
+`PickupTypesHasPulseFields`, `TriggerHasDirectionAndFlags`, `EnvironmentHasExtendedFields`,
+`NPCHasExtendedFields`, `SurfaceHasDamageFields`, `VillainHasTaskWidgetSecondId`, `TimerHasRandomRange`,
+`DestructibleObjectHasSwapEffects`, `BoulderHasSoundFalloff`, `ShrapnelHasExtendedFragFields`,
+`ShrapnelSoundHasExtendedFields`, `ShrapnelProjectileHasIntermediateFields`. Adding one means a new
+`FormatProfile` parameter with a `<param>` doc naming the builds it's false for, the branch in the
+type's `Read`/`Write`, and the `BuildProfiles.json` entry.
 
 ### Raw I/O — `EndianReader`/`EndianWriter`, `AssetId`
 
@@ -330,7 +412,7 @@ use it, only to see more context if something here doesn't match your case.
   proven-always-zero padding, and the same corpus-verification requirement - a source comment
   calling a field a resolved pointer or cache slot is a reason to *suspect* it is discardable, not
   proof. `reader.ReadUInt32(); // runtime-resolved xAnimState pointer, always zero` on read,
-  `writer.Write(0u); // runtime-resolved` on write. No property at all once confirmed. `CreditsTexture`'s
+  `writer.Write(0u); // runtime-resolved` on write. No property at all once confirmed. `CreditsAsset.Texture`'s
   own `RwTexture* texture` field looked identical to this pattern and was discarded on that
   assumption alone, unchecked - two independent real archives (TSSM, Incredibles) then turned up
   non-zero, non-matching garbage in it, and in the struct's trailing `pad` field beside it. Both are
@@ -338,15 +420,16 @@ use it, only to see more context if something here doesn't match your case.
   source tool happened to leave there. Uninitialized-looking bytes next to a genuinely dead field are
   not a coincidence to write off - check them too before deciding either is discardable.
 - **An always-present field with no known meaning, kept physical** (`HangableAsset.HangFlags`,
-  `LODTableEntry.Flags`): a plain `uint`/similar property doc-commented `Unknown.`, with no attempt at
-  semantics. On an `Asset` subclass this goes through a dedicated `IPhysicalFooAsset` interface,
+  `LODTableAsset.Entry.Flags`): a plain `uint`/similar property doc-commented `Unknown.`, with no attempt at
+  semantics. On an `Asset` subclass this goes through a dedicated `Physical.IFooAsset` interface,
   exactly like `HangFlags`; on a plain nested record with no `Physical` split of its own (an
-  `LODTableEntry`), it is simply a public property — see §2 above.
+  `LODTableAsset.Entry`), it is simply a public property — see §2 above.
 - **Per-game field presence** (`DestructibleObjectAsset`'s six BFBB-only trailing `AssetId`s): the
   exact same `if (profile.Game == GameVersion.BFBB) { ... }` block, field-for-field symmetric, in both
-  `Read` and `Write`. Never branch on `profile.EntityHasPadding` or any other derived quirk for this —
+  `Read` and `Write`. Never branch on `profile.EntityHasPadding` or another type's quirk for this —
   branch on `Game` directly so the intent reads as "this game's layout has different fields," not
-  "this incidental flag happens to correlate." Document the field the same way every time: "<summary>.
+  "this incidental flag happens to correlate." (A difference confined to particular builds rather than
+  a whole game gets its own quirk instead — see §Reference's per-build quirks.) Document the field the same way every time: "<summary>.
   Only present in <see cref="GameVersion.BFBB"/>." (join more than one game with "and") — not "BFBB
   only." or "Populated for BFBB only." An enum's own summary stays game-agnostic, describing what a
   value means everywhere it's read; a game-specific reading quirk belongs as a comment in that game's
@@ -395,17 +478,30 @@ zero" or "always the same size", sweep every occurrence: a throwaway `dotnet run
 shape, so `GetUnparsedTail()` on the `EntityAsset`/`BaseAsset` is exactly the bytes after the shared
 prefix - tabulate sizes, discriminator bytes, and which regions are ever nonzero from that.
 
-Two corpus quirks to account for when you do:
+Build a sweep's profiles the way EvilHop.Corpus does, or it will misread archives that the library
+reads fine: the game's sniffed profile, then every matching override from
+`tools/EvilHop.Corpus/BuildProfiles.json` applied on top. Two corpus quirks that manifest covers, and
+that a sweep skipping it gets wrong:
 
 - **N100F's platform isn't sniffable.** Every N100F build's `PACK` flags carry no platform bits, so
   `Serializer.Sniff` falls back to GameCube and Xbox/PS2 archives read their asset fields with the
-  wrong byte order. Round trips stay byte-exact, but field values don't. Derive the platform from the
-  archive's `artifacts/` path (`GC`/`PS2`/`XBOX`) and override it -
-  `Serializer.Create(sniffed with { Platform = ... })` - before interpreting any N100F field value.
+  wrong byte order. Round trips stay byte-exact, but field values don't. The manifest's `platform`
+  overrides fix this; failing that, derive the platform from the archive's `artifacts/` path
+  (`GC`/`PS2`/`XBOX`) and override it - `Serializer.Create(sniffed with { Platform = ... })` - before
+  interpreting any N100F field value.
 - **Leftover developer archives.** BFBB's `gl/Working/` and `gl/New Folder/` directories, and some of
-  its Xbox `db` archives, are developer leftovers the game never loads, and may predate format changes
-  (e.g. BFBB's entity padding). They're low priority: note what they do, but don't bend a model to fit
-  them - an asset that fails to parse degrades to its generic shape with a diagnostic, which is fine.
+  its `db05` archives, are developer leftovers the game never loads, and may predate format changes
+  (e.g. BFBB's entity padding). Their per-build quirks live in `BuildProfiles.json`; a sweep that reads
+  them with the plain BFBB profile misaligns every entity by four bytes and reports false misfits.
+
+A leftover archive is also evidence. When a type's older layout (a prototype's, or N100F's) is shorter
+than the release one, it's usually the same struct with a field or two missing and the rest
+unchanged. Leftover archives often carry that older layout too, and the same asset id usually exists
+in both the leftover and the release level: pair them by id and diff their bytes to see exactly which
+fields were added or moved. Model a whole-game difference with a `profile.Game` branch, and a
+leftover-build difference with a `FormatProfile` quirk (see §Reference). When no such pairing
+explains a shorter layout, leave that game out of `SupportedGames` so it falls back to its generic
+shape, and flag it for a `probing-field-behavior` probe rather than guessing its fields.
 
 ### Proven-from-file facts vs. gameplay-only facts
 
@@ -445,14 +541,19 @@ Concrete example for an `EntityAsset`-shaped type (adapt for `BaseAsset`/`DynaAs
 too if a plain `Asset`, and see `DynaAsset`'s two-level dispatch if dyna):
 
 ```csharp
+using EvilHop.Assets.Serialization;
+using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
-using System.Numerics;
+using EvilHop.Serialization;
 
 namespace EvilHop.Assets;
 
 /// <summary>XML docs pulling in any wiki-provided behavioral description.</summary>
-/// <remarks><seealso href="...wiki URL..."/></remarks>
-public sealed class FooAsset : EntityAsset, IHasModel
+/// <remarks>
+/// <seealso href="https://heavyironmodding.org/wiki/FOO">Heavy Iron Modding documentation</seealso>
+/// </remarks>
+public sealed class FooAsset() : EntityAsset(AssetType.Foo, baseType: 0x2A), IHasModel
 {
     /// <summary>The logical meaning of the first type-specific field.</summary>
     public float Gravity { get; set; }
@@ -461,15 +562,20 @@ public sealed class FooAsset : EntityAsset, IHasModel
 
     // A trait the type genuinely uses:
     AssetId IHasModel.ModelId { get => Physical.ModelId; set => Physical.ModelId = value; }
+
+    // SupportedGames, Read and Write - see §Wire up the codec.
 }
 ```
 
+The asset declares its `AssetType` and `baseType` byte through its parent's primary constructor, and
+has a parameterless primary constructor of its own (`FooAsset()`).
+
 Rules to follow:
 
-- **Derive from the right base.** Do not reach for traits or `IPhysical*` members unless the type
+- **Derive from the right base.** Do not reach for traits or `Physical.I*` members unless the type
   genuinely is entity/base-shaped (validated above).
 - **Determined fields stay physical.** Do not re-expose `BaseId`, `Type`, `LinkCount` as logical
-  properties. They live on the `IPhysical*` interfaces already.
+  properties. They live on the `Physical.I*` interfaces already.
 - **A trait projects, never stores.** `IHasModel.ModelId` reads/writes `Physical.ModelId`; it does not
   hold its own `AssetId`. (The `EntityAsset` backing fields are `private protected` so a derived type
   can project them directly.)
@@ -494,16 +600,27 @@ logic itself lives as `internal static` methods on the asset class, not inline i
 
 ```csharp
 // FooAsset.cs
-internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion> { GameVersion.BFBB };
+/// <summary>
+/// The <see cref="GameVersion"/>s <see cref="AssetType.Foo"/> is known to be read by.
+/// </summary>
+internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
+{
+    GameVersion.BFBB,
+    GameVersion.TSSM,
+};
 
 internal static FooAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
 {
     var asset = new FooAsset();
-    AssetFields.Populate(asset, header, debug); // header-sourced Id/Type/Name/...
-    BaseAssetPrefix.Read(asset, reader);        // shared 8-byte header
-    EntityAssetPrefix.Read(asset, reader, profile.EntityHasPadding); // if entity
-    // ... read FooAsset's own fields with reader, e.g. reader.ReadSingle()
-    // ... call the shared link reader where links appear in THIS type's layout
+    AssetFields.Populate(asset, header, debug);    // header-sourced Id/Type/Name/...
+    BaseAssetPrefix.Read(asset, reader);           // shared 8-byte header
+    EntityAssetPrefix.Read(asset, reader, profile); // if entity
+
+    asset.Gravity = reader.ReadSingle();
+
+    for (var i = 0; i < asset.Physical.LinkCount; i++)
+        asset.Links.Add(Link.Read(reader, profile));
+    asset.Physical.LinkCount = (byte)asset.Links.Count;
     asset.SetUnparsedTail(reader.ReadRemainingBytes()); // anything left over
     return asset;
 }
@@ -511,8 +628,12 @@ internal static FooAsset Read(EndianReader reader, AssetHeader header, AssetDebu
 internal static void Write(FooAsset asset, EndianWriter writer, FormatProfile profile)
 {
     BaseAssetPrefix.Write(asset, writer);
-    EntityAssetPrefix.Write(asset, writer, profile.EntityHasPadding);
-    // ... write FooAsset's own fields
+    EntityAssetPrefix.Write(asset, writer, profile);
+
+    writer.Write(asset.Gravity);
+
+    foreach (var link in asset.Links)
+        Link.Write(link, writer, profile);
     writer.Write(asset.GetUnparsedTail()); // byte-exact for unparsed remainder
 }
 ```
@@ -541,27 +662,33 @@ Key points:
   (or `Fallback` for a plain `Asset`), degrading gracefully instead of misreading. Expose it as
   `internal static IReadOnlySet<GameVersion> SupportedGames { get; }` on the asset class itself (every
   precedent does this), not as a literal at the call site.
-- **Big codecs split into a `.Serialization.cs` partial.** Once a class's combined content (fields,
-  nested types, `Read`/`Write`) outgrows ~250 lines, move just the `Read`/`Write` methods — and any
-  private helpers only they use — into a `FooAsset.Serialization.cs` partial beside `FooAsset.cs` in the
-  same family folder. `SupportedGames` stays on `FooAsset.cs` with the type's other declarations; it's
+- **Big codecs split into a `.Serialization.cs` partial.** As a guideline, once `FooAsset.cs` reaches
+  around 240 lines (counting what's still in it after any nested types have moved to their own files),
+  move just the asset's own `Read`/`Write` methods — and any private helpers only they use — into a
+  `FooAsset.Serialization.cs` partial beside `FooAsset.cs` in the same family folder; well below that,
+  everything stays in `FooAsset.cs`. The number is a suggestion, not a hard rule: near it, split or
+  don't by whether the result reads better. A nested type's `Read`/`Write` never moves there; it stays on the
+  nested type (§2). `SupportedGames` stays on `FooAsset.cs` with the type's other declarations; it's
   part of the class's public shape, not its serialization mechanics — see `SurfaceAsset`/`SoundInfoAsset`
   for `SupportedGames` living in the main file even though `Read`/`Write` don't, and
-  `CameraAsset.Serialization.cs`/`AnimationTableAsset.Serialization.cs`/`CutsceneAsset.Serialization.cs`
-  for the split's shape otherwise. The split is worth reversing if it turns out not to earn its keep —
-  `PlatformAsset` had its own `.Serialization.cs` folded back into one ~200-line file once splitting it
-  out stopped paying for itself.
-- **An unused `Read`/`Write` parameter is discarded, not left named.** A type with no per-game variance
-  still takes `FormatProfile profile`/`GameVersion game` to match the codec's signature — name it `_`
-  (or `_`/`__` for two) when the method body never touches it, rather than a name implying it matters.
+  `CameraAsset.Serialization.cs`/`SurfaceAsset.Serialization.cs` for the split's shape otherwise.
+- **Signatures and the `FormatProfile` discard** follow §[Serialization method
+  signatures](#serialization-method-signatures): every method takes the profile, and it's named `_`
+  only in a leaf that never touches it — never in a method that passes it on.
 - **Write what you read, and nothing else.** A codec that reads a field it doesn't write (or writes one
   it doesn't read) breaks the round trip. The round-trip test below is what catches this.
 
 ## Tests
 
 Follow the pattern in `tests/EvilHop.Tests/Assets/<Family>/{Foo}AssetTests.cs`, mirroring the asset's
-family folder (e.g. `tests/EvilHop.Tests/Assets/Objects/HangableAssetTests.cs`,
-`DestructibleObjectAssetTests.cs`, `MarkerAssetTests.cs`). The minimum:
+family folder (e.g. `tests/EvilHop.Tests/Assets/Props/HangableAssetTests.cs`,
+`Props/DestructibleObjectAssetTests.cs`, `Navigation/MarkerAssetTests.cs`). Every asset test class
+is in the `EvilHop.Tests.Serialization` namespace regardless of its folder, and reads/writes through
+`AssetCodecs.Read`/`AssetCodecs.Write` with small `Read`/`Write` helpers at the top of the class (copy
+them from a neighbouring test). Where a test file refers to a type's nested types often enough that
+the qualification hurts readability, `using static EvilHop.Assets.FooAsset;` is allowed to bring them
+into scope (`AnimationAssetTests`, `JawDataTableAssetTests`); use your discretion, and keep the
+qualified form when there are only a handful of references. The minimum:
 
 1. **Read produces your concrete type.** `Assert.IsType<FooAsset>(Read(AssetType.Foo, bytes))`.
 2. **Read populates your fields** from a hand-built byte array (decode the bytes you put in).
@@ -612,7 +739,7 @@ A few sharper corollaries, each corrected from a real slip in earlier asset impl
   constant or varies.** Constancy and understanding are different axes: a field can be "Unknown" and
   vary across samples (`SurfaceAsset.DamageTimer`/`DamageBounce`), or be well-understood and always the
   same value (`SeeThroughSpeed`, always 255, still logical). If you catch yourself writing "Unknown."
-  on a property and leaving it logical anyway, that's the bug — move it to `IPhysical*Asset` instead.
+  on a property and leaving it logical anyway, that's the bug — move it to `Physical.IFooAsset` instead.
   Don't be afraid to park a field there uncertain; promoting back to logical once it's understood is
   cheap, and a clean, understood domain surface matters more than a complete one.
 - **"Always X in most samples" is self-contradictory — fix the claim, don't just soften the wording.**
@@ -645,7 +772,7 @@ A few sharper corollaries, each corrected from a real slip in earlier asset impl
   confirmed name for most of them.** Don't leave it as a raw numeric type just because you can't name
   every value — name what's confirmed, and use placeholder names (`Unknown1`, `Unknown2`, ...) for the
   rest, the same way partially-understood `[Flags]` enums already carry a named-but-unexplained bit
-  (`SurfacePhysicsFlags.Step`). This is different from a wide-or-unbounded numeric field (a hash, a
+  (`SurfaceAsset.PhysicsBehavior.Step`). This is different from a wide-or-unbounded numeric field (a hash, a
   timer) — those stay plain numeric types.
 - **"Is this sub-object active" belongs on the sub-object, not as a separate index-matched flags
   property.** When a flags word's bits each gate one element of a same-sized array/tuple the type also
