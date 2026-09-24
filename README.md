@@ -12,7 +12,7 @@ Asset codec support falls into three states, per type:
 
 - **Typed** - the asset's fields are modeled and read/written individually. Most gameplay-relevant types are here.
 - **Payload** - the asset wraps an embedded file (a RenderWare model, a Bink video, audio) that is imported and exported as a whole blob rather than parsed field-by-field. This is the intended shape for these types, not a gap: `BinkVideo`, `BSP`, `JSP`, `Model`, `RawImage`, `Sound`, `StreamingSound`, `StreamingTexture`, `Texture`.
-- **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: `CutsceneStreamingSound`, `Duplicator`, `Dynamic`, `NavigationMesh`, `Portal`, `SceneSettings`, `SlideProperty`, `Spline`, `VillainProperties`, `Volume`, `Wireframe`, `ZipLine`.
+- **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: `Duplicator`, `Dynamic`, `NavigationMesh`, `Portal`, `SceneSettings`, `SlideProperty`, `Spline`, `VillainProperties`, `Volume`, `Wireframe`, `ZipLine`.
 
 A handful of Typed assets are only partially modeled, marked with a `// TODO: Partial implementation` comment at their definition:
 

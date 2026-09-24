@@ -26,6 +26,12 @@ public enum AssetType : uint
     Credits = 0x43524454,
     Cutscene = 0x43534E20,
     CutsceneManager = 0x43534E4D,
+    /// <summary>
+    /// A placeholder naming one cutscene audio track, whose sound data is streamed from the
+    /// <see cref="Cutscene"/> itself. Always zero-size, so it reads as an <see cref="Assets.EmptyAsset"/>;
+    /// its id is what <see cref="Assets.CutsceneAsset.AudioTrack"/> and
+    /// <see cref="Assets.SoundInfoAsset.Cutscenes"/> reference.
+    /// </summary>
     CutsceneStreamingSound = 0x43535353,
     CutsceneTable = 0x43544F43,
     DashTrack = 0x4454524B,
