@@ -6,6 +6,7 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using static EvilHop.Assets.SoundInfoAsset;
 using static EvilHop.Assets.SoundInfoAsset.Sound;
+using static EvilHop.Assets.SoundInfoAsset.WaveHeader;
 
 namespace EvilHop.Tests.Serialization;
 
@@ -98,7 +99,7 @@ public class SoundInfoAssetTests
         Assert.Single(asset.Streams);
         Assert.Empty(asset.Cutscenes);
 
-        var effect = asset.Effects[0];
+        var effect = Assert.IsType<DspHeader>(asset.Effects[0]);
         Assert.Equal(1000u, effect.SampleCount);
         Assert.Equal(2020u, effect.NibbleCount);
         Assert.Equal(16000u, effect.SampleRate);
@@ -108,7 +109,7 @@ public class SoundInfoAssetTests
         Assert.Equal(2u, effect.InitialOffset);
         Assert.Equal(new AssetId(0x11111111), effect.SoundAssetId);
 
-        var stream = asset.Streams[0];
+        var stream = Assert.IsType<DspHeader>(asset.Streams[0]);
         Assert.Equal(2000u, stream.SampleCount);
         Assert.True(stream.IsLooped);
         Assert.Equal(10u, stream.LoopStart);
@@ -324,25 +325,174 @@ public class SoundInfoAssetTests
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
-    [Fact]
-    public void Read_SoundInfo_UnderXbox_DegradesToUnparsedTail()
+    private static readonly FormatProfile XboxProfile = TSSMSerializer.DefaultProfile with { Platform = Platform.Xbox };
+
+    private static readonly FormatProfile PS2Profile = BFBBSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+
+    private static readonly FormatProfile N100FPS2Profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+
+    private static byte[] LittleEndian(uint value) => BitConverter.GetBytes(value);
+
+    private static byte[] LittleEndian(ushort value) => BitConverter.GetBytes(value);
+
+    private static byte[] WaveHeader(ushort format, ushort channels, uint sampleRate, uint dataSize, uint soundAssetId, uint playback) =>
+    [
+        .. LittleEndian(format),
+        .. LittleEndian(channels),
+        .. LittleEndian(sampleRate),
+        .. LittleEndian(sampleRate * 36 / 64), // nAvgBytesPerSec
+        .. LittleEndian((ushort)36),           // nBlockAlign
+        .. LittleEndian((ushort)4),            // wBitsPerSample
+        .. LittleEndian((ushort)2),            // cbSize
+        .. LittleEndian((ushort)64),           // NibblesPerBlock
+        .. LittleEndian(dataSize),
+        .. LittleEndian(soundAssetId),
+        .. LittleEndian(playback),
+        .. new byte[12],                       // padding
+    ];
+
+    private static byte[] XboxData(int effectCount, int streamCount, int cutsceneCount, params byte[][] entries) =>
+    [
+        .. LittleEndian((uint)effectCount),
+        .. LittleEndian((uint)streamCount),
+        .. LittleEndian((uint)cutsceneCount),
+        .. entries.SelectMany(entry => entry),
+    ];
+
+    private static byte[] VagHeader(uint version, uint soundAssetId, uint dataSize, uint sampleRate, bool bigEndianFields = false)
     {
-        byte[] data = N100FData(0, 0);
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        Func<uint, byte[]> field = bigEndianFields ? BigEndian : LittleEndian;
+        return
+        [
+            .. "VAGp"u8,
+            .. field(version),
+            .. LittleEndian(soundAssetId),
+            .. field(dataSize),
+            .. field(sampleRate),
+            .. new byte[12],                                    // reserved
+            .. "sound.vag\0"u8, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, // name, with leftover bytes after the terminator
+        ];
+    }
 
-        var asset = (SoundInfoAsset)Read(data, profile);
+    private static byte[] PS2Data(int effectCount, int streamCount, params byte[][] entries) =>
+    [
+        .. LittleEndian((uint)effectCount),
+        .. LittleEndian((uint)streamCount),
+        .. entries.SelectMany(entry => entry),
+    ];
 
-        Assert.Empty(asset.Effects);
-        Assert.Equal(data, asset.GetUnparsedTail().ToArray());
+    [Fact]
+    public void Read_SoundInfo_UnderXbox_PopulatesWaveHeaders()
+    {
+        byte[] data = XboxData(1, 1, 0,
+            WaveHeader(0x69, 1, 22050, 4000, 0x11111111, 1),
+            WaveHeader(0x01, 2, 44100, 8000, 0x22222222, 2));
+
+        var asset = (SoundInfoAsset)Read(data, XboxProfile);
+
+        var effect = Assert.IsType<WaveHeader>(Assert.Single(asset.Effects));
+        Assert.Equal(WaveFormat.XboxAdpcm, effect.Format);
+        Assert.Equal(1, effect.ChannelCount);
+        Assert.Equal(22050u, effect.SampleRate);
+        Assert.Equal(22050u * 36 / 64, effect.AverageBytesPerSecond);
+        Assert.Equal(36, effect.BlockAlign);
+        Assert.Equal(4, effect.BitsPerSample);
+        Assert.Equal(2, effect.ExtraSize);
+        Assert.Equal(64, effect.SamplesPerBlock);
+        Assert.Equal(4000u, effect.DataSize);
+        Assert.Equal(new AssetId(0x11111111), effect.SoundAssetId);
+        Assert.Equal(PlaybackMode.Looped, effect.Playback);
+
+        var stream = Assert.IsType<WaveHeader>(Assert.Single(asset.Streams));
+        Assert.Equal(WaveFormat.Pcm, stream.Format);
+        Assert.Equal(2, stream.ChannelCount);
+        Assert.Equal(PlaybackMode.Unknown2, stream.Playback);
+        Assert.Empty(asset.Cutscenes);
     }
 
     [Fact]
     public void Read_ThenWrite_SoundInfoUnderXbox_ReproducesInputBytes()
     {
-        byte[] data = N100FData(1, 0, DspHeader(1000, 2020, 16000, looped: false, 0, 2020, 0x11111111));
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        byte[] data = XboxData(1, 1, 1,
+            WaveHeader(0x69, 1, 22050, 4000, 0x11111111, 1),
+            WaveHeader(0x01, 2, 44100, 8000, 0x22222222, 2),
+            WaveHeader(0x69, 1, 32000, 1234, 0x33333333, 0));
 
-        Assert.Equal(data, Write(Read(data, profile), profile));
+        Assert.Equal(data, Write(Read(data, XboxProfile), XboxProfile));
+    }
+
+    [Fact]
+    public void Read_SoundInfo_UnderPS2_PopulatesVagHeaders()
+    {
+        byte[] data = PS2Data(1, 1,
+            VagHeader(32, 0x11111111, 4000, 22050),
+            VagHeader(4, 0x22222222, 8000, 44100));
+
+        var asset = (SoundInfoAsset)Read(data, PS2Profile);
+
+        var effect = Assert.IsType<VagHeader>(Assert.Single(asset.Effects));
+        Assert.Equal(0x70474156u, effect.Magic);
+        Assert.Equal(32u, effect.Version);
+        Assert.Equal(new AssetId(0x11111111), effect.SoundAssetId);
+        Assert.Equal(4000u, effect.DataSize);
+        Assert.Equal(22050u, effect.SampleRate);
+        Assert.Equal(4u, Assert.IsType<VagHeader>(Assert.Single(asset.Streams)).Version);
+        Assert.Empty(asset.Cutscenes);
+    }
+
+    [Fact]
+    public void Read_ThenWrite_SoundInfoUnderPS2_ReproducesInputBytes()
+    {
+        byte[] data = PS2Data(1, 1,
+            VagHeader(32, 0x11111111, 4000, 22050),
+            VagHeader(4, 0x22222222, 8000, 44100));
+
+        Assert.Equal(data, Write(Read(data, PS2Profile), PS2Profile));
+    }
+
+    [Fact]
+    public void Read_SoundInfo_UnderN100FPS2_ReadsVersionSizeAndRateBigEndian()
+    {
+        byte[] data = PS2Data(1, 0, VagHeader(3, 0x11111111, 4000, 22050, bigEndianFields: true));
+
+        var effect = Assert.IsType<VagHeader>(Assert.Single(((SoundInfoAsset)Read(data, N100FPS2Profile)).Effects));
+
+        Assert.Equal(3u, effect.Version);
+        Assert.Equal(new AssetId(0x11111111), effect.SoundAssetId);
+        Assert.Equal(4000u, effect.DataSize);
+        Assert.Equal(22050u, effect.SampleRate);
+    }
+
+    [Fact]
+    public void Read_ThenWrite_SoundInfoUnderN100FPS2_ReproducesInputBytes()
+    {
+        byte[] data = PS2Data(1, 0, VagHeader(3, 0x11111111, 4000, 22050, bigEndianFields: true));
+
+        Assert.Equal(data, Write(Read(data, N100FPS2Profile), N100FPS2Profile));
+    }
+
+    [Theory]
+    [InlineData(GameVersion.Incredibles)]
+    [InlineData(GameVersion.ROTU)]
+    public void Read_ThenWrite_SoundInfoUnderPS2WithLeadingId_ReproducesInputBytes(GameVersion game)
+    {
+        byte[] data = [.. LittleEndian(0x12345678u), .. PS2Data(1, 0, VagHeader(32, 0x11111111, 4000, 22050))];
+        var profile = Serializer.DefaultProfileFor(game) with { Platform = Platform.PlayStation2 };
+
+        var asset = (SoundInfoAsset)Read(data, profile);
+
+        Assert.Equal(new AssetId(0x12345678), asset.Physical.SoundInfoId);
+        Assert.Single(asset.Effects);
+        Assert.Equal(data, Write(asset, profile));
+    }
+
+    [Fact]
+    public void Write_HeaderForAnotherPlatform_Throws()
+    {
+        var asset = new SoundInfoAsset();
+        asset.Effects.Add(new DspHeader());
+
+        Assert.Throws<InvalidOperationException>(() => Write(asset, XboxProfile));
     }
 
     [Fact]

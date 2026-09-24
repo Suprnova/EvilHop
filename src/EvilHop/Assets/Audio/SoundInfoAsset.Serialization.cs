@@ -14,46 +14,42 @@ public sealed partial class SoundInfoAsset
         var asset = new SoundInfoAsset();
         AssetFields.Populate(asset, header, debug);
 
-        // TODO: Partial implementation - non-GameCube platforms are not implemented
-        if (profile.Platform is not Platform.GameCube)
-        {
-            asset.SetUnparsedTail(reader.ReadRemainingBytes());
-            return asset;
-        }
-
-        if (profile.Game is GameVersion.N100F or GameVersion.BFBB)
-            ReadDspTable(asset, reader, profile);
-        else
+        if (HasSoundBanks(profile))
             ReadFsb3(asset, reader, profile);
+        else
+            ReadHeaderTable(asset, reader, profile);
 
         return asset;
     }
 
     internal static void Write(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        // TODO: Partial implementation - non-GameCube platforms are not implemented
-        if (profile.Platform is not Platform.GameCube)
-        {
-            writer.Write(asset.GetUnparsedTail());
-            return;
-        }
-
-        if (profile.Game is GameVersion.N100F or GameVersion.BFBB)
-            WriteDspTable(asset, writer, profile);
-        else
+        if (HasSoundBanks(profile))
             WriteFsb3(asset, writer, profile);
+        else
+            WriteHeaderTable(asset, writer, profile);
     }
 
-    private static void ReadDspTable(SoundInfoAsset asset, EndianReader reader, FormatProfile profile)
-    {
-        int effectCount = reader.ReadInt32();
-        reader.ReadInt32(); // padding, always 0xCDCDCDCD
-        int streamCount = reader.ReadInt32();
-        int cutsceneCount = profile.Game is GameVersion.BFBB ? reader.ReadInt32() : 0;
+    private static bool HasSoundBanks(FormatProfile profile) =>
+        profile.Platform is Platform.GameCube && profile.Game is not (GameVersion.N100F or GameVersion.BFBB);
 
-        for (int i = 0; i < effectCount; i++) asset.Effects.Add(DspHeader.Read(reader, profile));
-        for (int i = 0; i < streamCount; i++) asset.Streams.Add(DspHeader.Read(reader, profile));
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspHeader.Read(reader, profile));
+    private static bool HasSoundInfoId(FormatProfile profile) =>
+        profile.Platform is Platform.PlayStation2 && profile.Game is GameVersion.Incredibles or GameVersion.ROTU;
+
+    private static bool HasCutscenes(FormatProfile profile) =>
+        profile.Platform is Platform.Xbox || (profile.Platform is Platform.GameCube && profile.Game is GameVersion.BFBB);
+
+    private static void ReadHeaderTable(SoundInfoAsset asset, EndianReader reader, FormatProfile profile)
+    {
+        if (HasSoundInfoId(profile)) asset.Physical.SoundInfoId = reader.ReadAssetId();
+        int effectCount = reader.ReadInt32();
+        if (profile.Platform is Platform.GameCube) reader.ReadInt32(); // padding, always 0xCDCDCDCD
+        int streamCount = reader.ReadInt32();
+        int cutsceneCount = HasCutscenes(profile) ? reader.ReadInt32() : 0;
+
+        for (int i = 0; i < effectCount; i++) asset.Effects.Add(SoundHeader.Read(reader, profile));
+        for (int i = 0; i < streamCount; i++) asset.Streams.Add(SoundHeader.Read(reader, profile));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(SoundHeader.Read(reader, profile));
 
         asset.Physical.EffectCount = asset.Effects.Count;
         asset.Physical.StreamCount = asset.Streams.Count;
@@ -62,16 +58,17 @@ public sealed partial class SoundInfoAsset
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
     }
 
-    private static void WriteDspTable(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
+    private static void WriteHeaderTable(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
+        if (HasSoundInfoId(profile)) writer.Write(asset.Physical.SoundInfoId);
         writer.Write(asset.Physical.EffectCount);
-        writer.Write(unchecked((int)0xCDCDCDCD)); // padding
+        if (profile.Platform is Platform.GameCube) writer.Write(unchecked((int)0xCDCDCDCD)); // padding
         writer.Write(asset.Physical.StreamCount);
-        if (profile.Game is GameVersion.BFBB) writer.Write(asset.Physical.CutsceneCount);
+        if (HasCutscenes(profile)) writer.Write(asset.Physical.CutsceneCount);
 
-        foreach (var effect in asset.Effects) DspHeader.Write(effect, writer, profile);
-        foreach (var stream in asset.Streams) DspHeader.Write(stream, writer, profile);
-        foreach (var cutscene in asset.Cutscenes) DspHeader.Write(cutscene, writer, profile);
+        foreach (var effect in asset.Effects) SoundHeader.Write(effect, writer, profile);
+        foreach (var stream in asset.Streams) SoundHeader.Write(stream, writer, profile);
+        foreach (var cutscene in asset.Cutscenes) SoundHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }
@@ -99,7 +96,7 @@ public sealed partial class SoundInfoAsset
 
         for (int i = 0; i < soundCount; i++) asset.Sounds.Add(Sound.Read(reader, profile));
 
-        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(DspHeader.Read(reader, profile));
+        for (int i = 0; i < cutsceneCount; i++) asset.Cutscenes.Add(SoundHeader.Read(reader, profile));
 
         long footerEnd = reader.BaseStream.Position;
 
@@ -140,15 +137,8 @@ public sealed partial class SoundInfoAsset
         foreach (byte[] bank in asset.SoundBanks) writer.Write(bank);
 
         foreach (uint offset in bankOffsets) writer.Write(offset);
-        foreach (var sound in asset.Sounds)
-        {
-            writer.Write(sound.SoundAssetId);
-            writer.Write((byte)sound.Flags);
-            writer.Write(sound.SampleIndex);
-            writer.Write(sound.SoundBankIndex);
-            writer.Write(sound.SoundInfoIndex);
-        }
-        foreach (var cutscene in asset.Cutscenes) DspHeader.Write(cutscene, writer, profile);
+        foreach (var sound in asset.Sounds) Sound.Write(sound, writer, profile);
+        foreach (var cutscene in asset.Cutscenes) SoundHeader.Write(cutscene, writer, profile);
 
         writer.Write(asset.GetUnparsedTail());
     }

@@ -9,19 +9,15 @@ public partial class SoundInfoAsset
 {
     /// <summary>
     /// A Nintendo DSP-ADPCM sound header, describing one sound's sample rate, decoder coefficients, and
-    /// loop points, and linking it to its <see cref="AssetType.Sound"/>, <see cref="AssetType.StreamingSound"/>,
-    /// or <see cref="AssetType.CutsceneStreamingSound"/> asset.
+    /// loop points. Stored on <see cref="Platform.GameCube"/>.
     /// </summary>
-    public sealed class DspHeader
+    public sealed class DspHeader : SoundHeader
     {
         /// <summary>The number of raw (decoded) samples in the sound.</summary>
         public uint SampleCount { get; set; }
 
         /// <summary>The number of ADPCM nibbles in the sound, including frame headers.</summary>
         public uint NibbleCount { get; set; }
-
-        /// <summary>The sound's sample rate, in Hz.</summary>
-        public uint SampleRate { get; set; }
 
         /// <summary>Whether the sound loops.</summary>
         public bool IsLooped { get; set; }
@@ -74,13 +70,7 @@ public partial class SoundInfoAsset
         /// <summary>Unknown.</summary>
         public Collection<byte> Unknown { get; } = new([.. new byte[22]]);
 
-        /// <summary>
-        /// The <see cref="AssetType.Sound"/>, <see cref="AssetType.StreamingSound"/>, or
-        /// <see cref="AssetType.CutsceneStreamingSound"/> asset this header describes.
-        /// </summary>
-        public AssetId SoundAssetId { get; set; }
-
-        internal static DspHeader Read(EndianReader reader, FormatProfile _)
+        internal static new DspHeader Read(EndianReader reader, FormatProfile _)
         {
             var header = new DspHeader
             {

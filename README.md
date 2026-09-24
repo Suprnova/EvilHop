@@ -25,7 +25,6 @@ A handful of Typed assets are only partially modeled, marked with a `// TODO: Pa
 - `NPCAsset` - N100F Prototype-only fields aren't parsed.
 - `OneLinerAsset` - a trailing 67-byte trailer isn't modeled.
 - `ParticleSystemAsset` - particle commands are undecoded and stored as raw bytes.
-- `SoundInfoAsset` - non-GameCube platforms aren't implemented.
 - `SurfaceAsset` - N100F's smaller SURF layout isn't modeled.
 
 ## Supported Games

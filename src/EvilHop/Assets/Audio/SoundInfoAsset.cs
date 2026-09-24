@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 namespace EvilHop.Assets;
 
 /// <summary>
-/// Describes every sound in a level: sample rate, ADPCM decoder state, and loop points for each
+/// Describes every sound in a level: the encoding, sample rate, and size of each
 /// <see cref="AssetType.Sound"/>/<see cref="AssetType.StreamingSound"/> asset, or - on platforms where
 /// sound data lives in this asset instead - the sounds themselves.
 /// </summary>
 /// <remarks>
-/// Only the GameCube layout is modeled; every other platform round-trips through
-/// <see cref="Asset.GetUnparsedTail"/>. On <see cref="GameVersion.N100F"/> and
-/// <see cref="GameVersion.BFBB"/>, this asset holds one <see cref="DspHeader"/> per SND/SNDS
-/// asset. On every other GameCube-supported game, sounds are instead stored directly in this asset as
-/// FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
+/// On <see cref="Platform.Xbox"/> and <see cref="Platform.PlayStation2"/>, and on
+/// <see cref="Platform.GameCube"/> for <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>,
+/// this asset holds one <see cref="SoundHeader"/> per SND/SNDS asset, in <see cref="Effects"/> and
+/// <see cref="Streams"/>. On every other GameCube game, sounds are instead stored directly in this asset
+/// as FMOD "FSB3" sample banks - see <see cref="SoundBanks"/> and <see cref="Sounds"/>.
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Sound_Format">Heavy Iron Modding documentation</seealso>
 /// </remarks>
 public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physical.ISoundInfoAsset
@@ -22,25 +22,25 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     /// <summary>
     /// Headers for this level's sound effects, one per <see cref="AssetType.Sound"/> asset.
     /// </summary>
-    /// <remarks>Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.</remarks>
-    public Collection<DspHeader> Effects { get; } = [];
+    /// <remarks>Empty on the FSB3-embedded layout.</remarks>
+    public Collection<SoundHeader> Effects { get; } = [];
 
     /// <summary>
     /// Headers for this level's streaming sounds (voice lines and music), one per
     /// <see cref="AssetType.StreamingSound"/> asset.
     /// </summary>
-    /// <remarks>Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.</remarks>
-    public Collection<DspHeader> Streams { get; } = [];
+    /// <remarks>Empty on the FSB3-embedded layout.</remarks>
+    public Collection<SoundHeader> Streams { get; } = [];
 
     /// <summary>
     /// Headers linking to this level's cutscene audio, one per <see cref="AssetType.CutsceneStreamingSound"/>
     /// asset.
     /// </summary>
     /// <remarks>
-    /// Populated for <see cref="GameVersion.BFBB"/>'s header-table layout, and for every game using
-    /// the FSB3-embedded layout - both store cutscene headers in this same shape.
+    /// Only present on <see cref="Platform.Xbox"/>, on <see cref="Platform.GameCube"/> for
+    /// <see cref="GameVersion.BFBB"/>, and in the FSB3-embedded layout.
     /// </remarks>
-    public Collection<DspHeader> Cutscenes { get; } = [];
+    public Collection<SoundHeader> Cutscenes { get; } = [];
 
     /// <summary>
     /// The raw FMOD "FSB3" sample bank files embedded directly in this asset. The first bank is
@@ -108,11 +108,6 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.SoundInfo"/> is known to be read by.
     /// </summary>
-    /// <remarks>
-    /// Every one of these games also ships on Xbox and/or PlayStation 2, which use entirely different
-    /// layouts EvilHop does not yet model - <see cref="Read"/> falls back to an unparsed blob unless
-    /// <see cref="FormatProfile.Platform"/> is <see cref="Platform.GameCube"/>.
-    /// </remarks>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
         GameVersion.N100F,
@@ -132,11 +127,12 @@ public static partial class Physical
     public interface ISoundInfoAsset : IAsset
     {
         /// <summary>
-        /// This asset's own ID, read directly from its FSB3-embedded layout's header.
+        /// This asset's own ID, read directly from its leading header field.
         /// </summary>
         /// <remarks>
-        /// Only meaningful for the FSB3-embedded layout. When disagreements with <see cref="Asset.Id"/>
-        /// exist, this field wins during serialization.
+        /// Only meaningful for the FSB3-embedded layout, and on <see cref="Platform.PlayStation2"/> for
+        /// <see cref="GameVersion.Incredibles"/> and <see cref="GameVersion.ROTU"/>. When disagreements with
+        /// <see cref="Asset.Id"/> exist, this field wins during serialization.
         /// </remarks>
         AssetId SoundInfoId { get; set; }
 
