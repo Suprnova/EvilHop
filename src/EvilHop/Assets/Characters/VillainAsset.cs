@@ -12,7 +12,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/VIL">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x2B), IHasModel, IGrabbable
+public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x2B), IVillain, IHasModel, IGrabbable
 {
     /// <summary>
     /// Flags configuring this NPC's behavior. Bit 0x1 indicates inactive.
@@ -83,21 +83,7 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
-
-        asset.NpcFlags = reader.ReadInt32();
-        asset.NpcModelId = reader.ReadAssetId();
-        asset.NpcSettingsId = reader.ReadAssetId();
-        asset.MovePointId = reader.ReadAssetId();
-
-        asset.TaskWidgetPrimeId = reader.ReadAssetId();
-        if (profile.VillainHasTaskWidgetSecondId)
-            asset.TaskWidgetSecondId = reader.ReadAssetId();
-
-        if (profile.Game is GameVersion.Incredibles)
-        {
-            asset.NavigationMeshId = reader.ReadAssetId();
-            asset.SettingsId = reader.ReadAssetId();
-        }
+        IVillain.ReadVillain(reader, profile, asset);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile));
@@ -110,21 +96,7 @@ public sealed class VillainAsset() : EntityAsset(AssetType.Villain, baseType: 0x
     {
         BaseAssetPrefix.Write(asset, writer);
         EntityAssetPrefix.Write(asset, writer, profile);
-
-        writer.Write(asset.NpcFlags);
-        writer.Write(asset.NpcModelId);
-        writer.Write(asset.NpcSettingsId);
-        writer.Write(asset.MovePointId);
-
-        writer.Write(asset.TaskWidgetPrimeId);
-        if (profile.VillainHasTaskWidgetSecondId)
-            writer.Write(asset.TaskWidgetSecondId);
-
-        if (profile.Game is GameVersion.Incredibles)
-        {
-            writer.Write(asset.NavigationMeshId);
-            writer.Write(asset.SettingsId);
-        }
+        IVillain.WriteVillain(asset, writer, profile);
 
         foreach (var link in asset.Links)
             Link.Write(link, writer, profile);

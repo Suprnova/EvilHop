@@ -10,7 +10,7 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/EvilEngine/Assets#Entity_Assets">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset(type, baseType), Physical.IEntityAsset
+public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset(type, baseType), IEntity, Physical.IEntityAsset
 {
     /// <summary>
     /// Information about the <see cref="EntityAsset"/>'s properties in-game.
@@ -40,31 +40,33 @@ public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IEntityAsset Physical => this;
 
-    byte Physical.IEntityAsset.Subtype { get => Subtype; set => Subtype = value; }
+    Physical.IEntity IEntity.Physical => this;
+
+    byte Physical.IEntity.Subtype { get => Subtype; set => Subtype = value; }
 
     /// <summary>
-    /// Backs <see cref="Physical.IEntityAsset.Subtype"/>, for a derived type whose subtype follows
+    /// Backs <see cref="Physical.IEntity.Subtype"/>, for a derived type whose subtype follows
     /// from its own data.
     /// </summary>
     private protected virtual byte Subtype { get; set; }
 
     private protected CollisionFlags _collisionFlags;
-    CollisionFlags Physical.IEntityAsset.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
+    CollisionFlags Physical.IEntity.CollisionFlags { get => _collisionFlags; set => _collisionFlags = value; }
 
     private protected byte _pFlags;
-    byte Physical.IEntityAsset.PFlags { get => _pFlags; set => _pFlags = value; }
+    byte Physical.IEntity.PFlags { get => _pFlags; set => _pFlags = value; }
 
     private protected AssetId _surfaceId;
-    AssetId Physical.IEntityAsset.SurfaceId { get => _surfaceId; set => _surfaceId = value; }
+    AssetId Physical.IEntity.SurfaceId { get => _surfaceId; set => _surfaceId = value; }
 
     private protected AssetId _modelId;
-    AssetId Physical.IEntityAsset.ModelId { get => _modelId; set => _modelId = value; }
+    AssetId Physical.IEntity.ModelId { get => _modelId; set => _modelId = value; }
 
     private protected AssetId _animListId;
-    AssetId Physical.IEntityAsset.AnimListId { get => _animListId; set => _animListId = value; }
+    AssetId Physical.IEntity.AnimListId { get => _animListId; set => _animListId = value; }
 
     private protected float _seeThroughSpeed;
-    float Physical.IEntityAsset.SeeThroughSpeed { get => _seeThroughSpeed; set => _seeThroughSpeed = value; }
+    float Physical.IEntity.SeeThroughSpeed { get => _seeThroughSpeed; set => _seeThroughSpeed = value; }
 
     /// <summary>
     /// Reads a single <see cref="CollisionFlags"/> bit, for a derived type projecting it as a
@@ -79,12 +81,50 @@ public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset
         _collisionFlags = value ? _collisionFlags | flag : _collisionFlags & ~flag;
 }
 
+/// <summary>
+/// The xEntAsset fields every entity stores after its <see cref="BaseAsset"/> header. Implemented by
+/// <see cref="EntityAsset"/>, and by an entity embedded inside another asset
+/// (<see cref="DuplicatorAsset.Villain"/>), so <see cref="Serialization.EntityAssetPrefix"/> can serve
+/// both without the embedded one pretending to be an <see cref="Asset"/>.
+/// </summary>
+internal interface IEntity
+{
+    /// <inheritdoc cref="EntityAsset.EntityFlags"/>
+    EntityFlags EntityFlags { get; set; }
+
+    /// <inheritdoc cref="EntityAsset.Angle"/>
+    Vector3 Angle { get; set; }
+
+    /// <inheritdoc cref="EntityAsset.Position"/>
+    Vector3 Position { get; set; }
+
+    /// <inheritdoc cref="EntityAsset.Scale"/>
+    Vector3 Scale { get; set; }
+
+    /// <inheritdoc cref="EntityAsset.ColorMultiplier"/>
+    Rgba ColorMultiplier { get; set; }
+
+    /// <inheritdoc cref="Asset.Physical"/>
+    Physical.IEntity Physical { get; }
+}
+
 public static partial class Physical
 {
     /// <summary>
     /// An explicit interface used to interact with <see cref="EntityAsset"/>'s underlying values.
     /// </summary>
-    public interface IEntityAsset : IBaseAsset
+    /// <remarks>
+    /// Adds nothing beyond <see cref="IEntity"/> - it exists purely so <see cref="EntityAsset.Physical"/>
+    /// includes <see cref="IBaseAsset"/>'s header fields, which <see cref="IEntity"/> deliberately omits
+    /// so it can also describe an entity embedded inside another asset.
+    /// </remarks>
+    public interface IEntityAsset : IBaseAsset, IEntity;
+
+    /// <summary>
+    /// An explicit interface used to interact with an entity's underlying values, whether it's an
+    /// <see cref="EntityAsset"/> or embedded inside another asset.
+    /// </summary>
+    public interface IEntity
     {
         /// <summary>
         /// The <see cref="EntityAsset"/>'s subtype, if applicable.

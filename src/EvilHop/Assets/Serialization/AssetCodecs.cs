@@ -80,6 +80,7 @@ internal static class AssetCodecs
         Register(AssetType.DestructibleObject, DestructibleObjectAsset.Read, DestructibleObjectAsset.Write, DestructibleObjectAsset.SupportedGames);
         Register(AssetType.DiscoFloor, DiscoFloorAsset.Read, DiscoFloorAsset.Write, DiscoFloorAsset.SupportedGames);
         Register(AssetType.Dispatcher, DispatcherAsset.Read, DispatcherAsset.Write, DispatcherAsset.SupportedGames);
+        Register(AssetType.Duplicator, DuplicatorAsset.Read, DuplicatorAsset.Write, DuplicatorAsset.SupportedGames);
         Register(AssetType.ElectricArcGenerator, ElectricArcGeneratorAsset.Read, ElectricArcGeneratorAsset.Write, ElectricArcGeneratorAsset.SupportedGames);
         Register(AssetType.Environment, EnvironmentAsset.Read, EnvironmentAsset.Write, EnvironmentAsset.SupportedGames);
         Register(AssetType.Fly, FlyAsset.Read, FlyAsset.Write, FlyAsset.SupportedGames);

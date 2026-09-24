@@ -163,7 +163,7 @@ public static partial class Physical
         /// <summary>
         /// The platform's type, selecting how its type-specific block is read. Follows
         /// <see cref="PlatformAsset.Motion"/>, and is followed in turn by
-        /// <see cref="IEntityAsset.Subtype"/>.
+        /// <see cref="IEntity.Subtype"/>.
         /// </summary>
         /// <remarks>
         /// When disagreements with <see cref="PlatformAsset.Motion"/> exist, this field wins during

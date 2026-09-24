@@ -37,73 +37,73 @@ internal static class BaseAssetPrefix
 }
 
 /// <summary>
-/// Reads and writes the shared prefix every <see cref="EntityAsset"/> carries after its
+/// Reads and writes the shared prefix every <see cref="IEntity"/> carries after its
 /// <see cref="BaseAssetPrefix"/>.
 /// </summary>
 internal static class EntityAssetPrefix
 {
     /// <summary>
-    /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="asset"/>.
+    /// Reads the prefix from <paramref name="reader"/>'s current position into <paramref name="entity"/>.
     /// </summary>
-    /// <param name="asset">The <see cref="EntityAsset"/> to populate.</param>
+    /// <param name="entity">The <see cref="IEntity"/> to populate.</param>
     /// <param name="reader">The reader to read from.</param>
     /// <param name="profile">
     /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
     /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout.
     /// </param>
-    public static void Read(EntityAsset asset, EndianReader reader, FormatProfile profile)
+    public static void Read(IEntity entity, EndianReader reader, FormatProfile profile)
     {
-        asset.EntityFlags = (EntityFlags)reader.ReadByte();
-        asset.Physical.Subtype = reader.ReadByte();
-        asset.Physical.PFlags = reader.ReadByte();
-        asset.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte();
+        entity.EntityFlags = (EntityFlags)reader.ReadByte();
+        entity.Physical.Subtype = reader.ReadByte();
+        entity.Physical.PFlags = reader.ReadByte();
+        entity.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte();
 
         // Read and discarded, never modelled - it is always zero where it exists.
         if (profile.EntityHasPadding) reader.ReadBytes(4);
 
-        if (profile.EntityHasExtendedFields) asset.Physical.SurfaceId = reader.ReadAssetId();
-        asset.Angle = reader.ReadVector3();
-        asset.Position = reader.ReadVector3();
-        asset.Scale = reader.ReadVector3();
+        if (profile.EntityHasExtendedFields) entity.Physical.SurfaceId = reader.ReadAssetId();
+        entity.Angle = reader.ReadVector3();
+        entity.Position = reader.ReadVector3();
+        entity.Scale = reader.ReadVector3();
         if (profile.EntityHasExtendedFields)
         {
-            asset.ColorMultiplier = reader.ReadRgba();
-            asset.Physical.SeeThroughSpeed = reader.ReadSingle();
+            entity.ColorMultiplier = reader.ReadRgba();
+            entity.Physical.SeeThroughSpeed = reader.ReadSingle();
         }
-        asset.Physical.ModelId = reader.ReadAssetId();
-        if (profile.EntityHasExtendedFields) asset.Physical.AnimListId = reader.ReadAssetId();
+        entity.Physical.ModelId = reader.ReadAssetId();
+        if (profile.EntityHasExtendedFields) entity.Physical.AnimListId = reader.ReadAssetId();
     }
 
     /// <summary>
-    /// Writes <paramref name="asset"/>'s prefix to <paramref name="writer"/>.
+    /// Writes <paramref name="entity"/>'s prefix to <paramref name="writer"/>.
     /// </summary>
-    /// <param name="asset">The <see cref="EntityAsset"/> to read from.</param>
+    /// <param name="entity">The <see cref="IEntity"/> to read from.</param>
     /// <param name="writer">The writer to write to.</param>
     /// <param name="profile">
     /// The active <see cref="FormatProfile"/>, whose <see cref="FormatProfile.EntityHasPadding"/> and
     /// <see cref="FormatProfile.EntityHasExtendedFields"/> control this build's exact layout. Padding
     /// is written as zero where it applies.
     /// </param>
-    public static void Write(EntityAsset asset, EndianWriter writer, FormatProfile profile)
+    public static void Write(IEntity entity, EndianWriter writer, FormatProfile profile)
     {
-        writer.Write((byte)asset.EntityFlags);
-        writer.Write(asset.Physical.Subtype);
-        writer.Write(asset.Physical.PFlags);
-        writer.Write((byte)asset.Physical.CollisionFlags);
+        writer.Write((byte)entity.EntityFlags);
+        writer.Write(entity.Physical.Subtype);
+        writer.Write(entity.Physical.PFlags);
+        writer.Write((byte)entity.Physical.CollisionFlags);
 
         if (profile.EntityHasPadding) writer.Write(new byte[4]);
 
-        if (profile.EntityHasExtendedFields) writer.Write(asset.Physical.SurfaceId);
-        writer.Write(asset.Angle);
-        writer.Write(asset.Position);
-        writer.Write(asset.Scale);
+        if (profile.EntityHasExtendedFields) writer.Write(entity.Physical.SurfaceId);
+        writer.Write(entity.Angle);
+        writer.Write(entity.Position);
+        writer.Write(entity.Scale);
         if (profile.EntityHasExtendedFields)
         {
-            writer.Write(asset.ColorMultiplier);
-            writer.Write(asset.Physical.SeeThroughSpeed);
+            writer.Write(entity.ColorMultiplier);
+            writer.Write(entity.Physical.SeeThroughSpeed);
         }
-        writer.Write(asset.Physical.ModelId);
-        if (profile.EntityHasExtendedFields) writer.Write(asset.Physical.AnimListId);
+        writer.Write(entity.Physical.ModelId);
+        if (profile.EntityHasExtendedFields) writer.Write(entity.Physical.AnimListId);
     }
 }
 

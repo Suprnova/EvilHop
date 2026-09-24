@@ -253,13 +253,16 @@ copy this exact line shape, substituting your own collection/count pair.
 
 Logical: `EntityFlags` (`EntityFlags`), `Angle`/`Position`/`Scale` (`Vector3`), `ColorMultiplier`
 (`Rgba`, R/G/B/A floats).
-Physical (`Physical.IEntityAsset : IBaseAsset`): `Subtype` (`byte`), `PFlags` (`byte`, "always
-0" per every sample checked so far), `CollisionFlags` (`CollisionFlags`), `SurfaceId`/`ModelId`/
-`AnimListId` (`AssetId`), `SeeThroughSpeed` (`float`, "always 255" per every sample checked so far).
-Backing fields are `private protected`, so a derived class can project a `CollisionFlags` bit or an
-`AssetId` straight into a trait without going through `Physical`. `Subtype` is backed by a
+Physical (`Physical.IEntityAsset : IBaseAsset, IEntity`, the members declared on
+`Physical.IEntity`): `Subtype` (`byte`), `PFlags` (`byte`, "always 0" per every sample checked so
+far), `CollisionFlags` (`CollisionFlags`), `SurfaceId`/`ModelId`/`AnimListId` (`AssetId`),
+`SeeThroughSpeed` (`float`, "always 255" per every sample checked so far). Backing fields are
+`private protected`, so a derived class can project a `CollisionFlags` bit or an `AssetId` straight
+into a trait without going through `Physical`. `Subtype` is backed by a
 `private protected virtual byte Subtype` a derived type overrides when its subtype follows from its
-own data (`PlatformAsset`, `PickupAsset`).
+own data (`PlatformAsset`, `PickupAsset`). The logical side is mirrored by the internal `IEntity`
+interface, which `EntityAsset` implements and `EntityAssetPrefix` reads and writes through — see
+§[Worked precedents](#worked-precedents-condensed) for an entity embedded inside another asset.
 
 ### `DynaAsset : BaseAsset` (the `DYNA` dispatch prefix)
 
@@ -271,9 +274,9 @@ subtype), `Version` (`short`), `Handle` (`short`, runtime-only).
 | Trait | Property | Projects onto |
 |---|---|---|
 | `IGrabbable` | `bool IsGrabbable` | a `CollisionFlags` bit (`Grabbable`) |
-| `IHasSurface` | `AssetId SurfaceId` | `Physical.IEntityAsset.SurfaceId` |
-| `IHasModel` | `AssetId ModelId` | `Physical.IEntityAsset.ModelId` |
-| `IHasAnimList` | `AssetId AnimListId` | `Physical.IEntityAsset.AnimListId` |
+| `IHasSurface` | `AssetId SurfaceId` | `Physical.IEntity.SurfaceId` |
+| `IHasModel` | `AssetId ModelId` | `Physical.IEntity.ModelId` |
+| `IHasAnimList` | `AssetId AnimListId` | `Physical.IEntity.AnimListId` |
 
 Each trait member is implemented explicitly and one line long: `AssetId IHasModel.ModelId { get =>
 Physical.ModelId; set => Physical.ModelId = value; }`. The XML doc "Used by" lists on these interfaces
@@ -285,7 +288,7 @@ field name.
 
 - `BaseAssetPrefix.Read/Write`: `BaseId` (`AssetId`, 4B) → `BaseType` (`byte`) → `LinkCount` (`byte`)
   → `BaseFlags` (`short`, 2B). 8 bytes total.
-- `EntityAssetPrefix.Read/Write(asset, reader/writer, profile)`: `EntityFlags` (`byte`) →
+- `EntityAssetPrefix.Read/Write(entity, reader/writer, profile)`, on any `IEntity`: `EntityFlags` (`byte`) →
   `Subtype` (`byte`) → `PFlags` (`byte`) → `CollisionFlags` (`byte`) → *(4 bytes of zero padding, only
   when `profile.EntityHasPadding`)* → `SurfaceId` (`AssetId`, 4B)† → `Angle` (`Vector3`, 12B) →
   `Position` (`Vector3`, 12B) → `Scale` (`Vector3`, 12B) → `ColorMultiplier` (4 floats R/G/B/A, 16B)†
@@ -401,6 +404,16 @@ use it, only to see more context if something here doesn't match your case.
   shape for `LODTableAsset`'s leading `int32`): override-clears-on-match property (shown above under
   `BaseAsset`), codec reads the count, builds the collection, then sets `Physical.Count` back to the
   collection's length so it re-derives.
+- **Another asset's layout embedded inside this one** (`CutsceneTableEntry` embedding a
+  `CutsceneAsset` header; `DuplicatorAsset.Villain` embedding a `VillainAsset`'s entity and NPC
+  fields): the embedded part is a plain nested class, never an `Asset` subclass, since it has no
+  `AssetHeader`/`AssetDebug` of its own. The fields it shares with the standalone asset live on an
+  internal interface (`ICutsceneHeader`, `IEntity`, `IVillain`) that both implement, with the shared
+  read/write as static methods on it (or on the prefix helper), so neither type pretends to be the
+  other. Each interface covers only the fields actually present everywhere it's implemented —
+  `DuplicatorAsset.Avatar` carries only the NPC fields, so it implements `IVillain` but not
+  `IEntity`. An embedded copy of the base header that always agrees with the outer one is physical
+  and derives from it (`Physical.IDuplicatorAsset.TemplateBaseId`/`TemplateLinkCount`/`TemplateBaseFlags`).
 - **Proven-always-zero padding, discarded rather than modelled** (`CounterAsset`, 2 bytes after
   `InitialValue`): `reader.ReadInt16(); // 2 bytes of padding, always zero` on read, `writer.Write(
   (short)0); // padding` on write. No property at all — there is nothing here worth exposing.
