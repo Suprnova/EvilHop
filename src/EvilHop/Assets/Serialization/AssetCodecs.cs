@@ -141,6 +141,8 @@ internal static class AssetCodecs
         Register(AssetType.Villain, VillainAsset.Read, VillainAsset.Write, VillainAsset.SupportedGames);
         Register(AssetType.VillainProperties, VillainPropertiesAsset.Read, VillainPropertiesAsset.Write, VillainPropertiesAsset.SupportedGames);
         Register(AssetType.Volume, VolumeAsset.Read, VolumeAsset.Write, VolumeAsset.SupportedGames);
+        Register(AssetType.Wireframe, WireframeAsset.Read, WireframeAsset.Write, WireframeAsset.SupportedGames);
+        Register(AssetType.ZipLine, ZipLineAsset.Read, ZipLineAsset.Write, ZipLineAsset.SupportedGames);
     }
 
     /// <summary>

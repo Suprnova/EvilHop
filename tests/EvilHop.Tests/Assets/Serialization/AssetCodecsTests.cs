@@ -221,10 +221,10 @@ public class AssetCodecsTests
     [Fact]
     public void Register_AfterAnAssetOfThatTypeWasAlreadyRead_WriteFallsBackToItsRuntimeShape()
     {
-        // Chosen for its own sake, like Register_OverwritesTheSeededGenericHandler: this permanently
-        // repoints the entry, so it must be a type nothing else in this class asserts on.
-        const AssetType type = AssetType.ZipLine;
-        var asset = (BaseAsset)Read(type, new byte[16]);
+        // Not a real asset type: this permanently repoints the entry, and every real type now has a
+        // codec of its own that other tests exercise.
+        const AssetType type = (AssetType)0x54455354; // "TEST"
+        var asset = Read(type, new byte[16]);
         byte[] beforeRegistration = Write(asset);
 
         AssetCodecs.Register(
@@ -233,7 +233,7 @@ public class AssetCodecsTests
             (stub, writer, profile) => writer.Write("stub"u8));
 
         // Handlers is one global table: registering a new codec for `type` retargets every asset
-        // that already carries it, not just future reads. `asset` is still a GenericBaseAsset, not a
+        // that already carries it, not just future reads. `asset` is still a GenericAsset, not a
         // StubAsset, so an unchecked cast in the new handler would throw here.
         byte[] afterRegistration = Write(asset);
 
