@@ -126,6 +126,7 @@ internal static class AssetCodecs
         Register(AssetType.SoundFX, SoundFXAsset.Read, SoundFXAsset.Write, SoundFXAsset.SupportedGames);
         Register(AssetType.SoundGroup, SoundGroupAsset.Read, SoundGroupAsset.Write, SoundGroupAsset.SupportedGames);
         Register(AssetType.SoundInfo, SoundInfoAsset.Read, SoundInfoAsset.Write, SoundInfoAsset.SupportedGames);
+        Register(AssetType.Spline, SplineAsset.Read, SplineAsset.Write, SplineAsset.SupportedGames);
         Register(AssetType.SplinePath, SplinePathAsset.Read, SplinePathAsset.Write, SplinePathAsset.SupportedGames);
         Register(AssetType.Subtitles, SubtitlesAsset.Read, SubtitlesAsset.Write, SubtitlesAsset.SupportedGames);
         Register(AssetType.Surface, SurfaceAsset.Read, SurfaceAsset.Write, SurfaceAsset.SupportedGames);
@@ -138,6 +139,7 @@ internal static class AssetCodecs
         Register(AssetType.UIFont, UIFontAsset.Read, UIFontAsset.Write, UIFontAsset.SupportedGames);
         Register(AssetType.UIMotion, UIMotionAsset.Read, UIMotionAsset.Write, UIMotionAsset.SupportedGames);
         Register(AssetType.Villain, VillainAsset.Read, VillainAsset.Write, VillainAsset.SupportedGames);
+        Register(AssetType.VillainProperties, VillainPropertiesAsset.Read, VillainPropertiesAsset.Write, VillainPropertiesAsset.SupportedGames);
     }
 
     /// <summary>
