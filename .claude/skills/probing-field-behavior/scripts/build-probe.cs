@@ -150,7 +150,7 @@ int count = 0;
 /// <summary>A <see cref="SimpleObjectAsset"/> carrying <paramref name="model"/>, with field values
 /// copied from a shipped SIMP rather than guessed.</summary>
 SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scale,
-    SimpleObjectCollisionType collision, AssetId surface = default, Rgba? tint = null, float yaw = 0f)
+    bool collidable, AssetId surface = default, Rgba? tint = null, float yaw = 0f)
 {
     var asset = new SimpleObjectAsset
     {
@@ -162,15 +162,14 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
         Angle = new Vector3(yaw, 0f, 0f),
         Scale = new Vector3(scale, scale, scale),
         ColorMultiplier = new Rgba(1f, 1f, 1f, 1f),
-        AnimationSpeed = 1f,
-        CollisionType = collision
+        HasCollision = collidable
     };
 
     if (tint is { } colour) asset.ColorMultiplier = colour;
 
     asset.CalculateId();
     asset.Physical.BaseType = 11;
-    asset.Physical.CollisionFlags = collision == SimpleObjectCollisionType.None
+    asset.Physical.CollisionFlags = !collidable
         ? CollisionFlags.None : CollisionFlags.PreciseCollision;
     asset.Physical.SeeThroughSpeed = 255f;
     asset.Physical.ModelId = model;
@@ -188,14 +187,14 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
 SimpleObjectAsset PlaceTilted(string name, AssetId model, Vector3 position, float scale,
     Vector3 angle, AssetId surface, Rgba tint)
 {
-    var asset = Place(name, model, position, scale, SimpleObjectCollisionType.Static, surface, tint);
+    var asset = Place(name, model, position, scale, collidable: true, surface, tint);
     asset.Angle = angle;
     return asset;
 }
 
 // Skydome, collision off so it can never interfere with a measurement. Without it the framebuffer
 // is never cleared and the level renders as hall-of-mirrors.
-Place("zz_skydome", Model("skydome_jf"), Vector3.Zero, 2.07f, SimpleObjectCollisionType.None);
+Place("zz_skydome", Model("skydome_jf"), Vector3.Zero, 2.07f, collidable: false);
 
 // Floor, one unit below the spawn so the player always lands on it rather than inside it -
 // templates do not agree on spawn height. Collision scales with Scale, so a large arena is cheap.
@@ -204,7 +203,7 @@ const float TileStep = 3f * 4f;
 for (float x = -30f; x <= 225f; x += TileStep)
     for (float z = -42f; z <= 42f; z += TileStep)
         Place($"zz_floor_{count:D3}", Model("disco_floor_A_3m"),
-            new Vector3(spawn.X + x, floorY, spawn.Z + z), 4f, SimpleObjectCollisionType.Static);
+            new Vector3(spawn.X + x, floorY, spawn.Z + z), 4f, collidable: true);
 
 // ======================= THE PROBE — rewrite below this line =======================
 // Round three. Pads 1-7 are settled (see probes/surf-physicsflags.md) and kept only as a rig sanity
@@ -212,7 +211,7 @@ for (float x = -30f; x <= 225f; x += TileStep)
 // all exact) are confirmed. This round replaces the broken dynamic-platform teeter rig with static
 // tilted ramps - see the block below.
 
-/// <summary>A SURF matching the shipped damage reference except for PhysFlags/GameDamageType.
+/// <summary>A SURF matching the shipped damage reference except for PhysFlags/Damage.
 /// <paramref name="outOfBoundsDelay"/> defaults to the reference's own -1 ("never trigger", per
 /// <c>zSurfaceGetOutOfBoundsDelay</c>'s no-surface fallback) - every bit-4 pad needs a real, finite
 /// override or the flag would look dead no matter what it does. BFBB's own 'OUTOFBOUNDS_SURF' uses
@@ -224,8 +223,8 @@ SurfaceAsset Surface(string name, byte physFlags, byte damageType, float? outOfB
     {
         Name = name,
         BaseFlags = reference.BaseFlags,
-        GameDamageType = (SurfaceGameDamageType)damageType,
-        PhysFlags = (SurfacePhysicsFlags)physFlags,
+        Damage = (SurfaceAsset.DamageKind)damageType,
+        PhysFlags = (SurfaceAsset.PhysicsBehavior)physFlags,
         Friction = reference.Friction,
         SlideStartAngle = slideAngles?.Start ?? reference.SlideStartAngle,
         SlideStopAngle = slideAngles?.Stop ?? reference.SlideStopAngle,
@@ -272,7 +271,7 @@ for (int i = 0; i < padVariants.Length; i++)
     var surface = Surface($"zz_surf_{i + 1:D2}", physFlags, damageType, oobDelay);
     var position = new Vector3(spawn.X + ((i + 1) * PadStep), floorY + PadLift, spawn.Z);
     Place($"zz_pad_{i + 1:D2}", Model("disco_floor_A_3m"), position, 3f,
-        SimpleObjectCollisionType.Static, surface.Id, tint);
+        collidable: true, surface.Id, tint);
 
     // Tally markers beside each pad, in rows of five, so its number can be read off at a glance.
     // Tint alone is not enough: TSSM ignores a SimpleObject's colour multiplier and renders every
@@ -280,7 +279,7 @@ for (int i = 0; i < padVariants.Length; i++)
     for (int t = 0; t <= i; t++)
         Place($"zz_tally_{i + 1:D2}_{t:D2}", Model("disco_floor_A_3m"),
             new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
-            0.5f, SimpleObjectCollisionType.None);
+            0.5f, collidable: false);
 
     Console.WriteLine($"    #{i + 1} x={position.X,6:F1}  {label}");
 }
@@ -329,7 +328,7 @@ for (int i = 0; i < padVariants.Length; i++)
         for (int t = 0; t <= i; t++)
             Place($"zz_tally_{num:D2}_{t:D2}", Model("disco_floor_A_3m"),
                 new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
-                0.5f, SimpleObjectCollisionType.None);
+                0.5f, collidable: false);
 
         Console.WriteLine($"    #{num} x={position.X,6:F1}  {label}");
     }

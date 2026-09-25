@@ -838,15 +838,28 @@ A few sharper corollaries, each corrected from a real slip in earlier asset impl
   itself — cut them once the doc comment states something true. Reserve a provenance callout for a
   conflict the reader genuinely still needs to know about (the wiki and decompiled source disagree and
   neither has won yet), and record that as a `TODO` (previous bullet) rather than permanent prose.
+- **A `<summary>` is one brief sentence; detail goes in `<remarks>`.** That includes which games
+  ignore the member, projection notes, and setter semantics. When games behave differently, the
+  summary states what most games do and the remarks name the exceptions; an even split goes to the
+  earlier game in BFBB, TSSM, N100F, Incredibles, Rat proto, ROTU. Observed corpus values ("always 1
+  in shipped archives") never go in the docs.
 - **A flags enum's zero value is only `None` when it truly means "nothing is set."** If the all-clear
   state has its own real behavior (a mechanism that idles by repeating forever, not "doing nothing"),
   name it for that behavior instead (`Repeat = 0`), the same as any other member.
-- **A byte/int holding a small, fully-enumerated closed set of real values is an enum, even with no
-  confirmed name for most of them.** Don't leave it as a raw numeric type just because you can't name
-  every value — name what's confirmed, and use placeholder names (`Unknown1`, `Unknown2`, ...) for the
-  rest, the same way partially-understood `[Flags]` enums already carry a named-but-unexplained bit
-  (`SurfaceAsset.PhysicsBehavior.Step`). This is different from a wide-or-unbounded numeric field (a hash, a
-  timer) — those stay plain numeric types.
+- **A byte/int holding a small, closed set of real values is an enum, even with no confirmed name
+  for most of them.** Don't leave it as a raw numeric type just because you can't name every value —
+  name what's confirmed and leave the rest undefined. Never add placeholder members (`Unknown1`,
+  `Unknown3`, ...): an undefined value or bit still round-trips through the enum, and a placeholder
+  name reads as knowledge nobody has. This is different from a wide-or-unbounded numeric field (a
+  hash, a timer) — those stay plain numeric types.
+- **A flags field is physical; the bits a modder cares about are logical `bool`s projecting onto
+  it.** Type the physical field as a `[Flags]` enum holding every understood bit, and expose each
+  commonly-edited bit as a logical `bool` whose getter is `Physical.Foo.HasFlag(Bit)` and whose setter
+  is `Physical.Foo = Physical.Foo.WithFlag(Bit, value)` (`FlagsExtensions.WithFlag`, in
+  `EvilHop.Common`). Niche bits (a load-time optimisation, a one-game override) stay enum-only.
+  `SoundFXAsset.Positional` and `SimpleObjectAsset.FaceCamera` are the pattern. The same applies to a
+  small enum whose values collapse to one meaningful choice: `SimpleObjectAsset.HasCollision` projects
+  the physical `CollisionKind` onto `None`/`Static`.
 - **"Is this sub-object active" belongs on the sub-object, not as a separate index-matched flags
   property.** When a flags word's bits each gate one element of a same-sized array/tuple the type also
   exposes (a two-slot texture animation, a two-slot UV effect), decompose it at read time into an

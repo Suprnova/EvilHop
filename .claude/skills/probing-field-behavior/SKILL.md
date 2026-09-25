@@ -22,8 +22,8 @@ Write a throwaway script under `dump/` (see `reading-corpus-inventory`, or itera
 directly with `Archive.Load` + `OpenAssets`) that tallies each field's distinct values with an
 exemplar archive per value. You are looking for:
 
-- **Unmodelled flag bits.** A raw number where an enum name was expected - `PhysFlags=32` when
-  `SurfacePhysicsFlags` stops at `1 << 4`. Cross-reference the *names* of the assets that set it;
+- **Unmodelled flag bits.** A raw number where an enum name was expected - a `PhysFlags` value
+  carrying a bit `SurfaceAsset.PhysicsBehavior` doesn't define. Cross-reference the *names* of the assets that set it;
   Heavy Iron named things literally, and `WALLJUMP_SURFACE` gives the bit away.
 - **The one archive that differs.** A field constant everywhere except a single asset is the best
   positive control you will get, because the shipped value is known to work.
