@@ -81,8 +81,8 @@ public sealed partial class DuplicatorAsset
 
         bool IGrabbable.IsGrabbable
         {
-            get => (_collisionFlags & CollisionFlags.Grabbable) != 0;
-            set => _collisionFlags = value ? _collisionFlags | CollisionFlags.Grabbable : _collisionFlags & ~CollisionFlags.Grabbable;
+            get => _collisionFlags.HasFlag(CollisionFlags.Grabbable);
+            set => _collisionFlags = _collisionFlags.WithFlag(CollisionFlags.Grabbable, value);
         }
 
         internal static Villain Read(EndianReader reader, FormatProfile profile)

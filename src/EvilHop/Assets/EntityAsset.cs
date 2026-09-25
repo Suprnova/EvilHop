@@ -72,13 +72,13 @@ public abstract class EntityAsset(AssetType type, byte baseType = 0) : BaseAsset
     /// Reads a single <see cref="CollisionFlags"/> bit, for a derived type projecting it as a
     /// named trait. Traits must project the bit, never store a copy of it.
     /// </summary>
-    private protected bool HasCollisionFlag(CollisionFlags flag) => (_collisionFlags & flag) != 0;
+    private protected bool HasCollisionFlag(CollisionFlags flag) => _collisionFlags.HasFlag(flag);
 
     /// <summary>
     /// Sets or clears a single <see cref="CollisionFlags"/> bit, leaving every other bit alone.
     /// </summary>
     private protected void SetCollisionFlag(CollisionFlags flag, bool value) =>
-        _collisionFlags = value ? _collisionFlags | flag : _collisionFlags & ~flag;
+        _collisionFlags = _collisionFlags.WithFlag(flag, value);
 }
 
 /// <summary>

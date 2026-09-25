@@ -26,9 +26,7 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     public bool DamagePassthrough
     {
         get => Physical.GameDamageFlags.HasFlag(DamageBehavior.DamagePassthrough);
-        set => Physical.GameDamageFlags = value
-            ? Physical.GameDamageFlags | DamageBehavior.DamagePassthrough
-            : Physical.GameDamageFlags & ~DamageBehavior.DamagePassthrough;
+        set => Physical.GameDamageFlags = Physical.GameDamageFlags.WithFlag(DamageBehavior.DamagePassthrough, value);
     }
 
     /// <summary>

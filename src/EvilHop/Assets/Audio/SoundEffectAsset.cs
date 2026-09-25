@@ -32,9 +32,7 @@ public sealed class SoundEffectAsset() : BaseAsset(AssetType.SoundEffect, baseTy
     public bool PlayFromEntity
     {
         get => Physical.SoundFlags.HasFlag(Behavior.PlayFromEntity);
-        set => Physical.SoundFlags = value
-            ? Physical.SoundFlags | Behavior.PlayFromEntity
-            : Physical.SoundFlags & ~Behavior.PlayFromEntity;
+        set => Physical.SoundFlags = Physical.SoundFlags.WithFlag(Behavior.PlayFromEntity, value);
     }
 
     /// <inheritdoc cref="Asset.Physical"/>

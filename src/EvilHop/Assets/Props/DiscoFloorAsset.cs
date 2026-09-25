@@ -25,8 +25,8 @@ public sealed partial class DiscoFloorAsset() : BaseAsset(AssetType.DiscoFloor, 
     /// </summary>
     public bool Loop
     {
-        get => (Flags & Behavior.Loop) != 0;
-        set => Flags = value ? Flags | Behavior.Loop : Flags & ~Behavior.Loop;
+        get => Flags.HasFlag(Behavior.Loop);
+        set => Flags = Flags.WithFlag(Behavior.Loop, value);
     }
 
     /// <summary>

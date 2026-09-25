@@ -55,7 +55,7 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     public bool Positional
     {
         get => Physical.SFXFlags.HasFlag(Behavior.Positional);
-        set => SetFlag(Behavior.Positional, value);
+        set => Physical.SFXFlags = Physical.SFXFlags.WithFlag(Behavior.Positional, value);
     }
 
     /// <summary>
@@ -65,18 +65,15 @@ public sealed class SoundFXAsset() : BaseAsset(AssetType.SoundFX, baseType: 0x13
     public bool PlayFromEntity
     {
         get => Physical.SFXFlags.HasFlag(Behavior.PlayFromEntity);
-        set => SetFlag(Behavior.PlayFromEntity, value);
+        set => Physical.SFXFlags = Physical.SFXFlags.WithFlag(Behavior.PlayFromEntity, value);
     }
 
     /// <summary>Whether this sound loops.</summary>
     public bool Loop
     {
         get => Physical.SFXFlags.HasFlag(Behavior.Loop);
-        set => SetFlag(Behavior.Loop, value);
+        set => Physical.SFXFlags = Physical.SFXFlags.WithFlag(Behavior.Loop, value);
     }
-
-    private void SetFlag(Behavior bit, bool value) =>
-        Physical.SFXFlags = value ? Physical.SFXFlags | bit : Physical.SFXFlags & ~bit;
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISoundFXAsset Physical => this;
