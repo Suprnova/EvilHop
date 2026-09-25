@@ -86,7 +86,7 @@ public class SimpleObjectAssetTests
     [
         .. Prefix(linkCount),
         .. EntityPrefix(hasPadding: false, 0xAABBCCDD, 0x11223344),
-        .. SimpFields(1.5f, 2, collType: 0, flags: 8),
+        .. SimpFields(1.5f, 2, collType: 0, flags: 0x1E),
     ];
 
     [Fact]
@@ -98,21 +98,58 @@ public class SimpleObjectAssetTests
     {
         var asset = (SimpleObjectAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
 
-        Assert.Equal(1.5f, asset.AnimationSpeed);
-        Assert.Equal(2u, asset.InitialAnimationState);
-        Assert.Equal(SimpleObjectAsset.CollisionKind.Static, asset.Collision);
-        Assert.Equal(0, asset.Physical.SimpleFlags);
+        Assert.Equal(1.5f, asset.Physical.AnimationSpeed);
+        Assert.Equal(2u, asset.Physical.InitialAnimationState);
+        Assert.Equal(SimpleObjectAsset.CollisionKind.Static, asset.Physical.Collision);
+        Assert.True(asset.HasCollision);
+        Assert.Equal(SimpleObjectAsset.Behavior.None, asset.Physical.SimpleFlags);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.Physical.ModelId);
         Assert.Equal(new AssetId(0x11223344), asset.Physical.AnimListId);
     }
 
     [Fact]
-    public void Read_SimpleObject_UnderTSSM_PopulatesNonzeroFlags()
+    public void Read_SimpleObject_UnderTSSM_ProjectsBehaviorFlags()
     {
         var asset = (SimpleObjectAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
 
-        Assert.Equal(SimpleObjectAsset.CollisionKind.None, asset.Collision);
-        Assert.Equal(8, asset.Physical.SimpleFlags);
+        Assert.False(asset.HasCollision);
+        Assert.True(asset.FaceCamera);
+        Assert.True(asset.FacePlayer);
+        Assert.True(asset.Upright);
+        Assert.Equal((SimpleObjectAsset.Behavior)0x1E, asset.Physical.SimpleFlags);
+    }
+
+    [Fact]
+    public void New_SimpleObject_DefaultsAnimationSpeedToShippedValue() =>
+        Assert.Equal(1f, new SimpleObjectAsset().Physical.AnimationSpeed);
+
+    [Theory]
+    [InlineData(SimpleObjectAsset.CollisionKind.None, true, SimpleObjectAsset.CollisionKind.Static)]
+    [InlineData(SimpleObjectAsset.CollisionKind.Static, false, SimpleObjectAsset.CollisionKind.None)]
+    [InlineData(SimpleObjectAsset.CollisionKind.Static | SimpleObjectAsset.CollisionKind.Dynamic, true,
+        SimpleObjectAsset.CollisionKind.Static | SimpleObjectAsset.CollisionKind.Dynamic)]
+    public void HasCollision_Set_ProjectsOntoPhysicalCollision(
+        SimpleObjectAsset.CollisionKind initial, bool value, SimpleObjectAsset.CollisionKind expected)
+    {
+        var asset = new SimpleObjectAsset();
+        asset.Physical.Collision = initial;
+
+        asset.HasCollision = value;
+
+        Assert.Equal(expected, asset.Physical.Collision);
+    }
+
+    [Fact]
+    public void FacePlayer_Set_ChangesOnlyItsBit()
+    {
+        var undefined = (SimpleObjectAsset.Behavior)0x08;
+        var asset = new SimpleObjectAsset();
+        asset.Physical.SimpleFlags = SimpleObjectAsset.Behavior.BakeAnimation | undefined;
+
+        asset.FacePlayer = true;
+
+        Assert.Equal(SimpleObjectAsset.Behavior.BakeAnimation | SimpleObjectAsset.Behavior.FacePlayer | undefined,
+            asset.Physical.SimpleFlags);
     }
 
     [Fact]
