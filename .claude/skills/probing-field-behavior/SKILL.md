@@ -72,6 +72,16 @@ Facts worth not rediscovering:
 - **IndustrialPark archives omit `DPAK`'s padding-amount field.** Read them with
   `profile with { StreamDataHasPaddingField = false }` or every asset offset lands four bytes late
   and anything crossing the boundary silently degrades to empty. Official archives carry the field.
+- **A plain `SimpleObject` is never updated.** From TSSM on, a SIMP with nothing that needs a
+  per-frame update is statically batched and its `Update` never runs, so anything implemented there
+  (facing, animation) looks dead. Setting `CollisionFlags.LedgeGrab` on a non-collidable SIMP puts it
+  on the updated list with no other effect; naming its model in a `RANM` row batches it, and
+  `AnimateCollision` without `PreciseCollision` on a model with no animation crashes the game. See
+  `probes/simp-facing-collision.md`.
+- **Confirm an unexplained null in Dolphin before redesigning the rig.** With the debugging UI on, an
+  instruction breakpoint on the function that should read the field shows whether it runs at all.
+  Set one on a per-frame function first (`zEntSimpleObj_MgrUpdateRender`, `801287EC` in TSSM GC) to
+  prove breakpoints are live, and use Boot to Pause for anything that only runs during scene load.
 
 ### Copy a shipped rig rather than inventing one
 

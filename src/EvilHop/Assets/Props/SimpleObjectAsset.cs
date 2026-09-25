@@ -37,7 +37,16 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     /// Whether this object turns to face the camera every frame.
     /// </summary>
     /// <remarks>
-    /// Ignored by <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+    /// <para>
+    /// Takes effect only on an object the engine updates every frame, such as one with an
+    /// <see cref="IHasAnimList.AnimListId"/>, or one with 
+    /// <see cref="CollisionFlags.AnimateCollision"/>, <see cref="CollisionFlags.Grabbable"/>,
+    /// or <see cref="CollisionFlags.LedgeGrab"/> in <see cref="Physical.IEntity.CollisionFlags"/>.
+    /// </para>
+    /// <para>
+    /// <see cref="FacePlayer"/> takes precedence when both are set. Ignored by
+    /// <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+    /// </para>
     /// </remarks>
     public bool FaceCamera
     {
@@ -49,7 +58,9 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     /// Whether this object turns to face the player every frame.
     /// </summary>
     /// <remarks>
-    /// Ignored by <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+    /// Takes effect only on an object the engine updates every frame; see <see cref="FaceCamera"/>.
+    /// Takes precedence over <see cref="FaceCamera"/> when both are set. Ignored by
+    /// <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
     /// </remarks>
     public bool FacePlayer
     {
@@ -62,7 +73,8 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
     /// </summary>
     /// <remarks>
     /// When set, the object turns about the vertical axis only instead of pointing straight at its
-    /// target. Ignored by <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+    /// target. Has no effect without <see cref="FaceCamera"/> or <see cref="FacePlayer"/>. Ignored by
+    /// <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
     /// </remarks>
     public bool Upright
     {
@@ -197,10 +209,17 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
         /// <summary>
         /// Turns to face the camera every frame.
         /// </summary>
+        /// <remarks>
+        /// Takes effect only on an updated object; see <see cref="SimpleObjectAsset.FaceCamera"/>.
+        /// </remarks>
         FaceCamera = 1 << 1,
         /// <summary>
         /// Turns to face the player every frame.
         /// </summary>
+        /// <remarks>
+        /// Takes effect only on an updated object; see <see cref="SimpleObjectAsset.FaceCamera"/>.
+        /// Takes precedence over <see cref="FaceCamera"/>.
+        /// </remarks>
         FacePlayer = 1 << 2,
         /// <summary>
         /// Stays upright while facing the camera or player.
