@@ -16,6 +16,7 @@ internal static class SniffProfileBuilder
     /// <see cref="FormatProfile.EntityHasExtendedFields"/>,
     /// <see cref="FormatProfile.LinkHasExtendedFields"/>,
     /// <see cref="FormatProfile.TriggerHasDirectionAndFlags"/>,
+    /// <see cref="FormatProfile.CameraHasExtendedFields"/>,
     /// <see cref="FormatProfile.AnimationTableHasStateSpeed"/>,
     /// <see cref="FormatProfile.EnvironmentHasExtendedFields"/>, and
     /// <see cref="FormatProfile.NPCHasExtendedFields"/>.
@@ -28,6 +29,7 @@ internal static class SniffProfileBuilder
             EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             LinkHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             TriggerHasDirectionAndFlags = signals.ClientVersion != ClientVersion.N100FPrototype,
+            CameraHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             AnimationTableHasStateSpeed = signals.ClientVersion != ClientVersion.N100FPrototype,
             EnvironmentHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             NPCHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype

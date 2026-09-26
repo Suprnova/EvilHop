@@ -17,7 +17,6 @@ Asset codec support falls into three states, per type:
 A handful of Typed assets are only partially modeled, marked with a `// TODO: Partial implementation` comment at their definition:
 
 - `AnimationAsset` - ROTU and Ratatouille's revised SKB layout isn't modeled.
-- `CameraAsset` - N100F's shorter, differently laid out format isn't modeled.
 - `CutsceneAsset` - chunked media data is unmodeled and preserved as unparsed bytes.
 - `CutsceneTableAsset` - trailing TimeChunk-offset, visibility, and break tables are unmodeled.
 - `NPCAsset` - N100F Prototype-only fields aren't parsed.

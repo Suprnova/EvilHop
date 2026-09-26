@@ -107,6 +107,14 @@ public class CameraAssetTests
         .. Prefix(linkCount),
         .. SharedFields(30, 45, 60f, 0.5f, 5, 0u, 0f, 0f),
         .. F(4f), .. F(2f), .. F(3f), .. F(0.1f), .. new byte[8], // Distance, Height, RealignSpeed, RealignDelay, Reserved
+        .. Trailer(0x0001018F, 0, 0, camType: 5),
+    ];
+
+    private static byte[] FollowWithOffsetData(byte linkCount = 0) =>
+    [
+        .. Prefix(linkCount),
+        .. SharedFields(30, 45, 85f, 0f, 0, 0u, 0f, 0f),
+        .. F(0f), .. F(6f), .. F(1f), .. F(1f), .. F(3f), .. F(3.5f), // Rotation, Distance, Height, RubberBand, StartSpeed, EndSpeed
         .. Trailer(0x0001018F, 0, 0, camType: 1),
     ];
 
@@ -183,6 +191,17 @@ public class CameraAssetTests
         Assert.Equal(3f, asset.RealignSpeed);
         Assert.Equal(0.1f, asset.RealignDelay);
         Assert.Equal(CameraTransitionKind.Linear, asset.TransitionType);
+    }
+
+    [Fact]
+    public void Read_FollowWithOffsetCamera_PopulatesTypeFields()
+    {
+        var asset = Assert.IsType<FollowWithOffsetCameraAsset>(Read(FollowWithOffsetData()));
+
+        Assert.Equal(CameraKind.FollowWithOffset, asset.Kind);
+        Assert.Equal(6f, asset.Distance);
+        Assert.Equal(3f, asset.StartSpeed);
+        Assert.Equal(3.5f, asset.EndSpeed);
     }
 
     [Fact]
@@ -263,20 +282,58 @@ public class CameraAssetTests
     public static IEnumerable<object[]> EveryCameraKind()
     {
         yield return [(Func<byte, byte[]>)FollowData];
+        yield return [(Func<byte, byte[]>)FollowWithOffsetData];
         yield return [(Func<byte, byte[]>)ShoulderData];
         yield return [(Func<byte, byte[]>)StaticData];
         yield return [(Func<byte, byte[]>)PathData];
         yield return [(Func<byte, byte[]>)StaticFollowData];
     }
 
-    [Fact]
-    public void Read_Camera_UnderN100F_DegradesToGenericAsset()
+    [Theory]
+    [MemberData(nameof(EveryCameraKind))]
+    public void Read_ThenWrite_CameraUnderN100F_ReproducesInputBytes(Func<byte, byte[]> data)
     {
-        byte[] data = FollowData();
+        byte[] bytes = [.. data(1), .. LinkBytes(1, 2, 0xAABBCCDD)];
+        var profile = N100FSerializer.DefaultProfile;
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        Assert.Equal(bytes, Write(Read(bytes, profile), profile));
+    }
 
-        Assert.IsNotType<CameraAsset>(asset, exactMatch: false);
+    private static byte[] PrototypeFollowData() =>
+    [
+        .. Prefix(0),
+        .. Vec3(1, 2, 3),   // Position
+        .. Vec3(0, 0, 1),   // Forward
+        .. Vec3(0, 1, 0),   // Up
+        .. Vec3(1, 0, 0),   // Left
+        .. F(75f),          // Fov
+        .. new byte[20],    // TransitionTime, TransitionType, CameraFlags, FadeUp, FadeDown
+        .. F(270f), .. F(-2f), .. F(1f), .. F(1f), // Rotation, Distance, Height, RubberBand
+        .. BitConverter.GetBytes(0x0000018Fu).Reverse(), // ValidFlags
+        0x00, 0x00, 0x00, 0x00, // Kind = Follow, padding
+    ];
+
+    [Fact]
+    public void Read_CameraWithoutExtendedFields_ReadsShorterLayout()
+    {
+        var profile = N100FSerializer.DefaultProfile with { CameraHasExtendedFields = false };
+
+        var asset = Assert.IsType<FollowCameraAsset>(Read(PrototypeFollowData(), profile));
+
+        Assert.Equal(75f, asset.Fov);
+        Assert.Equal(270f, asset.Rotation);
+        Assert.Equal(1f, asset.RubberBand);
+        Assert.Equal(0x18Fu, asset.Physical.ValidFlags);
+        Assert.Empty(asset.GetUnparsedTail().ToArray());
+    }
+
+    [Fact]
+    public void Read_ThenWrite_CameraWithoutExtendedFields_ReproducesInputBytes()
+    {
+        byte[] data = PrototypeFollowData();
+        var profile = N100FSerializer.DefaultProfile with { CameraHasExtendedFields = false };
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
     [Fact]

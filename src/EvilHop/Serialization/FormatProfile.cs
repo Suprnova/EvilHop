@@ -54,6 +54,13 @@ namespace EvilHop.Serialization;
 /// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose triggers are just the four
 /// positions; true everywhere else.
 /// </param>
+/// <param name="CameraHasExtendedFields">
+/// Whether a <see cref="CameraAsset"/> carries <see cref="CameraAsset.ViewOffset"/>,
+/// <see cref="CameraAsset.OffsetStartFrames"/>, <see cref="CameraAsset.OffsetEndFrames"/>,
+/// <see cref="CameraAsset.MarkerId1"/>, and <see cref="CameraAsset.MarkerId2"/>, and a 24-byte
+/// rather than 16-byte type-specific region. False only for <see cref="GameVersion.N100F"/>'s
+/// 2001-06-11 prototype; true everywhere else.
+/// </param>
 /// <param name="AnimationTableHasStateSpeed">
 /// Whether an <see cref="AnimationTableAsset.State"/> carries <see cref="AnimationTableAsset.State.Speed"/>
 /// after <see cref="AnimationTableAsset.State.EffectOffset"/>. False only for
@@ -151,6 +158,7 @@ public sealed record FormatProfile(
     bool PickupTypesHasPulseFields = true,
     bool LinkHasExtendedFields = true,
     bool TriggerHasDirectionAndFlags = true,
+    bool CameraHasExtendedFields = true,
     bool AnimationTableHasStateSpeed = true,
     bool EnvironmentHasExtendedFields = true,
     bool NPCHasExtendedFields = true,

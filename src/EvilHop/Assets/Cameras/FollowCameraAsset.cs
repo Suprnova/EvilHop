@@ -7,7 +7,7 @@ namespace EvilHop.Assets;
 /// A <see cref="CameraAsset"/> that trails behind its target at a fixed distance and height,
 /// swinging around as the target turns.
 /// </summary>
-public sealed class FollowCameraAsset() : CameraAsset
+public class FollowCameraAsset() : CameraAsset
 {
     /// <summary>The camera's rotation around its target.</summary>
     public float Rotation { get; set; }
@@ -30,15 +30,18 @@ public sealed class FollowCameraAsset() : CameraAsset
     /// <inheritdoc/>
     public override CameraKind Kind => CameraKind.Follow;
 
-    internal static FollowCameraAsset Read(EndianReader reader, FormatProfile _) => new()
+    internal static FollowCameraAsset Read(EndianReader reader, FormatProfile _) => ReadFields(new FollowCameraAsset(), reader);
+
+    private protected static T ReadFields<T>(T value, EndianReader reader) where T : FollowCameraAsset
     {
-        Rotation = reader.ReadSingle(),
-        Distance = reader.ReadSingle(),
-        Height = reader.ReadSingle(),
-        RubberBand = reader.ReadSingle(),
-        StartSpeed = reader.ReadSingle(),
-        EndSpeed = reader.ReadSingle(),
-    };
+        value.Rotation = reader.ReadSingle();
+        value.Distance = reader.ReadSingle();
+        value.Height = reader.ReadSingle();
+        value.RubberBand = reader.ReadSingle();
+        value.StartSpeed = reader.ReadSingle();
+        value.EndSpeed = reader.ReadSingle();
+        return value;
+    }
 
     internal static void Write(FollowCameraAsset value, EndianWriter writer, FormatProfile _)
     {

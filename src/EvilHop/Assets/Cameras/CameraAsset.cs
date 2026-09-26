@@ -1,4 +1,5 @@
 using EvilHop.Common;
+using EvilHop.Serialization;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -10,12 +11,12 @@ namespace EvilHop.Assets;
 /// <remarks>
 /// <para>
 /// Not instantiated directly, instead used by <see cref="FollowCameraAsset"/>,
-/// <see cref="ShoulderCameraAsset"/>, <see cref="StaticCameraAsset"/>, <see cref="PathCameraAsset"/>,
-/// and <see cref="StaticFollowCameraAsset"/> branching based on <see cref="Kind"/>.
+/// <see cref="FollowWithOffsetCameraAsset"/>, <see cref="ShoulderCameraAsset"/>,
+/// <see cref="StaticCameraAsset"/>, <see cref="PathCameraAsset"/>, and
+/// <see cref="StaticFollowCameraAsset"/> branching based on <see cref="Kind"/>.
 /// </para>
 /// <seealso href="https://heavyironmodding.org/wiki/CAM">Heavy Iron Modding documentation</seealso>
 /// </remarks>
-// TODO: Partial implementation - N100F stores a shorter, differently laid out format and is not yet modelled
 public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseType: 0x07), Physical.ICameraAsset
 {
     /// <summary>The camera's position.</summary>
@@ -89,14 +90,17 @@ public abstract partial class CameraAsset() : BaseAsset(AssetType.Camera, baseTy
     private protected const int TypeDataSize = 24;
 
     /// <summary>
+    /// The size, in bytes, <paramref name="profile"/> stores the type-specific region at: the first
+    /// this many of <see cref="TypeDataSize"/>.
+    /// </summary>
+    private static int TypeDataSizeFor(FormatProfile profile) => profile.CameraHasExtendedFields ? TypeDataSize : 16;
+
+    /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Camera"/> is known to be read by.
     /// </summary>
-    /// <remarks>
-    /// <see cref="GameVersion.N100F"/> stores a shorter, differently laid out <c>CAM</c> and is not
-    /// yet modelled.
-    /// </remarks>
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
+        GameVersion.N100F,
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,
@@ -129,14 +133,16 @@ public enum CameraKind : byte
 {
     /// <summary>A <see cref="FollowCameraAsset"/>.</summary>
     Follow = 0,
-    /// <summary>A <see cref="ShoulderCameraAsset"/>.</summary>
-    Shoulder = 1,
+    /// <summary>A <see cref="FollowWithOffsetCameraAsset"/>.</summary>
+    FollowWithOffset = 1,
     /// <summary>A <see cref="StaticCameraAsset"/>.</summary>
     Static = 2,
     /// <summary>A <see cref="PathCameraAsset"/>.</summary>
     Path = 3,
     /// <summary>A <see cref="StaticFollowCameraAsset"/>.</summary>
     StaticFollow = 4,
+    /// <summary>A <see cref="ShoulderCameraAsset"/>.</summary>
+    Shoulder = 5,
 }
 
 /// <summary>

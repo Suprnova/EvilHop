@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace EvilHop.Corpus.Archives;
 
-internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? AnimationTableHasStateSpeed, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, bool? ShrapnelHasExtendedFragFields, bool? ShrapnelSoundHasExtendedFields, bool? ShrapnelProjectileHasIntermediateFields, Platform? Platform)
+internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, PlatformFieldOrder? PlatformFieldOrder, bool? EntityHasPadding, bool? EntityHasExtendedFields, bool? PickupTypesHasPulseFields, bool? LinkHasExtendedFields, bool? TriggerHasDirectionAndFlags, bool? CameraHasExtendedFields, bool? AnimationTableHasStateSpeed, bool? EnvironmentHasExtendedFields, bool? NPCHasExtendedFields, bool? SurfaceHasDamageFields, bool? VillainHasTaskWidgetSecondId, bool? TimerHasRandomRange, bool? DestructibleObjectHasSwapEffects, bool? BoulderHasSoundFalloff, bool? ShrapnelHasExtendedFragFields, bool? ShrapnelSoundHasExtendedFields, bool? ShrapnelProjectileHasIntermediateFields, Platform? Platform)
 {
     public FormatProfile ApplyTo(FormatProfile profile) => profile with
     {
@@ -17,6 +17,7 @@ internal sealed record ProfileOverride(bool? StreamDataHasPaddingField, Platform
         PickupTypesHasPulseFields = PickupTypesHasPulseFields ?? profile.PickupTypesHasPulseFields,
         LinkHasExtendedFields = LinkHasExtendedFields ?? profile.LinkHasExtendedFields,
         TriggerHasDirectionAndFlags = TriggerHasDirectionAndFlags ?? profile.TriggerHasDirectionAndFlags,
+        CameraHasExtendedFields = CameraHasExtendedFields ?? profile.CameraHasExtendedFields,
         AnimationTableHasStateSpeed = AnimationTableHasStateSpeed ?? profile.AnimationTableHasStateSpeed,
         EnvironmentHasExtendedFields = EnvironmentHasExtendedFields ?? profile.EnvironmentHasExtendedFields,
         NPCHasExtendedFields = NPCHasExtendedFields ?? profile.NPCHasExtendedFields,

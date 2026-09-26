@@ -1,7 +1,9 @@
 using EvilHop.Assets.Serialization;
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using System.Numerics;
 
 namespace EvilHop.Assets;
 
@@ -21,21 +23,32 @@ public abstract partial class CameraAsset
         var forward = reader.ReadVector3();
         var up = reader.ReadVector3();
         var left = reader.ReadVector3();
-        var viewOffset = reader.ReadVector3();
-        var offsetStartFrames = reader.ReadInt16();
-        var offsetEndFrames = reader.ReadInt16();
+        Vector3 viewOffset = default;
+        short offsetStartFrames = 0, offsetEndFrames = 0;
+        if (profile.CameraHasExtendedFields)
+        {
+            viewOffset = reader.ReadVector3();
+            offsetStartFrames = reader.ReadInt16();
+            offsetEndFrames = reader.ReadInt16();
+        }
         var fov = reader.ReadSingle();
+        // TODO: the 2001-06-11 prototype's five fields here are zero in every sample; their order is assumed from the retail layout
         var transitionTime = reader.ReadSingle();
         var transitionType = (CameraTransitionKind)reader.ReadInt32();
         var cameraFlags = reader.ReadUInt32();
         var fadeUp = reader.ReadSingle();
         var fadeDown = reader.ReadSingle();
 
-        var typeData = reader.ReadBytes(TypeDataSize);
+        // a shorter type-specific region is zero-extended so every kind reads its full TypeDataSize
+        byte[] typeData = [.. reader.ReadBytes(TypeDataSizeFor(profile)), .. new byte[TypeDataSize - TypeDataSizeFor(profile)]];
 
         var validFlags = reader.ReadUInt32();
-        var markerId1 = reader.ReadAssetId();
-        var markerId2 = reader.ReadAssetId();
+        AssetId markerId1 = default, markerId2 = default;
+        if (profile.CameraHasExtendedFields)
+        {
+            markerId1 = reader.ReadAssetId();
+            markerId2 = reader.ReadAssetId();
+        }
         var kind = (CameraKind)reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
 
@@ -43,6 +56,7 @@ public abstract partial class CameraAsset
         CameraAsset asset = kind switch
         {
             CameraKind.Follow => FollowCameraAsset.Read(typeReader, profile),
+            CameraKind.FollowWithOffset => FollowWithOffsetCameraAsset.Read(typeReader, profile),
             CameraKind.Shoulder => ShoulderCameraAsset.Read(typeReader, profile),
             CameraKind.Static => StaticCameraAsset.Read(typeReader, profile),
             CameraKind.Path => PathCameraAsset.Read(typeReader, profile),
@@ -89,9 +103,12 @@ public abstract partial class CameraAsset
         writer.Write(asset.Forward);
         writer.Write(asset.Up);
         writer.Write(asset.Left);
-        writer.Write(asset.ViewOffset);
-        writer.Write(asset.OffsetStartFrames);
-        writer.Write(asset.OffsetEndFrames);
+        if (profile.CameraHasExtendedFields)
+        {
+            writer.Write(asset.ViewOffset);
+            writer.Write(asset.OffsetStartFrames);
+            writer.Write(asset.OffsetEndFrames);
+        }
         writer.Write(asset.Fov);
         writer.Write(asset.TransitionTime);
         writer.Write((int)asset.TransitionType);
@@ -99,18 +116,26 @@ public abstract partial class CameraAsset
         writer.Write(asset.FadeUp);
         writer.Write(asset.FadeDown);
 
-        switch (asset)
+        using var typeStream = new MemoryStream();
+        using (var typeWriter = new EndianWriter(typeStream, profile.Endianness, leaveOpen: true))
         {
-            case FollowCameraAsset c: FollowCameraAsset.Write(c, writer, profile); break;
-            case ShoulderCameraAsset c: ShoulderCameraAsset.Write(c, writer, profile); break;
-            case StaticCameraAsset c: StaticCameraAsset.Write(c, writer, profile); break;
-            case PathCameraAsset c: PathCameraAsset.Write(c, writer, profile); break;
-            case StaticFollowCameraAsset c: StaticFollowCameraAsset.Write(c, writer, profile); break;
+            switch (asset)
+            {
+                case FollowCameraAsset c: FollowCameraAsset.Write(c, typeWriter, profile); break;
+                case ShoulderCameraAsset c: ShoulderCameraAsset.Write(c, typeWriter, profile); break;
+                case StaticCameraAsset c: StaticCameraAsset.Write(c, typeWriter, profile); break;
+                case PathCameraAsset c: PathCameraAsset.Write(c, typeWriter, profile); break;
+                case StaticFollowCameraAsset c: StaticFollowCameraAsset.Write(c, typeWriter, profile); break;
+            }
         }
+        writer.Write(typeStream.GetBuffer().AsSpan(0, TypeDataSizeFor(profile)));
 
         writer.Write(asset.Physical.ValidFlags);
-        writer.Write(asset.MarkerId1);
-        writer.Write(asset.MarkerId2);
+        if (profile.CameraHasExtendedFields)
+        {
+            writer.Write(asset.MarkerId1);
+            writer.Write(asset.MarkerId2);
+        }
         writer.Write((byte)asset.Kind);
         writer.Write(new byte[3]); // padding
 
