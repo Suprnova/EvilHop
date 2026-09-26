@@ -77,6 +77,7 @@ public sealed class AssetSession : IDisposable
     private readonly byte _fillByte;
     private readonly bool _hadPaddingAmountField;
     private readonly List<AssetId> _originalAtocOrder;
+    private readonly bool _originalAtocWasSorted;
     private readonly Dictionary<AssetId, uint> _openChecksums;
     private readonly Dictionary<(AssetId Before, AssetId After), byte[]> _capturedGaps;
     private readonly Dictionary<AssetId, uint> _originalZeroSizeOffsets;
@@ -113,6 +114,7 @@ public sealed class AssetSession : IDisposable
         _fillByte = captured.FillByte;
         _hadPaddingAmountField = captured.HadPaddingAmountField;
         _originalAtocOrder = changeTracking.OriginalAtocOrder;
+        _originalAtocWasSorted = IsSorted(_originalAtocOrder);
         _openChecksums = changeTracking.OpenChecksums;
         _capturedGaps = changeTracking.CapturedGaps;
         _originalZeroSizeOffsets = changeTracking.OriginalZeroSizeOffsets;
@@ -455,7 +457,8 @@ public sealed class AssetSession : IDisposable
 
     /// <summary>
     /// Rebuilds <see cref="AssetTable"/>'s ordering: surviving assets keep their captured relative
-    /// order, removed ones simply drop out, and assets added during the session land at the end.
+    /// order, removed ones simply drop out, and assets added during the session land at their
+    /// sorted position when the original table was sorted, or at the end when it was not.
     /// </summary>
     private List<AssetId> ReplayAtocOrder(IEnumerable<AssetId> currentIds)
     {
@@ -463,8 +466,23 @@ public sealed class AssetSession : IDisposable
         var present = current.ToHashSet();
         var replayed = _originalAtocOrder.Where(present.Contains).ToList();
         var replayedSet = replayed.ToHashSet();
+        var added = current.Where(id => !replayedSet.Contains(id)).ToList();
 
-        return [.. replayed, .. current.Where(id => !replayedSet.Contains(id))];
+        if (added.Count == 0)
+            return replayed;
+
+        if (_originalAtocWasSorted)
+            return [.. current.OrderBy(id => id.Value)];
+
+        return [.. replayed, .. added];
+    }
+
+    private static bool IsSorted(List<AssetId> order)
+    {
+        for (int i = 1; i < order.Count; i++)
+            if (order[i].Value < order[i - 1].Value)
+                return false;
+        return true;
     }
 
     private LayerTable BuildLayerTable()

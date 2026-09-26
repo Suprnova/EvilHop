@@ -871,4 +871,61 @@ public class AssetSessionTests
         var header = dictionary.AssetTable.Headers.Single(h => h.Debug.Name == "probe_surface");
         Assert.Equal(AssetType.Surface, header.Type);
     }
+
+    [Fact]
+    public void Commit_WhenOriginalAtocSorted_InsertsNewAssetsInAscendingUnsignedIdOrder()
+    {
+        var archive = LoadRepaired("n100f");
+
+        using (var session = archive.OpenAssets())
+        {
+            var layer = session.Layers[0];
+            layer.Add(new SurfaceAsset { Name = "low_id", Id = new AssetId(0x00000005) });
+            layer.Add(new SurfaceAsset { Name = "high_id", Id = new AssetId(0xFFFFFFFE) });
+            layer.Add(new SurfaceAsset { Name = "mid_id", Id = new AssetId(0x80000000) });
+        }
+
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
+        var ids = dictionary.AssetTable.Headers.Select(h => h.Id).ToList();
+
+        for (int i = 1; i < ids.Count; i++)
+            Assert.True(ids[i - 1] <= ids[i], $"ATOC not sorted: {ids[i - 1]:X8} > {ids[i]:X8} at index {i}");
+
+        Assert.Equal(0x00000005u, ids.First());
+        Assert.Equal(0xFFFFFFFEu, ids.Last());
+    }
+
+    [Fact]
+    public void Commit_WhenOriginalAtocUnsorted_AppendsNewAssetsToEnd()
+    {
+        var archive = LoadRepaired("bfbb", SerializerFor("bfbb"), dict =>
+        {
+            var existing = dict.AssetTable.Headers.Single();
+            var second = new AssetHeader
+            {
+                Id = 2000,
+                Type = existing.Type,
+                Size = existing.Size,
+                Offset = existing.Offset,
+                Plus = existing.Plus,
+                Flags = existing.Flags,
+                Debug = new AssetDebug { Name = "second" }
+            };
+            dict.AssetTable.Headers = [second, existing];
+            dict.LayerTable.Headers.First().AssetIds = [2000, existing.Id];
+            dict.LayerTable.Headers.First().AssetCount = 2;
+        });
+
+        using (var session = archive.OpenAssets())
+        {
+            var layer = session.Layers[0];
+            layer.Add(new SurfaceAsset { Name = "new_asset", Id = new AssetId(0x00000001) });
+        }
+
+        var dictionary = archive.Roots.OfType<Dictionary>().Single();
+        var headers = dictionary.AssetTable.Headers.ToList();
+
+        Assert.Equal(0x00000001u, headers.Last().Id);
+    }
 }
+

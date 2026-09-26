@@ -511,24 +511,21 @@ for (int i = 0; i < padVariants.Length; i++)
 
 // ======================= end of probe =======================
 
-/// <summary>Commits the session and saves the archive with ATOC headers sorted in ascending unsigned asset ID order.</summary>
-void SaveSorted(Archive archive, AssetSession session, string path)
+void SaveArchive(Archive archive, AssetSession session, string path)
 {
     session.Commit();
-    var table = archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable;
-    table.Headers = [.. table.Headers.OrderBy(header => header.Id)];
     using var stream = File.Create(path);
     archive.Save(stream);
 }
 
-if (!setup.SingleArchive) SaveSorted(hop, hopSession, SlotPath(".HOP"));
-SaveSorted(hip, hipSession, SlotPath(".HIP"));
+if (!setup.SingleArchive) SaveArchive(hop, hopSession, SlotPath(".HOP"));
+SaveArchive(hip, hipSession, SlotPath(".HIP"));
 
 // Write an empty locale archive ({scene}_US.hip) if donor has one.
 if (setup.Template.Keep is not null && File.Exists(Path.Combine(files, setup.Template.Path + "_US.hip")))
 {
     var (locale, localeSession) = OpenTemplate("_US.hip");
-    SaveSorted(locale, localeSession, SlotPath("_US.hip"));
+    SaveArchive(locale, localeSession, SlotPath("_US.hip"));
     Console.WriteLine($"  wrote empty {setup.Slot.ToLowerInvariant()}_US.hip");
 }
 
@@ -545,7 +542,7 @@ if (setup.SceneNames is { } sceneNames)
     name.CalculateId();
     name.Physical.Flags = shipped.Physical.Flags;
     shipped.Layer!.Add(name);
-    SaveSorted(names, namesSession, path);
+    SaveArchive(names, namesSession, path);
     Console.WriteLine($"  {sceneNames}: added '{name.Name}'");
 }
 
