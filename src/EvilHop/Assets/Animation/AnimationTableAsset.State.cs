@@ -1,3 +1,4 @@
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -44,34 +45,52 @@ public partial class AnimationTableAsset
         /// The id of a "sub-state" this state's file is additionally registered under, if any - see
         /// <see cref="SubStateCount"/>.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public uint SubStateId { get; set; }
 
         /// <summary>
         /// The number of files sharing <see cref="SubStateId"/>, chosen between at random when this state
         /// is entered.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public uint SubStateCount { get; set; }
 
-        internal static State Read(EndianReader reader, FormatProfile _) => new()
+        internal static State Read(EndianReader reader, FormatProfile profile)
         {
-            StateId = reader.ReadUInt32(),
-            FileIndex = reader.ReadUInt32(),
-            EffectCount = reader.ReadUInt32(),
-            EffectOffset = reader.ReadUInt32(),
-            Speed = reader.ReadSingle(),
-            SubStateId = reader.ReadUInt32(),
-            SubStateCount = reader.ReadUInt32(),
-        };
+            var state = new State
+            {
+                StateId = reader.ReadUInt32(),
+                FileIndex = reader.ReadUInt32(),
+                EffectCount = reader.ReadUInt32(),
+                EffectOffset = reader.ReadUInt32(),
+            };
+            if (profile.AnimationTableHasStateSpeed)
+                state.Speed = reader.ReadSingle();
+            if (profile.Game != GameVersion.N100F)
+            {
+                state.SubStateId = reader.ReadUInt32();
+                state.SubStateCount = reader.ReadUInt32();
+            }
+            return state;
+        }
 
-        internal static void Write(State value, EndianWriter writer, FormatProfile _)
+        internal static void Write(State value, EndianWriter writer, FormatProfile profile)
         {
             writer.Write(value.StateId);
             writer.Write(value.FileIndex);
             writer.Write(value.EffectCount);
             writer.Write(value.EffectOffset);
-            writer.Write(value.Speed);
-            writer.Write(value.SubStateId);
-            writer.Write(value.SubStateCount);
+            if (profile.AnimationTableHasStateSpeed)
+                writer.Write(value.Speed);
+            if (profile.Game != GameVersion.N100F)
+            {
+                writer.Write(value.SubStateId);
+                writer.Write(value.SubStateCount);
+            }
         }
     }
 }

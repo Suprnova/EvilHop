@@ -69,13 +69,9 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.AnimationTable"/> is known to be read by.
     /// </summary>
-    /// <remarks>
-    /// <see cref="GameVersion.N100F"/> uses a revised <see cref="States"/> layout not modeled
-    /// here, degrading to the generic shape.
-    /// </remarks>
-    // TODO: Partial implementation - N100F uses a revised States layout not modeled here.
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
+        GameVersion.N100F,
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,

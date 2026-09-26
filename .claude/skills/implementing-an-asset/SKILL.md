@@ -428,7 +428,8 @@ prototype, or BFBB's leftover `gl/Working`/`gl/New Folder`/`db05` archives — g
 parameter on `FormatProfile` instead of a `Game` branch, defaulting to the value every normal build
 uses and overridden per build in `tools/EvilHop.Corpus/BuildProfiles.json` by path pattern. Existing
 quirks follow the naming `<Type>Has<Fields>`: `EntityHasExtendedFields`, `LinkHasExtendedFields`,
-`PickupTypesHasPulseFields`, `TriggerHasDirectionAndFlags`, `EnvironmentHasExtendedFields`,
+`PickupTypesHasPulseFields`, `TriggerHasDirectionAndFlags`, `AnimationTableHasStateSpeed`,
+`EnvironmentHasExtendedFields`,
 `NPCHasExtendedFields`, `SurfaceHasDamageFields`, `VillainHasTaskWidgetSecondId`, `TimerHasRandomRange`,
 `DestructibleObjectHasSwapEffects`, `BoulderHasSoundFalloff`, `ShrapnelHasExtendedFragFields`,
 `ShrapnelSoundHasExtendedFields`, `ShrapnelProjectileHasIntermediateFields`. Adding one means a new

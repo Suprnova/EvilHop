@@ -14,8 +14,11 @@ internal static class SniffProfileBuilder
     /// <paramref name="signals"/> imply about <see cref="FormatProfile.Platform"/>,
     /// <see cref="FormatProfile.StreamDataHasPaddingField"/>,
     /// <see cref="FormatProfile.EntityHasExtendedFields"/>,
-    /// <see cref="FormatProfile.LinkHasExtendedFields"/>, and
-    /// <see cref="FormatProfile.TriggerHasDirectionAndFlags"/>.
+    /// <see cref="FormatProfile.LinkHasExtendedFields"/>,
+    /// <see cref="FormatProfile.TriggerHasDirectionAndFlags"/>,
+    /// <see cref="FormatProfile.AnimationTableHasStateSpeed"/>,
+    /// <see cref="FormatProfile.EnvironmentHasExtendedFields"/>, and
+    /// <see cref="FormatProfile.NPCHasExtendedFields"/>.
     /// </summary>
     public static FormatProfile Build(GameVersion game, SniffSignals signals) =>
         Serializer.DefaultProfileFor(game) with
@@ -25,6 +28,7 @@ internal static class SniffProfileBuilder
             EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             LinkHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             TriggerHasDirectionAndFlags = signals.ClientVersion != ClientVersion.N100FPrototype,
+            AnimationTableHasStateSpeed = signals.ClientVersion != ClientVersion.N100FPrototype,
             EnvironmentHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             NPCHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype
         };

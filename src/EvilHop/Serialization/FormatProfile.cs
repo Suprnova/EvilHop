@@ -54,6 +54,12 @@ namespace EvilHop.Serialization;
 /// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose triggers are just the four
 /// positions; true everywhere else.
 /// </param>
+/// <param name="AnimationTableHasStateSpeed">
+/// Whether an <see cref="AnimationTableAsset.State"/> carries <see cref="AnimationTableAsset.State.Speed"/>
+/// after <see cref="AnimationTableAsset.State.EffectOffset"/>. False only for
+/// <see cref="GameVersion.N100F"/>'s 2001-06-11 prototype, whose states are just the first four
+/// fields; true everywhere else.
+/// </param>
 /// <param name="EnvironmentHasExtendedFields">
 /// Whether an <see cref="EnvironmentAsset"/> carries anything beyond <see cref="EnvironmentAsset.BspId"/>
 /// and <see cref="EnvironmentAsset.StartCameraId"/> - climate, lighting, and the secondary BSP/mapper
@@ -145,6 +151,7 @@ public sealed record FormatProfile(
     bool PickupTypesHasPulseFields = true,
     bool LinkHasExtendedFields = true,
     bool TriggerHasDirectionAndFlags = true,
+    bool AnimationTableHasStateSpeed = true,
     bool EnvironmentHasExtendedFields = true,
     bool NPCHasExtendedFields = true,
     bool SurfaceHasDamageFields = true,

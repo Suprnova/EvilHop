@@ -175,15 +175,48 @@ public class AnimationTableAssetTests
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
+    private static byte[] N100FTableData(bool hasSpeed = true) =>
+    [
+        .. TableHeader(rawCount: 1, fileCount: 1, stateCount: 2, constructFunc: 1),
+        .. U32(0xAAAAAAAA), // Raw[0]
+        .. File(0xF0, 0.0f, -1.0f, 1, 1, 0x60, -1, -1, -1),
+        .. U32(0x11111111), .. U32(0), .. U32(0), .. U32(0x60), .. hasSpeed ? F32(1.5f) : [],
+        .. U32(0x22222222), .. U32(0), .. U32(0), .. U32(0x60), .. hasSpeed ? F32(2.0f) : [],
+        .. U32(0), // trailing raw-index pool
+    ];
+
     [Fact]
-    public void Read_AnimationTable_UnderN100F_DegradesToGenericAsset()
+    public void Read_AnimationTableUnderN100F_ReadsStatesWithoutSubStateFields()
     {
-        byte[] data = SingleFileTableData();
+        var asset = (AnimationTableAsset)Read(N100FTableData(), N100FSerializer.DefaultProfile);
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        Assert.Equal(2, asset.States.Count);
+        Assert.Equal(0x22222222u, asset.States[1].StateId);
+        Assert.Equal(2.0f, asset.States[1].Speed);
+        Assert.Equal(0u, asset.States[1].SubStateId);
+        Assert.Equal(4, asset.GetUnparsedTail().Length);
+    }
 
-        Assert.IsNotType<AnimationTableAsset>(asset);
-        Assert.Equal(data, asset.GetUnparsedTail().ToArray());
+    [Fact]
+    public void Read_ThenWrite_AnimationTableUnderN100F_ReproducesInputBytes()
+    {
+        byte[] data = N100FTableData();
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Read_ThenWrite_AnimationTableWithoutStateSpeed_ReproducesInputBytes()
+    {
+        byte[] data = N100FTableData(hasSpeed: false);
+        var profile = N100FSerializer.DefaultProfile with { AnimationTableHasStateSpeed = false };
+
+        var asset = (AnimationTableAsset)Read(data, profile);
+
+        Assert.Equal(0x22222222u, asset.States[1].StateId);
+        Assert.Equal(4, asset.GetUnparsedTail().Length);
+        Assert.Equal(data, Write(asset, profile));
     }
 
     [Fact]
