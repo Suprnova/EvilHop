@@ -172,14 +172,45 @@ public class ButtonAssetTests
         Assert.Equal(data, Write(asset, profile));
     }
 
+    private static byte[] N100FData(uint activation = 1, uint autoReset = 1, uint springButtBounce = 1, byte buttonFlags = 1, byte linkCount = 0) =>
+    [
+        .. Prefix(linkCount),
+        .. EntityPrefix(hasPadding: false),
+        .. U32(activation),
+        0x00, 0x00, 0x00, 0x00,   // InitialState
+        .. U32(autoReset),
+        .. U32(springButtBounce),
+        buttonFlags, 0x00, 0x00, 0x00,
+        .. MechanismBytes(0x30),
+    ];
+
     [Fact]
-    public void Read_Button_UnderN100F_DegradesToGenericAsset()
+    public void Read_ButtonUnderN100F_PopulatesFields()
     {
-        byte[] data = Data(hasPadding: false);
+        var asset = (ButtonAsset)Read(N100FData(activation: 2, autoReset: 1, springButtBounce: 1, buttonFlags: 1), N100FSerializer.DefaultProfile);
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        Assert.Equal(ButtonAsset.ActivationMethod.Headbutt, asset.Activation);
+        Assert.Equal(0, asset.Physical.InitialState);
+        Assert.True(asset.AutoReset);
+        Assert.Equal(1, asset.Physical.SpringButtBounce);
+        Assert.Equal(1, asset.Physical.ButtonFlags);
+        Assert.Equal(-0.2f, asset.Motion.SlideDistance);
+    }
 
-        Assert.IsNotType<ButtonAsset>(asset, exactMatch: false);
+    [Theory]
+    [InlineData(0u)]
+    [InlineData(1u)]
+    [InlineData(2u)]
+    public void Read_ThenWrite_ButtonUnderN100F_ReproducesInputBytes(uint activation)
+    {
+        byte[] data =
+        [
+            .. N100FData(activation: activation, linkCount: 1),
+            .. LinkBytes(0x37, 0x12, 0x55667788),
+        ];
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
     [Fact]
