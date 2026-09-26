@@ -7,14 +7,14 @@ namespace EvilHop.Assets;
 public partial class PlatformMotion
 {
     /// <summary>
-    /// A <see cref="PlatformMotion"/> for a falling platform.
+    /// A <see cref="PlatformMotion"/> with no known behavior.
     /// </summary>
     public sealed class Falling() : PlatformMotion
     {
         /// <summary>Unknown.</summary>
         public float Speed { get; set; }
 
-        /// <summary>An unknown <see cref="AssetType.Model"/> <see cref="AssetId"/>.</summary>
+        /// <summary>Unknown.</summary>
         public AssetId BustModelId { get; set; }
 
         internal override PlatformType PlatformType => PlatformType.Falling;

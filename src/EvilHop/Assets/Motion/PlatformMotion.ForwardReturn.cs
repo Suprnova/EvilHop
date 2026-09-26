@@ -6,20 +6,20 @@ namespace EvilHop.Assets;
 public partial class PlatformMotion
 {
     /// <summary>
-    /// A <see cref="PlatformMotion"/> that moves forward, then returns.
+    /// A <see cref="PlatformMotion"/> with no known behavior.
     /// </summary>
     public sealed class ForwardReturn() : PlatformMotion
     {
-        /// <summary>The speed to move forward at.</summary>
+        /// <summary>Unknown.</summary>
         public float ForwardSpeed { get; set; }
 
-        /// <summary>The speed to return at.</summary>
+        /// <summary>Unknown.</summary>
         public float ReturnSpeed { get; set; }
 
-        /// <summary>The time, in seconds, to wait before returning.</summary>
+        /// <summary>Unknown.</summary>
         public float ReturnDelay { get; set; }
 
-        /// <summary>The time, in seconds, to wait after returning.</summary>
+        /// <summary>Unknown.</summary>
         public float PostReturnDelay { get; set; }
 
         internal override PlatformType PlatformType => PlatformType.ForwardReturn;

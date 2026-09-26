@@ -12,30 +12,38 @@ public partial class PlatformMotion
     public sealed class Breakaway() : PlatformMotion
     {
         /// <summary>
-        /// The time, in seconds, the platform takes to fall after the player stands on it.
+        /// The time, in seconds, the platform trembles after the player stands on it before it falls.
         /// </summary>
         public float BreakDelay { get; set; }
 
         /// <summary>
-        /// The time, in seconds, after falling before the platform resets.
+        /// The time, in seconds, after the platform falls before it resets.
         /// </summary>
         public float ResetDelay { get; set; }
 
         /// <summary>
-        /// The <see cref="AssetId"/> of the <see cref="AssetType.Model"/> the platform switches to as it
-        /// falls, if any. Only present in <see cref="GameVersion.N100F"/> and
-        /// <see cref="GameVersion.BFBB"/>.
+        /// The <see cref="AssetType.Model"/> the platform switches to as it falls, if any.
         /// </summary>
+        /// <remarks>
+        /// Only present in <see cref="GameVersion.N100F"/> and <see cref="GameVersion.BFBB"/>.
+        /// </remarks>
         public AssetId BustModelId { get; set; }
 
         /// <summary>
-        /// This platform's breakaway flags. Not present in <see cref="GameVersion.N100F"/>.
+        /// This platform's breakaway flags.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public BreakawayBehavior BreakFlags { get; set; }
 
         /// <summary>
-        /// Unknown. Not present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
+        /// The time, in seconds, after the platform breaks before the player and NPCs stop colliding
+        /// with it.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/> or <see cref="GameVersion.BFBB"/>.
+        /// </remarks>
         public float CollisionOffTime { get; set; }
 
         internal override PlatformType PlatformType => PlatformType.Breakaway;
@@ -78,7 +86,7 @@ public partial class PlatformMotion
         }
 
         /// <summary>
-        /// Flags governing certain behaviors of a <see cref="Breakaway"/> platform.
+        /// Behavior switches for a <see cref="Breakaway"/> platform.
         /// </summary>
         [Flags]
         public enum BreakawayBehavior : uint
@@ -90,6 +98,9 @@ public partial class PlatformMotion
             /// <summary>
             /// The platform doesn't break while the player is sneaking on it.
             /// </summary>
+            /// <remarks>
+            /// Ignored by <see cref="GameVersion.TSSM"/>.
+            /// </remarks>
             AllowSneak = 1 << 0,
         }
     }

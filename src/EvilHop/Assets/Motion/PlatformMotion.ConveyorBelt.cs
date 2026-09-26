@@ -11,8 +11,7 @@ public partial class PlatformMotion
     public sealed class ConveyorBelt() : PlatformMotion
     {
         /// <summary>
-        /// The speed, in units per second, the player slides along the platform's X axis while
-        /// standing on it.
+        /// The speed, in units per second, the player is carried along the platform's X axis.
         /// </summary>
         public float Speed { get; set; }
 

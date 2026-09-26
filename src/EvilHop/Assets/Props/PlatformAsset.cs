@@ -16,9 +16,28 @@ namespace EvilHop.Assets;
 public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 0x06), IHasModel, IHasSurface, IHasAnimList, Physical.IPlatformAsset
 {
     /// <summary>
-    /// This platform's behavior flags.
+    /// Whether the player and NPCs collide with this platform.
     /// </summary>
-    public Behavior Flags { get; set; }
+    /// <remarks>
+    /// Projects <see cref="Behavior.Solid"/>.
+    /// </remarks>
+    public bool Solid
+    {
+        get => Physical.PlatformFlags.HasFlag(Behavior.Solid);
+        set => Physical.PlatformFlags = Physical.PlatformFlags.WithFlag(Behavior.Solid, value);
+    }
+
+    /// <summary>
+    /// Whether this platform shakes when the player lands on or leaves it.
+    /// </summary>
+    /// <remarks>
+    /// Projects <see cref="Behavior.Shake"/>.
+    /// </remarks>
+    public bool Shakes
+    {
+        get => Physical.PlatformFlags.HasFlag(Behavior.Shake);
+        set => Physical.PlatformFlags = Physical.PlatformFlags.WithFlag(Behavior.Shake, value);
+    }
 
     /// <summary>
     /// How this platform moves or reacts. Determines <see cref="Physical.IPlatformAsset.PlatformType"/>.
@@ -40,6 +59,9 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.IPlatformAsset Physical => this;
+
+    private Behavior _platformFlags;
+    Behavior Physical.IPlatformAsset.PlatformFlags { get => _platformFlags; set => _platformFlags = value; }
 
     private PlatformType? _overriddenPlatformType;
     PlatformType Physical.IPlatformAsset.PlatformType
@@ -82,7 +104,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
         byte subtype = asset.Physical.Subtype;
         var platformType = (PlatformType)reader.ReadByte();
         reader.ReadByte(); // padding
-        asset.Flags = (Behavior)reader.ReadUInt16();
+        asset.Physical.PlatformFlags = (Behavior)reader.ReadUInt16();
 
         if (platformType <= PlatformType.Pendulum)
         {
@@ -113,7 +135,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
 
         writer.Write((byte)asset.Physical.PlatformType);
         writer.Write((byte)0); // padding
-        writer.Write((ushort)asset.Flags);
+        writer.Write((ushort)asset.Physical.PlatformFlags);
 
         switch (asset.Motion)
         {
@@ -133,7 +155,7 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
     }
 
     /// <summary>
-    /// Flags controlling physical solidity, shake reaction, and player collision for a <see cref="PlatformAsset"/>.
+    /// Behavior switches for a <see cref="PlatformAsset"/>.
     /// </summary>
     [Flags]
     public enum Behavior : ushort
@@ -147,9 +169,34 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
         /// </summary>
         Shake = 1 << 0,
         /// <summary>
-        /// The platform is solid.
+        /// A <see cref="PlatformMotion.Springboard"/> only launches a player who lands on it from
+        /// the air, not one who walks onto it.
+        /// </summary>
+        /// <remarks>
+        /// Ignored by every game except <see cref="GameVersion.BFBB"/> and
+        /// <see cref="GameVersion.TSSM"/>.
+        /// </remarks>
+        AirborneLaunchOnly = 1 << 1,
+        /// <summary>
+        /// The player and NPCs collide with the platform.
         /// </summary>
         Solid = 1 << 2,
+        /// <summary>
+        /// The platform turns to face the camera every frame.
+        /// </summary>
+        /// <remarks>
+        /// Ignored by every game except <see cref="GameVersion.ROTU"/> and
+        /// <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        FaceCamera = 1 << 3,
+        /// <summary>
+        /// The platform turns to face the player every frame.
+        /// </summary>
+        /// <remarks>
+        /// Ignored by every game except <see cref="GameVersion.ROTU"/> and
+        /// <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        FacePlayer = 1 << 4,
     }
 }
 
@@ -160,6 +207,14 @@ public static partial class Physical
     /// </summary>
     public interface IPlatformAsset : IEntityAsset
     {
+        /// <summary>
+        /// This platform's behavior switches.
+        /// </summary>
+        /// <remarks>
+        /// Projected by <see cref="PlatformAsset.Solid"/> and <see cref="PlatformAsset.Shakes"/>.
+        /// </remarks>
+        PlatformAsset.Behavior PlatformFlags { get; set; }
+
         /// <summary>
         /// The platform's type, selecting how its type-specific block is read. Follows
         /// <see cref="PlatformAsset.Motion"/>, and is followed in turn by

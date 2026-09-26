@@ -146,8 +146,13 @@ public class PlatformAssetTests
         return Platform(game, 10, 10, block, EmptyMotionBlock);
     }
 
-    private static byte[] TeeterTotter(GameVersion game) => Platform(game, 11, 11,
-        [.. Floats(0, 0.5f, 3), .. game is GameVersion.ROTU ? U32(0x69EC5797) : []], EmptyMotionBlock);
+    private static byte[] TeeterTotter(GameVersion game)
+    {
+        byte[] soundGroups = game is GameVersion.ROTU or GameVersion.Ratatouille
+            ? [.. U32(0x69EC5797), .. U32(0x11110001)]
+            : [];
+        return Platform(game, 11, 11, [.. Floats(0, 0.5f, 3), .. soundGroups], EmptyMotionBlock);
+    }
 
     private static byte[] Paddle(GameVersion game) => Platform(game, 12, 12,
         [.. U32(1), .. U32(3), .. F32(360), .. Floats(0, 90, 180, 0, 0, 0), .. U32(0x13), .. Floats(1, 2, 3, 4)],
@@ -191,6 +196,7 @@ public class PlatformAssetTests
         Case(GameVersion.ROTU, Mechanism),
         Case(GameVersion.ROTU, TeeterTotter),
         Case(GameVersion.Ratatouille, MovePoint),
+        Case(GameVersion.Ratatouille, TeeterTotter),
         Case(GameVersion.Ratatouille, FullyManipulable),
     ];
 
@@ -268,7 +274,9 @@ public class PlatformAssetTests
     {
         var asset = (PlatformAsset)Read(GameVersion.BFBB, ExtendRetract(GameVersion.BFBB));
 
-        Assert.Equal(PlatformAsset.Behavior.Solid, asset.Flags);
+        Assert.Equal(PlatformAsset.Behavior.Solid, asset.Physical.PlatformFlags);
+        Assert.True(asset.Solid);
+        Assert.False(asset.Shakes);
         Assert.Equal(new AssetId(0xAAAA0001), ((IHasSurface)asset).SurfaceId);
         Assert.Equal(new AssetId(0xAAAA0002), ((IHasModel)asset).ModelId);
         Assert.Equal(new AssetId(0xAAAA0003), ((IHasAnimList)asset).AnimListId);
@@ -417,18 +425,33 @@ public class PlatformAssetTests
         Assert.Equal([6f, 0f, 0f], motion.JumpHeights);
         Assert.Equal(2f, motion.BounceHeight);
         Assert.Equal(new Vector3(0, 1, 0), motion.JumpDirection);
-        Assert.Equal(PlatformMotion.Springboard.LockingBehavior.LockView | PlatformMotion.Springboard.LockingBehavior.LockMovement, motion.SpringFlags);
+        Assert.Equal(PlatformMotion.Springboard.LockingBehavior.HighBounceCamera | PlatformMotion.Springboard.LockingBehavior.LockMovement, motion.SpringFlags);
     }
 
-    [Fact]
-    public void Read_TeeterTotterUnderROTU_PopulatesUnknown()
+    [Theory]
+    [InlineData(GameVersion.ROTU)]
+    [InlineData(GameVersion.Ratatouille)]
+    public void Read_TeeterTotterWithSoundGroups_PopulatesSoundGroupIds(GameVersion game)
     {
-        var asset = (PlatformAsset)Read(GameVersion.ROTU, TeeterTotter(GameVersion.ROTU));
+        var asset = (PlatformAsset)Read(game, TeeterTotter(game));
 
         var motion = Assert.IsType<TeeterTotter>(asset.Motion);
         Assert.Equal(0.5f, motion.MaxTilt);
         Assert.Equal(3f, motion.InverseMass);
-        Assert.Equal(0x69EC5797u, motion.Unknown);
+        Assert.Equal(new AssetId(0x69EC5797), motion.CreakSoundGroupId);
+        Assert.Equal(new AssetId(0x11110001), motion.EndSoundGroupId);
+    }
+
+    [Fact]
+    public void Solid_Set_ChangesOnlyItsBit()
+    {
+        var asset = new PlatformAsset();
+        asset.Physical.PlatformFlags = PlatformAsset.Behavior.Shake | PlatformAsset.Behavior.FacePlayer;
+
+        asset.Solid = true;
+
+        Assert.Equal(PlatformAsset.Behavior.Shake | PlatformAsset.Behavior.FacePlayer | PlatformAsset.Behavior.Solid,
+            asset.Physical.PlatformFlags);
     }
 
     [Fact]

@@ -26,9 +26,12 @@ public partial class PlatformMotion
         public int StartOrientation { get; set; }
 
         /// <summary>
-        /// The yaw rotations, in degrees, the paddle can rest at. At most <see cref="MaxOrientations"/>
-        /// elements.
+        /// The yaws, in degrees, the paddle can rest at.
         /// </summary>
+        /// <remarks>
+        /// Relative to the paddle's <see cref="EntityAsset.Angle"/>. At most
+        /// <see cref="MaxOrientations"/> elements.
+        /// </remarks>
         /// <exception cref="ArgumentException">The assigned value has more than <see cref="MaxOrientations"/> elements.</exception>
         public ImmutableArray<float> Orientations
         {
@@ -40,8 +43,11 @@ public partial class PlatformMotion
 
         /// <summary>
         /// The orientation, in degrees, that stands in for the first of <see cref="Orientations"/> when
-        /// wrapping around from the last, such as 360.
+        /// wrapping around.
         /// </summary>
+        /// <remarks>
+        /// Typically the first orientation plus a full turn, such as 360.
+        /// </remarks>
         public float OrientationLoop { get; set; }
 
         /// <summary>
@@ -49,7 +55,7 @@ public partial class PlatformMotion
         /// </summary>
         public PaddleBehavior PaddleFlags { get; set; }
 
-        /// <summary>The paddle's rotation speed.</summary>
+        /// <summary>The paddle's rotation speed, in degrees per second.</summary>
         public float RotateSpeed { get; set; }
 
         /// <summary>The time, in seconds, to ease into a rotation.</summary>
@@ -58,7 +64,7 @@ public partial class PlatformMotion
         /// <summary>The time, in seconds, to ease out of a rotation.</summary>
         public float DecelTime { get; set; }
 
-        /// <summary>The radius of the paddle's hub.</summary>
+        /// <summary>Unknown.</summary>
         public float HubRadius { get; set; }
 
         internal override PlatformType PlatformType => PlatformType.Paddle;
@@ -101,7 +107,7 @@ public partial class PlatformMotion
         }
 
         /// <summary>
-        /// Flags controlling paddle collision, oscillation, wrapping, and cruise bubble reactions.
+        /// Switches controlling which hits rotate a paddle, and how.
         /// </summary>
         [Flags]
         public enum PaddleBehavior : uint
@@ -111,17 +117,27 @@ public partial class PlatformMotion
             /// </summary>
             None = 0,
             /// <summary>
-            /// The paddle can rotate forward, toward its next orientation.
+            /// A hit can rotate the paddle forward, toward its next orientation.
             /// </summary>
+            /// <remarks>
+            /// Otherwise the paddle stutters in place. A <b>Run</b> event rotates it either way.
+            /// </remarks>
             RotatesForward = 1 << 0,
             /// <summary>
-            /// The paddle can rotate backward, toward its previous orientation.
+            /// A hit can rotate the paddle backward, toward its previous orientation.
             /// </summary>
+            /// <remarks>
+            /// Otherwise the paddle stutters in place. A <b>Run</b> event rotates it either way.
+            /// </remarks>
             RotatesBackward = 1 << 1,
             /// <summary>
             /// The paddle wraps around between its last and first orientations.
             /// </summary>
             Wraps = 1 << 2,
+            /// <summary>
+            /// The Bubble Bowl can rotate the paddle.
+            /// </summary>
+            HitByBubbleBowl = 1 << 4,
             /// <summary>
             /// The Cruise Bubble can rotate the paddle.
             /// </summary>
