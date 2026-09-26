@@ -82,7 +82,6 @@ variant row (yaw $\pi/2$; yaw turns +Z toward +X).
   - Always borrow a model's corresponding texture (`.RW3`) alongside it.
   - Only borrow models actively referenced by shipped entities; unreferenced leftover models in shipped archives can crash on load.
 - **IndustrialPark archives**: Community archives authored by IndustrialPark omit `DPAK`'s padding-amount field. Read them with `FormatProfile with { StreamDataHasPaddingField = false }`.
-- **Surface ExtendedData (TSSM onward)**: Copy `ExtendedData` (~140 bytes) from a shipped surface asset of the same type rather than authoring an empty one.
 - **Format sniffing**: Format sniffing cannot differentiate TSSM, The Incredibles, and Ratatouille (they share format versions). Explicitly construct profiles via `GameVersion`.
 - **Scene ID resolution**: `ZZ01` needs no engine registration; the engine resolves it to `files/{slot}/zz01.HIP`. Folder casing matches disc convention (lowercase in BFBB, uppercase in TSSM); archive file names are lowercase.
 - **Boot INIs**: Boot INIs must preserve CRLF line endings.
@@ -146,4 +145,4 @@ To support an additional game, add an entry to the `setups` dictionary in `scrip
 - The extracted disc directory and boot INI name/settings.
 - The workshop slot (`ZZ01`) and directory.
 - Model, texture, and skydome borrow targets (with tile dimensions).
-- A reference asset to copy shared opaque values from (such as SURF `ExtendedData`).
+- A reference asset to copy shared values from (such as a shipped SURF's friction and slide angles).

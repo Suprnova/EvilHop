@@ -118,6 +118,61 @@ public class SurfaceAssetTests
         .. Core(gameDamageType: 6, phys_flags: 0x10, friction: 1.0f, on: 1),
     ];
 
+    private static byte[] Extension() =>
+    [
+        .. U32(0xCAFEF00D),                                      // impact_sound
+        0x02, 0x00, 0x00, 0x00,                                  // dash_impact_type + pad
+        .. F32(5f), .. F32(1f), .. F32(0.05f), .. F32(0.3f), .. F32(0f), // dash_impact_throw_back..dash_pass
+        .. F32(30f), .. F32(20f), .. F32(25f), .. F32(10f),      // dash_ramp_max_distance..dash_ramp_height
+        .. U32(0x0BADBEEF),                                      // dash_ramp_target_movepoint_id
+        .. U32(100),                                             // damage_amount
+        .. U32(6),                                               // damage_type
+        .. U32(0x1111), .. U32(0x2222), .. U32(0x3333), .. F32(2f), // off_surface
+        .. U32(0x4444), .. U32(0x5555), .. U32(0x6666), .. F32(3f), // on_surface
+        .. U32(0x7777), .. F32(0.5f), .. F32(0.25f),             // hit_decal_data[0]
+        .. new byte[24],                                         // hit_decal_data[1..2]
+        .. F32(1.5f),                                            // off_surface_time
+        0x01,                                                    // swimmable_surface
+        0x01,                                                    // dash_fall
+        0x00,                                                    // need_button_press
+        0x01,                                                    // dash_attach
+        0x00,                                                    // footstep_decals
+        0x00, 0x00, 0x00, 0x00,                                  // pad1..pad4
+        0x0B,                                                    // driving_surface_type
+        0x00, 0x00,                                              // struct padding
+    ];
+
+    private static byte[] TssmData(byte linkCount = 0) =>
+    [
+        .. Prefix(linkCount),
+        .. Core(gameDamageType: 0, phys_flags: 0, friction: 1.0f, on: 1),
+        .. Extension(),
+    ];
+
+    private static byte[] N100FUvfx(float rotSpd) =>
+    [
+        .. U32(0),
+        .. F32(0),
+        .. F32(rotSpd),
+        .. Vec3(0, 0, 0),
+        .. Vec3(0, 0, 0),
+        .. Vec3(1, 1, 0),
+        .. Vec3(0, 0, 0),
+    ];
+
+    private static byte[] N100FData()
+    {
+        byte[] core = Core(gameDamageType: 1, phys_flags: 0, friction: 0.5f, on: 1);
+        const int uvfxStart = 0x54 - 8;
+        return
+        [
+            .. Prefix(linkCount: 0),
+            .. core[..uvfxStart],
+            .. N100FUvfx(rotSpd: 45f), .. N100FUvfx(rotSpd: 0f),
+            .. core[(uvfxStart + 2 * DefaultUvfx.Length)..^20], // on + surf_pad
+        ];
+    }
+
     [Fact]
     public void Read_Surface_ProducesSurfaceAsset() =>
         Assert.IsType<SurfaceAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
@@ -151,7 +206,6 @@ public class SurfaceAssetTests
         Assert.Equal(1f, asset.WallJumpScaleY);
         Assert.Equal(0f, asset.DamageTimer);
         Assert.Equal(0f, asset.DamageBounce);
-        Assert.Empty(asset.ExtendedData);
     }
 
     [Fact]
@@ -178,23 +232,73 @@ public class SurfaceAssetTests
     }
 
     [Fact]
-    public void Read_ThenWrite_SurfaceWithExtendedData_ReproducesInputBytes()
+    public void Read_Surface_UnderTssm_PopulatesExtendedFields()
     {
-        // TSSM onward appends a variable amount of unmodelled data before any links; this is
-        // computed from what's left in the stream, not assumed, so any size round-trips.
-        byte[] extendedData = [.. Enumerable.Range(1, 140).Select(i => (byte)i)];
-        byte[] data =
-        [
-            .. Prefix(linkCount: 1),
-            .. Core(gameDamageType: 0, phys_flags: 0, friction: 1.0f, on: 1),
-            .. extendedData,
-            .. LinkBytes(1, 2, 0xAABBCCDD),
-        ];
+        var asset = (SurfaceAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
+
+        Assert.Equal(new AssetId(0xCAFEF00D), asset.Physical.ImpactSound);
+        Assert.Equal(2, asset.Physical.DashImpactType);
+        Assert.Equal(5f, asset.Physical.DashImpactThrowBack);
+        Assert.Equal(10f, asset.Physical.DashRampHeight);
+        Assert.Equal(new AssetId(0x0BADBEEF), asset.Physical.DashRampTarget);
+        Assert.Equal(100, asset.DamageAmount);
+        Assert.Equal(6, asset.DamageSource);
+        Assert.Equal(new AssetId(0x2222), asset.OffSurfaceFootsteps.Sound);
+        Assert.Equal(2f, asset.OffSurfaceFootsteps.Duration);
+        Assert.Equal(new AssetId(0x4444), asset.OnSurfaceFootsteps.ParticleEmitter);
+        Assert.Equal(new AssetId(0x6666), asset.OnSurfaceFootsteps.Texture);
+        Assert.Equal(new HitDecal(new AssetId(0x7777), 0.5f, 0.25f), asset.Physical.HitDecals[0]);
+        Assert.Equal(default, asset.Physical.HitDecals[2]);
+        Assert.Equal(1.5f, asset.OffSurfaceTime);
+        Assert.True(asset.IsSwimmable);
+        Assert.Equal(1, asset.Physical.DashFall);
+        Assert.Equal(0, asset.Physical.NeedButtonPress);
+        Assert.Equal(1, asset.Physical.DashAttach);
+        Assert.Equal(0, asset.Physical.FootstepDecals);
+        Assert.Equal(11, asset.Physical.DrivingSurfaceType);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(2)]
+    public void Read_ThenWrite_SurfaceUnderTssm_ReproducesInputBytes(byte linkCount)
+    {
+        byte[] data = [.. TssmData(linkCount), .. Enumerable.Range(0, linkCount).SelectMany(i => LinkBytes((short)i, 2, 0xAABBCCDD))];
         var profile = TSSMSerializer.DefaultProfile;
 
-        var asset = (SurfaceAsset)Read(data, profile);
-        Assert.Equal(extendedData, asset.ExtendedData.AsSpan().ToArray());
-        Assert.Equal(data, Write(asset, profile));
+        Assert.Equal(data, Write(Read(data, profile), profile));
+    }
+
+    [Fact]
+    public void Write_NewSurfaceUnderTssm_WritesExtendedFields()
+    {
+        var profile = TSSMSerializer.DefaultProfile;
+
+        byte[] written = Write(new SurfaceAsset(), profile);
+
+        Assert.Equal(TssmData().Length, written.Length);
+    }
+
+    [Fact]
+    public void Read_Surface_UnderN100F_PopulatesEveryField()
+    {
+        var asset = (SurfaceAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+
+        Assert.Equal(DamageKind.Fatal1, asset.Damage);
+        Assert.Equal(0.5f, asset.Friction);
+        Assert.Equal(45f, asset.Uvfxs[0].RotationSpeed);
+        Assert.Equal(new Vector3(1, 1, 0), asset.Uvfxs[1].Scale);
+        Assert.True(asset.IsEnabled);
+        Assert.Empty(asset.GetUnparsedTail().ToArray());
+    }
+
+    [Fact]
+    public void Read_ThenWrite_SurfaceUnderN100F_ReproducesInputBytes()
+    {
+        byte[] data = N100FData();
+        var profile = N100FSerializer.DefaultProfile;
+
+        Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
     [Fact]
@@ -222,15 +326,22 @@ public class SurfaceAssetTests
         Assert.Equal(data, Write(asset, profile));
     }
 
-    [Fact]
-    public void Read_Surface_UnderN100F_DegradesToGenericAsset()
+    [Theory]
+    [InlineData(true, 1)]
+    [InlineData(false, 0)]
+    public void IsSwimmable_Set_ProjectsOntoPhysicalSwimmable(bool value, byte expected)
     {
-        byte[] data = BfbbData();
+        var asset = new SurfaceAsset { IsSwimmable = value };
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        Assert.Equal(expected, asset.Physical.Swimmable);
+    }
 
-        Assert.IsNotType<SurfaceAsset>(asset);
-        Assert.IsType<BaseAsset>(asset, exactMatch: false);
+    [Fact]
+    public void HitDecals_SetWithWrongLength_Throws()
+    {
+        var asset = new SurfaceAsset();
+
+        Assert.Throws<ArgumentException>(() => asset.Physical.HitDecals = [default, default]);
     }
 
     [Fact]

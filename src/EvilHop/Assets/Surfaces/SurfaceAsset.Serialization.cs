@@ -45,19 +45,19 @@ public sealed partial class SurfaceAsset
 
         asset.Physical.IsEnabled = reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
-        asset.OutOfBoundsDelay = reader.ReadSingle();
-        asset.WallJumpScaleXZ = reader.ReadSingle();
-        asset.WallJumpScaleY = reader.ReadSingle();
-        if (profile.SurfaceHasDamageFields)
+        if (profile.Game is not GameVersion.N100F)
         {
-            asset.DamageTimer = reader.ReadSingle();
-            asset.DamageBounce = reader.ReadSingle();
+            asset.OutOfBoundsDelay = reader.ReadSingle();
+            asset.WallJumpScaleXZ = reader.ReadSingle();
+            asset.WallJumpScaleY = reader.ReadSingle();
+            if (profile.SurfaceHasDamageFields)
+            {
+                asset.DamageTimer = reader.ReadSingle();
+                asset.DamageBounce = reader.ReadSingle();
+            }
         }
-
-        // Whatever's left before the links - 0 in most BFBB archives, otherwise a game/build-specific
-        // amount of unmodelled data. Computed rather than assumed, so every observed size round-trips.
-        int remaining = (int)(reader.BaseStream.Length - reader.BaseStream.Position);
-        asset.ExtendedData = [.. reader.ReadBytes(remaining - 32 * asset.Physical.LinkCount)];
+        if (profile.Game is not (GameVersion.N100F or GameVersion.BFBB))
+            ReadExtendedFields(asset, reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile));
@@ -93,19 +93,85 @@ public sealed partial class SurfaceAsset
 
         writer.Write(asset.Physical.IsEnabled);
         writer.Write(new byte[3]); // padding
-        writer.Write(asset.OutOfBoundsDelay);
-        writer.Write(asset.WallJumpScaleXZ);
-        writer.Write(asset.WallJumpScaleY);
-        if (profile.SurfaceHasDamageFields)
+        if (profile.Game is not GameVersion.N100F)
         {
-            writer.Write(asset.DamageTimer);
-            writer.Write(asset.DamageBounce);
+            writer.Write(asset.OutOfBoundsDelay);
+            writer.Write(asset.WallJumpScaleXZ);
+            writer.Write(asset.WallJumpScaleY);
+            if (profile.SurfaceHasDamageFields)
+            {
+                writer.Write(asset.DamageTimer);
+                writer.Write(asset.DamageBounce);
+            }
         }
-
-        writer.Write(asset.ExtendedData.AsSpan());
+        if (profile.Game is not (GameVersion.N100F or GameVersion.BFBB))
+            WriteExtendedFields(asset, writer, profile);
 
         foreach (var link in asset.Links)
             Link.Write(link, writer, profile);
         writer.Write(asset.GetUnparsedTail());
+    }
+
+    private static void ReadExtendedFields(SurfaceAsset asset, EndianReader reader, FormatProfile profile)
+    {
+        asset.Physical.ImpactSound = reader.ReadAssetId();
+        asset.Physical.DashImpactType = reader.ReadByte();
+        reader.ReadBytes(3); // padding, always zero
+        asset.Physical.DashImpactThrowBack = reader.ReadSingle();
+        asset.Physical.DashSprayMagnitude = reader.ReadSingle();
+        asset.Physical.DashCoolRate = reader.ReadSingle();
+        asset.Physical.DashCoolAmount = reader.ReadSingle();
+        asset.Physical.DashPass = reader.ReadSingle();
+        asset.Physical.DashRampMaxDistance = reader.ReadSingle();
+        asset.Physical.DashRampMinDistance = reader.ReadSingle();
+        asset.Physical.DashRampKeySpeed = reader.ReadSingle();
+        asset.Physical.DashRampHeight = reader.ReadSingle();
+        asset.Physical.DashRampTarget = reader.ReadAssetId();
+        asset.DamageAmount = reader.ReadInt32();
+        asset.DamageSource = reader.ReadInt32();
+        asset.OffSurfaceFootsteps = FootstepEffect.Read(reader, profile);
+        asset.OnSurfaceFootsteps = FootstepEffect.Read(reader, profile);
+        asset.Physical.HitDecals = [HitDecal.Read(reader, profile), HitDecal.Read(reader, profile), HitDecal.Read(reader, profile)];
+        asset.OffSurfaceTime = reader.ReadSingle();
+        asset.Physical.Swimmable = reader.ReadByte();
+        asset.Physical.DashFall = reader.ReadByte();
+        asset.Physical.NeedButtonPress = reader.ReadByte();
+        asset.Physical.DashAttach = reader.ReadByte();
+        asset.Physical.FootstepDecals = reader.ReadByte();
+        reader.ReadBytes(4); // padding, always zero
+        asset.Physical.DrivingSurfaceType = reader.ReadByte();
+        reader.ReadBytes(2); // padding, always zero
+    }
+
+    private static void WriteExtendedFields(SurfaceAsset asset, EndianWriter writer, FormatProfile profile)
+    {
+        writer.Write(asset.Physical.ImpactSound);
+        writer.Write(asset.Physical.DashImpactType);
+        writer.Write(new byte[3]); // padding
+        writer.Write(asset.Physical.DashImpactThrowBack);
+        writer.Write(asset.Physical.DashSprayMagnitude);
+        writer.Write(asset.Physical.DashCoolRate);
+        writer.Write(asset.Physical.DashCoolAmount);
+        writer.Write(asset.Physical.DashPass);
+        writer.Write(asset.Physical.DashRampMaxDistance);
+        writer.Write(asset.Physical.DashRampMinDistance);
+        writer.Write(asset.Physical.DashRampKeySpeed);
+        writer.Write(asset.Physical.DashRampHeight);
+        writer.Write(asset.Physical.DashRampTarget);
+        writer.Write(asset.DamageAmount);
+        writer.Write(asset.DamageSource);
+        FootstepEffect.Write(asset.OffSurfaceFootsteps, writer, profile);
+        FootstepEffect.Write(asset.OnSurfaceFootsteps, writer, profile);
+        foreach (var decal in asset.Physical.HitDecals)
+            HitDecal.Write(decal, writer, profile);
+        writer.Write(asset.OffSurfaceTime);
+        writer.Write(asset.Physical.Swimmable);
+        writer.Write(asset.Physical.DashFall);
+        writer.Write(asset.Physical.NeedButtonPress);
+        writer.Write(asset.Physical.DashAttach);
+        writer.Write(asset.Physical.FootstepDecals);
+        writer.Write(new byte[4]); // padding
+        writer.Write(asset.Physical.DrivingSurfaceType);
+        writer.Write(new byte[2]); // padding
     }
 }

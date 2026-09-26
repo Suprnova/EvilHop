@@ -1,4 +1,6 @@
 using EvilHop.Common;
+using EvilHop.Primitives;
+using EvilHop.Serialization;
 using System.Collections.Immutable;
 
 namespace EvilHop.Assets;
@@ -34,12 +36,18 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Further contact within the window neither damages nor knocks the player back. 0 defers to
     /// the game ini's <c>G.DamageTimeSurface</c>.
     /// </summary>
+    /// <remarks>
+    /// Not present in <see cref="GameVersion.N100F"/>.
+    /// </remarks>
     public float DamageTimer { get; set; }
 
     /// <summary>
     /// The vertical velocity applied to the player as knockback when this surface damages them. 0
     /// defers to the game ini's <c>G.DamageSurfKnock</c>.
     /// </summary>
+    /// <remarks>
+    /// Not present in <see cref="GameVersion.N100F"/>.
+    /// </remarks>
     public float DamageBounce { get; set; }
 
     /// <summary>
@@ -116,7 +124,8 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Only takes effect when <see cref="PhysicsBehavior.OutOfBounds"/> is set.
     /// </summary>
     /// <remarks>
-    /// -1 defers to the game ini's <c>player.state.out_of_bounds.out_time</c>.
+    /// -1 defers to the game ini's <c>player.state.out_of_bounds.out_time</c>. Not present in
+    /// <see cref="GameVersion.N100F"/>.
     /// </remarks>
     public float OutOfBoundsDelay { get; set; }
 
@@ -124,21 +133,87 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// Scales the player's horizontal wall-jump velocity off this surface. Applies only when
     /// <see cref="PhysicsBehavior.WallJump"/> is set.
     /// </summary>
+    /// <remarks>
+    /// Not present in <see cref="GameVersion.N100F"/>.
+    /// </remarks>
     public float WallJumpScaleXZ { get; set; }
 
     /// <summary>
     /// Scales the player's vertical wall-jump velocity off this surface. Applies only when
     /// <see cref="PhysicsBehavior.WallJump"/> is set.
     /// </summary>
+    /// <remarks>
+    /// Not present in <see cref="GameVersion.N100F"/>.
+    /// </remarks>
     public float WallJumpScaleY { get; set; }
 
     /// <summary>
-    /// Additional per-surface data appended after every field above and before
-    /// <see cref="BaseAsset.Links"/>. Empty in most <see cref="GameVersion.BFBB"/> archives; from
-    /// <see cref="GameVersion.TSSM"/> onward, typically 140 bytes, occasionally more in specific
-    /// builds. Its layout is unknown - preserved byte-exact rather than modelled.
+    /// The damage the player takes on contact with this surface; 0 or less deals none.
     /// </summary>
-    public ImmutableArray<byte> ExtendedData { get; set; } = [];
+    /// <remarks>
+    /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public int DamageAmount { get; set; }
+
+    /// <summary>
+    /// The hit source the player's <see cref="DamageAmount"/> damage is dealt as.
+    /// </summary>
+    /// <remarks>
+    /// A value of the game's own <c>zHitSource</c> enumeration, which differs per game. Only present
+    /// in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public int DamageSource { get; set; }
+
+    /// <summary>
+    /// The footstep effects of a player walking on this surface.
+    /// </summary>
+    /// <remarks>
+    /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public FootstepEffect OnSurfaceFootsteps { get; set; } = new();
+
+    /// <summary>
+    /// The footstep effects of a player who has just left this surface, for
+    /// <see cref="OffSurfaceTime"/> seconds.
+    /// </summary>
+    /// <remarks>
+    /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public FootstepEffect OffSurfaceFootsteps { get; set; } = new();
+
+    /// <summary>
+    /// The time, in seconds, <see cref="OffSurfaceFootsteps"/> stays in effect after the player
+    /// leaves this surface; 0 or less disables it.
+    /// </summary>
+    /// <remarks>
+    /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public float OffSurfaceTime { get; set; }
+
+    /// <summary>
+    /// Whether this surface is water the player swims in.
+    /// </summary>
+    /// <remarks>
+    /// Projected onto <see cref="Physical.ISurfaceAsset.Swimmable"/>. Only present in
+    /// <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+    /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+    /// <see cref="GameVersion.TSSM"/>.
+    /// </remarks>
+    public bool IsSwimmable
+    {
+        get => Physical.Swimmable != 0;
+        set => Physical.Swimmable = (byte)(value ? 1 : 0);
+    }
 
     /// <inheritdoc cref="Asset.Physical"/>
     public override Physical.ISurfaceAsset Physical => this;
@@ -154,6 +229,69 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
 
     private byte _isEnabled = 1;
     byte Physical.ISurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
+
+    private AssetId _impactSound;
+    AssetId Physical.ISurfaceAsset.ImpactSound { get => _impactSound; set => _impactSound = value; }
+
+    private byte _dashImpactType = 0xFF;
+    byte Physical.ISurfaceAsset.DashImpactType { get => _dashImpactType; set => _dashImpactType = value; }
+
+    private float _dashImpactThrowBack = 5f;
+    float Physical.ISurfaceAsset.DashImpactThrowBack { get => _dashImpactThrowBack; set => _dashImpactThrowBack = value; }
+
+    private float _dashSprayMagnitude = 1f;
+    float Physical.ISurfaceAsset.DashSprayMagnitude { get => _dashSprayMagnitude; set => _dashSprayMagnitude = value; }
+
+    private float _dashCoolRate = 0.05f;
+    float Physical.ISurfaceAsset.DashCoolRate { get => _dashCoolRate; set => _dashCoolRate = value; }
+
+    private float _dashCoolAmount = 0.3f;
+    float Physical.ISurfaceAsset.DashCoolAmount { get => _dashCoolAmount; set => _dashCoolAmount = value; }
+
+    private float _dashPass;
+    float Physical.ISurfaceAsset.DashPass { get => _dashPass; set => _dashPass = value; }
+
+    private float _dashRampMaxDistance = 30f;
+    float Physical.ISurfaceAsset.DashRampMaxDistance { get => _dashRampMaxDistance; set => _dashRampMaxDistance = value; }
+
+    private float _dashRampMinDistance = 20f;
+    float Physical.ISurfaceAsset.DashRampMinDistance { get => _dashRampMinDistance; set => _dashRampMinDistance = value; }
+
+    private float _dashRampKeySpeed = 25f;
+    float Physical.ISurfaceAsset.DashRampKeySpeed { get => _dashRampKeySpeed; set => _dashRampKeySpeed = value; }
+
+    private float _dashRampHeight = 10f;
+    float Physical.ISurfaceAsset.DashRampHeight { get => _dashRampHeight; set => _dashRampHeight = value; }
+
+    private AssetId _dashRampTarget;
+    AssetId Physical.ISurfaceAsset.DashRampTarget { get => _dashRampTarget; set => _dashRampTarget = value; }
+
+    private ImmutableArray<HitDecal> _hitDecals = [default, default, default];
+    ImmutableArray<HitDecal> Physical.ISurfaceAsset.HitDecals
+    {
+        get => _hitDecals;
+        set => _hitDecals = value.Length == 3
+            ? value
+            : throw new ArgumentException("HitDecals must contain exactly 3 elements.", nameof(value));
+    }
+
+    private byte _swimmable;
+    byte Physical.ISurfaceAsset.Swimmable { get => _swimmable; set => _swimmable = value; }
+
+    private byte _dashFall;
+    byte Physical.ISurfaceAsset.DashFall { get => _dashFall; set => _dashFall = value; }
+
+    private byte _needButtonPress;
+    byte Physical.ISurfaceAsset.NeedButtonPress { get => _needButtonPress; set => _needButtonPress = value; }
+
+    private byte _dashAttach;
+    byte Physical.ISurfaceAsset.DashAttach { get => _dashAttach; set => _dashAttach = value; }
+
+    private byte _footstepDecals;
+    byte Physical.ISurfaceAsset.FootstepDecals { get => _footstepDecals; set => _footstepDecals = value; }
+
+    private byte _drivingSurfaceType;
+    byte Physical.ISurfaceAsset.DrivingSurfaceType { get => _drivingSurfaceType; set => _drivingSurfaceType = value; }
 
     private AnimationSlot? _overriddenTextureAnimFlags;
     AnimationSlot Physical.ISurfaceAsset.TextureAnimFlags
@@ -183,19 +321,34 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <summary>
     /// The <see cref="GameVersion"/>s <see cref="AssetType.Surface"/> is known to be read by.
     /// </summary>
-    /// <remarks>
-    /// <see cref="GameVersion.N100F"/>'s <c>SURF</c> layout is substantially smaller than every
-    /// other game's and does not match decompiled source; it is not modelled here.
-    /// </remarks>
-    // TODO: Partial implementation - N100F uses a smaller SURF layout not modeled here.
     internal static IReadOnlySet<GameVersion> SupportedGames { get; } = new HashSet<GameVersion>
     {
+        GameVersion.N100F,
         GameVersion.BFBB,
         GameVersion.TSSM,
         GameVersion.Incredibles,
         GameVersion.ROTU,
         GameVersion.Ratatouille,
     };
+
+    /// <summary>
+    /// One of a <see cref="SurfaceAsset"/>'s three hit decals.
+    /// </summary>
+    /// <param name="Texture">Unknown.</param>
+    /// <param name="XSize">Unknown.</param>
+    /// <param name="YSize">Unknown.</param>
+    public readonly record struct HitDecal(AssetId Texture, float XSize, float YSize)
+    {
+        internal static HitDecal Read(EndianReader reader, FormatProfile _) =>
+            new(reader.ReadAssetId(), reader.ReadSingle(), reader.ReadSingle());
+
+        internal static void Write(HitDecal decal, EndianWriter writer, FormatProfile _)
+        {
+            writer.Write(decal.Texture);
+            writer.Write(decal.XSize);
+            writer.Write(decal.YSize);
+        }
+    }
 
     /// <summary>
     /// Flags controlling collision and pass-through behavior when applying surface damage.
@@ -355,5 +508,117 @@ public static partial class Physical
         /// When disagreements with the derived value exist, this field wins during serialization.
         /// </remarks>
         SurfaceAsset.UVSlot UvfxFlags { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// <remarks>
+        /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+        /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        AssetId ImpactSound { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// <remarks>
+        /// Read by <see cref="GameVersion.Incredibles"/>' Dash levels when Dash trips or hits a
+        /// wall on this surface. Only present in <see cref="GameVersion.TSSM"/>,
+        /// <see cref="GameVersion.Incredibles"/>, <see cref="GameVersion.ROTU"/>, and
+        /// <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        byte DashImpactType { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashImpactThrowBack { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashSprayMagnitude { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashCoolRate { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashCoolAmount { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashPass { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashRampMaxDistance { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashRampMinDistance { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashRampKeySpeed { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        float DashRampHeight { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        AssetId DashRampTarget { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// <remarks>
+        /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+        /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        /// <exception cref="ArgumentException">The assigned value's length isn't 3.</exception>
+        ImmutableArray<SurfaceAsset.HitDecal> HitDecals { get; set; }
+
+        /// <summary>
+        /// Backs <see cref="SurfaceAsset.IsSwimmable"/>.
+        /// </summary>
+        byte Swimmable { get; set; }
+
+        /// <summary>
+        /// Whether <see cref="GameVersion.Incredibles"/>' Dash falls through this surface rather
+        /// than colliding with it.
+        /// </summary>
+        /// <remarks>
+        /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+        /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+        /// every game but <see cref="GameVersion.Incredibles"/>.
+        /// </remarks>
+        byte DashFall { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        byte NeedButtonPress { get; set; }
+
+        /// <summary>
+        /// Unknown.
+        /// </summary>
+        /// <remarks>
+        /// Read by <see cref="GameVersion.Incredibles"/>' Dash levels to decide whether Dash stays
+        /// attached to this surface's floor. Only present in <see cref="GameVersion.TSSM"/>,
+        /// <see cref="GameVersion.Incredibles"/>, <see cref="GameVersion.ROTU"/>, and
+        /// <see cref="GameVersion.Ratatouille"/>.
+        /// </remarks>
+        byte DashAttach { get; set; }
+
+        /// <inheritdoc cref="ImpactSound"/>
+        byte FootstepDecals { get; set; }
+
+        /// <summary>
+        /// Which kind of ground this surface is to <see cref="GameVersion.TSSM"/>'s driveable car and
+        /// the player's slide effects.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The car records every value it touches; 11 damages it, as does a
+        /// <see cref="SurfaceAsset.Damage"/> of <see cref="SurfaceAsset.DamageKind.Damage6"/>, and
+        /// 13 makes it rebound. While the player slides, 14 plays a slide sound and 15 to 17 emit
+        /// slide dust. The meaning of every other value is unknown.
+        /// </para>
+        /// <para>
+        /// Only present in <see cref="GameVersion.TSSM"/>, <see cref="GameVersion.Incredibles"/>,
+        /// <see cref="GameVersion.ROTU"/>, and <see cref="GameVersion.Ratatouille"/>. Ignored by
+        /// every game but <see cref="GameVersion.TSSM"/>.
+        /// </para>
+        /// </remarks>
+        byte DrivingSurfaceType { get; set; }
     }
 }

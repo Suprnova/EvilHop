@@ -1,3 +1,4 @@
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
@@ -54,34 +55,50 @@ public partial class SurfaceAsset
         /// <summary>
         /// For <see cref="AnimationMode.MinMaxOscillate"/>, the low end of the UV translation range.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public Vector3 Min { get; set; }
 
         /// <summary>
         /// For <see cref="AnimationMode.MinMaxOscillate"/>, the high end of the UV translation range.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public Vector3 Max { get; set; }
 
         /// <summary>
         /// For <see cref="AnimationMode.MinMaxOscillate"/>, how quickly the translation oscillates
         /// between <see cref="Min"/> and <see cref="Max"/>.
         /// </summary>
+        /// <remarks>
+        /// Not present in <see cref="GameVersion.N100F"/>.
+        /// </remarks>
         public Vector3 MinMaxSpeed { get; set; }
 
-        internal static UVEffect Read(EndianReader reader, FormatProfile _) => new()
+        internal static UVEffect Read(EndianReader reader, FormatProfile profile)
         {
-            Mode = (AnimationMode)reader.ReadInt32(),
-            Rotation = reader.ReadSingle(),
-            RotationSpeed = reader.ReadSingle(),
-            Translation = reader.ReadVector3(),
-            TranslationSpeed = reader.ReadVector3(),
-            Scale = reader.ReadVector3(),
-            ScaleSpeed = reader.ReadVector3(),
-            Min = reader.ReadVector3(),
-            Max = reader.ReadVector3(),
-            MinMaxSpeed = reader.ReadVector3(),
-        };
+            var uvfx = new UVEffect
+            {
+                Mode = (AnimationMode)reader.ReadInt32(),
+                Rotation = reader.ReadSingle(),
+                RotationSpeed = reader.ReadSingle(),
+                Translation = reader.ReadVector3(),
+                TranslationSpeed = reader.ReadVector3(),
+                Scale = reader.ReadVector3(),
+                ScaleSpeed = reader.ReadVector3(),
+            };
+            if (profile.Game is not GameVersion.N100F)
+            {
+                uvfx.Min = reader.ReadVector3();
+                uvfx.Max = reader.ReadVector3();
+                uvfx.MinMaxSpeed = reader.ReadVector3();
+            }
+            return uvfx;
+        }
 
-        internal static void Write(UVEffect uvfx, EndianWriter writer, FormatProfile _)
+        internal static void Write(UVEffect uvfx, EndianWriter writer, FormatProfile profile)
         {
             writer.Write((int)uvfx.Mode);
             writer.Write(uvfx.Rotation);
@@ -90,9 +107,12 @@ public partial class SurfaceAsset
             writer.Write(uvfx.TranslationSpeed);
             writer.Write(uvfx.Scale);
             writer.Write(uvfx.ScaleSpeed);
-            writer.Write(uvfx.Min);
-            writer.Write(uvfx.Max);
-            writer.Write(uvfx.MinMaxSpeed);
+            if (profile.Game is not GameVersion.N100F)
+            {
+                writer.Write(uvfx.Min);
+                writer.Write(uvfx.Max);
+                writer.Write(uvfx.MinMaxSpeed);
+            }
         }
 
         /// <summary>

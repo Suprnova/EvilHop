@@ -211,14 +211,14 @@ AssetId Model(params string[] candidates) =>
             .FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase))?.Id ?? default)
         .FirstOrDefault(id => id != default);
 
-// Shipped SURF reference for copying ExtendedData (TSSM onward) and base settings.
+// Shipped SURF reference for copying base settings.
 SurfaceAsset? reference = null;
 if (setup.ReferenceSurface is { } referenceSource)
 {
     var (_, referenceSession) = Open(Path.Combine(files, referenceSource.Archive));
     reference = referenceSession.Layers.SelectMany(l => l.Assets).OfType<SurfaceAsset>()
         .First(s => s.Name.Equals(referenceSource.Name, StringComparison.OrdinalIgnoreCase));
-    Console.WriteLine($"  reference SURF '{reference.Name}': ExtendedData={reference.ExtendedData.Length}B");
+    Console.WriteLine($"  reference SURF '{reference.Name}'");
 }
 
 // ---------------- the HIP: the level ----------------
@@ -430,7 +430,6 @@ AssetId Surface(string name, byte physFlags, byte damageType, float? outOfBounds
         WallJumpScaleXZ = reference.WallJumpScaleXZ,
         WallJumpScaleY = reference.WallJumpScaleY,
         IsEnabled = true,
-        ExtendedData = reference.ExtendedData
     };
 
     surface.CalculateId();
@@ -559,7 +558,7 @@ record Setup(
     string Slot,                   // Four-character scene ID
     Prop Floor, float FloorWidth,  // Flat floor tile model and width at scale 1
     Prop? Sky, float SkyScale,     // Skydome model (null for N100F)
-    Borrowed? ReferenceSurface,    // Shipped SURF reference for copying ExtendedData
+    Borrowed? ReferenceSurface,    // Shipped SURF reference for copying base settings
     float FloorTop = 0f,           // Height offset of top surface at scale 1
     Vector3 FloorCentre = default, // Footprint center offset at scale 1
     string[]? IniLines = null,     // Lines to ensure in boot INI
