@@ -18,9 +18,9 @@ design, not about the engine.
 
 Scan the asset type's real field values first. It costs one command and routinely changes the probe.
 
-Write a throwaway script under `dump/` (see `reading-corpus-inventory`, or iterate `artifacts/`
-directly with `Archive.Load` + `OpenAssets`) that tallies each field's distinct values with an
-exemplar archive per value. You are looking for:
+Write a throwaway script under `dump/` (see the `reading-corpus-inventory` skill to query `corpus/`,
+or inspect local game archives if available with `Archive.Load` + `OpenAssets`) that tallies each
+field's distinct values with an exemplar archive per value. You are looking for:
 
 - **Unmodelled flag bits.** A raw number where an enum name was expected - a `PhysFlags` value
   carrying a bit `SurfaceAsset.PhysicsBehavior` doesn't define. Cross-reference the *names* of the assets that set it;
@@ -43,128 +43,107 @@ isolates the flag from the fields it controls.
 
 | Piece | Where it comes from |
 |---|---|
-| Level template (`CAM`/`MINF`/`ENV`/`LKIT`/`PLYR`) | `IndustrialPark-EditorFiles/.../Utility/blank.HIP` + `blank.HOP` |
-| Floor | `disco_floor_A_3m` from `bc01.HOP`, tiled |
-| Skydome | `skydome_jf` from `jf02.HOP` - without it the framebuffer is never cleared and you get hall-of-mirrors |
-| Rig models | Whatever the shipped rig for this mechanic uses |
+| Level template (`CAM`/`MINF`/`ENV`/`LKIT`/`PLYR`) | Blank template (from external IndustrialPark editor files) or a stripped shipped level |
+| Floor | Flat tile from the target game's disc (`gc_rfcl0003` for N100F, `disco_floor_A_3m` for BFBB/TSSM, `electric_pad_on_e` for Incredibles, `electric_plate_aone` for ROTU, `platform_4x4xp5` for Ratatouille) |
+| Skydome | Shipped skydome (`skydome_jf` for BFBB/TSSM, `skydome_red_NJ` for Incredibles, `skydome_bm` for ROTU, `skydome_fp` for Ratatouille); N100F uses an enclosed box of scaled floor tiles |
+| Rig models | Shipped rig assets for the mechanic under test |
 
-Facts worth not rediscovering:
+Every tile is placed by the width it should span and the point its top surface should centre on,
+not by a raw scale and origin, so one probe layout serves every game. Tiles are centred on 12-unit
+steps from the spawn so the player never starts on a seam. Every player starts facing +X, down the
+variant row (yaw $\pi/2$; yaw turns +Z toward +X).
 
-- **A fresh scene ID works.** `ZZ01` needs no registration; the engine resolves it to
-  `files/{slot}/zz01.HIP`. The level folder's case follows the disc's own convention - lowercase in
-  BFBB, uppercase in TSSM - while the file inside is lowercase in both.
-- **The boot ini is CRLF, and its name varies** (`sb.ini` in BFBB, `SB04.ini` in TSSM). Never touch
-  it with `sed -i`, which rewrites every line ending. The script patches it in place and keeps a
-  `.orig`.
-- **Collision scales with `Scale`.** A tile at `Scale 4` collides across its full scaled footprint,
-  so large arenas cost few assets.
-- **Models live in the HOP, game objects in the HIP.** Both are written in the same run.
-- **Borrow textures with models.** A borrowed model whose `RW3` stayed behind renders untextured.
-- **Borrow from the target game's own disc.** Models and textures are not interchangeable between
-  games even where name and asset ID match exactly - `disco_floor_A_3m` is 816 bytes in BFBB and 736
-  in TSSM, because TSSM re-exported it under a different RenderWare version. Loading BFBB's copies
-  under TSSM crashes the game.
-- **`EntityAsset.Angle`'s three components are (yaw, roll, pitch)**, confirmed empirically (BFBB and
-  TSSM agree) by rotating a flat tile on each axis in turn and watching which one produces a walkable
-  incline. Guessing this wrong produces a tile that still renders and collides fine, just flat or
-  rotated in the wrong plane - not an obvious failure, so verify with a small multi-axis batch rather
-  than assuming a single axis and re-running.
-- **IndustrialPark archives omit `DPAK`'s padding-amount field.** Read them with
-  `profile with { StreamDataHasPaddingField = false }` or every asset offset lands four bytes late
-  and anything crossing the boundary silently degrades to empty. Official archives carry the field.
-- **A plain `SimpleObject` is never updated.** From TSSM on, a SIMP with nothing that needs a
-  per-frame update is statically batched and its `Update` never runs, so anything implemented there
-  (facing, animation) looks dead. Setting `CollisionFlags.LedgeGrab` on a non-collidable SIMP puts it
-  on the updated list with no other effect; naming its model in a `RANM` row batches it, and
-  `AnimateCollision` without `PreciseCollision` on a model with no animation crashes the game. See
-  `probes/simp-facing-collision.md`.
-- **Confirm an unexplained null in Dolphin before redesigning the rig.** With the debugging UI on, an
-  instruction breakpoint on the function that should read the field shows whether it runs at all.
-  Set one on a per-frame function first (`zEntSimpleObj_MgrUpdateRender`, `801287EC` in TSSM GC) to
-  prove breakpoints are live, and use Boot to Pause for anything that only runs during scene load.
+### Game-specific constraints
+
+`scripts/build-probe.cs` abstracts most setup differences, but specific engines impose constraints on rig design and testing:
+
+- **N100F (Scooby)**:
+  - Levels are single-archive (`.HIP` only, no `.HOP`).
+  - N100F `SURF` is unmodelled in EvilHop; surface variants cannot be probed (the pad/ramp row is plain floor).
+  - Boot INI is `sd2.ini`.
+- **The Incredibles**:
+  - Boot INI is `in.ini`.
+- **Ratatouille**:
+  - **Dolphin must have a controller connected on port 4**, or any scene crashes on its first frame when the follow camera polls input.
+  - Boot INI is `rats.ini`.
+- **ROTU**:
+  - Every scene is co-op (`ZZ01` maps Mr. Incredible as P1 and Frozone as AI follow).
+  - The camera rides a fixed `CameraCurve` trailing side-on from +Z, looking toward -Z. Because +X runs right-to-left on screen, **Variant 1 is the rightmost**. Lay variants along +X and keep rigs visible from this vantage (avoid placing objects on the +Z side of the row).
+  - The navigation mesh bounds the playable area; jumping past its edges kills the player. Keep all rigs within the floor bounds.
+  - Boot INI is `in2.ini`.
+
+### Rules of thumb and engine gotchas
+
+- **`EntityAsset.Angle` is `(yaw, roll, pitch)`**: Yaw turns +Z toward +X ($\pi/2$ points down +X).
+- **ATOC order**: Archives must have their ATOC written in ascending unsigned asset ID order (required by N100F's loader, which binary-searches the ATOC on load).
+- **`SimpleObject` updates (TSSM onward)**: A SIMP with nothing that needs a per-frame update is statically batched and its `Update` never runs. To force per-frame updates (e.g. for facing or animation testing) on a non-collidable SIMP, set `CollisionFlags.LedgeGrab`. `AnimateCollision` without `PreciseCollision` on a model without animation will crash.
+- **Borrowing models and textures**:
+  - Always borrow from the target game's own disc (models and textures are not binary-compatible across games even when names and IDs match).
+  - Always borrow a model's corresponding texture (`.RW3`) alongside it.
+  - Only borrow models actively referenced by shipped entities; unreferenced leftover models in shipped archives can crash on load.
+- **IndustrialPark archives**: Community archives authored by IndustrialPark omit `DPAK`'s padding-amount field. Read them with `FormatProfile with { StreamDataHasPaddingField = false }`.
+- **Surface ExtendedData (TSSM onward)**: Copy `ExtendedData` (~140 bytes) from a shipped surface asset of the same type rather than authoring an empty one.
+- **Format sniffing**: Format sniffing cannot differentiate TSSM, The Incredibles, and Ratatouille (they share format versions). Explicitly construct profiles via `GameVersion`.
+- **Scene ID resolution**: `ZZ01` needs no engine registration; the engine resolves it to `files/{slot}/zz01.HIP`. Folder casing matches disc convention (lowercase in BFBB, uppercase in TSSM); archive file names are lowercase.
+- **Boot INIs**: Boot INIs must preserve CRLF line endings.
+- **Collision scales with `Scale`**: A tile scaled up collides across its full scaled footprint.
+- **Archive split**: Models and textures live in the HOP; game entities live in the HIP. Borrowed assets retain their source layer type.
+- **Debugging with Dolphin**: Dolphin's PC, LR, and callstack can be resolved against decomp symbols or by disassembling the GameCube DOL. Instruction breakpoints in Dolphin confirm whether code reading a field executes; use "Boot to Pause" for load-time logic. Use the `validating-asset-docs` skill if available for more information on decomp workflows.
 
 ### Copy a shipped rig rather than inventing one
 
-Find the assets the game itself uses for the mechanic and copy their field values wholesale, changing
-only what is under test. For wall jumping that meant locating the entity whose `SurfaceId` pointed at
-`WALLJUMP_SURFACE`, then reusing its model, scale and collision settings. This removes a whole class
-of "did I configure the carrier wrong?" ambiguity, and it is faster than guessing at rotation
-conventions.
+Find the assets the game itself uses for the mechanic and copy their field values wholesale, changing only what is under test (e.g. reuse the model, scale, and collision flags of an existing surface carrier). This eliminates carrier configuration errors and avoids guessing at rotation or physics conventions.
 
 ## Designing the variant row
 
-Lay variants in a single row along +X from the spawn, evenly spaced, numbered west to east, and tint
-each one differently. Spatial order is how the finding gets reported - the tester says "1. normal,
-2. nothing, 3. stronger" without needing to match names to positions.
+Lay variants in a single row along +X from the spawn, evenly spaced, numbered west to east, and tint each one differently. Spatial order is how findings are reported - the tester can simply report "1: normal, 2: nothing, 3: stronger" without matching names to positions.
 
 - **Variant 1 is the control**: the value every shipped asset uses.
-- **Pick values to be unmissable, not realistic.** Zero, several times the default, an absurd value,
-  and a negative. You are trying to make an effect visible at a glance.
-- **Always include a positive control**: a strip varying a *different* field that is known to work,
-  through the same rig. If the control shows no difference either, the rig is broken and a null
-  result on the field under test means nothing. Prefer a value some shipped asset actually uses.
+- **Pick values to be unmissable, not realistic.** Zero, several times the default, an absurd value, and a negative. Make the effect visible at a glance.
+- **Always include a positive control**: a variant or strip varying a *different* field known to work, through the same rig. If the positive control shows no difference either, the rig is broken and a null result on the field under test is meaningless. Prefer a value that shipped assets actually use.
 
 ## Running it
 
-```
+```bash
 dotnet run .claude/skills/probing-field-behavior/scripts/build-probe.cs -- bfbb
 Dolphin -e dump/bfbb-gc/sys/main.dol
 ```
 
-The script writes both archives into the disc and points its boot ini at the workshop, keeping the
-original alongside as `.orig`. Pass a game key (`bfbb`, `tssm`) to target a different disc; the
-`setups` table at the top of the script is the only thing that differs between them.
+The script writes both archives into the extracted disc directory and points its boot INI at the workshop (preserving the original as `.orig`). Pass a game key (`n100f`, `bfbb`, `tssm`, `incredibles`, `rotu`, `rat`) to target a different disc. Everything above `// THE PROBE` in `build-probe.cs` is shared scaffolding; customize the rig below that marker.
 
-Dolphin boots an extracted disc directly from `sys/main.dol`, which needs `sys/` (`main.dol`,
-`boot.bin`, `bi2.bin`, `apploader.img`) beside `files/`. Restart Dolphin after each rebuild; it will
-not pick up changed files otherwise. Set `INDUSTRIALPARK_EDITORFILES` if your checkout of the
-template files is not where the script's default expects.
+Dolphin boots an extracted disc directly from `sys/main.dol`, which requires `sys/` (`main.dol`, `boot.bin`, `bi2.bin`, `apploader.img`) beside `files/`. **Restart Dolphin after each rebuild**; it caches files and will not pick up changes otherwise. Set `INDUSTRIALPARK_EDITORFILES` if your checkout of template files is not at the default path.
 
-Verify both archives parse back before booting - zero diagnostics, under either padding convention.
-A malformed archive wastes a boot.
+Verify both archives parse back cleanly before booting (`Archive.Load` + `OpenAssets` with zero diagnostics). A malformed archive wastes a boot.
 
-Then hand over: list the variants with their numbers, tints and settings, say what to do at each
-one, and say explicitly what the positive control would have to show for the run to count. Ask for
-freeform prose back; "1. no difference, 2. does x" is enough.
+When handing over to the user:
+1. List the variants with their numbers, tints, and parameter settings.
+2. Provide explicit instructions on what to test at each variant.
+3. State clearly what the positive control should demonstrate for the run to be valid.
+4. Ask for freeform observations back.
 
 ## Recording the result
 
-Write `probes/{game}-{asset}-{topic}.md` and add it to the table in `probes/README.md`. Record the
-values tested, the rig, what happened at each variant, what changed in the library, and - separately
-- what the probe did *not* establish.
+Record probe findings in a local working note, such as `probes/{game}-{asset}-{topic}.md`. Record:
+- The field values tested.
+- The rig used.
+- Observations at each variant.
+- What changed in the library as a result.
+- What the probe did *not* establish (unresolved questions or edge cases).
 
-Then update the library, because the probe is evidence and the XML documentation is the claim:
+Then update the library:
+- **Active fields**: Keep on the logical surface. Document behavior and any prerequisite gate flags in XML docs.
+- **Dead/unresponsive fields**: Move to the physical surface (`asset.Physical`), documented as unknown rather than useless.
+- **Newly identified flag bits**: Promote to named enum members.
 
-- A field that does something keeps its place on the logical surface. Say what it does, and name any
-  flag it depends on.
-- A field that does nothing under every configuration tried moves to the physical surface, documented
-  as unknown rather than as useless. It can be promoted later if someone finds what it drives.
-- A newly identified flag bit becomes a named enum member.
+Do not write "always 1 in every sample checked" in documentation as though it settles engine behavior. Either the probe established what the field does, or it remains unproven.
 
-Do not write "always 1 in every sample checked" as though it settles anything. Either the probe
-established what the field does, or it did not.
+## Adding a new game target
 
-## Other games
+Only a null result requires verifying across every game - an effect confirmed in one game demonstrably works.
 
-Only a null result needs every game - a field that works in one game demonstrably works.
-
-Adding a game means one entry in the script's `setups` table, not new probe code: the template
-directory, the disc, its boot ini, the level slot, which shipped archives to borrow the floor,
-skydome and rig models from, and a reference asset to copy shared values off. The BFBB and TSSM
-workshops are byte-for-byte the same probe.
-
-What actually differs between games:
-
-- **The template's asset set.** N100F wants `ENV`/`PLYR`/`CAM` and a blank `BSP`; BFBB wants
-  `CAM`/`MINF`/`ENV`/`LKIT`/`PLYR`; TSSM drops `MINF` and adds a `DYNA` glow prop.
-  `IndustrialPark-EditorFiles` ships a `blank.HIP` for each.
-- **Spawn height.** Templates do not agree, so anchor the floor to the player's own position rather
-  than to `y=0`.
-- **Asset layout.** From TSSM on, every `SURF` carries ~140 bytes of `ExtendedData` whose layout is
-  unknown. Copy it from a shipped asset of the same type rather than authoring an empty one.
-- **Sniffing cannot identify the game.** TSSM, The Incredibles and Ratatouille share a format
-  version, so a sniffed profile will name the wrong one. Always construct the profile from the game
-  you meant.
-
-GameCube is the easiest target throughout. Keep generated archives so a finding can be re-checked on
-PS2 and Xbox once EvilHop can convert between platforms.
+To support an additional game, add an entry to the `setups` dictionary in `scripts/build-probe.cs`:
+- The template archive source (IndustrialPark directory or shipped donor level and assets to retain).
+- The extracted disc directory and boot INI name/settings.
+- The workshop slot (`ZZ01`) and directory.
+- Model, texture, and skydome borrow targets (with tile dimensions).
+- A reference asset to copy shared opaque values from (such as SURF `ExtendedData`).
