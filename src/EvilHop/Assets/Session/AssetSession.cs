@@ -186,7 +186,7 @@ public sealed class AssetSession : IDisposable
         var streamData = stream.Data;
 
         var headers = assetTable.Headers.ToList();
-        long dataStart = MeasureLength(archive) - streamData.Data.Length;
+        long dataStart = MeasureThrough(archive, stream) - streamData.Data.Length;
 
         var session = new AssetSession(
             new SessionTarget(archive, package, dictionary, stream, streamData),
@@ -612,19 +612,24 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     private (long DataStart, int PaddingAmount) MeasureDataStart()
     {
-        long dataStart = MeasureLength(_archive);
+        long dataStart = MeasureThrough(_archive, _stream);
         long dataAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
         return (dataStart, (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment));
     }
 
     /// <summary>
-    /// The serialized length of <paramref name="archive"/> in its current state, measured by writing
-    /// it without retaining the bytes.
+    /// The serialized length of <paramref name="archive"/>'s roots up to and including
+    /// <paramref name="stream"/>, measured by writing them without retaining the bytes.
     /// </summary>
-    private static long MeasureLength(Archive archive)
+    /// <remarks>
+    /// <see cref="StreamData"/>'s data ends where <paramref name="stream"/> does, not where the
+    /// archive does: a <see cref="HIPB"/> can follow it.
+    /// </remarks>
+    private static long MeasureThrough(Archive archive, AssetStream stream)
     {
+        var roots = archive.Roots.TakeWhile(root => root != stream).Append(stream);
         using var counter = new LengthMeasuringStream();
-        archive.Save(counter);
+        archive.Serializer.Write(counter, roots);
         return counter.Length;
     }
 

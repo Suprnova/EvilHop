@@ -69,6 +69,21 @@ public class AssetSessionTests
         return stream.ToArray();
     }
 
+    /// <summary>
+    /// <paramref name="archive"/> with a <see cref="HIPB"/> appended after its last root, the way a
+    /// HipHopFile-based tool writes one - after <see cref="AssetStream"/>, so after the asset data.
+    /// </summary>
+    private static Archive WithTrailingHIPB(Archive archive) =>
+        new(archive.Serializer, [.. archive.Roots, archive.Serializer.CreateBlock<HIPB>()]);
+
+    private static byte[] SinglePayload(Archive archive)
+    {
+        using var session = archive.OpenAssets();
+        using var payload = new MemoryStream();
+        ((PayloadAsset)session.Layers.Single().Assets.Single()).SaveTo(payload);
+        return payload.ToArray();
+    }
+
     [Theory]
     [MemberData(nameof(Games))]
     public void OpenAssets_ThenCommit_NoEdits_ProducesIdenticalBytes(string game)
@@ -353,6 +368,29 @@ public class AssetSessionTests
         var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
 
         Assert.Equal(canonical.Length - streamData.Data.Length, (int)header.Offset);
+    }
+
+    [Fact]
+    public void OpenAssets_TrailingHIPB_ReadsEachAssetFromItsOffset()
+    {
+        byte[] expected = SinglePayload(LoadRepaired("n100f"));
+        byte[] withHipb = Save(WithTrailingHIPB(LoadRepaired("n100f")));
+        var archive = Archive.Load(new MemoryStream(withHipb), new N100FSerializer());
+
+        Assert.Equal(expected, SinglePayload(archive));
+    }
+
+    [Fact]
+    public void Commit_TrailingHIPB_AssignsOffsetPointingAtTheAssetsBytes()
+    {
+        byte[] replacement = [0x5A, 0x17, 0xC3, 0x08, 0x91];
+        var archive = WithTrailingHIPB(LoadRepaired("n100f"));
+
+        using (var session = archive.OpenAssets())
+            ((PayloadAsset)session.Layers.Single().Assets.Single()).LoadFrom(new MemoryStream(replacement));
+
+        var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
+        Assert.Equal(replacement, Save(archive).AsSpan((int)header.Offset, replacement.Length).ToArray());
     }
 
     [Fact]
