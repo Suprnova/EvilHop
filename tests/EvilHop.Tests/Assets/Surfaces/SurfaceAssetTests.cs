@@ -200,7 +200,7 @@ public class SurfaceAssetTests
         Assert.Equal(new Vector3(1, 1, 0), asset.Uvfxs[0].Scale);
         Assert.True(asset.Uvfxs[0].IsEnabled);
         Assert.False(asset.Uvfxs[1].IsEnabled);
-        Assert.True(asset.IsEnabled);
+        Assert.True(asset.StartsOn);
         Assert.Equal(-1f, asset.OutOfBoundsDelay);
         Assert.Equal(1f, asset.WallJumpScaleXZ);
         Assert.Equal(1f, asset.WallJumpScaleY);
@@ -288,7 +288,7 @@ public class SurfaceAssetTests
         Assert.Equal(0.5f, asset.Friction);
         Assert.Equal(45f, asset.Uvfxs[0].RotationSpeed);
         Assert.Equal(new Vector3(1, 1, 0), asset.Uvfxs[1].Scale);
-        Assert.True(asset.IsEnabled);
+        Assert.True(asset.StartsOn);
         Assert.Empty(asset.GetUnparsedTail().ToArray());
     }
 
@@ -345,19 +345,19 @@ public class SurfaceAssetTests
     }
 
     [Fact]
-    public void IsEnabled_SetTrue_ProjectsOntoPhysicalIsEnabled()
+    public void StartsOn_SetTrue_ProjectsOntoPhysicalStartsOn()
     {
-        var asset = new SurfaceAsset { IsEnabled = true };
+        var asset = new SurfaceAsset { StartsOn = true };
 
-        Assert.Equal(1, asset.Physical.IsEnabled);
+        Assert.Equal(1, asset.Physical.StartsOn);
     }
 
     [Fact]
-    public void IsEnabled_SetFalse_ProjectsOntoPhysicalIsEnabled()
+    public void StartsOn_SetFalse_ProjectsOntoPhysicalStartsOn()
     {
-        var asset = new SurfaceAsset { IsEnabled = false };
+        var asset = new SurfaceAsset { StartsOn = false };
 
-        Assert.Equal(0, asset.Physical.IsEnabled);
+        Assert.Equal(0, asset.Physical.StartsOn);
     }
 
     [Fact]

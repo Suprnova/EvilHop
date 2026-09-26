@@ -59,7 +59,6 @@ variant row (yaw $\pi/2$; yaw turns +Z toward +X).
 
 - **N100F (Scooby)**:
   - Levels are single-archive (`.HIP` only, no `.HOP`).
-  - N100F `SURF` is unmodelled in EvilHop; surface variants cannot be probed (the pad/ramp row is plain floor).
   - Boot INI is `sd2.ini`.
 - **The Incredibles**:
   - Boot INI is `in.ini`.
@@ -77,6 +76,9 @@ variant row (yaw $\pi/2$; yaw turns +Z toward +X).
 - **`EntityAsset.Angle` is `(yaw, roll, pitch)`**: Yaw turns +Z toward +X ($\pi/2$ points down +X).
 - **ATOC order**: Archives must have their ATOC written in ascending unsigned asset ID order (required by N100F's loader, which binary-searches the ATOC on load).
 - **`SimpleObject` updates (TSSM onward)**: A SIMP with nothing that needs a per-frame update is statically batched and its `Update` never runs. To force per-frame updates (e.g. for facing or animation testing) on a non-collidable SIMP, set `CollisionFlags.LedgeGrab`. `AnimateCollision` without `PreciseCollision` on a model without animation will crash.
+- **Tints need an unbatched SIMP (TSSM onward)**: A statically batched SIMP ignores `ColorMultiplier` (observed in TSSM, The Incredibles, ROTU and Ratatouille; BFBB draws the tint). Set `LedgeGrab` on anything whose tint identifies a variant, or tell variants apart by tally markers alone.
+- **Cutscenes can't be rebuilt in the workshop**: A cutscene's camera path is in its own level's coordinates. Test cutscene behavior in a shipped level that has one instead (`dump/cutscene-probe.cs` patches one and boots into it). The skydome follows the camera, which makes it the most reliable thing to see in a cutscene shot.
+- **Event IDs differ per game**: Take them from the game's DWARF enumerators, not decomp headers (Rat's `zEvent.h` drifts by one before 881). Shipped Rat triggers fire on `EnterAny` (881).
 - **Borrowing models and textures**:
   - Always borrow from the target game's own disc (models and textures are not binary-compatible across games even when names and IDs match).
   - Always borrow a model's corresponding texture (`.RW3`) alongside it.
@@ -108,7 +110,7 @@ dotnet run .claude/skills/probing-field-behavior/scripts/build-probe.cs -- bfbb
 Dolphin -e dump/bfbb-gc/sys/main.dol
 ```
 
-The script writes both archives into the extracted disc directory and points its boot INI at the workshop (preserving the original as `.orig`). Pass a game key (`n100f`, `bfbb`, `tssm`, `incredibles`, `rotu`, `rat`) to target a different disc. Everything above `// THE PROBE` in `build-probe.cs` is shared scaffolding; customize the rig below that marker.
+The script writes both archives into the extracted disc directory and points its boot INI at the workshop (preserving the original as `.orig`). Pass a game key (`n100f`, `bfbb`, `tssm`, `incredibles`, `rotu`, `rat`) to target a different disc. A second argument builds the workshop under a shipped scene ID instead of `ZZ01` (`-- n100f W027`), for engine code keyed on the scene; the shipped archive it replaces is kept as `.orig`, and rebuilding without the argument points the INI back at `ZZ01`. Everything above `// THE PROBE` in `build-probe.cs` is shared scaffolding; customize the rig below that marker.
 
 Dolphin boots an extracted disc directly from `sys/main.dol`, which requires `sys/` (`main.dol`, `boot.bin`, `bi2.bin`, `apploader.img`) beside `files/`. **Restart Dolphin after each rebuild**; it caches files and will not pick up changes otherwise. Set `INDUSTRIALPARK_EDITORFILES` if your checkout of template files is not at the default path.
 

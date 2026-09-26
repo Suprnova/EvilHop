@@ -54,7 +54,7 @@ public abstract partial class CameraAsset
         asset.Physical.BaseId = baseId;
         asset.Physical.BaseType = baseType;
         asset.Physical.LinkCount = linkCount;
-        asset.BaseFlags = baseFlags;
+        asset.Physical.BaseFlags = baseFlags;
 
         asset.Position = position;
         asset.Forward = forward;

@@ -21,7 +21,7 @@ internal static class BaseAssetPrefix
         asset.Physical.BaseId = reader.ReadAssetId();
         asset.Physical.BaseType = reader.ReadByte();
         asset.Physical.LinkCount = reader.ReadByte();
-        asset.BaseFlags = (BaseAssetFlags)reader.ReadInt16();
+        asset.Physical.BaseFlags = (BaseAssetFlags)reader.ReadInt16();
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ internal static class BaseAssetPrefix
         writer.Write(asset.Physical.BaseId);
         writer.Write(asset.Physical.BaseType);
         writer.Write(asset.Physical.LinkCount);
-        writer.Write((short)asset.BaseFlags);
+        writer.Write((short)asset.Physical.BaseFlags);
     }
 }
 

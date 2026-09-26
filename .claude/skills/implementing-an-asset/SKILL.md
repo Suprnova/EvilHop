@@ -234,9 +234,12 @@ specific type actually touches.
 
 ### `BaseAsset : Asset` (has the 8-byte header)
 
-Logical: `BaseFlags` (`BaseAssetFlags`), `Links` (`Collection<Link>`).
+Logical: `IsEnabled`, `IsPersistent`, `VisibleDuringCutscenes`, `ReceivesShadows` (`bool`s
+projecting bits of `BaseFlags`), `Links` (`Collection<Link>`).
 Physical (`Physical.IBaseAsset : IAsset`): `BaseId` (`AssetId`), `BaseType` (`byte`),
-`LinkCount` (`byte`).
+`LinkCount` (`byte`), `BaseFlags` (`BaseAssetFlags`). Codecs read and write `Physical.BaseFlags`;
+a derived asset must not declare its own member with one of the logical bools' names (SURF's
+`on` byte is `StartsOn` for that reason).
 
 `BaseId`/`LinkCount` follow the same **override-clears-on-match** shape everywhere a physical field
 derives from a logical one — this is the pattern to copy for any new derived field (e.g. `LODT`'s
@@ -661,7 +664,7 @@ Rules to follow:
 - **`Validate()`-able facts are `Validate()` findings, not exceptions.** The library has no
   `Validate()` on assets yet — the `EvilHop.Validation` namespace (and its `src/EvilHop/Validation/`
   folder) is reserved for it but does not exist yet. If you find a rule worth recording
-  (a field the wiki says should always be 0, a `BaseFlags.Valid` check), note it as a TODO for the
+  (a field the wiki says should always be 0), note it as a TODO for the
   validation layer / `Validate()` rather than throwing at read or write time. Do not add a
   `Validate()` override unless one already exists to extend.
 

@@ -7,6 +7,58 @@ public class BaseAssetTests
 {
     private sealed class TestBaseAsset(AssetType type = AssetType.Counter) : BaseAsset(type);
 
+    public static readonly TheoryData<BaseAssetFlags, Func<BaseAsset, bool>, Action<BaseAsset, bool>> FlagProjections = new()
+    {
+        { BaseAssetFlags.Enabled, a => a.IsEnabled, (a, v) => a.IsEnabled = v },
+        { BaseAssetFlags.Persistent, a => a.IsPersistent, (a, v) => a.IsPersistent = v },
+        { BaseAssetFlags.VisibleDuringCutscenes, a => a.VisibleDuringCutscenes, (a, v) => a.VisibleDuringCutscenes = v },
+        { BaseAssetFlags.ReceiveShadows, a => a.ReceivesShadows, (a, v) => a.ReceivesShadows = v },
+    };
+
+    [Theory]
+    [MemberData(nameof(FlagProjections))]
+    public void FlagProjection_WhenBitSet_ReadsTrue(BaseAssetFlags flag, Func<BaseAsset, bool> get, Action<BaseAsset, bool> _)
+    {
+        var asset = new TestBaseAsset();
+        asset.Physical.BaseFlags = flag;
+
+        Assert.True(get(asset));
+    }
+
+    [Theory]
+    [MemberData(nameof(FlagProjections))]
+    public void FlagProjection_WhenOnlyOtherBitsSet_ReadsFalse(BaseAssetFlags flag, Func<BaseAsset, bool> get, Action<BaseAsset, bool> _)
+    {
+        var asset = new TestBaseAsset();
+        asset.Physical.BaseFlags = (BaseAssetFlags)~(short)flag;
+
+        Assert.False(get(asset));
+    }
+
+    [Theory]
+    [MemberData(nameof(FlagProjections))]
+    public void FlagProjection_SetTrue_SetsOnlyItsBit(BaseAssetFlags flag, Func<BaseAsset, bool> _, Action<BaseAsset, bool> set)
+    {
+        var asset = new TestBaseAsset();
+        asset.Physical.BaseFlags = BaseAssetFlags.Valid | BaseAssetFlags.NeverUpdateCulled;
+
+        set(asset, true);
+
+        Assert.Equal(BaseAssetFlags.Valid | BaseAssetFlags.NeverUpdateCulled | flag, asset.Physical.BaseFlags);
+    }
+
+    [Theory]
+    [MemberData(nameof(FlagProjections))]
+    public void FlagProjection_SetFalse_ClearsOnlyItsBit(BaseAssetFlags flag, Func<BaseAsset, bool> _, Action<BaseAsset, bool> set)
+    {
+        var asset = new TestBaseAsset();
+        asset.Physical.BaseFlags = (BaseAssetFlags)0x7FFF;
+
+        set(asset, false);
+
+        Assert.Equal((BaseAssetFlags)(0x7FFF & ~(short)flag), asset.Physical.BaseFlags);
+    }
+
     [Fact]
     public void LinkCount_AndLinksCount_CanDisagree()
     {

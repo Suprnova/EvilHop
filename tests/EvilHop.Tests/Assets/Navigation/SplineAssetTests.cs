@@ -86,7 +86,7 @@ public class SplineAssetTests
         var asset = (SplineAsset)Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile);
 
         Assert.Equal(new AssetId(0x14595AD0), asset.Physical.BaseId);
-        Assert.Equal(BaseAssetFlags.Valid, asset.BaseFlags & BaseAssetFlags.Valid);
+        Assert.Equal(BaseAssetFlags.Valid, asset.Physical.BaseFlags & BaseAssetFlags.Valid);
         Assert.Equal(1, asset.Degree);
         Assert.Equal(3, asset.ControlPoints.Count);
         Assert.Equal(5, asset.Knots.Count);

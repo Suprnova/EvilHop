@@ -43,7 +43,7 @@ public sealed partial class SurfaceAsset
         asset.Uvfxs = [uvfx0, uvfx1];
         asset.Physical.UvfxFlags = uvfxFlags;
 
-        asset.Physical.IsEnabled = reader.ReadByte();
+        asset.Physical.StartsOn = reader.ReadByte();
         reader.ReadBytes(3); // padding, always zero
         if (profile.Game is not GameVersion.N100F)
         {
@@ -91,7 +91,7 @@ public sealed partial class SurfaceAsset
         UVEffect.Write(asset.Uvfxs[0], writer, profile);
         UVEffect.Write(asset.Uvfxs[1], writer, profile);
 
-        writer.Write(asset.Physical.IsEnabled);
+        writer.Write(asset.Physical.StartsOn);
         writer.Write(new byte[3]); // padding
         if (profile.Game is not GameVersion.N100F)
         {

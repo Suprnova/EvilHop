@@ -113,10 +113,10 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// <summary>
     /// Whether this surface starts enabled.
     /// </summary>
-    public bool IsEnabled
+    public bool StartsOn
     {
-        get => Physical.IsEnabled != 0;
-        set => Physical.IsEnabled = (byte)(value ? 1 : 0);
+        get => Physical.StartsOn != 0;
+        set => Physical.StartsOn = (byte)(value ? 1 : 0);
     }
 
     /// <summary>
@@ -227,8 +227,8 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     private byte _gameSticky;
     byte Physical.ISurfaceAsset.GameSticky { get => _gameSticky; set => _gameSticky = value; }
 
-    private byte _isEnabled = 1;
-    byte Physical.ISurfaceAsset.IsEnabled { get => _isEnabled; set => _isEnabled = value; }
+    private byte _startsOn = 1;
+    byte Physical.ISurfaceAsset.StartsOn { get => _startsOn; set => _startsOn = value; }
 
     private AssetId _impactSound;
     AssetId Physical.ISurfaceAsset.ImpactSound { get => _impactSound; set => _impactSound = value; }
@@ -486,9 +486,9 @@ public static partial class Physical
         byte GameSticky { get; set; }
 
         /// <summary>
-        /// Backs <see cref="SurfaceAsset.IsEnabled"/>.
+        /// Backs <see cref="SurfaceAsset.StartsOn"/>.
         /// </summary>
-        byte IsEnabled { get; set; }
+        byte StartsOn { get; set; }
 
         /// <summary>
         /// The raw flags word backing <see cref="SurfaceAsset.TextureAnims"/>'s

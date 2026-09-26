@@ -146,7 +146,7 @@ public class DuplicatorAssetTests
     {
         var asset = (DuplicatorAsset)Read([.. Data(linkCount: 1, templateLinkCount: 1), .. LinkBytes(0x26F, 0x0B, 0xDED5D8C4)]);
 
-        asset.BaseFlags = BaseAssetFlags.Valid;
+        asset.Physical.BaseFlags = BaseAssetFlags.Valid;
         asset.Links.Add(new Link());
 
         Assert.Equal(asset.Physical.BaseId, asset.Physical.TemplateBaseId);

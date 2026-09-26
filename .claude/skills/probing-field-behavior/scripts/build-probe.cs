@@ -3,7 +3,10 @@
 // build-probe.cs — assemble the ZZ01 probe workshop into an extracted disc: skydome, tiled floor,
 // and a numbered row of rigs that differ only in the field under test. Run from the repo root:
 //
-//     dotnet run .claude/skills/probing-field-behavior/scripts/build-probe.cs -- [game]
+//     dotnet run .claude/skills/probing-field-behavior/scripts/build-probe.cs -- [game] [scene]
+//
+// [scene] builds the workshop under a shipped scene ID instead of ZZ01, for engine code keyed on the
+// scene; the shipped archive it replaces is kept as .orig.
 //
 // Everything above "THE PROBE" is workshop scaffolding shared by every game. Everything below it is
 // the rig for one specific question and is meant to be rewritten per probe. See SKILL.md.
@@ -54,7 +57,7 @@ var setups = new Dictionary<string, Setup>(StringComparer.OrdinalIgnoreCase)
         "sd2.ini", "ZZ", "ZZ01",
         Floor: new(@"L0\l013.HIP", "gc_rfcl0003", "ocr00001.RW3"), FloorWidth: 2.7f, FloorTop: -0.03f,
         Sky: null, SkyScale: 1f,
-        ReferenceSurface: null,
+        ReferenceSurface: new(@"E0\e003.HIP", "KILL SURFACE"),
         EmptyWorld: "EMPTYBSP",
         Extras: [new(@"B0\b001.HIP", "START")],
         SingleArchive: true),
@@ -84,6 +87,7 @@ var setups = new Dictionary<string, Setup>(StringComparer.OrdinalIgnoreCase)
 };
 
 var setup = setups[args.Length > 0 ? args[0] : "bfbb"];
+if (args.Length > 1) setup = setup with { Slot = args[1].ToUpperInvariant(), SlotDir = args[1][..2].ToUpperInvariant() };
 string files = Path.Combine(setup.Disc, "files");
 Console.WriteLine($"=== {setup.Game} -> {files}\\{setup.SlotDir}\\{setup.Slot.ToLowerInvariant()}");
 
@@ -242,8 +246,6 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
     var asset = new SimpleObjectAsset
     {
         Name = name,
-        BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid
-            | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows,
         EntityFlags = EntityFlags.Visible,
         Position = position,
         Angle = new Vector3(yaw, 0f, 0f),
@@ -255,6 +257,8 @@ SimpleObjectAsset Place(string name, AssetId model, Vector3 position, float scal
     if (tint is { } colour) asset.ColorMultiplier = colour;
 
     asset.CalculateId();
+    asset.Physical.BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid
+        | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows;
     asset.Physical.BaseType = 11;
     asset.Physical.CollisionFlags = !collidable
         ? CollisionFlags.None : CollisionFlags.PreciseCollision;
@@ -394,10 +398,10 @@ if (setup.EmptyWorld is { } emptyWorld)
         var script = new ScriptAsset
         {
             Name = "zz_camera_script",
-            BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid
-                | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows,
             ScaleFactor = 1f
         };
+        script.Physical.BaseFlags = BaseAssetFlags.Enabled | BaseAssetFlags.Valid
+            | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows;
         script.Links.Add(new Link { SourceEvent = ScenePrepare, DestinationEvent = Run, DestinationAssetId = default });
         foreach (var transition in transitions)
             script.Events.Add(new ScriptAsset.ScriptEvent { Time = 0.5f, WidgetId = transition.Id, ParamEvent = CameraTransitionBegin });
@@ -410,101 +414,262 @@ if (setup.EmptyWorld is { } emptyWorld)
 }
 
 // ======================= THE PROBE — rewrite below this line =======================
+// BaseAsset: BaseFlags bits, BaseId and LinkCount. Four stations along +X; see probes/base-asset.md.
 
-/// <summary>Creates a SurfaceAsset variant based on the reference surface.</summary>
-AssetId Surface(string name, byte physFlags, byte damageType, float? outOfBoundsDelay = null,
-    (byte Start, byte Stop)? slideAngles = null)
+const BaseAssetFlags Shipped = BaseAssetFlags.Enabled | BaseAssetFlags.Valid
+    | BaseAssetFlags.VisibleDuringCutscenes | BaseAssetFlags.ReceiveShadows;
+
+// Event IDs (Rat, TSSM: DWARF enumerators; BFBB: xEvent.h; N100F: shipped links and zEntEvent; ROTU, Incredibles: the constants zPlayer::CollideTrigger,
+// zEntEvent and ZDSP_elcb_event compare against), and a shipped trigger to copy every non-geometric
+// field from. N100F, BFBB and TSSM have no ForceSceneReset; their scene resets only when the player loses
+// a life.
+var (events, triggerSource) = setup.Game switch
 {
-    if (reference is null) return default;
+    GameVersion.N100F => (new Events(Enable: 1, Invisible: 4, Enter: 5, ForceSceneReset: null),
+        new Borrowed(@"E0\e003.HIP", "OUTOFBOUNDS")),
+    GameVersion.BFBB => (new Events(Enable: 1, Invisible: 4, Enter: 5, ForceSceneReset: null),
+        new Borrowed(@"bb\bb01.HIP", "EXIT_TO_BB02")),
+    GameVersion.TSSM => (new Events(Enable: 1, Invisible: 4, Enter: 5, ForceSceneReset: null),
+        new Borrowed(@"BB\bb01.HIP", "LAPCOUNTER_TRIG_01")),
+    GameVersion.Incredibles => (new Events(Enable: 1, Invisible: 4, Enter: 5, ForceSceneReset: 632),
+        new Borrowed(@"NJ\nj03.HIP", "TO_NEXT_TRIG")),
+    GameVersion.Ratatouille => (new Events(Enable: 1, Invisible: 4, Enter: 881, ForceSceneReset: 632),
+        new Borrowed(@"FP\fp01.HIP", "TUTORIAL_INTRO_TRIG")),
+    GameVersion.ROTU => (new Events(Enable: 1, Invisible: 4, Enter: 881, ForceSceneReset: 632),
+        new Borrowed(@"A2\A201.HIP", "WAVE_01_GO_TRIGGER")),
+    _ => throw new NotSupportedException($"Add {setup.Game}'s event IDs and reference trigger to the probe.")
+};
 
-    var surface = new SurfaceAsset
+var (_, triggerSession) = Open(Path.Combine(files, triggerSource.Archive));
+var shippedTrigger = triggerSession.Layers.SelectMany(l => l.Assets).OfType<TriggerAsset>()
+    .Single(t => t.Name == triggerSource.Name);
+
+const float PadLift = 0.35f;
+float x0 = spawn.X, z0 = spawn.Z;
+Vector3 OnFloor(float x, float z, float lift = 0f) => new(x0 + x, floorY + lift, z0 + z);
+
+/// <summary>Numbers <paramref name="position"/> with a row of small tiles beside it.</summary>
+void Tally(int number, Vector3 position)
+{
+    for (int t = 0; t < number; t++)
+        Tile($"zz_tally_{number:D2}_{t:D2}",
+            position + new Vector3(-2f + (t % 5 * 1.25f), 0f, 4f + (t / 5 * 1.5f)), 1f, collidable: false);
+}
+
+// A floor model whose top sits at its origin is a flat plane, which no Y scale gives height to.
+bool flatFloor = setup.FloorTop <= 0f;
+
+/// <summary>A non-colliding floor-tile box of <paramref name="size"/> whose top surface centres on
+/// <paramref name="top"/>, kept off the static batch by <see cref="CollisionFlags.LedgeGrab"/> so it
+/// is drawn and updated individually. A flat floor model ignores <paramref name="size"/>'s height.</summary>
+SimpleObjectAsset Unbatched(string name, Vector3 top, Vector3 size, Rgba tint, BaseAssetFlags flags)
+{
+    var scale = new Vector3(size.X / setup.FloorWidth, flatFloor ? 1f : size.Y / setup.FloorTop, size.Z / setup.FloorWidth);
+    var simp = Place(name, tileModel, top - ((setup.FloorCentre + new Vector3(0f, setup.FloorTop, 0f)) * scale),
+        1f, collidable: false, tint: tint);
+    simp.Scale = scale;
+    simp.Physical.BaseFlags = flags;
+    simp.Physical.CollisionFlags = CollisionFlags.LedgeGrab;
+    return simp;
+}
+
+/// <summary>A pillar standing on the floor at <paramref name="x"/>, <paramref name="z"/>, or a raised
+/// slab where the floor model is flat.</summary>
+SimpleObjectAsset Pillar(int number, float x, float z, Rgba tint, BaseAssetFlags flags = Shipped)
+{
+    var pillar = flatFloor
+        ? Unbatched($"zz_pillar_{number:D2}", OnFloor(x, z, 0.5f), new Vector3(3f, 0f, 3f), tint, flags)
+        : Unbatched($"zz_pillar_{number:D2}", OnFloor(x, z, 3f), new Vector3(2f, 3f, 2f), tint, flags);
+    Tally(number, OnFloor(x, z));
+    return pillar;
+}
+
+/// <summary>A box trigger standing on a tinted step-pad at <paramref name="x"/>.</summary>
+TriggerAsset Trigger(string name, float x, Rgba tint, BaseAssetFlags flags = Shipped)
+{
+    const float Half = 3f, Height = 6f;
+    var centre = OnFloor(x, 0f);
+    Tile($"{name}_pad", centre + new Vector3(0f, 0.05f, 0f), Half * 2, collidable: false, tint: tint);
+
+    var trigger = new TriggerAsset
     {
         Name = name,
-        BaseFlags = reference.BaseFlags,
-        Damage = (SurfaceAsset.DamageKind)damageType,
-        PhysFlags = (SurfaceAsset.PhysicsBehavior)physFlags,
-        Friction = reference.Friction,
-        SlideStartAngle = slideAngles?.Start ?? reference.SlideStartAngle,
-        SlideStopAngle = slideAngles?.Stop ?? reference.SlideStopAngle,
-        OutOfBoundsDelay = outOfBoundsDelay ?? reference.OutOfBoundsDelay,
-        WallJumpScaleXZ = reference.WallJumpScaleXZ,
-        WallJumpScaleY = reference.WallJumpScaleY,
-        IsEnabled = true,
+        EntityFlags = shippedTrigger.EntityFlags,
+        Position = centre,
+        Scale = shippedTrigger.Scale,
+        ColorMultiplier = shippedTrigger.ColorMultiplier,
+        Kind = TriggerAsset.Shape.Box,
+        TriggerPosition0 = centre - new Vector3(Half, 1f, Half),
+        TriggerPosition1 = centre + new Vector3(Half, Height, Half),
+        Direction = shippedTrigger.Direction,
+        Flags = shippedTrigger.Flags,
     };
-
-    surface.CalculateId();
-    surface.Physical.BaseType = 26;
-    surface.Physical.Flags = AssetFlags.SourceVirtual;
-
-    layer.Add(surface);
+    trigger.CalculateId();
+    trigger.Physical.BaseFlags = flags;
+    trigger.Physical.BaseType = shippedTrigger.Physical.BaseType;
+    trigger.Physical.ModelId = shippedTrigger.Physical.ModelId;
+    trigger.Physical.TriggerPosition2 = centre;
+    trigger.Physical.TriggerPosition3 = centre;
+    trigger.Physical.Flags = AssetFlags.SourceVirtual;
+    layer.Add(trigger);
     count++;
-    return surface.Id;
+    return trigger;
 }
 
-// Variant pads placed along +X.
-(string Label, byte PhysFlags, byte DamageType, float? OobDelay, Rgba Tint)[] padVariants =
+static Link Send(short sourceEvent, short destinationEvent, AssetId destination) =>
+    new() { SourceEvent = sourceEvent, DestinationEvent = destinationEvent, DestinationAssetId = destination };
+
+Rgba grey = new(0.8f, 0.8f, 0.8f, 1f), blue = new(0.3f, 0.4f, 1f, 1f), green = new(0.3f, 1f, 0.3f, 1f),
+    red = new(1f, 0.2f, 0.2f, 1f), yellow = new(0.9f, 0.9f, 0.3f, 1f), purple = new(0.6f, 0.2f, 0.8f, 1f),
+    orange = new(0.9f, 0.6f, 0.1f, 1f), cyan = new(0.1f, 0.8f, 0.8f, 1f);
+
+Console.WriteLine($"  spawn {spawn}; stations run +X:");
+
+// Station 1: raised pads to stand on.
+(string Label, BaseAssetFlags Flags, Rgba Tint)[] pads =
 [
-    ("flags=0  (control)",                    0, 0, null, new Rgba(0.3f, 0.4f, 1f, 1f)),
-    ("flags=4  Step",                         4, 0, null, new Rgba(0.6f, 0.2f, 0.8f, 1f)),
-    ("flags=8  PreventStanding",              8, 0, null, new Rgba(0.9f, 0.6f, 0.1f, 1f)),
-    ("flags=16 OutOfBounds delay=2",         16, 0, 2f,   new Rgba(0.1f, 0.8f, 0.8f, 1f)),
-    ("flags=0  damage=1 (control+)",          0, 1, null, new Rgba(1f, 0.2f, 0.2f, 1f)),
-    ("flags=16 OutOfBounds delay=0.5",       16, 0, 0.5f, new Rgba(0.2f, 1f, 0.4f, 1f)),
-    ("flags=16 OutOfBounds delay=20",        16, 0, 20f,  new Rgba(0.1f, 0.3f, 0.15f, 1f)),
+    ("0x1D shipped (control)",           Shipped,                                  blue),
+    ("0x0D ReceiveShadows cleared",      Shipped & ~BaseAssetFlags.ReceiveShadows, yellow),
+    ("0x19 Valid cleared",               Shipped & ~BaseAssetFlags.Valid,          cyan),
+    ("0x1C Enabled cleared",             Shipped & ~BaseAssetFlags.Enabled,        red),
 ];
-
-const float PadStep = 12f;
-const float PadLift = 0.35f;
-Console.WriteLine($"  spawn {spawn}; pad row runs +X, {PadStep} apart:");
-
-for (int i = 0; i < padVariants.Length; i++)
+for (int i = 0; i < pads.Length; i++)
 {
-    var (label, physFlags, damageType, oobDelay, tint) = padVariants[i];
-    var surface = Surface($"zz_surf_{i + 1:D2}", physFlags, damageType, oobDelay);
-    var position = new Vector3(spawn.X + ((i + 1) * PadStep), floorY + PadLift, spawn.Z);
-    Tile($"zz_pad_{i + 1:D2}", position, 9f, collidable: true, surface, tint);
-
-    // Tally markers beside each pad in rows of five.
-    for (int t = 0; t <= i; t++)
-        Tile($"zz_tally_{i + 1:D2}_{t:D2}",
-            new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
-            1.5f, collidable: false);
-
-    Console.WriteLine($"    #{i + 1} x={position.X,6:F1}  {label}");
+    var (label, flags, tint) = pads[i];
+    var position = OnFloor((i + 1) * 12f, 0f, PadLift);
+    Tile($"zz_pad_{i + 1:D2}", position, 9f, collidable: true, tint: tint).Physical.BaseFlags = flags;
+    Tally(i + 1, position with { Z = position.Z - 12f });
+    Console.WriteLine($"    #{i + 1} pad  x={position.X,6:F1}  {label}");
 }
 
-// Tilted ramps testing slide and orientation matching (pitch turns about Z).
+// Station 2: FacePlayer + Upright bars, a readout for whether the SIMP is updated.
+(string Label, BaseAssetFlags Flags, Rgba Tint)[] bars =
+[
+    ("0x1D shipped (control)",             Shipped,                           blue),
+    ("0x1C Enabled cleared",               Shipped & ~BaseAssetFlags.Enabled, red),
+    ("0x9D shipped + bit 7 (0x80)",        Shipped | BaseAssetFlags.NeverUpdateCulled,        purple),
+];
+for (int i = 0; i < bars.Length; i++)
 {
-    const float TiltAngle = 0.5236f; // 30 degrees
-    const float RampWidth = 12f;
-    const float RampStep = 12f;
-    int rampBase = padVariants.Length;
-    Console.WriteLine($"  ramp row continues +X, {RampStep} apart, pitched {TiltAngle:F2} rad (Z):");
+    var (label, flags, tint) = bars[i];
+    int number = pads.Length + i + 1;
+    var position = OnFloor(number * 12f, 0f, 1.5f);
+    var bar = Unbatched($"zz_bar_{number:D2}", position, new Vector3(1f, 0.5f, 8f), tint, flags);
+    bar.FacePlayer = true;
+    bar.Upright = true;
+    Tally(number, position with { Y = floorY, Z = position.Z - 12f });
+    Console.WriteLine($"    #{number} bar  x={position.X,6:F1}  {label}");
+}
 
-    (string Label, byte PhysFlags, (byte, byte)? SlideAngles, Vector3 Angle, Rgba Tint)[] ramps =
-    [
-        ("flags=0  neither",                     0, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 0.4f, 1f, 1f)),
-        ("flags=1  Slide only",                   1, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.9f, 0.9f, 0.3f, 1f)),
-        ("flags=2  MatchOrient only",             2, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 0.9f, 0.9f, 1f)),
-        ("flags=3  both (shipped value)",         3, null,    new Vector3(0, 0, TiltAngle), new Rgba(0.3f, 1f, 0.3f, 1f)),
-        ("flags=8  PreventStanding, slide=20/10", 8, (20, 10), new Vector3(0, 0, TiltAngle), new Rgba(0.9f, 0.6f, 0.1f, 1f)),
-        ("flags=8  PreventStanding, slide=1/1",   8, (1, 1),   new Vector3(0, 0, TiltAngle), new Rgba(0.6f, 0.3f, 0f, 1f)),
-    ];
+// Station 3: one trigger drives pillars that differ only in the field under test. Pillars stand in a
+// row along -Z of the step-pad, numbered away from the pad.
+int next = pads.Length + bars.Length + 1;
+float stationX = next * 12f + 12f;
+var mainTrigger = Trigger("zz_trig_main", stationX, green);
+Console.WriteLine($"    main trigger x={x0 + stationX,6:F1} (green pad):");
 
-    for (int i = 0; i < ramps.Length; i++)
+SimpleObjectAsset StationPillar(string label, Rgba tint, BaseAssetFlags flags = Shipped)
+{
+    int number = next++;
+    var pillar = Pillar(number, stationX - 15f + ((number - pads.Length - bars.Length - 1) * 6f), -12f, tint, flags);
+    Console.WriteLine($"      #{number} pillar  {label}");
+    return pillar;
+}
+
+var control = StationPillar("shipped, sent Invisible (control)", blue);
+var disabled = StationPillar("Enabled cleared, sent Invisible", red, Shipped & ~BaseAssetFlags.Enabled);
+var reenabled = StationPillar("Enabled cleared, sent Enable then Invisible", orange, Shipped & ~BaseAssetFlags.Enabled);
+var persistent = StationPillar("Persistent, sent Invisible", purple, Shipped | BaseAssetFlags.Persistent);
+var byAtocId = StationPillar("BaseId changed, sent Invisible at its ATOC id", yellow);
+var byBaseId = StationPillar("BaseId changed, sent Invisible at its BaseId", cyan);
+
+byAtocId.Physical.BaseId = AssetId.FromName("zz_other_id_a");
+byBaseId.Physical.BaseId = AssetId.FromName("zz_other_id_b");
+
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, control.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, disabled.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Enable, reenabled.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, reenabled.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, persistent.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, byAtocId.Id));
+mainTrigger.Links.Add(Send(events.Enter, events.Invisible, byBaseId.Physical.BaseId));
+
+// Station 4: a disabled trigger.
+stationX += 30f;
+var disabledTrigger = Trigger("zz_trig_disabled", stationX, red, Shipped & ~BaseAssetFlags.Enabled);
+Console.WriteLine($"    disabled trigger x={x0 + stationX,6:F1} (red pad):");
+var disabledTarget = Pillar(next, stationX, -12f, blue);
+Console.WriteLine($"      #{next++} pillar  shipped, sent Invisible by the disabled trigger");
+disabledTrigger.Links.Add(Send(events.Enter, events.Invisible, disabledTarget.Id));
+
+// Station 5: a trigger with two links and LinkCount 1.
+stationX += 20f;
+var shortTrigger = Trigger("zz_trig_linkcount", stationX, yellow);
+Console.WriteLine($"    LinkCount=1 trigger x={x0 + stationX,6:F1} (yellow pad):");
+var firstTarget = Pillar(next, stationX - 4f, -12f, blue);
+Console.WriteLine($"      #{next++} pillar  sent Invisible by link 1");
+var secondTarget = Pillar(next, stationX + 4f, -12f, blue);
+Console.WriteLine($"      #{next++} pillar  sent Invisible by link 2");
+shortTrigger.Links.Add(Send(events.Enter, events.Invisible, firstTarget.Id));
+shortTrigger.Links.Add(Send(events.Enter, events.Invisible, secondTarget.Id));
+shortTrigger.Physical.LinkCount = 1;
+
+// Station 6: scene reset, through a dispatcher where the game has ForceSceneReset, and otherwise by
+// dying on a fatal surface, since losing a life resets the scene.
+stationX += 20f;
+if (events.ForceSceneReset is { } forceSceneReset)
+{
+    var resetTrigger = Trigger("zz_trig_reset", stationX, purple);
+    var dispatcher = new DispatcherAsset { Name = "zz_reset_dispatcher" };
+    dispatcher.CalculateId();
+    dispatcher.Physical.BaseFlags = Shipped;
+    dispatcher.Physical.Flags = AssetFlags.SourceVirtual;
+    layer.Add(dispatcher);
+    resetTrigger.Links.Add(Send(events.Enter, forceSceneReset, dispatcher.Id));
+    Console.WriteLine($"    scene reset trigger x={x0 + stationX,6:F1} (purple pad)");
+}
+else
+{
+    // The shipped reference surface itself, so every game-specific field keeps a shipped value.
+    var fatal = reference!;
+    fatal.Layer!.Remove(fatal);
+    fatal.Name = "zz_death_surf";
+    fatal.CalculateId();
+    fatal.Damage = SurfaceAsset.DamageKind.FatalDeathPlane;
+    fatal.DamagePassthrough = false;
+    layer.Add(fatal);
+    Tile("zz_death_pad", OnFloor(stationX, 0f, PadLift), 9f, collidable: true, fatal.Id);
+    Console.WriteLine($"    death pad x={x0 + stationX,6:F1} (resets the scene on death)");
+}
+
+// Station 7 (BFBB): bit 7 against update culling. Two shipped always-spinning mechanisms, re-modelled
+// as big floor tiles, placed past the 70-unit default cull radius; only #18 carries 0x80. A culled
+// platform isn't updated, so #17 should hang still until the camera comes within range.
+if (setup.Game is GameVersion.BFBB)
+{
+    var (_, spinnerSession) = Open(Path.Combine(files, @"b2\b201.HIP"));
+    var spinners = spinnerSession.Layers.SelectMany(l => l.Assets).OfType<PlatformAsset>()
+        .Where(p => p.Name is "ROLLER_MECH 01" or "ROLLER_MECH 02").ToList();
+    const float SpinnerX = 205f, SpinnerSide = 24f, SpinnerLift = 10f, SpinnerWidth = 12f;
+    Console.WriteLine($"    spinners x={x0 + SpinnerX,6:F1}, {SpinnerLift} up:");
+    for (int i = 0; i < spinners.Count; i++)
     {
-        var (label, physFlags, slideAngles, angle, tint) = ramps[i];
-        int num = rampBase + i + 1;
-        var surface = Surface($"zz_ramp_{num:D2}_surf", physFlags, 0, slideAngles: slideAngles);
-        var position = new Vector3(spawn.X + (num * RampStep), floorY + 1f, spawn.Z);
-        Tile($"zz_ramp_{num:D2}", position, RampWidth, collidable: true, surface, tint).Angle = angle;
-
-        for (int t = 0; t <= i; t++)
-            Tile($"zz_tally_{num:D2}_{t:D2}",
-                new Vector3(position.X - 4f + (t % 5 * 2f), floorY + PadLift, position.Z - 8f - (t / 5 * 2.5f)),
-                1.5f, collidable: false);
-
-        Console.WriteLine($"    #{num} x={position.X,6:F1}  {label}");
+        int number = next++;
+        bool exempt = i == 1;
+        var spinner = spinners[i];
+        spinner.Layer!.Remove(spinner);
+        spinner.Name = $"zz_spinner_{number:D2}";
+        spinner.CalculateId();
+        spinner.Physical.ModelId = tileModel;
+        spinner.Scale = new Vector3(TileScale(SpinnerWidth));
+        spinner.Angle = Vector3.Zero;
+        spinner.Position = OnFloor(SpinnerX, (i * 2 - 1) * SpinnerSide, SpinnerLift);
+        spinner.ColorMultiplier = exempt ? purple : blue;
+        spinner.Physical.BaseFlags = exempt ? Shipped | BaseAssetFlags.NeverUpdateCulled : Shipped;
+        layer.Add(spinner);
+        count++;
+        Tally(number, OnFloor(SpinnerX, (i * 2 - 1) * SpinnerSide));
+        Console.WriteLine($"      #{number} spinner z={spinner.Position.Z,6:F1}  {(exempt ? "0x9D, bit 7 set" : "0x1D (control)")}");
     }
 }
 
@@ -512,6 +677,7 @@ for (int i = 0; i < padVariants.Length; i++)
 
 void SaveArchive(Archive archive, AssetSession session, string path)
 {
+    if (args.Length > 1 && File.Exists(path) && !File.Exists(path + ".orig")) File.Copy(path, path + ".orig");
     session.Commit();
     using var stream = File.Create(path);
     archive.Save(stream);
@@ -567,6 +733,9 @@ record Setup(
     Extra[]? Extras = null,        // Shipped assets to borrow unchanged into HOP
     bool SingleArchive = false,    // True if level is single HIP without HOP (N100F)
     string? EmptyWorld = null);    // Name of empty BSP to widen world bounds
+
+/// <summary>The game-specific event IDs the probe's links use.</summary>
+record Events(short Enable, short Invisible, short Enter, short? ForceSceneReset);
 
 /// <summary>One named asset in a shipped archive.</summary>
 record Borrowed(string Archive, string Name);

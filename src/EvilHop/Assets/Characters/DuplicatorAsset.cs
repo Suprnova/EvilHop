@@ -75,8 +75,8 @@ public sealed partial class DuplicatorAsset() : BaseAsset(AssetType.Duplicator, 
     private BaseAssetFlags? _overriddenTemplateBaseFlags;
     BaseAssetFlags Physical.IDuplicatorAsset.TemplateBaseFlags
     {
-        get => _overriddenTemplateBaseFlags ?? BaseFlags;
-        set => _overriddenTemplateBaseFlags = value == BaseFlags ? null : value;
+        get => _overriddenTemplateBaseFlags ?? Physical.BaseFlags;
+        set => _overriddenTemplateBaseFlags = value == Physical.BaseFlags ? null : value;
     }
 
     /// <summary>
@@ -182,11 +182,11 @@ public static partial class Physical
 
         /// <summary>
         /// The <see cref="BaseAssetFlags"/> stored in <see cref="DuplicatorAsset.Template"/>'s own
-        /// base header, which the game reads in place of <see cref="BaseAsset.BaseFlags"/>. Follows
-        /// <see cref="BaseAsset.BaseFlags"/>.
+        /// base header, which the game reads in place of <see cref="IBaseAsset.BaseFlags"/>. Follows
+        /// <see cref="IBaseAsset.BaseFlags"/>.
         /// </summary>
         /// <remarks>
-        /// When disagreements with <see cref="BaseAsset.BaseFlags"/> exist, this field wins during
+        /// When disagreements with <see cref="IBaseAsset.BaseFlags"/> exist, this field wins during
         /// serialization.
         /// </remarks>
         BaseAssetFlags TemplateBaseFlags { get; set; }

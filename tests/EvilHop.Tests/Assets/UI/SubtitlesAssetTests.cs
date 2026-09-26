@@ -376,7 +376,7 @@ public class SubtitlesAssetTests
         generic.Physical.BaseId = new AssetId(0x12345678);
         generic.Physical.BaseType = 0x00;
         generic.Physical.LinkCount = 0;
-        generic.BaseFlags = BaseAssetFlags.Valid;
+        generic.Physical.BaseFlags = BaseAssetFlags.Valid;
         generic.SetUnparsedTail([0x11, 0x22, 0x33, 0x44]);
 
         byte[] written = Write(generic);

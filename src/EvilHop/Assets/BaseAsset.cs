@@ -13,9 +13,58 @@ namespace EvilHop.Assets;
 public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type), Physical.IBaseAsset
 {
     /// <summary>
-    /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.
+    /// Whether the <see cref="BaseAsset"/> responds to events and fires its <see cref="Links"/>.
     /// </summary>
-    public BaseAssetFlags BaseFlags { get; set; }
+    /// <remarks>
+    /// Projected from <see cref="BaseAssetFlags.Enabled"/> in <see cref="Physical.IBaseAsset.BaseFlags"/>.
+    /// </remarks>
+    public bool IsEnabled
+    {
+        get => Physical.BaseFlags.HasFlag(BaseAssetFlags.Enabled);
+        set => Physical.BaseFlags = Physical.BaseFlags.WithFlag(BaseAssetFlags.Enabled, value);
+    }
+
+    /// <summary>
+    /// Whether the <see cref="BaseAsset"/>'s state is saved with the scene and restored after a scene reset.
+    /// </summary>
+    /// <remarks>
+    /// Projected from <see cref="BaseAssetFlags.Persistent"/> in <see cref="Physical.IBaseAsset.BaseFlags"/>.
+    /// </remarks>
+    public bool IsPersistent
+    {
+        get => Physical.BaseFlags.HasFlag(BaseAssetFlags.Persistent);
+        set => Physical.BaseFlags = Physical.BaseFlags.WithFlag(BaseAssetFlags.Persistent, value);
+    }
+
+    /// <summary>
+    /// Whether the entity stays visible while a cutscene plays.
+    /// </summary>
+    /// <remarks>
+    /// Projected from <see cref="BaseAssetFlags.VisibleDuringCutscenes"/> in
+    /// <see cref="Physical.IBaseAsset.BaseFlags"/>.
+    /// </remarks>
+    public bool VisibleDuringCutscenes
+    {
+        get => Physical.BaseFlags.HasFlag(BaseAssetFlags.VisibleDuringCutscenes);
+        set => Physical.BaseFlags = Physical.BaseFlags.WithFlag(BaseAssetFlags.VisibleDuringCutscenes, value);
+    }
+
+    /// <summary>
+    /// Whether shadows are drawn onto the entity.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Ignored by <see cref="GameVersion.N100F"/> in most cases, see  
+    /// <see cref="BaseAssetFlags.ReceiveShadows"/> for more details.
+    /// </para>
+    /// Projected from <see cref="BaseAssetFlags.ReceiveShadows"/> in <see cref="Physical.IBaseAsset.BaseFlags"/>.
+    /// </remarks>
+    public bool ReceivesShadows
+    {
+        get => Physical.BaseFlags.HasFlag(BaseAssetFlags.ReceiveShadows);
+        set => Physical.BaseFlags = Physical.BaseFlags.WithFlag(BaseAssetFlags.ReceiveShadows, value);
+    }
+
     /// <summary>
     /// The <see cref="Link"/>s this <see cref="BaseAsset"/> owns.
     /// </summary>
@@ -44,6 +93,13 @@ public abstract class BaseAsset(AssetType type, byte baseType = 0) : Asset(type)
         get => _overriddenLinkCount ?? (byte)Links.Count;
         set => _overriddenLinkCount = value == (byte)Links.Count ? null : value;
     }
+
+    private BaseAssetFlags _baseFlags;
+    BaseAssetFlags Physical.IBaseAsset.BaseFlags
+    {
+        get => _baseFlags;
+        set => _baseFlags = value;
+    }
 }
 
 public static partial class Physical
@@ -54,12 +110,11 @@ public static partial class Physical
     public interface IBaseAsset : IAsset
     {
         /// <summary>
-        /// The <see cref="Asset"/>'s ID, as stored in the <see cref="BaseAsset"/> header.
-        /// This field is stored independently from <see cref="Asset.Id"/>, within the
-        /// asset's own data.
+        /// The ID the engine uses for link and scene lookups.
         /// </summary>
         /// <remarks>
-        /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
+        /// Stored in the asset's own data, independently of <see cref="Asset.Id"/>. When the two
+        /// disagree, this field wins during serialization.
         /// </remarks>
         AssetId BaseId { get; set; }
         /// <summary>
@@ -72,14 +127,23 @@ public static partial class Physical
         /// </summary>
         /// <remarks>
         /// When disagreements with <see cref="BaseAsset.Links"/>.Count exist, this field wins during
-        /// serialization. 
+        /// serialization.
         /// </remarks>
         byte LinkCount { get; set; }
+        /// <summary>
+        /// The <see cref="BaseAsset"/>'s <see cref="BaseAssetFlags"/>.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="BaseAsset.IsEnabled"/>, <see cref="BaseAsset.IsPersistent"/>,
+        /// <see cref="BaseAsset.VisibleDuringCutscenes"/> and <see cref="BaseAsset.ReceivesShadows"/>
+        /// project single bits of this field.
+        /// </remarks>
+        BaseAssetFlags BaseFlags { get; set; }
     }
 }
 
 /// <summary>
-/// Flags controlling the initial lifecycle, visibility, and scene persistence of a <see cref="BaseAsset"/>.
+/// Flags controlling how a <see cref="BaseAsset"/> handles events, persists across scene resets, and is drawn.
 /// </summary>
 [Flags]
 public enum BaseAssetFlags : short
@@ -89,23 +153,49 @@ public enum BaseAssetFlags : short
     /// </summary>
     None = 0,
     /// <summary>
-    /// The <see cref="BaseAsset"/> is enabled.
+    /// The <see cref="BaseAsset"/> responds to events and fires its <see cref="BaseAsset.Links"/>.
     /// </summary>
+    /// <remarks>
+    /// A disabled <see cref="BaseAsset"/> ignores every event except Enable. Disabling does not
+    /// hide an entity, remove its collision, or stop updates. It only affects links.
+    /// </remarks>
     Enabled = 1 << 0,
     /// <summary>
-    /// The <see cref="BaseAsset"/>'s state persists across level reloads.
+    /// The <see cref="BaseAsset"/>'s state is saved with the scene and restored after a scene reset.
     /// </summary>
     Persistent = 1 << 1,
     /// <summary>
-    /// Always set. Meaning otherwise undocumented.
+    /// Ignored.
     /// </summary>
+    /// <remarks>
+    /// The engine sets this bit on every <see cref="BaseAsset"/> when it loads or resets, whatever the
+    /// asset stores.
+    /// </remarks>
     Valid = 1 << 2,
     /// <summary>
-    /// The <see cref="BaseAsset"/> remains visible during cutscenes.
+    /// The entity stays visible while a cutscene plays.
     /// </summary>
+    /// <remarks>
+    /// Entities without it are hidden for the cutscene's duration.
+    /// </remarks>
     VisibleDuringCutscenes = 1 << 3,
     /// <summary>
-    /// The <see cref="BaseAsset"/> receives shadows.
+    /// Shadows are drawn onto the entity.
     /// </summary>
+    /// <remarks>
+    /// In <see cref="GameVersion.N100F"/>, only platforms, simple objects, buttons and
+    /// destructible objects receive shadows, and this flag is honoured only in scene <c>W027</c>;
+    /// in every other scene they receive shadows whether or not it is set.
+    /// </remarks>
     ReceiveShadows = 1 << 4,
+    /// <summary>
+    /// The entity is never skipped by distance-based update culling.
+    /// </summary>
+    /// <remarks>
+    /// Without it, an entity farther from the camera than its cull distance stops being updated until
+    /// the camera comes back in range. The cull distance is 70 units, or 10 units beyond the no-render
+    /// distance of the LOD table entry for the entity's model when it has one. Ignored by
+    /// <see cref="GameVersion.N100F"/>, which has no update culling.
+    /// </remarks>
+    NeverUpdateCulled = 1 << 7,
 }

@@ -317,7 +317,7 @@ public class PickupTypesAssetTests
         ((Physical.IBaseAsset)asset).BaseId = new AssetId(0x12345678);
         ((Physical.IBaseAsset)asset).BaseType = 0x00;
         ((Physical.IBaseAsset)asset).LinkCount = 0;
-        asset.BaseFlags = (BaseAssetFlags)0x001D;
+        asset.Physical.BaseFlags = (BaseAssetFlags)0x001D;
         asset.Physical.RowCount = 42;
 
         byte[] written = Write(asset);
@@ -447,7 +447,7 @@ public class PickupTypesAssetTests
         generic.Physical.BaseId = new AssetId(0x12345678);
         generic.Physical.BaseType = 0x00;
         generic.Physical.LinkCount = 0;
-        generic.BaseFlags = (BaseAssetFlags)0x001D;
+        generic.Physical.BaseFlags = (BaseAssetFlags)0x001D;
         generic.SetUnparsedTail([.. TableHeader(1, 0), 0x11, 0x22, 0x33, 0x44]);
 
         byte[] written = Write(generic);

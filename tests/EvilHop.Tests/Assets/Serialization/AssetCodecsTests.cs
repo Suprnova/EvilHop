@@ -112,7 +112,7 @@ public class AssetCodecsTests
         Assert.Equal(0x1234u, asset.Physical.BaseId.Value);
         Assert.Equal(7, asset.Physical.BaseType);
         Assert.Equal(2, asset.Physical.LinkCount);
-        Assert.Equal(BaseAssetFlags.Enabled | BaseAssetFlags.Valid, asset.BaseFlags);
+        Assert.Equal(BaseAssetFlags.Enabled | BaseAssetFlags.Valid, asset.Physical.BaseFlags);
     }
 
     [Theory]
