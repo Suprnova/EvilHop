@@ -104,7 +104,7 @@ public sealed partial class SoundInfoAsset
         {
             uint end = i + 1 < soundBankCount ? bankOffsets[i + 1] : footerOffset;
             reader.BaseStream.Position = headerEnd + bankOffsets[i];
-            asset.SoundBanks.Add(reader.ReadBytes((int)(end - bankOffsets[i])));
+            asset.SoundBanks.Add(ReadPaddedBank(reader.ReadBytes((int)(end - bankOffsets[i]))));
         }
 
         asset.Physical.SoundBankCount = asset.SoundBanks.Count;
@@ -115,14 +115,23 @@ public sealed partial class SoundInfoAsset
         asset.SetUnparsedTail(reader.ReadRemainingBytes());
     }
 
+    private static SoundBank ReadPaddedBank(byte[] bytes)
+    {
+        using var reader = new EndianReader(new MemoryStream(bytes), Endianness.Little);
+        var bank = SoundBank.Read(reader);
+        bank.Padding = [.. reader.ReadRemainingBytes()];
+        return bank;
+    }
+
     private static void WriteFsb3(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
     {
-        var bankOffsets = new uint[asset.SoundBanks.Count];
+        var banks = asset.SoundBanks.Select(SoundBank.WritePadded).ToList();
+        var bankOffsets = new uint[banks.Count];
         uint footerOffset = 0;
-        for (int i = 0; i < asset.SoundBanks.Count; i++)
+        for (int i = 0; i < banks.Count; i++)
         {
             bankOffsets[i] = footerOffset;
-            footerOffset += (uint)asset.SoundBanks[i].Length;
+            footerOffset += (uint)banks[i].Length;
         }
 
         writer.Write(asset.Physical.SoundInfoId);
@@ -134,7 +143,7 @@ public sealed partial class SoundInfoAsset
         writer.Write((byte)asset.Physical.SoundBankCount);
         writer.Write((byte)asset.Physical.CutsceneCount);
 
-        foreach (byte[] bank in asset.SoundBanks) writer.Write(bank);
+        foreach (byte[] bank in banks) writer.Write(bank);
 
         foreach (uint offset in bankOffsets) writer.Write(offset);
         foreach (var sound in asset.Sounds) Sound.Write(sound, writer, profile);

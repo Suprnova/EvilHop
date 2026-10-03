@@ -190,6 +190,13 @@ public class SoundInfoAssetTests
         soundInfoIndex,
     ];
 
+    /// <summary>A real FSB3 bank, padded to a 32-byte boundary with <paramref name="fill"/>.</summary>
+    private static byte[] PaddedBank(byte fill)
+    {
+        byte[] bank = Tests.Assets.Audio.SoundBankTests.BasicHeaderBank();
+        return [.. bank, .. Enumerable.Repeat(fill, (32 - bank.Length % 32) % 32)];
+    }
+
     private static byte[] Fsb3Data(byte[][] banks, byte[][] soundEntries, byte[][] cutsceneEntries)
     {
         var offsets = new uint[banks.Length];
@@ -220,10 +227,8 @@ public class SoundInfoAssetTests
     [Fact]
     public void Read_SoundInfo_UnderTSSM_PopulatesSoundBanksAndSounds()
     {
-        byte[] bank0 = [0x01, 0x02, 0x03, 0x04];
-        byte[] bank1 = [0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
         byte[] data = Fsb3Data(
-            [bank0, bank1],
+            [PaddedBank(0x00), PaddedBank(0xCD)],
             [SoundBankEntry(0x11111111, (byte)Identity.None, 0, 0, 0),
              SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
@@ -231,8 +236,8 @@ public class SoundInfoAssetTests
         var asset = (SoundInfoAsset)Read(data, TSSMSerializer.DefaultProfile);
 
         Assert.Equal(2, asset.SoundBanks.Count);
-        Assert.Equal(bank0, asset.SoundBanks[0]);
-        Assert.Equal(bank1, asset.SoundBanks[1]);
+        Assert.Equal(2, asset.SoundBanks[0].Samples.Count);
+        Assert.All(asset.SoundBanks[1].Padding, b => Assert.Equal(0xCD, b));
 
         Assert.Equal(2, asset.Sounds.Count);
         Assert.Equal(new AssetId(0x11111111), asset.Sounds[0].SoundAssetId);
@@ -257,10 +262,8 @@ public class SoundInfoAssetTests
     [Fact]
     public void Read_ThenWrite_SoundInfoUnderTSSM_ReproducesInputBytes()
     {
-        byte[] bank0 = [0x01, 0x02, 0x03, 0x04];
-        byte[] bank1 = [0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
         byte[] data = Fsb3Data(
-            [bank0, bank1],
+            [PaddedBank(0x00), PaddedBank(0xCD)],
             [SoundBankEntry(0x11111111, (byte)Identity.None, 0, 0, 0),
              SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
@@ -278,9 +281,8 @@ public class SoundInfoAssetTests
     [Fact]
     public void Read_ThenWrite_SoundInfoUnderTSSM_ClassifiesCountsByFlagsNotBankIndex()
     {
-        byte[] bank0 = [0x01, 0x02, 0x03, 0x04];
         byte[] data = Fsb3Data(
-            [bank0],
+            [PaddedBank(0x00)],
             [SoundBankEntry(0x11111111, (byte)Identity.Streaming, 0, 0, 0)],
             []);
         var profile = TSSMSerializer.DefaultProfile;
@@ -291,7 +293,7 @@ public class SoundInfoAssetTests
     [Fact]
     public void Read_ThenWrite_SoundInfoUnderIncredibles_ReproducesInputBytes()
     {
-        byte[] data = Fsb3Data([[0xAA, 0xBB]], [SoundBankEntry(0x11111111, 0, 0, 0, 0)],
+        byte[] data = Fsb3Data([PaddedBank(0xAA)], [SoundBankEntry(0x11111111, 0, 0, 0, 0)],
             [DspHeader(500, 1010, 22050, looped: false, 0, 1010, 0x44444444)]);
         var profile = IncrediblesSerializer.DefaultProfile;
 

@@ -43,16 +43,16 @@ public sealed partial class SoundInfoAsset() : Asset(AssetType.SoundInfo), Physi
     public Collection<SoundHeader> Cutscenes { get; } = [];
 
     /// <summary>
-    /// The raw FMOD "FSB3" sample bank files embedded directly in this asset. The first bank is
-    /// loaded into RAM in full and may hold multiple sounds; every subsequent bank is streamed from
-    /// disk and holds exactly one sound.
+    /// The FMOD "FSB3" sample banks embedded directly in this asset. The first bank is loaded into RAM
+    /// in full and may hold multiple sounds; every subsequent bank is streamed from disk and holds
+    /// exactly one sound.
     /// </summary>
     /// <remarks>
-    /// EvilHop does not parse FSB3 - each entry is exactly the bytes of one bank file, byte-exact but
-    /// opaque. Populated for every GameCube-supported game other than <see cref="GameVersion.N100F"/>
-    /// and <see cref="GameVersion.BFBB"/>.
+    /// Populated for every GameCube-supported game other than <see cref="GameVersion.N100F"/> and
+    /// <see cref="GameVersion.BFBB"/>. Each bank is followed on disk by padding to a 32-byte boundary -
+    /// see <see cref="SoundBank.Padding"/>.
     /// </remarks>
-    public Collection<byte[]> SoundBanks { get; } = [];
+    public Collection<SoundBank> SoundBanks { get; } = [];
 
     /// <summary>
     /// Metadata for every sound stored across <see cref="SoundBanks"/>.
