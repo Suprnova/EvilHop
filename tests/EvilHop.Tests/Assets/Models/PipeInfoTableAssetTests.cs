@@ -237,6 +237,20 @@ public class PipeInfoTableAssetTests
         Assert.Equal(0x00006500u, flags.Value);
     }
 
+    [Theory]
+    [InlineData(0x00000000u, 0)]
+    [InlineData(0x00F80000u, 31)]
+    [InlineData(0x00500042u, 10)]
+    public void PipeRenderFlags_AlphaLayer_ReadsBits19To23(uint value, byte expected) =>
+        Assert.Equal(expected, new PipeInfoTableAsset.RenderBehavior(value).AlphaLayer);
+
+    [Theory]
+    [InlineData(0xFFFFFFFFu, 0, 0xFF07FFFFu)]
+    [InlineData(0x00000042u, 31, 0x00F80042u)]
+    [InlineData(0x00000042u, 0xE5, 0x00280042u)]
+    public void PipeRenderFlags_WithAlphaLayer_ReplacesOnlyBits19To23(uint initial, byte layer, uint expected) =>
+        Assert.Equal(expected, new PipeInfoTableAsset.RenderBehavior(initial).WithAlphaLayer(layer).Value);
+
     [Fact]
     public void PipeRenderFlags_WithUVTransform_SetsOnlyBit23()
     {

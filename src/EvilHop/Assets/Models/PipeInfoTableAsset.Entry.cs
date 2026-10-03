@@ -33,12 +33,15 @@ public partial class PipeInfoTableAsset
 
         /// <summary>
         /// When to draw the selected atomics relative to other transparent geometry. Not present in
-        /// <see cref="GameVersion.BFBB"/>.
+        /// <see cref="GameVersion.BFBB"/>, which reads <see cref="RenderBehavior.AlphaLayer"/> instead.
         /// </summary>
         public RenderingLayer Layer { get; set; }
 
         /// <summary>
-        /// Unknown. Not present in <see cref="GameVersion.BFBB"/>.
+        /// The minimum alpha (0-255) a pixel of the selected atomics must have to be drawn when they're
+        /// drawn as transparent geometry; pixels below it are discarded without writing depth. 0 draws
+        /// every pixel. Not present in <see cref="GameVersion.BFBB"/>, which reads
+        /// <see cref="RenderBehavior.AlphaCompare"/> instead.
         /// </summary>
         public byte AlphaDiscard { get; set; }
 

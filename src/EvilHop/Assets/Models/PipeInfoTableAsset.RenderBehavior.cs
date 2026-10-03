@@ -11,12 +11,13 @@ public partial class PipeInfoTableAsset
     public readonly record struct RenderBehavior(uint Value)
     {
         /// <summary>
-        /// The minimum alpha (0-255) a pixel must have to be rendered; atomics with transparent textures
-        /// discard any pixel at or below this value. 0 renders every pixel regardless of alpha.
+        /// The minimum alpha (0-255) a pixel of the selected atomics must have to be drawn when they're
+        /// drawn as transparent geometry; pixels below it are discarded without writing depth. 0
+        /// discards only fully transparent pixels.
         /// </summary>
         /// <remarks>
-        /// Only read by <see cref="GameVersion.BFBB"/>. Later games don't read this byte as an alpha
-        /// threshold, and its lowest bit is <see cref="DualUVTransform"/>.
+        /// Only read by <see cref="GameVersion.BFBB"/>. Later games read <see cref="Entry.AlphaDiscard"/>
+        /// instead, and the lowest bit of this byte is <see cref="DualUVTransform"/>.
         /// </remarks>
         public byte AlphaCompare => (byte)(Value >> 24);
 
@@ -38,9 +39,20 @@ public partial class PipeInfoTableAsset
         /// </summary>
         /// <remarks>
         /// Read from <see cref="GameVersion.TSSM"/> onward. In <see cref="GameVersion.BFBB"/>, this bit
-        /// belongs to the alpha rendering layer instead.
+        /// is the highest bit of <see cref="AlphaLayer"/> instead.
         /// </remarks>
         public bool UVTransform => (Value & (1u << 23)) != 0;
+
+        /// <summary>
+        /// The order, from 0 to 31, in which the selected atomics are drawn among other transparent
+        /// geometry: lower layers first, then farthest first within a layer.
+        /// </summary>
+        /// <remarks>
+        /// Only read by <see cref="GameVersion.BFBB"/>, which draws every transparent model in one pass.
+        /// Later games read <see cref="Entry.Layer"/> instead, and the highest bit of this field is
+        /// <see cref="UVTransform"/>.
+        /// </remarks>
+        public byte AlphaLayer => (byte)((Value >> 19) & 0x1F);
 
         /// <summary>If set, the selected atomics are rendered without fog.</summary>
         public bool IgnoreFog => (Value & (1u << 16)) != 0;
@@ -68,6 +80,12 @@ public partial class PipeInfoTableAsset
 
         /// <summary>Returns a copy with <see cref="UVTransform"/> replaced, every other bit unchanged.</summary>
         public RenderBehavior WithUVTransform(bool value) => new(value ? Value | (1u << 23) : Value & ~(1u << 23));
+
+        /// <summary>
+        /// Returns a copy with <see cref="AlphaLayer"/> replaced by the low 5 bits of
+        /// <paramref name="value"/>, every other bit unchanged.
+        /// </summary>
+        public RenderBehavior WithAlphaLayer(byte value) => new((Value & ~(0x1Fu << 19)) | ((value & 0x1Fu) << 19));
 
         /// <summary>Returns a copy with <see cref="IgnoreFog"/> replaced, every other bit unchanged.</summary>
         public RenderBehavior WithIgnoreFog(bool value) => new(value ? Value | (1u << 16) : Value & ~(1u << 16));
