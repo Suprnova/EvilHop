@@ -236,4 +236,24 @@ public class PipeInfoTableAssetTests
         Assert.Equal(RwBlendFunction.InverseSourceAlpha, flags.DestinationBlend);
         Assert.Equal(0x00006500u, flags.Value);
     }
+
+    [Fact]
+    public void PipeRenderFlags_WithUVTransform_SetsOnlyBit23()
+    {
+        var flags = new PipeInfoTableAsset.RenderBehavior(0x00000002u).WithUVTransform(true);
+
+        Assert.True(flags.UVTransform);
+        Assert.False(flags.DualUVTransform);
+        Assert.Equal(0x00800002u, flags.Value);
+    }
+
+    [Fact]
+    public void PipeRenderFlags_WithDualUVTransformCleared_ClearsOnlyBit24()
+    {
+        var flags = new PipeInfoTableAsset.RenderBehavior(0x01800002u).WithDualUVTransform(false);
+
+        Assert.False(flags.DualUVTransform);
+        Assert.True(flags.UVTransform);
+        Assert.Equal(0x00800002u, flags.Value);
+    }
 }

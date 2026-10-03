@@ -1,3 +1,5 @@
+using EvilHop.Common;
+
 namespace EvilHop.Assets;
 
 public partial class PipeInfoTableAsset
@@ -12,7 +14,33 @@ public partial class PipeInfoTableAsset
         /// The minimum alpha (0-255) a pixel must have to be rendered; atomics with transparent textures
         /// discard any pixel at or below this value. 0 renders every pixel regardless of alpha.
         /// </summary>
+        /// <remarks>
+        /// Only read by <see cref="GameVersion.BFBB"/>. Later games don't read this byte as an alpha
+        /// threshold, and its lowest bit is <see cref="DualUVTransform"/>.
+        /// </remarks>
         public byte AlphaCompare => (byte)(Value >> 24);
+
+        /// <summary>
+        /// If set, the selected atomics' materials are given RenderWare's dual-pass UV-transform
+        /// material effect when the scene loads, for <see cref="SurfaceAsset"/> UV animation that
+        /// also drives a second texture pass. Takes precedence over <see cref="UVTransform"/>.
+        /// </summary>
+        /// <remarks>
+        /// Read from <see cref="GameVersion.TSSM"/> onward.
+        /// </remarks>
+        public bool DualUVTransform => (Value & (1u << 24)) != 0;
+
+        /// <summary>
+        /// If set, the selected atomics' materials are given RenderWare's UV-transform material effect
+        /// when the scene loads. A <see cref="SurfaceAsset"/>'s <see cref="SurfaceAsset.Uvfxs"/> only
+        /// animates materials that have this effect (or <see cref="DualUVTransform"/>'s), so a model
+        /// without either shows no UV animation.
+        /// </summary>
+        /// <remarks>
+        /// Read from <see cref="GameVersion.TSSM"/> onward. In <see cref="GameVersion.BFBB"/>, this bit
+        /// belongs to the alpha rendering layer instead.
+        /// </remarks>
+        public bool UVTransform => (Value & (1u << 23)) != 0;
 
         /// <summary>If set, the selected atomics are rendered without fog.</summary>
         public bool IgnoreFog => (Value & (1u << 16)) != 0;
@@ -34,6 +62,12 @@ public partial class PipeInfoTableAsset
 
         /// <summary>Returns a copy with <see cref="AlphaCompare"/> replaced, every other bit unchanged.</summary>
         public RenderBehavior WithAlphaCompare(byte value) => new((Value & 0x00FFFFFFu) | ((uint)value << 24));
+
+        /// <summary>Returns a copy with <see cref="DualUVTransform"/> replaced, every other bit unchanged.</summary>
+        public RenderBehavior WithDualUVTransform(bool value) => new(value ? Value | (1u << 24) : Value & ~(1u << 24));
+
+        /// <summary>Returns a copy with <see cref="UVTransform"/> replaced, every other bit unchanged.</summary>
+        public RenderBehavior WithUVTransform(bool value) => new(value ? Value | (1u << 23) : Value & ~(1u << 23));
 
         /// <summary>Returns a copy with <see cref="IgnoreFog"/> replaced, every other bit unchanged.</summary>
         public RenderBehavior WithIgnoreFog(bool value) => new(value ? Value | (1u << 16) : Value & ~(1u << 16));

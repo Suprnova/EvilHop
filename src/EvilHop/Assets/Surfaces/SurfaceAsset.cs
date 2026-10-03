@@ -9,7 +9,7 @@ namespace EvilHop.Assets;
 /// Physical and cosmetic properties applied to a <see cref="AssetType.Platform"/>,
 /// <see cref="AssetType.SimpleObject"/>, <see cref="AssetType.Boulder"/>, or a region of a
 /// <see cref="AssetType.JSP"/> through a <see cref="AssetType.SurfaceMapper"/>: friction, hazards,
-/// wall-jump/ledge-grab/out-of-bounds behavior, and texture or UV animation.
+/// wall-jump/ledge-grab/out-of-bounds behavior, and texture or UV animation of entity models.
 /// </summary>
 /// <remarks>
 /// <seealso href="https://heavyironmodding.org/wiki/SURF">Heavy Iron Modding documentation</seealso>
@@ -101,6 +101,13 @@ public sealed partial class SurfaceAsset() : BaseAsset(AssetType.Surface, baseTy
     /// This surface's two independent UV animations. Each element's own
     /// <see cref="UVEffect.IsEnabled"/> says whether it is active.
     /// </summary>
+    /// <remarks>
+    /// Only animates the models of entities that reference this surface directly, never
+    /// <see cref="AssetType.JSP"/> geometry mapped to it through a <see cref="AssetType.SurfaceMapper"/>.
+    /// From <see cref="GameVersion.TSSM"/> onward, the entity's model also needs a
+    /// <see cref="PipeInfoTableAsset"/> entry with <see cref="PipeInfoTableAsset.RenderBehavior.UVTransform"/>
+    /// or <see cref="PipeInfoTableAsset.RenderBehavior.DualUVTransform"/> set, or it doesn't animate.
+    /// </remarks>
     /// <exception cref="ArgumentException">The assigned value's length isn't 2.</exception>
     public ImmutableArray<UVEffect> Uvfxs
     {
