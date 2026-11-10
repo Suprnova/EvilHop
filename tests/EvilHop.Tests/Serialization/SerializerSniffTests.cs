@@ -233,4 +233,175 @@ public class SerializerSniffTests
         Assert.Null(exception);
         Assert.True(result!.Signals.HasHipaMagic);
     }
+
+    private static SniffFixture WithPlatform(string id, PackFlags? flags = null) => new()
+    {
+        ClientVersion = ClientVersion.Default,
+        Flags = flags,
+        PlatformStrings = [id, "US", "NTSC", "Incredibles"],
+        Created = new DateTimeOffset(2004, 9, 15, 0, 0, 0, TimeSpan.Zero)
+    };
+
+    [Theory]
+    [InlineData("GC", Platform.GameCube)]
+    [InlineData("BX", Platform.Xbox)]
+    [InlineData("XB", Platform.Xbox)]
+    [InlineData("PS2", Platform.PlayStation2)]
+    [InlineData("P2", Platform.PlayStation2)]
+    public void Sniff_PlatIdentifier_NamesThePlatform(string id, Platform expected)
+    {
+        var result = Serializer.Sniff(new MemoryStream(WithPlatform(id).Build()));
+
+        Assert.Equal(expected, result.Profile!.Platform);
+        Assert.Equal(PlatformSource.PlatStamp, result.PlatformSource);
+    }
+
+    [Theory]
+    [InlineData(PackFlags.GameCube, Platform.GameCube)]
+    [InlineData(PackFlags.Xbox, Platform.Xbox)]
+    [InlineData(PackFlags.PlayStation2, Platform.PlayStation2)]
+    public void Sniff_PackFlagsPlatformBitWithoutPlat_NamesThePlatform(PackFlags bit, Platform expected)
+    {
+        byte[] bytes = new SniffFixture { ClientVersion = ClientVersion.Default, Flags = PackFlags.Default | bit }.Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes));
+
+        Assert.Equal(expected, result.Profile!.Platform);
+        Assert.Equal(PlatformSource.PackFlags, result.PlatformSource);
+    }
+
+    [Fact]
+    public void Sniff_PlatAndPackFlagsDisagree_PlatWins()
+    {
+        byte[] bytes = WithPlatform("BX", PackFlags.Default | PackFlags.GameCube).Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes));
+
+        Assert.Equal(Platform.Xbox, result.Profile!.Platform);
+        Assert.Equal(PlatformSource.PlatStamp, result.PlatformSource);
+        Assert.Equal(PackFlags.Default | PackFlags.GameCube, result.Signals.Flags);
+    }
+
+    [Fact]
+    public void Sniff_UnrecognizedPlatIdentifierWithPackFlagsBit_FallsBackToPackFlags()
+    {
+        byte[] bytes = WithPlatform("??", PackFlags.Default | PackFlags.PlayStation2).Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes));
+
+        Assert.Equal(Platform.PlayStation2, result.Profile!.Platform);
+        Assert.Equal(PlatformSource.PackFlags, result.PlatformSource);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("??")]
+    public void Sniff_NothingNamesThePlatform_ReportsItUnknownRatherThanGameCube(string? platId)
+    {
+        var fixture = platId is null
+            ? new SniffFixture { ClientVersion = ClientVersion.Default, Flags = PackFlags.Default }
+            : WithPlatform(platId, PackFlags.Default);
+
+        var result = Serializer.Sniff(new MemoryStream(fixture.Build()));
+
+        Assert.All(result.Candidates, candidate => Assert.Null(candidate.Profile.Platform));
+        Assert.Equal(PlatformSource.None, result.PlatformSource);
+    }
+
+    [Fact]
+    public void Sniff_PackFlagsWithSeveralPlatformBits_ReportsThePlatformUnknown()
+    {
+        byte[] bytes = new SniffFixture
+        {
+            ClientVersion = ClientVersion.Default,
+            Flags = PackFlags.Default | PackFlags.GameCube | PackFlags.Xbox
+        }.Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes));
+
+        Assert.Equal(PlatformSource.None, result.PlatformSource);
+    }
+
+    [Fact]
+    public void Sniff_WithoutAFixedGame_IsNeverStrong()
+    {
+        var result = Serializer.Sniff(new MemoryStream(WithPlatform("BX").Build()));
+
+        Assert.False(result.GameFixed);
+        Assert.False(result.IsStrong);
+    }
+
+    [Fact]
+    public void Sniff_FixedGameAndPlatStamp_IsStrongAndKeepsTheStatedGame()
+    {
+        // The date and shape fit Incredibles as well as TSSM, so scoring alone would not pick TSSM.
+        var result = Serializer.Sniff(new MemoryStream(WithPlatform("BX").Build()), GameVersion.TSSM);
+
+        Assert.True(result.GameFixed);
+        Assert.True(result.IsStrong);
+        Assert.Equal(SniffConfidence.Resolved, result.Confidence);
+        Assert.Equal(GameVersion.TSSM, Assert.Single(result.Candidates).Game);
+        Assert.Equal(GameVersion.TSSM, result.Profile!.Game);
+        Assert.Equal(Platform.Xbox, result.Profile.Platform);
+    }
+
+    [Fact]
+    public void Sniff_FixedGameAndPackFlagsBit_IsStrong()
+    {
+        byte[] bytes = new SniffFixture { ClientVersion = ClientVersion.Default, Flags = PackFlags.Default | PackFlags.Xbox }.Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes), GameVersion.TSSM);
+
+        Assert.True(result.IsStrong);
+        Assert.Equal(PlatformSource.PackFlags, result.PlatformSource);
+    }
+
+    [Fact]
+    public void Sniff_FixedGameAndNothingNamingThePlatform_IsWeakWithAnUnknownPlatform()
+    {
+        byte[] bytes = new SniffFixture { ClientVersion = ClientVersion.Default, Flags = PackFlags.Default }.Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes), GameVersion.TSSM);
+
+        Assert.True(result.GameFixed);
+        Assert.False(result.IsStrong);
+        Assert.Equal(GameVersion.TSSM, result.Profile!.Game);
+        Assert.Null(result.Profile.Platform);
+    }
+
+    [Fact]
+    public void Sniff_FixedN100F_NeverNamesThePlatform()
+    {
+        byte[] bytes = new SniffFixture
+        {
+            ClientVersion = ClientVersion.N100FRelease,
+            Flags = 0,
+            Created = new DateTimeOffset(2002, 1, 1, 0, 0, 0, TimeSpan.Zero)
+        }.Build();
+
+        var result = Serializer.Sniff(new MemoryStream(bytes), GameVersion.N100F);
+
+        Assert.Equal(PlatformSource.None, result.PlatformSource);
+        Assert.False(result.IsStrong);
+    }
+
+    [Fact]
+    public void Sniff_FixedGameOnANonHipStream_IsUnrecognizedAndWeak()
+    {
+        var result = Serializer.Sniff(new MemoryStream([1, 2, 3, 4, 5, 6, 7, 8]), GameVersion.TSSM);
+
+        Assert.Equal(SniffConfidence.Unrecognized, result.Confidence);
+        Assert.Null(result.Profile);
+        Assert.False(result.IsStrong);
+    }
+
+    [Fact]
+    public void Sniff_FixedGame_RestoresASeekableStreamsPosition()
+    {
+        using var stream = new MemoryStream(WithPlatform("BX").Build());
+
+        Serializer.Sniff(stream, GameVersion.TSSM);
+
+        Assert.Equal(0, stream.Position);
+    }
 }

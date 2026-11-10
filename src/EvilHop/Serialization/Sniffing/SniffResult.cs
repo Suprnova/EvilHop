@@ -4,7 +4,7 @@ using EvilHop.Common;
 namespace EvilHop.Serialization.Sniffing;
 
 /// <summary>
-/// How confidently <see cref="Sniffer.Sniff"/> was able to identify a stream.
+/// How confidently <see cref="Sniffer.Sniff(Stream)"/> was able to identify a stream.
 /// </summary>
 public enum SniffConfidence
 {
@@ -19,6 +19,23 @@ public enum SniffConfidence
 }
 
 /// <summary>
+/// Which evidence in the stream named its platform.
+/// </summary>
+public enum PlatformSource
+{
+    /// <summary>Nothing in the stream named a platform.</summary>
+    None,
+
+    /// <summary>
+    /// The <c>PFLG</c> block's platform bit. Used only when <see cref="PlatStamp"/> has nothing to say.
+    /// </summary>
+    PackFlags,
+
+    /// <summary>The <c>PLAT</c> block's platform identifier. Wins over <see cref="PackFlags"/>.</summary>
+    PlatStamp
+}
+
+/// <summary>
 /// One game considered during sniffing, and how well it fit the observed <see cref="SniffSignals"/>.
 /// </summary>
 /// <param name="Game">The candidate game.</param>
@@ -27,13 +44,14 @@ public enum SniffConfidence
 /// games appear in <see cref="SniffResult.Candidates"/>.
 /// </param>
 /// <param name="Profile">
-/// The <see cref="FormatProfile"/> this candidate implies: <see cref="Game"/>'s <c>DefaultProfile</c>,
-/// overridden with whatever the observed <see cref="SniffSignals"/> imply.
+/// The <see cref="FormatProfile"/> this candidate implies: <see cref="Game"/>'s default profile,
+/// overridden with whatever the observed <see cref="SniffSignals"/> imply. Its
+/// <see cref="FormatProfile.Platform"/> is <see langword="null"/> when no signal named one.
 /// </param>
 public sealed record SniffCandidate(GameVersion Game, double Score, FormatProfile Profile);
 
 /// <summary>
-/// The raw evidence <see cref="Sniffer.Sniff"/> gathered from a stream, before scoring. Holds
+/// The raw evidence <see cref="Sniffer.Sniff(Stream)"/> gathered from a stream, before scoring. Holds
 /// evidence only, no verdicts.
 /// </summary>
 /// <param name="HasHipaMagic">Whether the stream opened with a valid <c>HIPA</c> tag and zero size.</param>
@@ -70,7 +88,7 @@ public sealed record SniffSignals(
     bool? DpakPaddingObserved);
 
 /// <summary>
-/// The result of <see cref="Sniffer.Sniff"/> inferring a stream's game and format from its bytes.
+/// The result of <see cref="Sniffer.Sniff(Stream)"/> inferring a stream's game and format from its bytes.
 /// </summary>
 /// <param name="Confidence">How confidently <see cref="Profile"/> was inferred.</param>
 /// <param name="Candidates">
@@ -78,11 +96,24 @@ public sealed record SniffSignals(
 /// when <see cref="SniffConfidence.Ambiguous"/>, none when <see cref="SniffConfidence.Unrecognized"/>.
 /// </param>
 /// <param name="Signals">The raw evidence the scoring above was computed from.</param>
+/// <param name="PlatformSource">Which evidence named the platform in every <see cref="Candidates"/> profile.</param>
+/// <param name="GameFixed">
+/// Whether the caller stated the game, so <see cref="Candidates"/> holds that game and no scoring
+/// chose it.
+/// </param>
 public sealed record SniffResult(
     SniffConfidence Confidence,
     IReadOnlyList<SniffCandidate> Candidates,
-    SniffSignals Signals)
+    SniffSignals Signals,
+    PlatformSource PlatformSource,
+    bool GameFixed)
 {
+    /// <summary>
+    /// Whether both facts were established rather than guessed: the caller stated the game, and the
+    /// stream itself named the platform. Anything else is weak.
+    /// </summary>
+    public bool IsStrong => GameFixed && PlatformSource is not PlatformSource.None;
+
     /// <summary>
     /// The inferred <see cref="FormatProfile"/>, bound to the first tied <see cref="Candidates"/>
     /// entry. <see langword="null"/> only when <see cref="Confidence"/> is

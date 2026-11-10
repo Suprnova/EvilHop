@@ -38,10 +38,10 @@ internal static class SerializerFactory
     /// </para>
     /// <para>
     /// This can't speak for every archive. <see cref="GameVersion.N100F"/> leaves <c>PFLG</c>'s
-    /// platform bits zero and ships no <c>PLAT</c> block to fall back on, and
-    /// <see cref="Serializer.Sniff"/> reports that silence as <see cref="Platform.GameCube"/> rather
-    /// than as "unknown" - so N100F's non-GameCube builds are named in <c>BuildProfiles.json</c>
-    /// instead, which is applied after this and wins.
+    /// platform bits zero and ships no <c>PLAT</c> block to fall back on, so
+    /// <see cref="Serializer.Sniff(Stream)"/> reports its platform as unknown and this falls back to
+    /// <see cref="Platform.GameCube"/> - so N100F's non-GameCube builds are named in
+    /// <c>BuildProfiles.json</c> instead, which is applied after this and wins.
     /// </para>
     /// </remarks>
     public static FormatProfile WithSniffedPlatform(FormatProfile profile, string path)

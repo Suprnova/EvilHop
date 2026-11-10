@@ -10,7 +10,7 @@ namespace EvilHop.Serialization.Sniffing;
 internal static class SniffProfileBuilder
 {
     /// <summary>
-    /// Builds <paramref name="game"/>'s <c>DefaultProfile</c>, overridden with whatever
+    /// Builds <paramref name="game"/>'s default profile, overridden with whatever
     /// <paramref name="signals"/> imply about <see cref="FormatProfile.Platform"/>,
     /// <see cref="FormatProfile.StreamDataHasPaddingField"/>,
     /// <see cref="FormatProfile.EntityHasExtendedFields"/>,
@@ -24,7 +24,7 @@ internal static class SniffProfileBuilder
     public static FormatProfile Build(GameVersion game, SniffSignals signals) =>
         Serializer.DefaultProfileFor(game) with
         {
-            Platform = DerivePlatform(signals.Flags, signals.PlatformStrings),
+            Platform = DerivePlatform(signals).Platform,
             StreamDataHasPaddingField = signals.DpakPaddingObserved ?? (signals.ClientVersion != ClientVersion.N100FPrototype),
             EntityHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
             LinkHasExtendedFields = signals.ClientVersion != ClientVersion.N100FPrototype,
@@ -36,25 +36,23 @@ internal static class SniffProfileBuilder
         };
 
     /// <summary>
-    /// Prefers <see cref="PackFlags.PlatformMask"/>'s exact bit match to <see cref="Platform"/>; if
-    /// that's all-zero (true for every N100F build, and for BFBB's earliest prototype), falls back
-    /// to <paramref name="platformStrings"/>'s first entry; defaults to <see cref="Platform.GameCube"/>
-    /// otherwise, matching every <c>DefaultProfile</c>.
+    /// The platform <paramref name="signals"/> name, and which evidence named it. The <c>PLAT</c>
+    /// block's first string wins; when it names no known platform, <see cref="PackFlags.PlatformMask"/>
+    /// must hold exactly one platform bit. Anything else (every N100F build, which has neither, and
+    /// TSSM archives without a <c>PLAT</c> block) yields <see langword="null"/> and
+    /// <see cref="PlatformSource.None"/>.
     /// </summary>
-    private static Platform DerivePlatform(PackFlags? flags, IReadOnlyList<string> platformStrings)
+    public static (Platform? Platform, PlatformSource Source) DerivePlatform(SniffSignals signals)
     {
-        var platformBits = (flags ?? 0) & PackFlags.PlatformMask;
-        if (platformBits == PackFlags.GameCube) return Platform.GameCube;
-        if (platformBits == PackFlags.Xbox) return Platform.Xbox;
-        if (platformBits == PackFlags.PlayStation2) return Platform.PlayStation2;
+        if (signals.PlatformStrings.Count > 0 && PlatformIds.Parse(signals.PlatformStrings[0]) is { } stamped)
+            return (stamped, PlatformSource.PlatStamp);
 
-        if (platformStrings.Count == 0) return Platform.GameCube;
-        return platformStrings[0] switch
+        return ((signals.Flags ?? 0) & PackFlags.PlatformMask) switch
         {
-            "GC" => Platform.GameCube,
-            "XB" or "BX" => Platform.Xbox,
-            "P2" or "PS2" => Platform.PlayStation2,
-            _ => Platform.GameCube
+            PackFlags.GameCube => (Platform.GameCube, PlatformSource.PackFlags),
+            PackFlags.Xbox => (Platform.Xbox, PlatformSource.PackFlags),
+            PackFlags.PlayStation2 => (Platform.PlayStation2, PlatformSource.PackFlags),
+            _ => (null, PlatformSource.None)
         };
     }
 }

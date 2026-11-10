@@ -23,7 +23,17 @@ internal static class SniffScorer
         var tied = candidates.Where(c => Math.Abs(c.Score - topScore) < 1e-9).ToList();
 
         var confidence = tied.Count == 1 ? SniffConfidence.Resolved : SniffConfidence.Ambiguous;
-        return new SniffResult(confidence, tied, signals);
+        return new SniffResult(confidence, tied, signals, SniffProfileBuilder.DerivePlatform(signals).Source, GameFixed: false);
+    }
+
+    /// <summary>
+    /// Builds the <see cref="SniffResult"/> for a caller-stated <paramref name="game"/>: no game is
+    /// chosen, but the candidate keeps the score it would have had.
+    /// </summary>
+    public static SniffResult ScoreFixed(GameVersion game, SniffSignals signals)
+    {
+        var candidate = new SniffCandidate(game, ComputeScore(game, signals), SniffProfileBuilder.Build(game, signals));
+        return new SniffResult(SniffConfidence.Resolved, [candidate], signals, SniffProfileBuilder.DerivePlatform(signals).Source, GameFixed: true);
     }
 
     /// <summary>
