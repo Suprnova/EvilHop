@@ -24,7 +24,7 @@ public class CameraCurveAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= ROTUSerializer.DefaultProfile;
+        profile ??= ROTUSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class CameraCurveAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= ROTUSerializer.DefaultProfile;
+        profile ??= ROTUSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -154,7 +154,7 @@ public class CameraCurveAssetTests
     public void Read_ThenWrite_CameraCurve_UnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = Data(numBeads: 1);
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -164,7 +164,7 @@ public class CameraCurveAssetTests
     {
         byte[] data = Data();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<CameraCurveAsset>(asset);
     }

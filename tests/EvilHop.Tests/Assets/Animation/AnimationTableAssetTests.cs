@@ -24,7 +24,7 @@ public class AnimationTableAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class AnimationTableAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -170,7 +170,7 @@ public class AnimationTableAssetTests
     public void Read_ThenWrite_AnimationTableUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = SingleFileTableData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -188,7 +188,7 @@ public class AnimationTableAssetTests
     [Fact]
     public void Read_AnimationTableUnderN100F_ReadsStatesWithoutSubStateFields()
     {
-        var asset = (AnimationTableAsset)Read(N100FTableData(), N100FSerializer.DefaultProfile);
+        var asset = (AnimationTableAsset)Read(N100FTableData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.States.Count);
         Assert.Equal(0x22222222u, asset.States[1].StateId);
@@ -201,7 +201,7 @@ public class AnimationTableAssetTests
     public void Read_ThenWrite_AnimationTableUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FTableData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -210,7 +210,7 @@ public class AnimationTableAssetTests
     public void Read_ThenWrite_AnimationTableWithoutStateSpeed_ReproducesInputBytes()
     {
         byte[] data = N100FTableData(hasSpeed: false);
-        var profile = N100FSerializer.DefaultProfile with { AnimationTableHasStateSpeed = false };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { AnimationTableHasStateSpeed = false };
 
         var asset = (AnimationTableAsset)Read(data, profile);
 

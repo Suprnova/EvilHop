@@ -31,7 +31,7 @@ public class ThrowableTableAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, uint id = 0x12345678)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(id);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -39,7 +39,7 @@ public class ThrowableTableAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -331,10 +331,10 @@ public class ThrowableTableAssetTests
         byte[] data = [.. Prefix(), .. TableHeader(3, 0)];
         var profile = game switch
         {
-            GameVersion.BFBB => BFBBSerializer.DefaultProfile,
-            GameVersion.N100F => N100FSerializer.DefaultProfile,
-            GameVersion.TSSM => TSSMSerializer.DefaultProfile,
-            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
+            GameVersion.BFBB => BFBBSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.N100F => N100FSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.TSSM => TSSMSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 
@@ -357,8 +357,8 @@ public class ThrowableTableAssetTests
         ];
         var profile = game switch
         {
-            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
-            GameVersion.ROTU => ROTUSerializer.DefaultProfile,
+            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.ROTU => ROTUSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 
@@ -368,7 +368,7 @@ public class ThrowableTableAssetTests
     [Fact]
     public void Read_ThenWrite_LittleEndian_ReproducesInputBytes()
     {
-        var profile = IncrediblesSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         byte[] data =
         [
             .. Prefix(bigEndian: false),

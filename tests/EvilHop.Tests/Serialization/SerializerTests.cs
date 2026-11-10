@@ -1,4 +1,5 @@
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -39,4 +40,48 @@ public class SerializerTests
         var ex = Assert.Throws<FormatException>(() => new TestSerializer().WriteBlockPublic(writer, new UnregisteredBlock()));
         Assert.Contains("ZZZZ", ex.Message);
     }
+
+    public static TheoryData<GameVersion, Type> GameSerializers => new()
+    {
+        { GameVersion.N100F, typeof(N100FSerializer) },
+        { GameVersion.BFBB, typeof(BFBBSerializer) },
+        { GameVersion.Incredibles, typeof(IncrediblesSerializer) },
+        { GameVersion.TSSM, typeof(TSSMSerializer) },
+        { GameVersion.ROTU, typeof(ROTUSerializer) },
+        { GameVersion.Ratatouille, typeof(RatatouilleSerializer) }
+    };
+
+    [Theory]
+    [MemberData(nameof(GameSerializers))]
+    public void Create_GameOnly_ReturnsThatGamesSerializerWithNoPlatform(GameVersion game, Type serializerType)
+    {
+        var serializer = Serializer.Create(game);
+
+        Assert.IsType(serializerType, serializer);
+        Assert.Equal(game, serializer.Profile.Game);
+        Assert.Null(serializer.Profile.Platform);
+    }
+
+    [Theory]
+    [MemberData(nameof(GameSerializers))]
+    public void Create_GameAndPlatform_ReturnsThatGamesSerializerStatingThePlatform(GameVersion game, Type serializerType)
+    {
+        var serializer = Serializer.Create(game, Platform.Xbox);
+
+        Assert.IsType(serializerType, serializer);
+        Assert.Equal(game, serializer.Profile.Game);
+        Assert.Equal(Platform.Xbox, serializer.Profile.Platform);
+    }
+
+    [Fact]
+    public void Create_GameAndPlatform_KeepsTheGamesOtherSwitches()
+    {
+        var withPlatform = Serializer.Create(GameVersion.BFBB, Platform.PlayStation2).Profile;
+
+        Assert.Equal(Serializer.Create(GameVersion.BFBB).Profile with { Platform = Platform.PlayStation2 }, withPlatform);
+    }
+
+    [Fact]
+    public void Create_UnknownGame_ThrowsNotSupportedException() =>
+        Assert.Throws<NotSupportedException>(() => Serializer.Create((GameVersion)999, Platform.GameCube));
 }

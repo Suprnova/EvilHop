@@ -27,7 +27,7 @@ public class AssetCodecsTests
 
     private static Asset Read(AssetType type, byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(type);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -35,7 +35,7 @@ public class AssetCodecsTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -147,7 +147,7 @@ public class AssetCodecsTests
         // bytes longer than every other game's. Round-tripping under BFBB's own profile is what
         // proves the switch is read consistently on both sides.
         byte[] data = EntityBytes(100, zeroPadding: true);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(AssetType.Hangable, data, profile), profile));
     }
@@ -160,7 +160,7 @@ public class AssetCodecsTests
         // it is a documented exception to "unknown bytes are carried through untouched", not an
         // oversight.
         byte[] data = EntityBytes(100, zeroPadding: false);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         byte[] written = Write(Read(AssetType.Hangable, data, profile), profile);
 
@@ -174,8 +174,8 @@ public class AssetCodecsTests
         byte[] data = [.. Enumerable.Range(1, 128).Select(i => (byte)i)];
         data[5] = 0; // LinkCount = 0
 
-        var withPadding = (EntityAsset)Read(AssetType.Hangable, data, BFBBSerializer.DefaultProfile);
-        var without = (EntityAsset)Read(AssetType.Hangable, data, N100FSerializer.DefaultProfile);
+        var withPadding = (EntityAsset)Read(AssetType.Hangable, data, BFBBSerializer.DefaultProfile.OnGameCube());
+        var without = (EntityAsset)Read(AssetType.Hangable, data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.NotEqual(without.Physical.SurfaceId, withPadding.Physical.SurfaceId);
     }
@@ -198,7 +198,7 @@ public class AssetCodecsTests
             0x00, 0x00, 0x00, 0x00, // AnimListId
         ];
 
-        var entity = (EntityAsset)Read(AssetType.Villain, data, N100FSerializer.DefaultProfile);
+        var entity = (EntityAsset)Read(AssetType.Villain, data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new Rgba(1.0f, 2.0f, 3.0f, 4.0f), entity.ColorMultiplier);
     }

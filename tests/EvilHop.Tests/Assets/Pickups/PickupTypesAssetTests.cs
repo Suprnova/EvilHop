@@ -31,7 +31,7 @@ public class PickupTypesAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, uint id = 0x12345678)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(id);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -39,7 +39,7 @@ public class PickupTypesAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -335,9 +335,9 @@ public class PickupTypesAssetTests
         byte[] data = [.. Prefix(), .. TableHeader(1, 0)];
         var profile = game switch
         {
-            GameVersion.BFBB => BFBBSerializer.DefaultProfile,
-            GameVersion.N100F => N100FSerializer.DefaultProfile,
-            GameVersion.TSSM => TSSMSerializer.DefaultProfile,
+            GameVersion.BFBB => BFBBSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.N100F => N100FSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.TSSM => TSSMSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 
@@ -361,9 +361,9 @@ public class PickupTypesAssetTests
         ];
         var profile = game switch
         {
-            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
-            GameVersion.ROTU => ROTUSerializer.DefaultProfile,
-            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
+            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.ROTU => ROTUSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 
@@ -373,7 +373,7 @@ public class PickupTypesAssetTests
     [Fact]
     public void Read_ThenWrite_LittleEndian_ReproducesInputBytes()
     {
-        var profile = IncrediblesSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         byte[] data =
         [
             .. Prefix(bigEndian: false),
@@ -394,7 +394,7 @@ public class PickupTypesAssetTests
             .. ReducedEntry(0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 10, 0, 0, 0),
             .. ReducedEntry(0x77777777, 0x88888888, 0, 0, 0x99999999, 0xAAAAAAAA, 0, 25, 1, -1),
         ];
-        var profile = IncrediblesSerializer.DefaultProfile with { PickupTypesHasPulseFields = false };
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { PickupTypesHasPulseFields = false };
 
         var asset = (PickupTypesAsset)Read(data, profile);
 
@@ -426,7 +426,7 @@ public class PickupTypesAssetTests
             .. ReducedEntry(0xFA820B76, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0xA1A1F173, 0x00, 0x64, 0x00, 0x00),
             .. ReducedEntry(0x91338C47, 0x3773BBB2, 0x00000000, 0x00000000, 0xAE0A24EA, 0x00000000, 0x00, 0x00, 0x01, 0x00),
         ];
-        var profile = IncrediblesSerializer.DefaultProfile with { PickupTypesHasPulseFields = false };
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { PickupTypesHasPulseFields = false };
 
         var asset = (PickupTypesAsset)Read(data, profile);
 

@@ -25,7 +25,7 @@ public class VolumeAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= ROTUSerializer.DefaultProfile;
+        profile ??= ROTUSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -33,7 +33,7 @@ public class VolumeAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= ROTUSerializer.DefaultProfile;
+        profile ??= ROTUSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -95,7 +95,7 @@ public class VolumeAssetTests
             0x30, 0x7B, 0x2B, 0xC1, .. new byte[16], 0x00, 0x00, 0x00, 0x00, 0x9A, 0x90, 0x80, 0x42,
             0x9A, 0x90, 0x80, 0x42,
         ];
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
 
         var asset = (VolumeAsset)Read(data, profile);
 
@@ -144,5 +144,5 @@ public class VolumeAssetTests
 
     [Fact]
     public void Read_Volume_UnderBFBB_DegradesToGenericAsset() =>
-        Assert.IsNotType<VolumeAsset>(Read(ROTUExemplar, BFBBSerializer.DefaultProfile), exactMatch: false);
+        Assert.IsNotType<VolumeAsset>(Read(ROTUExemplar, BFBBSerializer.DefaultProfile.OnGameCube()), exactMatch: false);
 }

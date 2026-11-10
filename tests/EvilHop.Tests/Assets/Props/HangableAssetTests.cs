@@ -23,7 +23,7 @@ public class HangableAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class HangableAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -129,7 +129,7 @@ public class HangableAssetTests
     [Fact]
     public void Read_Hangable_UnderROTU_PopulatesEveryField()
     {
-        var asset = (HangableAsset)Read(Data(), ROTUSerializer.DefaultProfile);
+        var asset = (HangableAsset)Read(Data(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(3.0f, asset.PivotOffset);
         Assert.Equal(50.0f, asset.Gravity);
@@ -140,7 +140,7 @@ public class HangableAssetTests
     {
         byte[] data = Data();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<HangableAsset>(asset);
     }

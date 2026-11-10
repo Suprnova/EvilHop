@@ -23,7 +23,7 @@ public class PickupAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class PickupAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -121,7 +121,7 @@ public class PickupAssetTests
             .. Data(0xB7, 0x60F808B7, 0, 4, linkCount: 1, hasPadding: false),
             .. LinkBytes(0x23, 8, 0x09B80F4A),
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -136,7 +136,7 @@ public class PickupAssetTests
             .. Data(0x13, 0x28F55613, 2, 4, linkCount: 1, hasPadding: false),
             .. LinkBytes(1, 2, 0x55667788),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false };
 
         var asset = (PickupAsset)Read(data, profile);
 
@@ -151,7 +151,7 @@ public class PickupAssetTests
     {
         byte[] data = Data(0x13, 0, 0, 4, hasPadding: false);
 
-        var asset = Read(data, IncrediblesSerializer.DefaultProfile);
+        var asset = Read(data, IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<PickupAsset>(asset);
     }
@@ -160,7 +160,7 @@ public class PickupAssetTests
     public void Kind_SetThroughSubtype_RoundTripsUnnamedValues()
     {
         // Real TSSM data carries a Subtype (0xB7) not in the wiki's known-kind table.
-        var asset = (PickupAsset)Read(Data(0xB7, 0, 0, 4, hasPadding: false), TSSMSerializer.DefaultProfile);
+        var asset = (PickupAsset)Read(Data(0xB7, 0, 0, 4, hasPadding: false), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal((PickupAsset.PickupKind)0xB7, asset.Kind);
         Assert.Equal(0xB7, asset.Physical.Subtype);

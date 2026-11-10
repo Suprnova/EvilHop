@@ -68,12 +68,12 @@ public class DynamicCodecsTests
 
     [Fact]
     public void Read_RegisteredLayout_ProducesTheTypedModel() =>
-        Assert.IsType<TestDynamicAsset>(Read(Data(TestVersion, ValueBody), BFBBSerializer.DefaultProfile));
+        Assert.IsType<TestDynamicAsset>(Read(Data(TestVersion, ValueBody), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_RegisteredLayout_ReadsItsFieldsAndLinks()
     {
-        var asset = (TestDynamicAsset)Read(Data(TestVersion, ValueBody), BFBBSerializer.DefaultProfile);
+        var asset = (TestDynamicAsset)Read(Data(TestVersion, ValueBody), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(300, asset.Value);
         Assert.Equal(new AssetId(0xAABBCCDD), Assert.Single(asset.Links).DestinationAssetId);
@@ -81,16 +81,16 @@ public class DynamicCodecsTests
 
     [Fact]
     public void Read_UnregisteredVersion_ProducesGenericDynamicAsset() =>
-        Assert.IsType<GenericDynamicAsset>(Read(Data(TestVersion + 1, ValueBody), BFBBSerializer.DefaultProfile));
+        Assert.IsType<GenericDynamicAsset>(Read(Data(TestVersion + 1, ValueBody), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_UnregisteredGame_ProducesGenericDynamicAsset() =>
-        Assert.IsType<GenericDynamicAsset>(Read(Data(TestVersion, ValueBody), TSSMSerializer.DefaultProfile));
+        Assert.IsType<GenericDynamicAsset>(Read(Data(TestVersion, ValueBody), TSSMSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_FieldsShorterThanTheBody_PreservesTheRestAsTheUnparsedTail()
     {
-        var asset = Read(Data(TestVersion, [.. ValueBody, 0xDE, 0xAD]), BFBBSerializer.DefaultProfile);
+        var asset = Read(Data(TestVersion, [.. ValueBody, 0xDE, 0xAD]), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal([0xDE, 0xAD], asset.GetUnparsedTail().ToArray());
     }
@@ -100,6 +100,6 @@ public class DynamicCodecsTests
     {
         byte[] data = Data(TestVersion, [.. ValueBody, 0xDE, 0xAD]);
 
-        Assert.Equal(data, Write(Read(data, BFBBSerializer.DefaultProfile), BFBBSerializer.DefaultProfile));
+        Assert.Equal(data, Write(Read(data, BFBBSerializer.DefaultProfile.OnGameCube()), BFBBSerializer.DefaultProfile.OnGameCube()));
     }
 }

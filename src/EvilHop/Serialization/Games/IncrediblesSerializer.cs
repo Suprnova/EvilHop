@@ -8,15 +8,15 @@ namespace EvilHop.Serialization;
 /// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class IncrediblesSerializer(FormatProfile profile) : Serializer(profile)
 {
-    /// <summary>The profile every Incredibles build reads correctly under.</summary>
-    public static FormatProfile DefaultProfile { get; } = new(
+    /// <summary>The profile every Incredibles build reads correctly under once a platform is stated.</summary>
+    internal static FormatProfile DefaultProfile { get; } = new(
         GameVersion.Incredibles,
-        Platform.GameCube,
+        null,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 
     /// <summary>
-    /// Initializes a new instance of <see cref="IncrediblesSerializer"/> with <see cref="DefaultProfile"/>.
+    /// Initializes a block-only instance of <see cref="IncrediblesSerializer"/>: no platform is stated, so assets cannot be opened.
     /// </summary>
     public IncrediblesSerializer() : this(DefaultProfile) { }
 }

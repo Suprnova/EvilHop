@@ -82,12 +82,12 @@ public class LightAssetTests
 
     [Fact]
     public void Read_Light_UnderN100F_ProducesLightAsset() =>
-        Assert.IsType<LightAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<LightAsset>(Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Light_PopulatesEveryField()
     {
-        var asset = (LightAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (LightAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(Shape.Point3, asset.Kind);
         Assert.Equal(Pattern.FlickerErratic, asset.Effect);
@@ -110,7 +110,7 @@ public class LightAssetTests
             .. LinkBytes(0, 0, 0),
         ];
 
-        var asset = (LightAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (LightAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(1, asset.Physical.LinkCount);
 
         asset.Links.Add(new Link());
@@ -122,7 +122,7 @@ public class LightAssetTests
     public void Read_ThenWrite_Light_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -136,7 +136,7 @@ public class LightAssetTests
             .. Body(1, 17, 0x28, 1.0f, 1.0f, 1.0f, 1.0f, new Vector3(0.0f, 1.0f, 0.0f), 90.0f, Vector3.Zero, 4.0f, 0xAABBCCDD),
             .. LinkBytes(1, 2, 0x11223344),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -145,7 +145,7 @@ public class LightAssetTests
     public void Read_ThenWrite_LightWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -155,7 +155,7 @@ public class LightAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<LightAsset>(asset);
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

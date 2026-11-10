@@ -106,12 +106,12 @@ public class EnvironmentAssetTests
 
     [Fact]
     public void Read_Environment_ProducesEnvironmentAsset() =>
-        Assert.IsType<EnvironmentAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<EnvironmentAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Environment_UnderRatatouille_PopulatesEveryField()
     {
-        var asset = (EnvironmentAsset)Read(RatatouilleData(), RatatouilleSerializer.DefaultProfile);
+        var asset = (EnvironmentAsset)Read(RatatouilleData(), RatatouilleSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x11111111), asset.BspId);
         Assert.Equal(new AssetId(0x22222222), asset.StartCameraId);
@@ -134,7 +134,7 @@ public class EnvironmentAssetTests
     [Fact]
     public void Read_Environment_UnderN100F_LeavesLoldHeightAndBoundsAtDefault()
     {
-        var asset = (EnvironmentAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (EnvironmentAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x11111111), asset.BspId);
         Assert.Equal(default, asset.Physical.LoldHeight);
@@ -145,7 +145,7 @@ public class EnvironmentAssetTests
     [Fact]
     public void Read_Environment_UnderBfbb_LeavesBoundsAtDefaultButPopulatesLoldHeight()
     {
-        var asset = (EnvironmentAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (EnvironmentAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(10f, asset.Physical.LoldHeight);
         Assert.Equal(default, asset.MinBounds);
@@ -156,7 +156,7 @@ public class EnvironmentAssetTests
     public void Read_ThenWrite_EnvironmentUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -174,7 +174,7 @@ public class EnvironmentAssetTests
             0xF8, 0xDE, 0x15, 0x00, // StartCameraId
         ];
 
-        var profile = N100FSerializer.DefaultProfile with
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with
         {
             Platform = Platform.PlayStation2,
             StreamDataHasPaddingField = false,
@@ -195,7 +195,7 @@ public class EnvironmentAssetTests
     public void Read_ThenWrite_EnvironmentUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -204,7 +204,7 @@ public class EnvironmentAssetTests
     public void Read_ThenWrite_EnvironmentUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = RatatouilleData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -218,7 +218,7 @@ public class EnvironmentAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -227,7 +227,7 @@ public class EnvironmentAssetTests
     public void Read_ThenWrite_EnvironmentWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. RatatouilleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -240,7 +240,7 @@ public class EnvironmentAssetTests
         // loldHeight is stored little-endian on disk regardless of the platform's own byte order -
         // every other field in this asset flips with the platform, but this one field never does.
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile with { Platform = platform };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { Platform = platform };
 
         var asset = (EnvironmentAsset)Read(data, profile);
 

@@ -77,12 +77,12 @@ public class GustAssetTests
 
     [Fact]
     public void Read_Gust_UnderN100F_ProducesGustAsset() =>
-        Assert.IsType<GustAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<GustAsset>(Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Gust_PopulatesEveryField()
     {
-        var asset = (GustAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (GustAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(GustAsset.Behavior.On | GustAsset.Behavior.Dust, asset.Flags);
         Assert.Equal(new AssetId(0x05FA0A9E), asset.VolumeId);
@@ -97,7 +97,7 @@ public class GustAssetTests
     {
         byte[] data = [.. Prefix(1), .. Body(0, 0, 0, Vector3.Zero, 0, 0), .. LinkBytes(0, 0, 0)];
 
-        var asset = (GustAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (GustAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(1, asset.Physical.LinkCount);
 
         asset.Links.Add(new Link());
@@ -109,7 +109,7 @@ public class GustAssetTests
     public void Read_ThenWrite_Gust_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -123,7 +123,7 @@ public class GustAssetTests
             .. Body(1, 0x05FA0A9E, 0x0CAFE000, new Vector3(1.0f, -2.0f, 3.5f), 1.25f, 0.75f),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -132,7 +132,7 @@ public class GustAssetTests
     public void Read_ThenWrite_GustWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -142,7 +142,7 @@ public class GustAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<GustAsset>(asset);
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

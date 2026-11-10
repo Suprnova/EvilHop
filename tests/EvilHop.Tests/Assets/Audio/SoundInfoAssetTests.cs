@@ -84,7 +84,7 @@ public class SoundInfoAssetTests
 
     [Fact]
     public void Read_SoundInfo_UnderN100F_ProducesSoundInfoAsset() =>
-        Assert.IsType<SoundInfoAsset>(Read(N100FData(0, 0), N100FSerializer.DefaultProfile));
+        Assert.IsType<SoundInfoAsset>(Read(N100FData(0, 0), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_SoundInfo_UnderN100F_PopulatesEffectsAndStreams()
@@ -93,7 +93,7 @@ public class SoundInfoAssetTests
             DspHeader(1000, 2020, 16000, looped: false, 0, 2020, 0x11111111),
             DspHeader(2000, 4040, 22050, looped: true, 10, 4030, 0x22222222));
 
-        var asset = (SoundInfoAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (SoundInfoAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Single(asset.Effects);
         Assert.Single(asset.Streams);
@@ -121,7 +121,7 @@ public class SoundInfoAssetTests
     {
         byte[] data = BfbbData(0, 0, 1, DspHeader(500, 1010, 22050, looped: false, 0, 1010, 0x33333333));
 
-        var asset = (SoundInfoAsset)Read(data, BFBBSerializer.DefaultProfile);
+        var asset = (SoundInfoAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Empty(asset.Effects);
         Assert.Empty(asset.Streams);
@@ -135,7 +135,7 @@ public class SoundInfoAssetTests
         byte[] data = N100FData(1, 1,
             DspHeader(1000, 2020, 16000, looped: false, 0, 2020, 0x11111111),
             DspHeader(2000, 4040, 22050, looped: true, 10, 4030, 0x22222222));
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -146,7 +146,7 @@ public class SoundInfoAssetTests
         byte[] data = BfbbData(1, 0, 1,
             DspHeader(1000, 2020, 16000, looped: false, 0, 2020, 0x11111111),
             DspHeader(500, 1010, 22050, looped: false, 0, 1010, 0x33333333));
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -155,7 +155,7 @@ public class SoundInfoAssetTests
     public void Read_ThenWrite_SoundInfoWithNoEntries_ReproducesInputBytes()
     {
         byte[] data = N100FData(0, 0);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -164,7 +164,7 @@ public class SoundInfoAssetTests
     public void Read_ThenWrite_SoundInfoWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. N100FData(0, 0), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -222,7 +222,7 @@ public class SoundInfoAssetTests
 
     [Fact]
     public void Read_SoundInfo_UnderTSSM_ProducesSoundInfoAsset() =>
-        Assert.IsType<SoundInfoAsset>(Read(Fsb3Data([], [], []), TSSMSerializer.DefaultProfile));
+        Assert.IsType<SoundInfoAsset>(Read(Fsb3Data([], [], []), TSSMSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_SoundInfo_UnderTSSM_PopulatesSoundBanksAndSounds()
@@ -233,7 +233,7 @@ public class SoundInfoAssetTests
              SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
 
-        var asset = (SoundInfoAsset)Read(data, TSSMSerializer.DefaultProfile);
+        var asset = (SoundInfoAsset)Read(data, TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.SoundBanks.Count);
         Assert.Equal(2, asset.SoundBanks[0].Samples.Count);
@@ -253,7 +253,7 @@ public class SoundInfoAssetTests
     {
         byte[] data = Fsb3Data([], [], [DspHeader(500, 1010, 22050, looped: false, 0, 1010, 0x44444444)]);
 
-        var asset = (SoundInfoAsset)Read(data, IncrediblesSerializer.DefaultProfile);
+        var asset = (SoundInfoAsset)Read(data, IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Single(asset.Cutscenes);
         Assert.Equal(new AssetId(0x44444444), asset.Cutscenes[0].SoundAssetId);
@@ -267,7 +267,7 @@ public class SoundInfoAssetTests
             [SoundBankEntry(0x11111111, (byte)Identity.None, 0, 0, 0),
              SoundBankEntry(0x22222222, (byte)Identity.Streaming, 0, 1, 0)],
             []);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -285,7 +285,7 @@ public class SoundInfoAssetTests
             [PaddedBank(0x00)],
             [SoundBankEntry(0x11111111, (byte)Identity.Streaming, 0, 0, 0)],
             []);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -295,7 +295,7 @@ public class SoundInfoAssetTests
     {
         byte[] data = Fsb3Data([PaddedBank(0xAA)], [SoundBankEntry(0x11111111, 0, 0, 0, 0)],
             [DspHeader(500, 1010, 22050, looped: false, 0, 1010, 0x44444444)]);
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -304,7 +304,7 @@ public class SoundInfoAssetTests
     public void Read_ThenWrite_SoundInfoUnderROTU_ReproducesInputBytes()
     {
         byte[] data = Fsb3Data([], [], []);
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -313,7 +313,7 @@ public class SoundInfoAssetTests
     public void Read_ThenWrite_SoundInfoUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = Fsb3Data([], [], []);
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -322,16 +322,16 @@ public class SoundInfoAssetTests
     public void Read_ThenWrite_SoundInfoFsb3WithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. Fsb3Data([], [], []), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
 
-    private static readonly FormatProfile XboxProfile = TSSMSerializer.DefaultProfile with { Platform = Platform.Xbox };
+    private static readonly FormatProfile XboxProfile = TSSMSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
 
-    private static readonly FormatProfile PS2Profile = BFBBSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+    private static readonly FormatProfile PS2Profile = BFBBSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.PlayStation2 };
 
-    private static readonly FormatProfile N100FPS2Profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+    private static readonly FormatProfile N100FPS2Profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.PlayStation2 };
 
     private static byte[] LittleEndian(uint value) => BitConverter.GetBytes(value);
 

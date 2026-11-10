@@ -11,15 +11,17 @@ public class AssetSessionTests
     public static TheoryData<string> Games =>
         ["n100f", "bfbb", "tssm", "incredibles", "rotu", "ratatouille"];
 
-    private static Serializer SerializerFor(string game) => game switch
-    {
-        "n100f" => new N100FSerializer(),
-        "bfbb" => new BFBBSerializer(),
-        "tssm" => new TSSMSerializer(),
-        "incredibles" => new IncrediblesSerializer(),
-        "rotu" => new ROTUSerializer(),
-        _ => new RatatouilleSerializer()
-    };
+    private static Serializer SerializerFor(string game) => Serializer.Create(
+        game switch
+        {
+            "n100f" => GameVersion.N100F,
+            "bfbb" => GameVersion.BFBB,
+            "tssm" => GameVersion.TSSM,
+            "incredibles" => GameVersion.Incredibles,
+            "rotu" => GameVersion.ROTU,
+            _ => GameVersion.Ratatouille
+        },
+        Platform.GameCube);
 
     /// <summary>
     /// The committed archives use <c>AHDR.Offset</c> as a byte index into the file, which the
@@ -110,6 +112,16 @@ public class AssetSessionTests
         using (archive.OpenAssets()) { }
 
         Assert.Equal(0, Save(archive).Length % 32);
+    }
+
+    [Theory]
+    [MemberData(nameof(Games))]
+    public void OpenAssets_SerializerStatingNoPlatform_ThrowsInvalidOperationException(string game)
+    {
+        var bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", game, "minimal.hip"));
+        var archive = Archive.Load(new MemoryStream(bytes), Serializer.Create(SerializerFor(game).Profile.Game));
+
+        Assert.Throws<InvalidOperationException>(() => archive.OpenAssets());
     }
 
     [Theory]
@@ -363,7 +375,7 @@ public class AssetSessionTests
     public void Commit_AssignsAbsoluteOffsetPointingAtTheAssetsBytes()
     {
         byte[] canonical = Canonical("n100f");
-        var archive = Archive.Load(new MemoryStream(canonical), new N100FSerializer());
+        var archive = Archive.Load(new MemoryStream(canonical), SerializerFor("n100f"));
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
         var header = archive.Roots.OfType<Dictionary>().Single().AssetTable.Headers.Single();
 
@@ -375,7 +387,7 @@ public class AssetSessionTests
     {
         byte[] expected = SinglePayload(LoadRepaired("n100f"));
         byte[] withHipb = Save(WithTrailingHIPB(LoadRepaired("n100f")));
-        var archive = Archive.Load(new MemoryStream(withHipb), new N100FSerializer());
+        var archive = Archive.Load(new MemoryStream(withHipb), SerializerFor("n100f"));
 
         Assert.Equal(expected, SinglePayload(archive));
     }
@@ -397,7 +409,7 @@ public class AssetSessionTests
     public void Commit_PadsStreamDataToA32ByteBoundary()
     {
         byte[] canonical = Canonical("n100f");
-        var archive = Archive.Load(new MemoryStream(canonical), new N100FSerializer());
+        var archive = Archive.Load(new MemoryStream(canonical), SerializerFor("n100f"));
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
 
         Assert.Equal(0, (canonical.Length - streamData.Data.Length) % 32);
@@ -406,7 +418,7 @@ public class AssetSessionTests
     [Fact]
     public void Commit_PadsStreamDataToA2048ByteSectorOnPlayStation2()
     {
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.PlayStation2 };
         var archive = LoadRepaired("n100f", new N100FSerializer(profile));
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
 
@@ -424,7 +436,7 @@ public class AssetSessionTests
     /// </summary>
     private static Archive EmptyArchive(bool hadPaddingAmountField)
     {
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.PlayStation2 };
         var archive = LoadRepaired("n100f", new N100FSerializer(profile), dictionary =>
         {
             dictionary.AssetTable.Headers = [];
@@ -556,7 +568,7 @@ public class AssetSessionTests
     /// special-cases, so one fixture covers all of them.
     /// </summary>
     private static Archive IncrediblesArchiveWithSecondAsset(AssetType type, Platform platform) => LoadRepaired(
-        "incredibles", new IncrediblesSerializer(IncrediblesSerializer.DefaultProfile with { Platform = platform }), dictionary =>
+        "incredibles", new IncrediblesSerializer(IncrediblesSerializer.DefaultProfile.OnGameCube() with { Platform = platform }), dictionary =>
     {
         var originalHeader = dictionary.AssetTable.Headers.Single();
         var originalLayer = dictionary.LayerTable.Headers.Single();
@@ -597,7 +609,7 @@ public class AssetSessionTests
     {
         byte[] bytes = File.ReadAllBytes(
             Path.Combine(AppContext.BaseDirectory, "TestData", "incredibles", "minimal.hip"));
-        var serializer = new IncrediblesSerializer();
+        var serializer = SerializerFor("incredibles");
 
         var archive = Archive.Load(new MemoryStream(bytes), serializer);
         var streamData = archive.Roots.OfType<AssetStream>().Single().Data;
@@ -652,7 +664,7 @@ public class AssetSessionTests
     [Fact]
     public void Commit_NewZeroSizeAsset_GetsARealPosition()
     {
-        var archive = LoadRepaired("incredibles", new IncrediblesSerializer());
+        var archive = LoadRepaired("incredibles", SerializerFor("incredibles"));
         uint originalId = 0;
 
         using (var session = archive.OpenAssets())
@@ -808,11 +820,11 @@ public class AssetSessionTests
     [Fact]
     public void Commit_EditedAsset_SurvivesAReopen()
     {
-        var archive = Archive.Load(new MemoryStream(Canonical("n100f")), new N100FSerializer());
+        var archive = Archive.Load(new MemoryStream(Canonical("n100f")), SerializerFor("n100f"));
         using (var session = archive.OpenAssets())
             ((PayloadAsset)session.Layers[0].Assets[0]).Data = [0xAA, 0xBB, 0xCC, 0xDD];
 
-        var reopened = Archive.Load(new MemoryStream(Save(archive)), new N100FSerializer());
+        var reopened = Archive.Load(new MemoryStream(Save(archive)), SerializerFor("n100f"));
         using var verify = reopened.OpenAssets();
 
         Assert.Equal<byte>([0xAA, 0xBB, 0xCC, 0xDD], ((PayloadAsset)verify.Layers[0].Assets[0]).Data);
@@ -821,7 +833,7 @@ public class AssetSessionTests
     [Fact]
     public void Commit_ResizedAsset_UpdatesItsRecordedSize()
     {
-        var archive = Archive.Load(new MemoryStream(Canonical("n100f")), new N100FSerializer());
+        var archive = Archive.Load(new MemoryStream(Canonical("n100f")), SerializerFor("n100f"));
         using (var session = archive.OpenAssets())
             ((PayloadAsset)session.Layers[0].Assets[0]).Data = new byte[64];
 

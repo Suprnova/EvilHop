@@ -68,6 +68,8 @@ public sealed class AssetSession : IDisposable
     public IReadOnlyList<AssetId> ChangedAssets { get; private set; } = [];
 
     private readonly Archive _archive;
+    private readonly FormatProfile _profile;
+    private readonly Platform _platform;
     private readonly Package _package;
     private readonly Dictionary _dictionary;
     private readonly AssetStream _stream;
@@ -85,7 +87,7 @@ public sealed class AssetSession : IDisposable
     private bool _committed;
 
     /// <summary>The blocks this session was opened against.</summary>
-    private readonly record struct SessionTarget(Archive Archive, Package Package, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
+    private readonly record struct SessionTarget(Archive Archive, FormatProfile Profile, Platform Platform, Package Package, Dictionary Dictionary, AssetStream Stream, StreamData StreamData);
 
     /// <summary>
     /// Scalars captured while opening, before the blocks that carried them are detached or cleared.
@@ -105,6 +107,8 @@ public sealed class AssetSession : IDisposable
     private AssetSession(SessionTarget target, CapturedValues captured, ChangeTracking changeTracking)
     {
         _archive = target.Archive;
+        _profile = target.Profile;
+        _platform = target.Platform;
         _package = target.Package;
         _dictionary = target.Dictionary;
         _stream = target.Stream;
@@ -178,6 +182,11 @@ public sealed class AssetSession : IDisposable
 
     internal static AssetSession Open(Archive archive)
     {
+        var profile = archive.Serializer.Profile;
+        var platform = profile.Platform
+            ?? throw new InvalidOperationException(
+                $"Assets can't be opened without a platform: this archive's {nameof(Serializer)} states none.");
+
         var package = archive.Roots.OfType<Package>().Single();
         var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var stream = archive.Roots.OfType<AssetStream>().Single();
@@ -189,7 +198,7 @@ public sealed class AssetSession : IDisposable
         long dataStart = MeasureThrough(archive, stream) - streamData.Data.Length;
 
         var session = new AssetSession(
-            new SessionTarget(archive, package, dictionary, stream, streamData),
+            new SessionTarget(archive, profile, platform, package, dictionary, stream, streamData),
             new CapturedValues(
                 assetTable.Inf.Value,
                 layerTable.Inf.Value,
@@ -303,8 +312,8 @@ public sealed class AssetSession : IDisposable
         {
             var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);
             using var stream = new MemoryStream(_streamData.Data, offset, length, writable: false);
-            using var reader = new EndianReader(stream, _archive.Serializer.Profile.Endianness);
-            return AdoptChecksum(AssetCodecs.Read(reader, header, debug, _archive.Serializer.Profile), computed, debug);
+            using var reader = new EndianReader(stream, _profile.Endianness);
+            return AdoptChecksum(AssetCodecs.Read(reader, header, debug, _profile), computed, debug);
         }
         catch (Exception ex)
         {
@@ -348,8 +357,8 @@ public sealed class AssetSession : IDisposable
         foreach (var asset in ordered)
         {
             using var buffer = new MemoryStream();
-            using (var writer = new EndianWriter(buffer, _archive.Serializer.Profile.Endianness, leaveOpen: true))
-                AssetCodecs.Write(asset, writer, _archive.Serializer.Profile);
+            using (var writer = new EndianWriter(buffer, _profile.Endianness, leaveOpen: true))
+                AssetCodecs.Write(asset, writer, _profile);
 
             byte[] bytes = buffer.ToArray();
             serialized[asset.Id] = bytes;
@@ -530,7 +539,7 @@ public sealed class AssetSession : IDisposable
             .Select(layer => layer.Assets[^1])
             .ToHashSet();
 
-        uint layerAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
+        uint layerAlignment = DataAlignmentFor(_platform);
 
         using var data = new MemoryStream();
         long position = dataStart;
@@ -573,7 +582,7 @@ public sealed class AssetSession : IDisposable
             int nextAlignment = nextHeader.Debug.Alignment;
             uint alignment = nextAlignment > 0
                 ? (uint)nextAlignment
-                : DefaultAlignmentFor(nextHeader.Type, _archive.Serializer.Profile.Platform);
+                : DefaultAlignmentFor(nextHeader.Type, _platform);
             uint plus = (uint)((alignment - position % alignment) % alignment);
 
             header.Plus = plus;
@@ -613,7 +622,7 @@ public sealed class AssetSession : IDisposable
     private (long DataStart, int PaddingAmount) MeasureDataStart()
     {
         long dataStart = MeasureThrough(_archive, _stream);
-        long dataAlignment = DataAlignmentFor(_archive.Serializer.Profile.Platform);
+        long dataAlignment = DataAlignmentFor(_platform);
         return (dataStart, (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment));
     }
 

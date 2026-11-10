@@ -415,8 +415,10 @@ and `LODTableAsset` are both examples of this: neither appears in `ShapesByType`
 | `ROTU` | `LanguageRegion` | false | |
 | `Ratatouille` | `LanguageRegion` | false | |
 
-Every `DefaultProfile` targets `Platform.GameCube` with `StreamDataHasPaddingField: true`. Access a
-profile in a test via `{Game}Serializer.DefaultProfile` (e.g. `BFBBSerializer.DefaultProfile`).
+Every `DefaultProfile` states no platform and has `StreamDataHasPaddingField: true`. Access a
+profile in a test via `{Game}Serializer.DefaultProfile.OnGameCube()` (e.g.
+`BFBBSerializer.DefaultProfile.OnGameCube()`); `OnGameCube()` is a test-project extension that states
+`Platform.GameCube`, and `.OnGameCube() with { Platform = ... }` covers the other platforms.
 `profile.Endianness` is `Big` on GameCube and `Little` otherwise — `EndianReader`/`EndianWriter` read
 this from the profile automatically, you never branch on it yourself. Branch on `profile.Game` (an
 equality check, same shape in `Read` and `Write` — see `DestructibleObjectAsset`) for genuine per-game
@@ -441,7 +443,7 @@ type's `Read`/`Write`, and the `BuildProfiles.json` entry.
 
 Reader: `ReadInt16`/`ReadInt32`/`ReadUInt32`/`ReadSingle`/`ReadVector3`/`ReadAssetId`/`ReadBytes(n)`/
 `ReadRemainingBytes()`. Writer: `Write(short/int/uint/float/Vector3/AssetId value)`. All big-endian on
-every `DefaultProfile` seen so far (GameCube). `AssetId` is a `readonly record struct` wrapping a
+every GameCube profile (`.OnGameCube()`). `AssetId` is a `readonly record struct` wrapping a
 `uint Value`; `AssetId.None` is the zero value; `AssetId.FromName(name)`/`FromName(name, type)`
 compute one from a name (only relevant to `Asset.CalculateId()`, not to a codec).
 

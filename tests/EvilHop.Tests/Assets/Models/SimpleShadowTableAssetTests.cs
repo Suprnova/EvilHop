@@ -23,7 +23,7 @@ public class SimpleShadowTableAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class SimpleShadowTableAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -99,7 +99,7 @@ public class SimpleShadowTableAssetTests
     {
         byte[] data = TableBytes(EntryBytes(1, 2, 0));
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<SimpleShadowTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());
@@ -111,7 +111,7 @@ public class SimpleShadowTableAssetTests
         var asset = new SimpleShadowTableAsset { Type = AssetType.SimpleShadowTable };
         asset.Entries.Add(new SimpleShadowTableAsset.Entry { ModelId = new AssetId(1), ShadowModelId = new AssetId(2), Unknown = 1 });
 
-        Assert.Equal(TableBytes(EntryBytes(1, 2, 1)), Write(asset, N100FSerializer.DefaultProfile));
+        Assert.Equal(TableBytes(EntryBytes(1, 2, 1)), Write(asset, N100FSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]

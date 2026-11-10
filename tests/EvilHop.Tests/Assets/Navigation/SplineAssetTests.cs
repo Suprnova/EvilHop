@@ -62,12 +62,12 @@ public class SplineAssetTests
 
     [Fact]
     public void Read_Spline_ProducesSplineAsset() =>
-        Assert.IsType<SplineAsset>(Read(ROTUExemplar(), ROTUSerializer.DefaultProfile));
+        Assert.IsType<SplineAsset>(Read(ROTUExemplar(), ROTUSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Spline_PopulatesFields()
     {
-        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile);
+        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(3, asset.Degree);
         Assert.Equal(4, asset.ControlPoints.Count);
@@ -78,12 +78,12 @@ public class SplineAssetTests
 
     [Fact]
     public void Read_ThenWrite_RealROTUExemplar_ReproducesInputBytes() =>
-        Assert.Equal(ROTUExemplar(), Write(Read(ROTUExemplar(), ROTUSerializer.DefaultProfile), ROTUSerializer.DefaultProfile));
+        Assert.Equal(ROTUExemplar(), Write(Read(ROTUExemplar(), ROTUSerializer.DefaultProfile.OnGameCube()), ROTUSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_SplineUnderIncredibles_ReadsLittleEndianHeader()
     {
-        var asset = (SplineAsset)Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile);
+        var asset = (SplineAsset)Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x14595AD0), asset.Physical.BaseId);
         Assert.Equal(BaseAssetFlags.Valid, asset.Physical.BaseFlags & BaseAssetFlags.Valid);
@@ -94,13 +94,13 @@ public class SplineAssetTests
 
     [Fact]
     public void Read_ThenWrite_RealIncrediblesExemplar_ReproducesInputBytes() =>
-        Assert.Equal(IncrediblesExemplar, Write(Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile), IncrediblesSerializer.DefaultProfile));
+        Assert.Equal(IncrediblesExemplar, Write(Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile.OnGameCube()), IncrediblesSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_ThenWrite_SplineUnderLittleEndianIncredibles_ReproducesInputBytes()
     {
-        var profile = IncrediblesSerializer.DefaultProfile with { Platform = Platform.PlayStation2 };
-        var gameCube = (SplineAsset)Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile);
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.PlayStation2 };
+        var gameCube = (SplineAsset)Read(IncrediblesExemplar, IncrediblesSerializer.DefaultProfile.OnGameCube());
         byte[] data = Write(gameCube, profile);
 
         var asset = (SplineAsset)Read(data, profile);
@@ -114,9 +114,9 @@ public class SplineAssetTests
     [Fact]
     public void Write_SplineUnderTSSM_WritesLittleEndianHeader()
     {
-        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile);
+        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile.OnGameCube());
 
-        byte[] data = Write(asset, TSSMSerializer.DefaultProfile);
+        byte[] data = Write(asset, TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal([0xCB, 0x35, 0xBD, 0x2E, 0x49, 0x00, 0x1D, 0x00], data[..8]);
         Assert.Equal([0x00, 0x00, 0x00, 0x03], data[8..12]);
@@ -127,11 +127,11 @@ public class SplineAssetTests
     {
         byte[] data = ROTUExemplar(linkCount: 1);
 
-        var asset = (SplineAsset)Read(data, ROTUSerializer.DefaultProfile);
+        var asset = (SplineAsset)Read(data, ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Empty(asset.Links);
         Assert.Equal(1, asset.Physical.LinkCount);
-        Assert.Equal(data, Write(asset, ROTUSerializer.DefaultProfile));
+        Assert.Equal(data, Write(asset, ROTUSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]
@@ -139,13 +139,13 @@ public class SplineAssetTests
     {
         byte[] data = [.. ROTUExemplar(), 0xDE, 0xAD, 0xBE, 0xEF];
 
-        Assert.Equal(data, Write(Read(data, ROTUSerializer.DefaultProfile), ROTUSerializer.DefaultProfile));
+        Assert.Equal(data, Write(Read(data, ROTUSerializer.DefaultProfile.OnGameCube()), ROTUSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]
     public void KnotMaxIndex_AfterAddingKnot_FollowsKnots()
     {
-        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile);
+        var asset = (SplineAsset)Read(ROTUExemplar(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         asset.Knots.Add(1f);
 
@@ -154,5 +154,5 @@ public class SplineAssetTests
 
     [Fact]
     public void Read_Spline_UnderBFBB_DegradesToGenericAsset() =>
-        Assert.IsNotType<SplineAsset>(Read(ROTUExemplar(), BFBBSerializer.DefaultProfile), exactMatch: false);
+        Assert.IsNotType<SplineAsset>(Read(ROTUExemplar(), BFBBSerializer.DefaultProfile.OnGameCube()), exactMatch: false);
 }

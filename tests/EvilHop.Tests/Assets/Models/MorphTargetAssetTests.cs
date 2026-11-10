@@ -75,12 +75,12 @@ public class MorphTargetAssetTests
 
     [Fact]
     public void Read_MorphTarget_UnderN100F_ProducesMorphTargetAsset() =>
-        Assert.IsType<MorphTargetAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<MorphTargetAsset>(Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_MorphTarget_PopulatesEveryField()
     {
-        var asset = (MorphTargetAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (MorphTargetAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(0x4D504831u, asset.Physical.Magic);
         Assert.Equal(0x3EE30E1u, asset.Physical.MorphFlags);
@@ -97,7 +97,7 @@ public class MorphTargetAssetTests
     [Fact]
     public void Read_MorphTarget_CountsKeepDerivingAfterMutation()
     {
-        var asset = (MorphTargetAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (MorphTargetAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(2, asset.Physical.TargetCount);
         Assert.Equal(2, asset.Physical.VertexCount);
 
@@ -112,7 +112,7 @@ public class MorphTargetAssetTests
     public void Read_ThenWrite_MorphTarget_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -129,7 +129,7 @@ public class MorphTargetAssetTests
             .. Vector(-4.5f, 5.5f, -6.5f),
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // alignment padding
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         var asset = (MorphTargetAsset)Read(data, profile);
         Assert.Equal(new Vector3(1.5f, -2.5f, 3.5f), asset.Targets[0].Vertices[0]);
@@ -140,7 +140,7 @@ public class MorphTargetAssetTests
     public void Read_ThenWrite_MorphTargetWithNoTargets_ReproducesInputBytes()
     {
         byte[] data = Header(0, 0, 0, Scale, Vector3.Zero, 0.0f);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -149,7 +149,7 @@ public class MorphTargetAssetTests
     public void Read_ThenWrite_MorphTargetWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -159,7 +159,7 @@ public class MorphTargetAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<MorphTargetAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

@@ -28,7 +28,7 @@ public class MovePointAssetTests
 
     private static MovePointAsset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(profile);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return (MovePointAsset)AssetCodecs.Read(reader, header, debug, profile);
@@ -36,7 +36,7 @@ public class MovePointAssetTests
 
     private static byte[] Write(MovePointAsset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -122,7 +122,7 @@ public class MovePointAssetTests
     [Fact]
     public void Read_MovePoint_UnderBFBB_PopulatesRadii()
     {
-        var asset = Read(BFBBData(), BFBBSerializer.DefaultProfile);
+        var asset = Read(BFBBData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(MovePointAsset.PathKind.Arena, asset.Kind);
         Assert.Equal(MovePointAsset.BezierRole.Curve, asset.Role);
@@ -181,7 +181,7 @@ public class MovePointAssetTests
             .. AssetIdBytes(0xAABBCCDD),
             .. LinkBytes(1, 2, 0x55667788),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

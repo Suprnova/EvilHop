@@ -13,7 +13,7 @@ public class ROTUSerializerTests : SerializerContractTests
     [Fact]
     public void DefaultProfile_IsROTUWithLanguageRegionPlatformOrder()
     {
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(GameVersion.ROTU, profile.Game);
         Assert.Equal(PlatformFieldOrder.LanguageRegion, profile.PlatformFieldOrder);
@@ -26,16 +26,17 @@ public class ROTUSerializerTests : SerializerContractTests
         var serializer = new ROTUSerializer();
 
         Assert.Equal(ROTUSerializer.DefaultProfile, serializer.Profile);
+        Assert.Null(serializer.Profile.Platform);
     }
 
     [Fact]
     public void Constructor_WithOverride_KeepsOtherSwitches()
     {
-        var profile = ROTUSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
 
         var serializer = new ROTUSerializer(profile);
 
         Assert.False(serializer.Profile.StreamDataHasPaddingField);
-        Assert.Equal(ROTUSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
+        Assert.Equal(ROTUSerializer.DefaultProfile.OnGameCube().PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 }

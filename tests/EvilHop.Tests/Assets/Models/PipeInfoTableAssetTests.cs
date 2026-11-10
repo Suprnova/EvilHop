@@ -71,12 +71,12 @@ public class PipeInfoTableAssetTests
 
     [Fact]
     public void Read_PipeInfoTable_UnderBfbb_ProducesPipeInfoTableAsset() =>
-        Assert.IsType<PipeInfoTableAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<PipeInfoTableAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_PipeInfoTable_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (PipeInfoTableAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (PipeInfoTableAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Entries.Count);
 
@@ -103,7 +103,7 @@ public class PipeInfoTableAssetTests
     [Fact]
     public void Read_PipeInfoTable_UnderTSSM_PopulatesLayerAndAlphaDiscard()
     {
-        var asset = (PipeInfoTableAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
+        var asset = (PipeInfoTableAsset)Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         var first = asset.Entries[0];
         Assert.Equal(0x00006501u, first.Flags.Value);
@@ -119,7 +119,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -128,7 +128,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -137,7 +137,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableUnderIncredibles_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -146,7 +146,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableUnderROTU_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -155,7 +155,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -164,7 +164,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableWithNoEntries_ReproducesInputBytes()
     {
         byte[] data = Count(0);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -173,7 +173,7 @@ public class PipeInfoTableAssetTests
     public void Read_ThenWrite_PipeInfoTableWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -183,7 +183,7 @@ public class PipeInfoTableAssetTests
     {
         byte[] data = BfbbData();
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<PipeInfoTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

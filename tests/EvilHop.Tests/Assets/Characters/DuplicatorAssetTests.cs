@@ -24,7 +24,7 @@ public class DuplicatorAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class DuplicatorAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -191,7 +191,7 @@ public class DuplicatorAssetTests
     [Fact]
     public void Read_Duplicator_UnderBFBB_DegradesToGenericAsset()
     {
-        var asset = Read(Data(), BFBBSerializer.DefaultProfile);
+        var asset = Read(Data(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<DuplicatorAsset>(asset, exactMatch: false);
     }

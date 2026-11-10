@@ -33,9 +33,11 @@ envelope (tag, size, fields, children) and dispatches per-tag field handlers reg
 [`N100FSerializer`](../src/EvilHop/Serialization/Games/N100FSerializer.cs),
 [`ROTUSerializer`](../src/EvilHop/Serialization/Games/ROTUSerializer.cs),
 [`RatatouilleSerializer`](../src/EvilHop/Serialization/Games/RatatouilleSerializer.cs), and
-[`TSSMSerializer`](../src/EvilHop/Serialization/Games/TSSMSerializer.cs) - each exposing a
-`DefaultProfile`. [`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs) is the record of
-per-game quirks (platform, endianness, field order, padding) a serializer reads with.
+[`TSSMSerializer`](../src/EvilHop/Serialization/Games/TSSMSerializer.cs) - created through
+`Serializer.Create(game)` for block-only work or `Serializer.Create(game, platform)` when assets will
+be opened. [`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs) is the record of per-game
+quirks (platform, endianness, field order, padding) a serializer reads with; its platform is null
+until stated, and the asset layer refuses to open an archive without one.
 
 ## Asset Layer
 

@@ -7,7 +7,7 @@ namespace EvilHop.Corpus.Tests.Archives;
 
 public class BuildProfilesTests
 {
-    private static readonly FormatProfile DefaultProfile = N100FSerializer.DefaultProfile;
+    private static readonly FormatProfile DefaultProfile = Serializer.Create(GameVersion.N100F).Profile;
 
     [Fact]
     public void Resolve_MatchingPrefix_AppliesOverride()
@@ -115,7 +115,7 @@ public class BuildProfilesTests
     public void Resolve_CommittedManifest_AppliesDb05OverrideToDb05Only()
     {
         var manifest = BuildProfiles.LoadDefault();
-        var bfbb = BFBBSerializer.DefaultProfile;
+        var bfbb = Serializer.Create(GameVersion.BFBB).Profile;
 
         var db05 = manifest.Resolve(bfbb, "bfbb/release/GC/NTSC-U/US/db/db05.HIP");
         var db01 = manifest.Resolve(bfbb, "bfbb/release/GC/NTSC-U/US/db/db01.HIP");

@@ -33,7 +33,7 @@ public class TextAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, uint id = 0x12345678)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(id);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -41,7 +41,7 @@ public class TextAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -180,7 +180,7 @@ public class TextAssetTests
             0x54, 0x4F, 0x20, 0x54, 0x41, 0x4C, 0x4B, 0x00,
         ];
 
-        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F).OnGameCube();
         var asset = (TextAsset)Read(data, profile, id: 0xE9DB1B39);
 
         Assert.Equal("PRESS $D~$C TO TALK", asset.Text);
@@ -194,7 +194,7 @@ public class TextAssetTests
     [InlineData("ABCDE")] // strlen % 4 == 1, needs 2 padding bytes
     public void Read_ThenWrite_N100FLengthIncludesNullTerminator_RoundTripsExactly(string text)
     {
-        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F).OnGameCube();
         byte[] data = MakeTextBytes(text, lengthIncludesNull: true);
 
         var asset = (TextAsset)Read(data, profile);
@@ -277,7 +277,7 @@ public class TextAssetTests
     [InlineData(GameVersion.Ratatouille)]
     public void Read_UnderAllSupportedGames_ParsesAsTextAsset(GameVersion game)
     {
-        var profile = Serializer.DefaultProfileFor(game);
+        var profile = Serializer.DefaultProfileFor(game).OnGameCube();
         bool bigEndian = profile.Endianness == Endianness.Big;
         byte[] data = MakeTextBytes("Game Test", bigEndian: bigEndian, lengthIncludesNull: game is GameVersion.N100F);
 
@@ -292,7 +292,7 @@ public class TextAssetTests
     [Fact]
     public void Read_LittleEndian_ParsesAndWritesCorrectly()
     {
-        var profile = BFBBSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         byte[] data = MakeTextBytes("Xbox Text", bigEndian: false);
 
         var asset = (TextAsset)Read(data, profile);

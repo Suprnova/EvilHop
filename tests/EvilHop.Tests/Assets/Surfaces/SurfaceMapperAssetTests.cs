@@ -53,12 +53,12 @@ public class SurfaceMapperAssetTests
 
     [Fact]
     public void Read_SurfaceMapper_ProducesSurfaceMapperAsset() =>
-        Assert.IsType<SurfaceMapperAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<SurfaceMapperAsset>(Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_SurfaceMapper_PopulatesEveryField()
     {
-        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Entries.Count);
         Assert.Equal(new AssetId(0xAABBCCDD), asset.Entries[0].SurfaceId);
@@ -70,7 +70,7 @@ public class SurfaceMapperAssetTests
     [Fact]
     public void Read_SurfaceMapper_SelfIdDerivesFromAssetIdWhenMatching()
     {
-        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(asset.Id, asset.Physical.SelfId);
     }
@@ -80,7 +80,7 @@ public class SurfaceMapperAssetTests
     {
         byte[] data = [.. Header(0x99999999, 0)];
 
-        var asset = (SurfaceMapperAsset)Read(data, N100FSerializer.DefaultProfile, id: 0x45DF6453);
+        var asset = (SurfaceMapperAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube(), id: 0x45DF6453);
 
         Assert.Equal(new AssetId(0x99999999), asset.Physical.SelfId);
         Assert.NotEqual(asset.Id, asset.Physical.SelfId);
@@ -89,7 +89,7 @@ public class SurfaceMapperAssetTests
     [Fact]
     public void Read_SurfaceMapper_CountKeepsDerivingAfterEntriesAreMutated()
     {
-        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (SurfaceMapperAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(2u, asset.Physical.Count);
 
         asset.Entries.Add(new SurfaceMapperAsset.Entry());
@@ -101,7 +101,7 @@ public class SurfaceMapperAssetTests
     public void Read_ThenWrite_SurfaceMapper_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -110,7 +110,7 @@ public class SurfaceMapperAssetTests
     public void Read_ThenWrite_SurfaceMapperWithNoEntries_ReproducesInputBytes()
     {
         byte[] data = [.. Header(0x45DF6453, 0)];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -119,7 +119,7 @@ public class SurfaceMapperAssetTests
     public void Read_ThenWrite_SurfaceMapperWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -135,12 +135,12 @@ public class SurfaceMapperAssetTests
     {
         FormatProfile profile = gameIndex switch
         {
-            0 => N100FSerializer.DefaultProfile,
-            1 => BFBBSerializer.DefaultProfile,
-            2 => TSSMSerializer.DefaultProfile,
-            3 => IncrediblesSerializer.DefaultProfile,
-            4 => ROTUSerializer.DefaultProfile,
-            _ => RatatouilleSerializer.DefaultProfile,
+            0 => N100FSerializer.DefaultProfile.OnGameCube(),
+            1 => BFBBSerializer.DefaultProfile.OnGameCube(),
+            2 => TSSMSerializer.DefaultProfile.OnGameCube(),
+            3 => IncrediblesSerializer.DefaultProfile.OnGameCube(),
+            4 => ROTUSerializer.DefaultProfile.OnGameCube(),
+            _ => RatatouilleSerializer.DefaultProfile.OnGameCube(),
         };
         byte[] data = SampleData();
 

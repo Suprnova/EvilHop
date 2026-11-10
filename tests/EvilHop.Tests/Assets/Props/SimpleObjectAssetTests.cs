@@ -91,12 +91,12 @@ public class SimpleObjectAssetTests
 
     [Fact]
     public void Read_SimpleObject_ProducesSimpleObjectAsset() =>
-        Assert.IsType<SimpleObjectAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<SimpleObjectAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_SimpleObject_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (SimpleObjectAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (SimpleObjectAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(1.5f, asset.Physical.AnimationSpeed);
         Assert.Equal(2u, asset.Physical.InitialAnimationState);
@@ -110,7 +110,7 @@ public class SimpleObjectAssetTests
     [Fact]
     public void Read_SimpleObject_UnderTSSM_ProjectsBehaviorFlags()
     {
-        var asset = (SimpleObjectAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
+        var asset = (SimpleObjectAsset)Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.False(asset.HasCollision);
         Assert.True(asset.FaceCamera);
@@ -156,7 +156,7 @@ public class SimpleObjectAssetTests
     public void Read_ThenWrite_SimpleObjectUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -165,7 +165,7 @@ public class SimpleObjectAssetTests
     public void Read_ThenWrite_SimpleObjectUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -179,7 +179,7 @@ public class SimpleObjectAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -188,7 +188,7 @@ public class SimpleObjectAssetTests
     public void Read_ThenWrite_SimpleObjectWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

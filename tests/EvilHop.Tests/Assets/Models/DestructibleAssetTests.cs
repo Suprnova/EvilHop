@@ -122,12 +122,12 @@ public class DestructibleAssetTests
 
     [Fact]
     public void Read_Destructible_ProducesDestructibleAsset() =>
-        Assert.IsType<DestructibleAsset>(Read(TssmData(), TSSMSerializer.DefaultProfile));
+        Assert.IsType<DestructibleAsset>(Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Destructible_UnderTSSM_PopulatesEveryField()
     {
-        var asset = (DestructibleAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
+        var asset = (DestructibleAsset)Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0xDEADBEEF), asset.ModelInfoId);
         Assert.Equal(50u, asset.HitPoints);
@@ -161,7 +161,7 @@ public class DestructibleAssetTests
     [Fact]
     public void Read_Destructible_UnderROTU_PopulatesExtendedFields()
     {
-        var asset = (DestructibleAsset)Read(RotuData(), ROTUSerializer.DefaultProfile);
+        var asset = (DestructibleAsset)Read(RotuData(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(6u, asset.Physical.ExcludedHitFilter);
         Assert.Equal(10u, asset.HealthPoints);
@@ -174,7 +174,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -183,7 +183,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleUnderIncredibles_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -192,7 +192,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleUnderROTU_ReproducesInputBytes()
     {
         byte[] data = RotuData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -201,7 +201,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = RotuData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -215,7 +215,7 @@ public class DestructibleAssetTests
             .. StateBytes(50, 0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 0x77777777, 0x88888888, 0x99999999, 0xAAAAAAAA, 0xBBBBBBBB),
             .. StateBytes(90, 0x11111112, 0x22222223, 0x33333334, 0x44444445, 0x55555556, 0x66666667, 0x77777778, 0x88888889, 0x9999999A, 0xAAAAAAAB, 0xBBBBBBBC, 0xC0000001, 0xC0000002),
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -224,7 +224,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleWithNoStates_ReproducesInputBytes()
     {
         byte[] data = ShortHeader(0xDEADBEEF, 0, 50, 2, 0, 4, 0, 0x12345678, 3.5f, 7);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -233,7 +233,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleWithNonZeroPadding_ReproducesInputBytes()
     {
         byte[] data = ShortHeader(0xDEADBEEF, 0, 50, 2, 0, 4, 0, 0x12345678, 3.5f, 7, padding: [0x00, 0x00, 0x64]);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -242,7 +242,7 @@ public class DestructibleAssetTests
     public void Read_ThenWrite_DestructibleWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. TssmData(), 0xFD, 0xFD, 0xFD, 0xFD];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -252,7 +252,7 @@ public class DestructibleAssetTests
     {
         byte[] data = TssmData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<DestructibleAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

@@ -25,7 +25,7 @@ public class DiscoFloorAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -33,7 +33,7 @@ public class DiscoFloorAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -286,7 +286,7 @@ public class DiscoFloorAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, IncrediblesSerializer.DefaultProfile);
+        var asset = Read(data, IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<DiscoFloorAsset>(asset);
         Assert.IsType<BaseAsset>(asset, exactMatch: false);

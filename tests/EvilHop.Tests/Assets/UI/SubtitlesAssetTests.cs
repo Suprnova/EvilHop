@@ -31,7 +31,7 @@ public class SubtitlesAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -39,7 +39,7 @@ public class SubtitlesAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -329,7 +329,7 @@ public class SubtitlesAssetTests
     [InlineData(GameVersion.Ratatouille)]
     public void Read_UnderUnsupportedGames_DegradesToGenericBaseAsset(GameVersion game)
     {
-        var profile = Serializer.DefaultProfileFor(game);
+        var profile = Serializer.DefaultProfileFor(game).OnGameCube();
         byte[] data =
         [
             .. Prefix(0),
@@ -346,7 +346,7 @@ public class SubtitlesAssetTests
     [Fact]
     public void Read_UnderROTU_ParsesCorrectly()
     {
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
         string text = "Destroy the robot!";
         byte[] pool = Encoding.Latin1.GetBytes(text + "\0");
         ushort numLines = 1;

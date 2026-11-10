@@ -100,12 +100,12 @@ public class TriggerAssetTests
 
     [Fact]
     public void Read_Trigger_ProducesTriggerAsset() =>
-        Assert.IsType<TriggerAsset>(Read(BoxData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<TriggerAsset>(Read(BoxData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Trigger_Box_PopulatesEveryField()
     {
-        var asset = (TriggerAsset)Read(BoxData(), BFBBSerializer.DefaultProfile);
+        var asset = (TriggerAsset)Read(BoxData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(Shape.Box, asset.Kind);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
@@ -119,7 +119,7 @@ public class TriggerAssetTests
     [Fact]
     public void Read_Trigger_Sphere_PopulatesCenterRadiusAndFlags()
     {
-        var asset = (TriggerAsset)Read(SphereData(), BFBBSerializer.DefaultProfile);
+        var asset = (TriggerAsset)Read(SphereData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(Shape.Sphere, asset.Kind);
         Assert.Equal(new Vector3(1, 2, 3), asset.TriggerPosition0);
@@ -141,7 +141,7 @@ public class TriggerAssetTests
     public void Read_ThenWrite_TriggerBoxUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BoxData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -155,7 +155,7 @@ public class TriggerAssetTests
             .. EntityPrefix(hasPadding: false, subtype: 1),
             .. TrigFields(new Vector3(1, 2, 3), new Vector3(5, 0, 0), Vector3.Zero, Vector3.Zero, UsualDirection, flags: 0),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -182,7 +182,7 @@ public class TriggerAssetTests
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3F, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x40, 0x40, // Params
         ];
 
-        var profile = N100FSerializer.DefaultProfile with
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with
         {
             Platform = Platform.PlayStation2,
             StreamDataHasPaddingField = false,
@@ -217,7 +217,7 @@ public class TriggerAssetTests
             .. TrigFields(new Vector3(1, 2, 3), new Vector3(4, 5, 6), new Vector3(7, 8, 9), new Vector3(10, 11, 12), UsualDirection, flags: 0),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false };
 
         var asset = (TriggerAsset)Read(data, profile);
 
@@ -235,7 +235,7 @@ public class TriggerAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -244,7 +244,7 @@ public class TriggerAssetTests
     public void Read_ThenWrite_TriggerWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BoxData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

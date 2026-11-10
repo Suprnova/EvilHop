@@ -100,7 +100,8 @@ instead of failing the whole archive to load.
 - **GameVersion** - the enum identifying which Heavy Iron Studios game an archive or profile
   targets. See [`GameVersion`](../src/EvilHop/Common/GameVersion.cs).
 - **Platform** - the enum identifying which console a build targets, which also determines its byte
-  order. See [`Platform`](../src/EvilHop/Common/Platform.cs).
+  order. A [`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs) states it or leaves it
+  null; the block layer never reads it. See [`Platform`](../src/EvilHop/Common/Platform.cs).
 - **BKDR hash** - the hashing algorithm EvilEngine uses to turn an asset's name into its `AssetId`.
   See [`BKDRHash`](../src/EvilHop/Common/BKDRHash.cs).
 - **EvilString** - the format's null-terminated, even-padded string encoding used throughout block

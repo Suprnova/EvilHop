@@ -32,7 +32,7 @@ public class ShrapnelAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, uint id = 0x12345678)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(id);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -40,7 +40,7 @@ public class ShrapnelAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -271,7 +271,7 @@ public class ShrapnelAssetTests
     {
         byte[] data = HeaderBytes(0, shrapnelId: 0x12345678);
 
-        var asset = Read(data, N100FSerializer.DefaultProfile, id: 0x12345678);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube(), id: 0x12345678);
 
         Assert.IsNotType<ShrapnelAsset>(asset, exactMatch: false);
     }
@@ -286,7 +286,7 @@ public class ShrapnelAssetTests
             .. FragBytes(ShrapnelAsset.FragmentKind.Explosion, 0x10101010, payload: new byte[48]),
         ];
 
-        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
+        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile.OnGameCube(), id: 0x12345678));
     }
 
     [Fact]
@@ -298,7 +298,7 @@ public class ShrapnelAssetTests
             .. FragBytes((ShrapnelAsset.FragmentKind)99, 0x10101010, payload: new byte[8]),
         ];
 
-        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
+        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile.OnGameCube(), id: 0x12345678));
     }
 
     [Theory]
@@ -326,7 +326,7 @@ public class ShrapnelAssetTests
     [InlineData(GameVersion.Ratatouille, ShrapnelAsset.FragmentKind.Goo, 0x88)]
     public void Read_ThenWrite_EachFragType_RoundTripsAccurately(GameVersion game, ShrapnelAsset.FragmentKind type, int totalSize)
     {
-        var profile = Serializer.DefaultProfileFor(game);
+        var profile = Serializer.DefaultProfileFor(game).OnGameCube();
         byte[] payload = new byte[totalSize - 24];
         for (int i = 0; i < payload.Length; i++)
             payload[i] = (byte)(i & 0xFF);
@@ -357,7 +357,7 @@ public class ShrapnelAssetTests
     [InlineData(9u, 0x60)]
     public void Read_ThenWrite_InactiveFragUnderTSSM_RoundTripsAccurately(uint markerId, int totalSize)
     {
-        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM);
+        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM).OnGameCube();
         byte[] payload = new byte[totalSize - 24];
         for (int i = 0; i < payload.Length; i++)
             payload[i] = (byte)(i & 0xFF);
@@ -387,7 +387,7 @@ public class ShrapnelAssetTests
             .. FragBytes(ShrapnelAsset.FragmentKind.Inactive, 0xDEADBEEF, payload: []),
         ];
 
-        Assert.Throws<InvalidDataException>(() => Read(data, Serializer.DefaultProfileFor(GameVersion.TSSM), id: 0x12345678));
+        Assert.Throws<InvalidDataException>(() => Read(data, Serializer.DefaultProfileFor(GameVersion.TSSM).OnGameCube(), id: 0x12345678));
     }
 
     [Fact]
@@ -400,7 +400,7 @@ public class ShrapnelAssetTests
             .. FragBytes(ShrapnelAsset.FragmentKind.Inactive, 6, payload: new byte[0x48 - 24]),
         ];
 
-        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile, id: 0x12345678));
+        Assert.Throws<InvalidDataException>(() => Read(data, BFBBSerializer.DefaultProfile.OnGameCube(), id: 0x12345678));
     }
 
     [Fact]
@@ -421,7 +421,7 @@ public class ShrapnelAssetTests
             .. FragBytes(ShrapnelAsset.FragmentKind.Distortion, 0x831684E8, lifetime: 1.0f, payload: new byte[0x5C - 24]),
         ];
 
-        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM);
+        var profile = Serializer.DefaultProfileFor(GameVersion.TSSM).OnGameCube();
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x4E11860F);
 
         Assert.Equal(7, asset.Frags.Count);
@@ -450,7 +450,7 @@ public class ShrapnelAssetTests
             .. HeaderBytes(1, shrapnelId: 0x55667788),
             .. FragBytes(type, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { ShrapnelHasExtendedFragFields = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { ShrapnelHasExtendedFragFields = false };
 
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
 
@@ -474,7 +474,7 @@ public class ShrapnelAssetTests
             .. HeaderBytes(1, shrapnelId: 0x55667788),
             .. FragBytes(ShrapnelAsset.FragmentKind.Projectile, 0x11223344, 0x22334455, 0x33445566, lifetime: 5.0f, delay: 0.5f, payload: payload),
         ];
-        var profile = BFBBSerializer.DefaultProfile with
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with
         {
             ShrapnelHasExtendedFragFields = false,
             ShrapnelProjectileHasIntermediateFields = true,
@@ -506,7 +506,7 @@ public class ShrapnelAssetTests
             .. FragBytes(ShrapnelAsset.FragmentKind.Projectile, 0x11223344, lifetime: 5.0f, payload: projectilePayload),
             .. FragBytes(ShrapnelAsset.FragmentKind.Sound, 0x22334455, lifetime: 2.25f, payload: soundPayload),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { ShrapnelSoundHasExtendedFields = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { ShrapnelSoundHasExtendedFields = false };
 
         var asset = (ShrapnelAsset)Read(data, profile, id: 0x55667788);
 

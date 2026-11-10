@@ -25,7 +25,7 @@ public class NavigationMeshAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -33,7 +33,7 @@ public class NavigationMeshAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -160,7 +160,7 @@ public class NavigationMeshAssetTests
     public void Read_ThenWrite_TwoSubMeshesUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = TwoSubMeshRatatouilleData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         var asset = (NavigationMeshAsset)Read(data, profile);
 
@@ -173,7 +173,7 @@ public class NavigationMeshAssetTests
 
     [Fact]
     public void Read_NavigationMesh_UnderBFBB_DegradesToGenericAsset() =>
-        Assert.IsNotType<NavigationMeshAsset>(Read(IncrediblesData(), BFBBSerializer.DefaultProfile), exactMatch: false);
+        Assert.IsNotType<NavigationMeshAsset>(Read(IncrediblesData(), BFBBSerializer.DefaultProfile.OnGameCube()), exactMatch: false);
 
     [Fact]
     public void SubMeshCount_AfterAddingSubMesh_FollowsSubMeshes()
@@ -203,7 +203,7 @@ public class NavigationMeshAssetTests
             0x00, 0x00, 0x00, 0x00, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x02, 0x03, 0x00,
             0xFF, 0x00, 0x00, 0x00,
         ];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         var asset = (NavigationMeshAsset)Read(data, profile);
 

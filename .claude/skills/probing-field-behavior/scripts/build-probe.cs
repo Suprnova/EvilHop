@@ -93,15 +93,7 @@ Console.WriteLine($"=== {setup.Game} -> {files}\\{setup.SlotDir}\\{setup.Slot.To
 
 // ===================== scaffolding =====================
 
-FormatProfile DefaultProfile(GameVersion game) => game switch
-{
-    GameVersion.N100F => N100FSerializer.DefaultProfile,
-    GameVersion.BFBB => BFBBSerializer.DefaultProfile,
-    GameVersion.TSSM => TSSMSerializer.DefaultProfile,
-    GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
-    GameVersion.ROTU => ROTUSerializer.DefaultProfile,
-    _ => RatatouilleSerializer.DefaultProfile
-};
+FormatProfile DefaultProfile(GameVersion game) => Serializer.Create(game, Platform.GameCube).Profile;
 
 /// <summary>
 /// Opens an archive under <paramref name="setup"/>'s game profile, with padding handling for community archives.

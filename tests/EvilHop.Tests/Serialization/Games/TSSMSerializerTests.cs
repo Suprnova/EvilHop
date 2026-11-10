@@ -17,7 +17,7 @@ public class TSSMSerializerTests : SerializerContractTests
     [Fact]
     public void DefaultProfile_IsTSSMWithLanguageRegionPlatformOrder()
     {
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(GameVersion.TSSM, profile.Game);
         Assert.Equal(PlatformFieldOrder.LanguageRegion, profile.PlatformFieldOrder);
@@ -30,17 +30,18 @@ public class TSSMSerializerTests : SerializerContractTests
         var serializer = new TSSMSerializer();
 
         Assert.Equal(TSSMSerializer.DefaultProfile, serializer.Profile);
+        Assert.Null(serializer.Profile.Platform);
     }
 
     [Fact]
     public void Constructor_WithOverride_KeepsOtherSwitches()
     {
-        var profile = TSSMSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
 
         var serializer = new TSSMSerializer(profile);
 
         Assert.False(serializer.Profile.StreamDataHasPaddingField);
-        Assert.Equal(TSSMSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
+        Assert.Equal(TSSMSerializer.DefaultProfile.OnGameCube().PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 
     [Fact]

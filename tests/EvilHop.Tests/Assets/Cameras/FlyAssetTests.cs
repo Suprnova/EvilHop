@@ -24,7 +24,7 @@ public class FlyAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, Serializer? serializer = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         serializer ??= new BFBBSerializer();
         var (header, debug) = HeaderFor(serializer);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
@@ -33,7 +33,7 @@ public class FlyAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -128,7 +128,7 @@ public class FlyAssetTests
     [Fact]
     public void Read_Fly_UnderROTU_DegradesToGenericAsset()
     {
-        var asset = Read(Key1, ROTUSerializer.DefaultProfile, new ROTUSerializer());
+        var asset = Read(Key1, ROTUSerializer.DefaultProfile.OnGameCube(), new ROTUSerializer());
 
         Assert.IsNotType<FlyAsset>(asset);
         Assert.Equal(Key1, asset.GetUnparsedTail().ToArray());
@@ -149,6 +149,6 @@ public class FlyAssetTests
             FocalLength = 26.75f,
         });
 
-        Assert.Equal(Key1, Write(asset, ROTUSerializer.DefaultProfile));
+        Assert.Equal(Key1, Write(asset, ROTUSerializer.DefaultProfile.OnGameCube()));
     }
 }

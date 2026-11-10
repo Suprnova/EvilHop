@@ -25,14 +25,14 @@ public class CounterAssetTests
     {
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), Endianness.Big);
-        return (CounterAsset)AssetCodecs.Read(reader, header, debug, N100FSerializer.DefaultProfile);
+        return (CounterAsset)AssetCodecs.Read(reader, header, debug, N100FSerializer.DefaultProfile.OnGameCube());
     }
 
     private static byte[] Write(CounterAsset asset)
     {
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
-            AssetCodecs.Write(asset, writer, N100FSerializer.DefaultProfile);
+            AssetCodecs.Write(asset, writer, N100FSerializer.DefaultProfile.OnGameCube());
         return stream.ToArray();
     }
 

@@ -31,7 +31,7 @@ public class SoundGroupAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -39,7 +39,7 @@ public class SoundGroupAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -493,7 +493,7 @@ public class SoundGroupAssetTests
     {
         byte[] data = Data();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<SoundGroupAsset>(asset, exactMatch: false);
     }
@@ -503,7 +503,7 @@ public class SoundGroupAssetTests
     {
         byte[] data = Data();
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<SoundGroupAsset>(asset, exactMatch: false);
     }
@@ -517,10 +517,10 @@ public class SoundGroupAssetTests
     {
         var profile = game switch
         {
-            GameVersion.TSSM => TSSMSerializer.DefaultProfile,
-            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
-            GameVersion.ROTU => ROTUSerializer.DefaultProfile,
-            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
+            GameVersion.TSSM => TSSMSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.ROTU => ROTUSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 

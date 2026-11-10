@@ -41,10 +41,11 @@ Reading an archive, listing its pickups, and doubling the Scooby Snack count of 
 ```csharp
 using EvilHop;
 using EvilHop.Assets;
+using EvilHop.Common;
 using EvilHop.Serialization;
 
 using var file = File.OpenRead("hb01.HIP");
-var archive = Archive.Load(file, new BFBBSerializer());
+var archive = Archive.Load(file, Serializer.Create(GameVersion.BFBB, Platform.GameCube));
 
 using var session = archive.OpenAssets();
 

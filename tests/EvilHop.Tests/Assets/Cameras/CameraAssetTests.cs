@@ -24,7 +24,7 @@ public class CameraAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class CameraAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -294,7 +294,7 @@ public class CameraAssetTests
     public void Read_ThenWrite_CameraUnderN100F_ReproducesInputBytes(Func<byte, byte[]> data)
     {
         byte[] bytes = [.. data(1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(bytes, Write(Read(bytes, profile), profile));
     }
@@ -316,7 +316,7 @@ public class CameraAssetTests
     [Fact]
     public void Read_CameraWithoutExtendedFields_ReadsShorterLayout()
     {
-        var profile = N100FSerializer.DefaultProfile with { CameraHasExtendedFields = false };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { CameraHasExtendedFields = false };
 
         var asset = Assert.IsType<FollowCameraAsset>(Read(PrototypeFollowData(), profile));
 
@@ -331,7 +331,7 @@ public class CameraAssetTests
     public void Read_ThenWrite_CameraWithoutExtendedFields_ReproducesInputBytes()
     {
         byte[] data = PrototypeFollowData();
-        var profile = N100FSerializer.DefaultProfile with { CameraHasExtendedFields = false };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { CameraHasExtendedFields = false };
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

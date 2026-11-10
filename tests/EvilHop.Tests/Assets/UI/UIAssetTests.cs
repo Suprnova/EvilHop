@@ -99,12 +99,12 @@ public class UIAssetTests
 
     [Fact]
     public void Read_UI_ProducesUIAsset() =>
-        Assert.IsType<UIAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<UIAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_UI_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (UIAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (UIAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(UIFlags.RendersDirectly | UIFlags.ShowOnFocus | UIFlags.HideOnUnfocus, asset.Flags);
         Assert.Equal((ushort)100, asset.Width);
@@ -121,7 +121,7 @@ public class UIAssetTests
     [Fact]
     public void Read_UI_UnderN100F_PopulatesEveryField()
     {
-        var asset = (UIAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (UIAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(UIFlags.RendersDirectly | UIFlags.ShowOnFocus | UIFlags.HideOnUnfocus, asset.Flags);
         Assert.Equal((ushort)100, asset.Width);
@@ -138,7 +138,7 @@ public class UIAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -147,7 +147,7 @@ public class UIAssetTests
     public void Read_ThenWrite_UIUnderN100F_ReproducesInputBytes()
     {
         byte[] data = [.. N100FData(linkCount: 1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -156,7 +156,7 @@ public class UIAssetTests
     public void Read_ThenWrite_UIWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -165,7 +165,7 @@ public class UIAssetTests
     public void Read_UI_UnderTSSM_DegradesToGenericEntityAsset()
     {
         byte[] data = N100FData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 

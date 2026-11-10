@@ -81,12 +81,12 @@ public class UIMotionAssetTests
 
     [Fact]
     public void Read_UIMotion_ProducesUIMotionAsset() =>
-        Assert.IsType<UIMotionAsset>(Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile));
+        Assert.IsType<UIMotionAsset>(Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_UIMotion_PopulatesHeaderFields()
     {
-        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
+        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(1.0f, asset.TotalTime);
         Assert.Equal(0.0f, asset.LoopTime);
@@ -97,7 +97,7 @@ public class UIMotionAssetTests
     [Fact]
     public void Read_UIMotion_PopulatesMoveCommand()
     {
-        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
+        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile.OnGameCube());
         var command = Assert.IsType<Move>(asset.Commands[0]);
 
         Assert.Equal(Command.Move, command.Type);
@@ -117,7 +117,7 @@ public class UIMotionAssetTests
             .. ColorCommandBytes(enabled: true, sr: 0xFF, sg: 0x80, sb: 0x00, er: 0x00, eg: 0x80, eb: 0xFF),
         ];
 
-        var asset = (UIMotionAsset)Read(data, TSSMSerializer.DefaultProfile);
+        var asset = (UIMotionAsset)Read(data, TSSMSerializer.DefaultProfile.OnGameCube());
         var command = Assert.IsType<Color>(asset.Commands[0]);
 
         Assert.Equal(new Rgb(0xFF / 255f, 0x80 / 255f, 0x00 / 255f), command.StartColor);
@@ -128,7 +128,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionWithOneCommand_ReproducesInputBytes()
     {
         byte[] data = OneMoveCommandData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -172,7 +172,7 @@ public class UIMotionAssetTests
                 .. F32(0.5f), .. F32(-0.5f),
             ],
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = (UIMotionAsset)Read(data, profile);
         Assert.Equal(8, asset.Commands.Count);
@@ -193,7 +193,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionWithNoCommands_ReproducesInputBytes()
     {
         byte[] data = Prefix(0, inFlag: 1, commandsSize: 0, totalTime: 0.0f, loopTime: 0.0f);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -202,7 +202,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. OneMoveCommandData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -211,7 +211,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionUnderIncredibles_ReproducesInputBytes()
     {
         byte[] data = OneMoveCommandData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -220,7 +220,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionUnderROTU_ReproducesInputBytes()
     {
         byte[] data = OneMoveCommandData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -229,7 +229,7 @@ public class UIMotionAssetTests
     public void Read_ThenWrite_UIMotionUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = OneMoveCommandData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -238,7 +238,7 @@ public class UIMotionAssetTests
     public void Read_UIMotion_UnderBFBB_DegradesToGenericBaseAsset()
     {
         byte[] data = OneMoveCommandData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 
@@ -249,7 +249,7 @@ public class UIMotionAssetTests
     [Fact]
     public void CommandCount_AfterRead_DerivesFromCommandsCollection()
     {
-        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
+        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         asset.Commands.Add(new Move());
 
@@ -259,7 +259,7 @@ public class UIMotionAssetTests
     [Fact]
     public void CommandsSize_AfterRead_DerivesFromCommandsCollection()
     {
-        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile);
+        var asset = (UIMotionAsset)Read(OneMoveCommandData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         asset.Commands.Add(new Scale());
 

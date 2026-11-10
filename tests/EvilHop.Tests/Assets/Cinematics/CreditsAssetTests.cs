@@ -28,7 +28,7 @@ public class CreditsAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -36,7 +36,7 @@ public class CreditsAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -364,7 +364,7 @@ public class CreditsAssetTests
     {
         byte[] data = HeaderBytes(0xBEEEEEEF, 256, 0, 1, 148.5f, 24);
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<CreditsAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

@@ -26,7 +26,7 @@ public class ParticleEmitterAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -34,7 +34,7 @@ public class ParticleEmitterAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -178,7 +178,7 @@ public class ParticleEmitterAssetTests
             sizeBirth: 1.0f, sizeBirthVariation: 0.1f, sizeDeath: 0.5f, life: 2.0f, lifeVariation: 0.2f,
             cullMode: 3, cullDistSqr: 100f, maxEmit: 20);
 
-        var asset = (ParticleEmitterAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (ParticleEmitterAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
         var shape = Assert.IsType<Circle>(asset.Shape);
 
         Assert.Equal(2.5f, shape.Radius);
@@ -261,7 +261,7 @@ public class ParticleEmitterAssetTests
                 1.0f, 0.1f, 0.5f, 2.0f, 0.2f, 3, 100f, 20, linkCount: 1),
             .. LinkBytes(1, 2, 0x55667788),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -279,7 +279,7 @@ public class ParticleEmitterAssetTests
     {
         byte[] data = BFBBData(0, 0, 0, [], 0, default, default, 0, 3, 0);
 
-        var asset = Read(data, IncrediblesSerializer.DefaultProfile);
+        var asset = Read(data, IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<ParticleEmitterAsset>(asset);
     }

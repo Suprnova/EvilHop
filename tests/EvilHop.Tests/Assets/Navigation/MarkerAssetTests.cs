@@ -24,7 +24,7 @@ public class MarkerAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class MarkerAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -79,7 +79,7 @@ public class MarkerAssetTests
     {
         byte[] data = PositionBytes(1, 2, 3);
 
-        var asset = Read(data, RatatouilleSerializer.DefaultProfile);
+        var asset = Read(data, RatatouilleSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<MarkerAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());
@@ -90,6 +90,6 @@ public class MarkerAssetTests
     {
         var asset = new MarkerAsset { Type = AssetType.Marker, Position = new Vector3(1, 2, 3) };
 
-        Assert.Equal(PositionBytes(1, 2, 3), Write(asset, RatatouilleSerializer.DefaultProfile));
+        Assert.Equal(PositionBytes(1, 2, 3), Write(asset, RatatouilleSerializer.DefaultProfile.OnGameCube()));
     }
 }

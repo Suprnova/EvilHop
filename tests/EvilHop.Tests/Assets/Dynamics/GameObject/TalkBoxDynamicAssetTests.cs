@@ -24,7 +24,7 @@ public class TalkBoxDynamicAssetTests
 
     private static DynamicAsset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), Endianness.Big);
         return (DynamicAsset)AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class TalkBoxDynamicAssetTests
 
     private static byte[] Write(DynamicAsset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -87,7 +87,7 @@ public class TalkBoxDynamicAssetTests
     [InlineData(GameVersion.TSSM)]
     [InlineData(GameVersion.Incredibles)]
     public void Read_SupportedGame_ProducesTalkBoxDynamicAsset(GameVersion game) =>
-        Assert.IsType<TalkBoxDynamicAsset>(Read([.. Prefix(0), .. Body], BFBBSerializer.DefaultProfile with { Game = game }));
+        Assert.IsType<TalkBoxDynamicAsset>(Read([.. Prefix(0), .. Body], BFBBSerializer.DefaultProfile.OnGameCube() with { Game = game }));
 
     [Fact]
     public void Read_UnsupportedVersion_ProducesGenericDynamicAsset() =>

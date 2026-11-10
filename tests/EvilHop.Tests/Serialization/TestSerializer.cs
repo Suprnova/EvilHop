@@ -14,7 +14,7 @@ namespace EvilHop.Tests.Serialization;
 /// </summary>
 internal sealed class TestSerializer : Serializer
 {
-    public TestSerializer() : base(N100FSerializer.DefaultProfile) { }
+    public TestSerializer() : base(N100FSerializer.DefaultProfile.OnGameCube()) { }
 
     public TestSerializer(FormatProfile profile) : base(profile) { }
 

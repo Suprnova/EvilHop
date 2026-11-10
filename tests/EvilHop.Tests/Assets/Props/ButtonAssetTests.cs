@@ -23,7 +23,7 @@ public class ButtonAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class ButtonAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -163,7 +163,7 @@ public class ButtonAssetTests
     public void Read_ThenWrite_ButtonUnderTSSM_DropsPaddingAndUsesLargerMotionBlock_ReproducesInputBytes()
     {
         byte[] data = Data(kind: 1, hasPadding: false, blockSize: 0x3C);
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = (ButtonAsset)Read(data, profile);
 
@@ -187,7 +187,7 @@ public class ButtonAssetTests
     [Fact]
     public void Read_ButtonUnderN100F_PopulatesFields()
     {
-        var asset = (ButtonAsset)Read(N100FData(activation: 2, autoReset: 1, springButtBounce: 1, buttonFlags: 1), N100FSerializer.DefaultProfile);
+        var asset = (ButtonAsset)Read(N100FData(activation: 2, autoReset: 1, springButtBounce: 1, buttonFlags: 1), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(ButtonAsset.ActivationMethod.Headbutt, asset.Activation);
         Assert.Equal(0, asset.Physical.InitialState);
@@ -208,7 +208,7 @@ public class ButtonAssetTests
             .. N100FData(activation: activation, linkCount: 1),
             .. LinkBytes(0x37, 0x12, 0x55667788),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -261,7 +261,7 @@ public class ButtonAssetTests
             0x00, 0x37, 0x00, 0x12, 0x14, 0x6E, 0xDF, 0x34, .. new byte[24],
             0x00, 0x37, 0x00, 0x12, 0xC5, 0x21, 0x1D, 0x30, .. new byte[24],
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = (ButtonAsset)Read(data, profile);
 

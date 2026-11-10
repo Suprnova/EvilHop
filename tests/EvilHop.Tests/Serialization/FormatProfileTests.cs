@@ -29,13 +29,13 @@ public class FormatProfileTests
     [Fact]
     public void EntityHasPadding_IsSetOnlyByBFBB()
     {
-        Assert.True(BFBBSerializer.DefaultProfile.EntityHasPadding);
+        Assert.True(BFBBSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
 
-        Assert.False(N100FSerializer.DefaultProfile.EntityHasPadding);
-        Assert.False(TSSMSerializer.DefaultProfile.EntityHasPadding);
-        Assert.False(IncrediblesSerializer.DefaultProfile.EntityHasPadding);
-        Assert.False(ROTUSerializer.DefaultProfile.EntityHasPadding);
-        Assert.False(RatatouilleSerializer.DefaultProfile.EntityHasPadding);
+        Assert.False(N100FSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
+        Assert.False(TSSMSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
+        Assert.False(IncrediblesSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
+        Assert.False(ROTUSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
+        Assert.False(RatatouilleSerializer.DefaultProfile.OnGameCube().EntityHasPadding);
     }
 
     [Fact]
@@ -54,5 +54,13 @@ public class FormatProfileTests
         var profile = new FormatProfile(GameVersion.N100F, platform, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
 
         Assert.Equal(Endianness.Little, profile.Endianness);
+    }
+
+    [Fact]
+    public void Endianness_Throws_WhenNoPlatformIsStated()
+    {
+        var profile = new FormatProfile(GameVersion.N100F, null, PlatformFieldOrder.PlatformNameRegionLanguage, StreamDataHasPaddingField: true);
+
+        Assert.Throws<InvalidOperationException>(() => profile.Endianness);
     }
 }

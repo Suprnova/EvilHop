@@ -13,9 +13,10 @@ namespace EvilHop.Serialization;
 /// The game this profile belongs to.
 /// </param>
 /// <param name="Platform">
-/// The console this build targets. Every archive observed agrees with its console's hardware byte
-/// order and disc sector size, so <see cref="Platform"/> alone determines both rather than letting
-/// them vary independently.
+/// The console this build targets, or <see langword="null"/> when none is stated. Every archive
+/// observed agrees with its console's hardware byte order and disc sector size, so
+/// <see cref="Platform"/> alone determines both rather than letting them vary independently. The
+/// block layer never reads it; the asset layer needs it, and refuses to open assets without it.
 /// </param>
 /// <param name="PlatformFieldOrder">
 /// Which fields a <see cref="PackagePlatform"/>'s strings maps to.
@@ -146,11 +147,11 @@ namespace EvilHop.Serialization;
 /// </param>
 /// <remarks>
 /// Constructed exactly once per game as a <c>DefaultProfile</c> and adjusted everywhere else with
-/// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> targets <see cref="Platform.GameCube"/>.
+/// the <see langword="with"/> keyword. Every <c>DefaultProfile</c> states no platform.
 /// </remarks>
 public sealed record FormatProfile(
     GameVersion Game,
-    Platform Platform,
+    Platform? Platform,
     PlatformFieldOrder PlatformFieldOrder,
     bool StreamDataHasPaddingField,
     bool EntityHasPadding = false,
@@ -175,7 +176,13 @@ public sealed record FormatProfile(
     /// The byte order of an asset's own fields, as opposed to the block envelope's, which is always
     /// big-endian regardless of platform.
     /// </summary>
-    public Endianness Endianness => Platform == Platform.GameCube ? Endianness.Big : Endianness.Little;
+    /// <exception cref="InvalidOperationException">Thrown when <see cref="Platform"/> is <see langword="null"/>.</exception>
+    public Endianness Endianness => Platform switch
+    {
+        Common.Platform.GameCube => Endianness.Big,
+        null => throw new InvalidOperationException($"A {nameof(FormatProfile)} with no {nameof(Platform)} has no asset byte order."),
+        _ => Endianness.Little
+    };
 }
 
 /// <summary>

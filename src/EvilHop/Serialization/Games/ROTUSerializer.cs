@@ -8,15 +8,15 @@ namespace EvilHop.Serialization;
 /// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class ROTUSerializer(FormatProfile profile) : Serializer(profile)
 {
-    /// <summary>The profile every ROTU build reads correctly under.</summary>
-    public static FormatProfile DefaultProfile { get; } = new(
+    /// <summary>The profile every ROTU build reads correctly under once a platform is stated.</summary>
+    internal static FormatProfile DefaultProfile { get; } = new(
         GameVersion.ROTU,
-        Platform.GameCube,
+        null,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ROTUSerializer"/> with <see cref="DefaultProfile"/>.
+    /// Initializes a block-only instance of <see cref="ROTUSerializer"/>: no platform is stated, so assets cannot be opened.
     /// </summary>
     public ROTUSerializer() : this(DefaultProfile) { }
 }

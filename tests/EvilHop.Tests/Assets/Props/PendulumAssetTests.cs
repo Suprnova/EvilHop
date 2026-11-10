@@ -23,7 +23,7 @@ public class PendulumAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class PendulumAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -132,7 +132,7 @@ public class PendulumAssetTests
             .. Data(linkCount: 1, blockSize: 0x3C),
             .. LinkBytes(1, 2, 0x55667788),
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = (PendulumAsset)Read(data, profile);
         Assert.Equal(8.0f, asset.Motion.Length);
@@ -173,7 +173,7 @@ public class PendulumAssetTests
             .. new byte[4],  // ParamWidgetAssetId
             .. new byte[4],  // CheckAssetId
         ];
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
 
         var asset = (PendulumAsset)Read(data, profile);
 

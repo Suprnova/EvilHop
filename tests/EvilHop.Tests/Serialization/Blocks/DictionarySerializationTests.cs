@@ -279,7 +279,7 @@ public class DictionarySerializationTests
     [InlineData(9u, LayerType.CutsceneTable)]
     public void ReadBlock_Lhdr_N100F_TranslatesShiftedRawValue(uint raw, LayerType expected)
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube());
         var content = BlockBytes.Content(w =>
         {
             w.Write((int)raw);
@@ -296,7 +296,7 @@ public class DictionarySerializationTests
     [Fact]
     public void ReadBlock_Lhdr_Bfbb_TranslatesRawValueToJSPInfo()
     {
-        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile);
+        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile.OnGameCube());
         var content = BlockBytes.Content(w =>
         {
             w.Write(10);
@@ -313,7 +313,7 @@ public class DictionarySerializationTests
     [Fact]
     public void ReadBlock_Lhdr_ModernGame_UsesLayerTypeNumberingDirectly()
     {
-        var serializer = new TestSerializer(TSSMSerializer.DefaultProfile);
+        var serializer = new TestSerializer(TSSMSerializer.DefaultProfile.OnGameCube());
         var content = BlockBytes.Content(w =>
         {
             w.Write((uint)LayerType.TextureStream);
@@ -330,7 +330,7 @@ public class DictionarySerializationTests
     [Fact]
     public void WriteBlock_Lhdr_N100F_WritesShiftedRawValueForBsp()
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube());
         var debug = serializer.CreateBlock<LayerDebug>();
         var block = serializer.CreateBlock<LayerHeader>();
         block.Type = LayerType.BSP;
@@ -347,7 +347,7 @@ public class DictionarySerializationTests
     [Fact]
     public void WriteBlock_Lhdr_Bfbb_WritesJSPInfoAtRawTen()
     {
-        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile);
+        var serializer = new TestSerializer(BFBBSerializer.DefaultProfile.OnGameCube());
         var debug = serializer.CreateBlock<LayerDebug>();
         var block = serializer.CreateBlock<LayerHeader>();
         block.Type = LayerType.JSPInfo;
@@ -364,7 +364,7 @@ public class DictionarySerializationTests
     [Fact]
     public void WriteBlock_Lhdr_N100F_TypeNotValidForGame_FallsBackToLayerTypeNumericValue()
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile);
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube());
         var debug = serializer.CreateBlock<LayerDebug>();
         var block = serializer.CreateBlock<LayerHeader>();
         block.Type = LayerType.TextureStream; // N100F has no TextureStream

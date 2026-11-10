@@ -25,7 +25,7 @@ public class AnimationAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -33,7 +33,7 @@ public class AnimationAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -173,7 +173,7 @@ public class AnimationAssetTests
     public void Read_ThenWrite_AnimationUnderN100F_ReproducesInputBytes()
     {
         byte[] data = OneBoneOneFrameData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -190,7 +190,7 @@ public class AnimationAssetTests
             .. F32(0.0f), .. F32(0.5f),
             .. U16(0),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         var asset = (AnimationAsset)Read(data, profile);
 
@@ -203,7 +203,7 @@ public class AnimationAssetTests
     {
         byte[] data = OneBoneOneFrameData();
 
-        var asset = Read(data, ROTUSerializer.DefaultProfile);
+        var asset = Read(data, ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<AnimationAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

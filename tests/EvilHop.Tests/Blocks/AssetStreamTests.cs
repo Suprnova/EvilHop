@@ -95,7 +95,7 @@ public class AssetStreamTests
     [Fact]
     public void ReadBlock_Dpak_WithoutPaddingField_ReadsAllContentAsData()
     {
-        var profile = N100FSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
         byte[] content = [0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02];
         using var reader = BlockBytes.Reader("DPAK", content);
 
@@ -109,7 +109,7 @@ public class AssetStreamTests
     [Fact]
     public void ReadBlock_Dpak_WithoutPaddingField_NoAssets_StaysEmpty()
     {
-        var profile = N100FSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
         using var reader = BlockBytes.Reader("DPAK", []);
 
         var data = (StreamData)new TestSerializer(profile).ReadBlockPublic(reader);

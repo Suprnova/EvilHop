@@ -107,12 +107,12 @@ public class DestructibleObjectAssetTests
 
     [Fact]
     public void Read_DestructibleObject_ProducesDestructibleObjectAsset() =>
-        Assert.IsType<DestructibleObjectAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<DestructibleObjectAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_DestructibleObject_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (DestructibleObjectAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (DestructibleObjectAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(1.5f, asset.AnimationSpeed);
         Assert.Equal(2u, asset.InitialAnimationState);
@@ -134,7 +134,7 @@ public class DestructibleObjectAssetTests
     [Fact]
     public void Read_DestructibleObject_UnderN100F_LeavesBfbbOnlyFieldsAtDefault()
     {
-        var asset = (DestructibleObjectAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (DestructibleObjectAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(1.5f, asset.AnimationSpeed);
         Assert.Equal(1u, asset.Health);
@@ -156,7 +156,7 @@ public class DestructibleObjectAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -169,7 +169,7 @@ public class DestructibleObjectAssetTests
             .. N100FData(linkCount: 1),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -190,7 +190,7 @@ public class DestructibleObjectAssetTests
             .. BitConverter.GetBytes(0x33333333u).Reverse(), // DestroySfxId
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false, DestructibleObjectHasSwapEffects = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false, DestructibleObjectHasSwapEffects = false };
 
         var asset = (DestructibleObjectAsset)Read(data, profile);
 
@@ -207,7 +207,7 @@ public class DestructibleObjectAssetTests
     public void Read_ThenWrite_DestructibleObjectWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

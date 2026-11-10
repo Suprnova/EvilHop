@@ -82,12 +82,12 @@ public class CutsceneAssetTests
 
     [Fact]
     public void Read_Cutscene_ProducesCutsceneAsset() =>
-        Assert.IsType<CutsceneAsset>(Read(N100FData(), N100FSerializer.DefaultProfile, new N100FSerializer()));
+        Assert.IsType<CutsceneAsset>(Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer()));
 
     [Fact]
     public void Read_Cutscene_UnderN100F_PopulatesHeaderAndData()
     {
-        var asset = (CutsceneAsset)Read(N100FData(), N100FSerializer.DefaultProfile, new N100FSerializer());
+        var asset = (CutsceneAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer());
 
         Assert.Equal(new AssetId(0x1234), asset.Physical.AssetId);
         Assert.Equal(1u, asset.Physical.NumData);
@@ -106,7 +106,7 @@ public class CutsceneAssetTests
     public void Read_ThenWrite_Cutscene_UnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -123,7 +123,7 @@ public class CutsceneAssetTests
             .. FixedString(string.Empty, 16),
         ];
 
-        var asset = (CutsceneAsset)Read(data, N100FSerializer.DefaultProfile, new N100FSerializer());
+        var asset = (CutsceneAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer());
 
         Assert.Equal("B3_Ending_German", asset.SoundLeft);
     }
@@ -137,7 +137,7 @@ public class CutsceneAssetTests
             .. System.Text.Encoding.ASCII.GetBytes("B3_Ending_German"),
             .. FixedString(string.Empty, 16),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -146,7 +146,7 @@ public class CutsceneAssetTests
     public void Read_ThenWrite_CutsceneWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = N100FData([0xDE, 0xAD, 0xBE, 0xEF]);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -156,7 +156,7 @@ public class CutsceneAssetTests
     {
         byte[] data = N100FData();
 
-        var asset = Read(data, RatatouilleSerializer.DefaultProfile, new RatatouilleSerializer());
+        var asset = Read(data, RatatouilleSerializer.DefaultProfile.OnGameCube(), new RatatouilleSerializer());
 
         Assert.IsNotType<CutsceneAsset>(asset);
     }
@@ -190,7 +190,7 @@ public class CutsceneAssetTests
     [Fact]
     public void Read_Cutscene_UnderTSSM_DerivesTrackLengthAndPopulatesAudioTracks()
     {
-        var asset = (CutsceneAsset)Read(TSSMData(), TSSMSerializer.DefaultProfile, new TSSMSerializer());
+        var asset = (CutsceneAsset)Read(TSSMData(), TSSMSerializer.DefaultProfile.OnGameCube(), new TSSMSerializer());
 
         Assert.Equal(32, asset.AudioTracks.Count);
         Assert.Equal(new AssetId(0x11111111), asset.AudioTracks[0].LeftSoundId);
@@ -204,7 +204,7 @@ public class CutsceneAssetTests
     public void Read_ThenWrite_Cutscene_UnderTSSM_ReproducesInputBytes()
     {
         byte[] data = TSSMData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new TSSMSerializer()), profile));
     }

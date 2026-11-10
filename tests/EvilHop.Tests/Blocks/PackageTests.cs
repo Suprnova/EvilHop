@@ -161,7 +161,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Plat_PlatformNameRegionLanguage_ReadsBfbbLayout()
     {
-        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
         var content = BlockBytes.Content(w =>
         {
             w.WriteEvilString("GC");
@@ -184,7 +184,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Plat_LanguageRegion_ReadsTssmLayout()
     {
-        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.LanguageRegion };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { PlatformFieldOrder = PlatformFieldOrder.LanguageRegion };
         var content = BlockBytes.Content(w =>
         {
             w.WriteEvilString("GC");
@@ -206,7 +206,7 @@ public class PackageTests
     [Fact]
     public void ReadBlock_Plat_ShortContent_LeavesTrailingFieldsUnset()
     {
-        var profile = N100FSerializer.DefaultProfile with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage };
         var content = BlockBytes.Content(w =>
         {
             w.WriteEvilString("GC");

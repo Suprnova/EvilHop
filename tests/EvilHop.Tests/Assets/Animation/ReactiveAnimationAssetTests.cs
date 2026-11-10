@@ -24,7 +24,7 @@ public class ReactiveAnimationAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class ReactiveAnimationAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -159,7 +159,7 @@ public class ReactiveAnimationAssetTests
     {
         byte[] data = [.. Prefix(), .. VersionAndRowCount(5, 0)];
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<ReactiveAnimationAsset>(asset);
     }
@@ -173,7 +173,7 @@ public class ReactiveAnimationAssetTests
             .. VersionAndRowCount(5, 1),
             .. Row(0x11111111, 0x22222222, 10.0f, 0x33333333, 0x44444444, 0x55555555, 0, 0, 0, 0, 0, 10.0f, 0.3f, 1.0f, 1.5f),
         ];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

@@ -22,7 +22,7 @@ public class VillainAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var serializer = new BFBBSerializer(profile);
         var (header, debug) = HeaderFor(serializer);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
@@ -31,7 +31,7 @@ public class VillainAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -142,7 +142,7 @@ public class VillainAssetTests
     [Fact]
     public void Read_Villain_UnderIncredibles_PopulatesIncrediblesFields()
     {
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
         var asset = (VillainAsset)Read(IncrediblesData(), profile);
 
         Assert.Equal(0x00000001, asset.NpcFlags);
@@ -164,7 +164,7 @@ public class VillainAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -177,7 +177,7 @@ public class VillainAssetTests
             .. IncrediblesData(linkCount: 1),
             .. LinkBytes(5, 6, 0xDEADBEEF),
         ];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -198,7 +198,7 @@ public class VillainAssetTests
             .. U32(0x33333333),     // MovePointId
             .. U32(0x44444444),     // TaskWidgetPrimeId
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false, VillainHasTaskWidgetSecondId = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false, VillainHasTaskWidgetSecondId = false };
 
         var asset = (VillainAsset)Read(data, profile);
 
@@ -211,7 +211,7 @@ public class VillainAssetTests
     public void Read_ThenWrite_VillainWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -220,7 +220,7 @@ public class VillainAssetTests
     public void Read_Villain_UnderTSSM_DegradesToGenericEntityAsset()
     {
         byte[] data = BfbbData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 
@@ -232,7 +232,7 @@ public class VillainAssetTests
     public void Read_Villain_UnderN100F_DegradesToGenericEntityAsset()
     {
         byte[] data = BfbbData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 
@@ -243,7 +243,7 @@ public class VillainAssetTests
     [Fact]
     public void Read_ThenWrite_VillainUnderXbox_LittleEndian_ReproducesInputBytes()
     {
-        var profile = BFBBSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         // Re-encode the data in little-endian for Xbox
         byte[] data =
         [
@@ -326,7 +326,7 @@ public class VillainAssetTests
             .. LinkBytes(10, 20, 0xAABBCCDD),
             .. LinkBytes(30, 40, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         var asset = (VillainAsset)Read(data, profile);
 

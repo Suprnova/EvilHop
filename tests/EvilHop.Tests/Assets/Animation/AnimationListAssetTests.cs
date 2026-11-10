@@ -24,7 +24,7 @@ public class AnimationListAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class AnimationListAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -96,7 +96,7 @@ public class AnimationListAssetTests
     public void Read_AnimationList_UnderROTU_PopulatesStateHashesAndHasPhysics()
     {
         byte[] data = [.. Ids(0x11111111), .. StateHashesAndPhysics(0xAAAAAAAA, 0xBBBBBBBB)];
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         var asset = (AnimationListAsset)Read(data, profile);
 
@@ -110,7 +110,7 @@ public class AnimationListAssetTests
     public void Read_ThenWrite_AnimationListUnderROTU_ReproducesInputBytes()
     {
         byte[] data = [.. Ids(0x11111111, 0x22222222), .. StateHashesAndPhysics(0xAAAAAAAA, 0xBBBBBBBB)];
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -119,7 +119,7 @@ public class AnimationListAssetTests
     public void Read_ThenWrite_AnimationListUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = [.. Ids(0x11111111), .. StateHashesAndPhysics(0xAAAAAAAA)];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

@@ -23,7 +23,7 @@ public class CollisionTableAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class CollisionTableAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -99,7 +99,7 @@ public class CollisionTableAssetTests
     {
         byte[] data = TableBytes(EntryBytes(1, 2, 3));
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<CollisionTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());
@@ -111,7 +111,7 @@ public class CollisionTableAssetTests
         var asset = new CollisionTableAsset { Type = AssetType.CollisionTable };
         asset.Entries.Add(new CollisionTableAsset.Entry { ModelId = new AssetId(1), CameraCollisionModelId = new AssetId(3) });
 
-        Assert.Equal(TableBytes(EntryBytes(1, 0, 3)), Write(asset, N100FSerializer.DefaultProfile));
+        Assert.Equal(TableBytes(EntryBytes(1, 0, 3)), Write(asset, N100FSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]

@@ -86,12 +86,12 @@ public class DashTrackAssetTests
 
     [Fact]
     public void Read_DashTrack_UnderIncredibles_ProducesDashTrackAsset() =>
-        Assert.IsType<DashTrackAsset>(Read(SampleData(), IncrediblesSerializer.DefaultProfile));
+        Assert.IsType<DashTrackAsset>(Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_DashTrack_PopulatesEveryField()
     {
-        var asset = (DashTrackAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile);
+        var asset = (DashTrackAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(3, asset.Vertices.Count);
         Assert.Equal(new System.Numerics.Vector3(1.0f, 2.0f, 3.0f), asset.Vertices[0]);
@@ -122,7 +122,7 @@ public class DashTrackAssetTests
     [Fact]
     public void Read_DashTrack_VertexAndTriangleCountKeepDerivingAfterMutation()
     {
-        var asset = (DashTrackAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile);
+        var asset = (DashTrackAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(3, asset.Physical.VertexCount);
         Assert.Equal(1, asset.Physical.TriangleCount);
@@ -138,7 +138,7 @@ public class DashTrackAssetTests
     public void Read_ThenWrite_DashTrack_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -151,7 +151,7 @@ public class DashTrackAssetTests
             .. Prefix(0),
             .. Header(0, 0, 0, 0, 0, 0, 0),
         ];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -162,7 +162,7 @@ public class DashTrackAssetTests
         // Portals have no leading count, so a partial trailing 6-byte group can't be told apart from
         // genuinely unparsed bytes - only a byte count that isn't itself a multiple of 6 proves it.
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -172,7 +172,7 @@ public class DashTrackAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<DashTrackAsset>(asset);
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

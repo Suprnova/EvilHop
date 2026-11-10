@@ -23,7 +23,7 @@ public class ProjectileAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class ProjectileAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -125,7 +125,7 @@ public class ProjectileAssetTests
     {
         byte[] data = Data(0, 0, 0, 0, 0, 0, 0f, 0f, 0);
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<ProjectileAsset>(asset);
     }
@@ -148,7 +148,7 @@ public class ProjectileAssetTests
             0x00, 0x00, 0x00, 0x00,
             .. new byte[24],
         ];
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
 
         var asset = (ProjectileAsset)Read(data, profile);
 

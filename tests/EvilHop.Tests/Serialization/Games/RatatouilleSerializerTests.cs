@@ -13,7 +13,7 @@ public class RatatouilleSerializerTests : SerializerContractTests
     [Fact]
     public void DefaultProfile_IsRatatouilleWithLanguageRegionPlatformOrder()
     {
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(GameVersion.Ratatouille, profile.Game);
         Assert.Equal(PlatformFieldOrder.LanguageRegion, profile.PlatformFieldOrder);
@@ -26,16 +26,17 @@ public class RatatouilleSerializerTests : SerializerContractTests
         var serializer = new RatatouilleSerializer();
 
         Assert.Equal(RatatouilleSerializer.DefaultProfile, serializer.Profile);
+        Assert.Null(serializer.Profile.Platform);
     }
 
     [Fact]
     public void Constructor_WithOverride_KeepsOtherSwitches()
     {
-        var profile = RatatouilleSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
 
         var serializer = new RatatouilleSerializer(profile);
 
         Assert.False(serializer.Profile.StreamDataHasPaddingField);
-        Assert.Equal(RatatouilleSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
+        Assert.Equal(RatatouilleSerializer.DefaultProfile.OnGameCube().PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 }

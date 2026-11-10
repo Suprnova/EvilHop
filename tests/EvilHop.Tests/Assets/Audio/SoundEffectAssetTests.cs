@@ -24,7 +24,7 @@ public class SoundEffectAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class SoundEffectAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -195,7 +195,7 @@ public class SoundEffectAssetTests
             0xC2, 0x6B, 0x98, 0x45, 0x41, 0x12, 0xEC, 0xC0, 0x41, 0xDA, 0xE8, 0x3E,
             0x00, 0x00, 0x00, 0x00,
         ];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         var asset = (SoundEffectAsset)Read(data, profile);
 
@@ -216,7 +216,7 @@ public class SoundEffectAssetTests
             0xC1, 0xC3, 0xEE, 0x2F, 0x42, 0x0F, 0x35, 0x0B, 0xC2, 0x97, 0x08, 0x73,
             0x00, 0x00, 0x00, 0x04,
         ];
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         var asset = (SoundEffectAsset)Read(data, profile);
 
@@ -238,7 +238,7 @@ public class SoundEffectAssetTests
             0xC2, 0xAF, 0x0A, 0xF5, 0x40, 0x12, 0x00, 0xD2, 0x42, 0x54, 0x4E, 0x3C,
             0x00, 0x00, 0x00, 0x00,
         ];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         var asset = (SoundEffectAsset)Read(data, profile);
 

@@ -22,12 +22,12 @@ public class PlatformAssetTests
 
     private static FormatProfile ProfileFor(GameVersion game) => game switch
     {
-        GameVersion.N100F => N100FSerializer.DefaultProfile,
-        GameVersion.BFBB => BFBBSerializer.DefaultProfile,
-        GameVersion.TSSM => TSSMSerializer.DefaultProfile,
-        GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile,
-        GameVersion.ROTU => ROTUSerializer.DefaultProfile,
-        GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
+        GameVersion.N100F => N100FSerializer.DefaultProfile.OnGameCube(),
+        GameVersion.BFBB => BFBBSerializer.DefaultProfile.OnGameCube(),
+        GameVersion.TSSM => TSSMSerializer.DefaultProfile.OnGameCube(),
+        GameVersion.Incredibles => IncrediblesSerializer.DefaultProfile.OnGameCube(),
+        GameVersion.ROTU => ROTUSerializer.DefaultProfile.OnGameCube(),
+        GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile.OnGameCube(),
         _ => throw new ArgumentOutOfRangeException(nameof(game)),
     };
 

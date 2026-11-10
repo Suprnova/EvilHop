@@ -24,7 +24,7 @@ public class PortalAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class PortalAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -78,12 +78,12 @@ public class PortalAssetTests
 
     [Fact]
     public void Read_PortalUnderTSSM_KeepsSceneIdInOrder() =>
-        Assert.Equal("BB03", ((PortalAsset)Read(Data("BB03"), TSSMSerializer.DefaultProfile)).SceneId);
+        Assert.Equal("BB03", ((PortalAsset)Read(Data("BB03"), TSSMSerializer.DefaultProfile.OnGameCube())).SceneId);
 
     [Fact]
     public void Read_PortalUnderLittleEndianN100F_UnreversesSceneId()
     {
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         // n100f/prototype_2003-07-08/XBOX/NTSC-U/US/b0/b001.HIP, AHDR id=0xFB08B123
         byte[] data =
         [
@@ -116,7 +116,7 @@ public class PortalAssetTests
         byte[] data = Data(storedScene);
 
         Assert.Equal(data, Write(Read(data)));
-        Assert.Equal(data, Write(Read(data, TSSMSerializer.DefaultProfile), TSSMSerializer.DefaultProfile));
+        Assert.Equal(data, Write(Read(data, TSSMSerializer.DefaultProfile.OnGameCube()), TSSMSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class PortalAssetTests
             0x3B, 0xFD, 0x94, 0x66, 0x10, 0x00, 0x00, 0x1D, 0x00, 0x00, 0x00, 0x00, 0x64, 0x3F, 0xC2, 0x16,
             0xCD, 0xCD, 0xCD, 0xCA, 0x41, 0x31, 0x30, 0x31,
         ];
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         var asset = (PortalAsset)Read(data, profile);
 

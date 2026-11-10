@@ -24,7 +24,7 @@ public class WireframeAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class WireframeAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -96,5 +96,5 @@ public class WireframeAssetTests
 
     [Fact]
     public void Read_Wireframe_UnderBFBB_DegradesToGenericAsset() =>
-        Assert.IsNotType<WireframeAsset>(Read(Data(), BFBBSerializer.DefaultProfile), exactMatch: false);
+        Assert.IsNotType<WireframeAsset>(Read(Data(), BFBBSerializer.DefaultProfile.OnGameCube()), exactMatch: false);
 }

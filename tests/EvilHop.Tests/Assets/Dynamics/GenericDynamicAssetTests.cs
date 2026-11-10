@@ -23,7 +23,7 @@ public class GenericDynamicAssetTests
 
     private static DynamicAsset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), Endianness.Big);
         return (DynamicAsset)AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class GenericDynamicAssetTests
 
     private static byte[] Write(DynamicAsset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, Endianness.Big, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -130,7 +130,7 @@ public class GenericDynamicAssetTests
     {
         byte[] data = [.. Prefix(1), .. Body, .. LinkBytes(1, 2, 0xAABBCCDD)];
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsType<GenericDynamicAsset>(asset);
         Assert.Empty(asset.Links);
@@ -158,7 +158,7 @@ public class GenericDynamicAssetTests
     {
         byte[] data = [.. Prefix(1), .. Body, .. LinkBytes(1, 2, 0xAABBCCDD)];
 
-        Assert.Equal(data, Write(Read(data, N100FSerializer.DefaultProfile), N100FSerializer.DefaultProfile));
+        Assert.Equal(data, Write(Read(data, N100FSerializer.DefaultProfile.OnGameCube()), N100FSerializer.DefaultProfile.OnGameCube()));
     }
 
     [Fact]

@@ -102,12 +102,12 @@ public class LobMasterAssetTests
 
     [Fact]
     public void Read_LobMaster_UnderN100F_ProducesLobMasterAsset() =>
-        Assert.IsType<LobMasterAsset>(Read(SampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<LobMasterAsset>(Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_LobMaster_PopulatesEveryField()
     {
-        var asset = (LobMasterAsset)Read(SampleData(), N100FSerializer.DefaultProfile);
+        var asset = (LobMasterAsset)Read(SampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(0, asset.LobMasterType);
         Assert.Equal(new AssetId(0x4974022F), asset.ProjectileId);
@@ -143,7 +143,7 @@ public class LobMasterAssetTests
             .. LinkBytes(0, 0, 0),
         ];
 
-        var asset = (LobMasterAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (LobMasterAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(1, asset.Physical.LinkCount);
 
         asset.Links.Add(new Link());
@@ -155,7 +155,7 @@ public class LobMasterAssetTests
     public void Read_ThenWrite_LobMaster_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -172,7 +172,7 @@ public class LobMasterAssetTests
                 new Vector3(300.0f, 200.0f, 300.0f), 0.5f, 5.0f, 2),
             .. LinkBytes(1, 2, 0x11223344),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -181,7 +181,7 @@ public class LobMasterAssetTests
     public void Read_ThenWrite_LobMasterWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -191,7 +191,7 @@ public class LobMasterAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<LobMasterAsset>(asset);
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

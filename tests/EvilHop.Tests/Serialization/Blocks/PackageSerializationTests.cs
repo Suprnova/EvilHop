@@ -176,7 +176,7 @@ public class PackageSerializationTests
     [Fact]
     public void WriteBlock_Plat_PlatformNameRegionLanguage_WritesBfbbLayout()
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile with
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube() with
         {
             PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage
         });
@@ -201,7 +201,7 @@ public class PackageSerializationTests
     [Fact]
     public void WriteBlock_Plat_LanguageRegion_WritesTssmLayoutAndOmitsPlatformName()
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile with
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube() with
         {
             PlatformFieldOrder = PlatformFieldOrder.LanguageRegion
         });
@@ -224,7 +224,7 @@ public class PackageSerializationTests
     [Fact]
     public void WriteBlock_Plat_NullPlatformName_WritesEmptyString()
     {
-        var serializer = new TestSerializer(N100FSerializer.DefaultProfile with
+        var serializer = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube() with
         {
             PlatformFieldOrder = PlatformFieldOrder.PlatformNameRegionLanguage
         });

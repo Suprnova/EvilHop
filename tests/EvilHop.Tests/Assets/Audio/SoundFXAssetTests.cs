@@ -24,7 +24,7 @@ public class SoundFXAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -32,7 +32,7 @@ public class SoundFXAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= N100FSerializer.DefaultProfile;
+        profile ??= N100FSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -185,7 +185,7 @@ public class SoundFXAssetTests
     {
         byte[] data = Data();
 
-        var asset = Read(data, TSSMSerializer.DefaultProfile);
+        var asset = Read(data, TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<SoundFXAsset>(asset);
     }
@@ -203,7 +203,7 @@ public class SoundFXAssetTests
             0x9A, 0x90, 0x80, 0x42, 0xA1, 0x05, 0xEF, 0x41, 0x9A, 0x90, 0x80, 0x42,
             0x00, 0x00, 0x20, 0x41, 0x00, 0x00, 0x00, 0x00,
         ];
-        var profile = N100FSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
 
         var asset = (SoundFXAsset)Read(data, profile);
 
@@ -234,7 +234,7 @@ public class SoundFXAssetTests
             0xC1, 0x9B, 0x81, 0xA3, 0x40, 0x92, 0xB9, 0xE0, 0x40, 0xB9, 0xF8, 0x23,
             0x41, 0x20, 0x00, 0x00, 0x42, 0x20, 0x00, 0x00,
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         var asset = (SoundFXAsset)Read(data, profile);
 

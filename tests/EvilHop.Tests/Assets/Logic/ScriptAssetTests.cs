@@ -23,7 +23,7 @@ public class ScriptAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -31,7 +31,7 @@ public class ScriptAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= TSSMSerializer.DefaultProfile;
+        profile ??= TSSMSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -150,7 +150,7 @@ public class ScriptAssetTests
             .. U32(1),
             .. EventBytes(0.0f, 0x11223344, 24, 0),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -159,7 +159,7 @@ public class ScriptAssetTests
     public void Read_ThenWrite_ScriptUnderROTU_WithEnabledField_ReproducesInputBytes()
     {
         byte[] data = Data(events: [EventBytes(0.0f, 0x11223344, 24, 0, enabled: true)]);
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -216,7 +216,7 @@ public class ScriptAssetTests
             .. EventBytes(3.0f, 0xA0C0DF7D, 3, 0x42B05E7D, enabled: true),
             .. EventBytes(5.0f, 0xA0C0DF7D, 4, 0, enabled: true),
         ];
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         var asset = (ScriptAsset)Read(data, profile);
 

@@ -22,7 +22,7 @@ public class BFBBSerializerTests : SerializerContractTests
     [Fact]
     public void DefaultProfile_IsBFBBWithPaddingField()
     {
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(GameVersion.BFBB, profile.Game);
         Assert.True(profile.StreamDataHasPaddingField);
@@ -34,17 +34,18 @@ public class BFBBSerializerTests : SerializerContractTests
         var serializer = new BFBBSerializer();
 
         Assert.Equal(BFBBSerializer.DefaultProfile, serializer.Profile);
+        Assert.Null(serializer.Profile.Platform);
     }
 
     [Fact]
     public void Constructor_WithOverride_KeepsOtherSwitches()
     {
-        var profile = BFBBSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
 
         var serializer = new BFBBSerializer(profile);
 
         Assert.False(serializer.Profile.StreamDataHasPaddingField);
-        Assert.Equal(BFBBSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
+        Assert.Equal(BFBBSerializer.DefaultProfile.OnGameCube().PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 
     [Fact]

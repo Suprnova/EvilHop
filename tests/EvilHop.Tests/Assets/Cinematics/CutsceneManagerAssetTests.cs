@@ -78,12 +78,12 @@ public class CutsceneManagerAssetTests
 
     [Fact]
     public void Read_CutsceneManager_ProducesCutsceneManagerAsset() =>
-        Assert.IsType<CutsceneManagerAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile, new BFBBSerializer()));
+        Assert.IsType<CutsceneManagerAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube(), new BFBBSerializer()));
 
     [Fact]
     public void Read_CutsceneManager_UnderBfbb_PopulatesCommonFieldsAndLeavesSubtitlesIdAtDefault()
     {
-        var asset = (CutsceneManagerAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile, new BFBBSerializer());
+        var asset = (CutsceneManagerAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube(), new BFBBSerializer());
 
         Assert.Equal(new AssetId(0xAABBCCDD), asset.CutsceneId);
         Assert.Equal(2.5f, asset.InterpSpeed);
@@ -94,7 +94,7 @@ public class CutsceneManagerAssetTests
     [Fact]
     public void Read_CutsceneManager_UnderTSSM_PopulatesSubtitlesId()
     {
-        var asset = (CutsceneManagerAsset)Read(TssmData(), TSSMSerializer.DefaultProfile, new TSSMSerializer());
+        var asset = (CutsceneManagerAsset)Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube(), new TSSMSerializer());
 
         Assert.Equal(new AssetId(0x11112222), asset.SubtitlesId);
     }
@@ -111,7 +111,7 @@ public class CutsceneManagerAssetTests
                 emitIds: [0x55555555u, .. new uint[14]]),
         ];
 
-        var asset = (CutsceneManagerAsset)Read(data, BFBBSerializer.DefaultProfile, new BFBBSerializer());
+        var asset = (CutsceneManagerAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube(), new BFBBSerializer());
 
         Assert.Equal(new AssetId(0x55555555), asset.EmitterCues[0].EmitterId);
         Assert.Equal(1.0f, asset.EmitterCues[0].StartTime);
@@ -128,7 +128,7 @@ public class CutsceneManagerAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new BFBBSerializer()), profile));
     }
@@ -141,7 +141,7 @@ public class CutsceneManagerAssetTests
             .. TssmData(linkCount: 1),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new TSSMSerializer()), profile));
     }
@@ -150,7 +150,7 @@ public class CutsceneManagerAssetTests
     public void Read_ThenWrite_CutsceneManagerWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new BFBBSerializer()), profile));
     }
@@ -160,7 +160,7 @@ public class CutsceneManagerAssetTests
     {
         byte[] data = BfbbData();
 
-        var asset = Read(data, RatatouilleSerializer.DefaultProfile, new RatatouilleSerializer());
+        var asset = Read(data, RatatouilleSerializer.DefaultProfile.OnGameCube(), new RatatouilleSerializer());
 
         Assert.IsNotType<CutsceneManagerAsset>(asset);
     }

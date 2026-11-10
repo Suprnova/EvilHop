@@ -9,7 +9,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_N100F_ReturnsN100FSerializerCarryingTheProfile()
     {
-        var profile = N100FSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.N100F).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 
@@ -20,7 +20,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_BFBB_ReturnsBFBBSerializerCarryingTheProfile()
     {
-        var profile = BFBBSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.BFBB).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 
@@ -31,7 +31,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_Incredibles_ReturnsIncrediblesSerializerCarryingTheProfile()
     {
-        var profile = IncrediblesSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.Incredibles).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 
@@ -42,7 +42,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_TSSM_ReturnsTSSMSerializerCarryingTheProfile()
     {
-        var profile = TSSMSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.TSSM).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 
@@ -53,7 +53,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_ROTU_ReturnsROTUSerializerCarryingTheProfile()
     {
-        var profile = ROTUSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.ROTU).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 
@@ -64,7 +64,7 @@ public class SerializerFactoryTests
     [Fact]
     public void Create_Ratatouille_ReturnsRatatouilleSerializerCarryingTheProfile()
     {
-        var profile = RatatouilleSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = Serializer.Create(GameVersion.Ratatouille).Profile with { StreamDataHasPaddingField = false };
 
         var serializer = SerializerFactory.Create(profile);
 

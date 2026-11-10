@@ -52,7 +52,7 @@ public class RoundTripTests
     [Fact]
     public void Check_ArchiveThatReproducesItsOwnBytes_ReturnsNull()
     {
-        var serializer = new N100FSerializer();
+        var serializer = Serializer.Create(GameVersion.N100F, Platform.GameCube);
         byte[] bytes = CanonicalArchive(serializer);
 
         Assert.Null(RoundTrip.Check(Load(bytes, serializer), bytes));
@@ -61,7 +61,7 @@ public class RoundTripTests
     [Fact]
     public void Check_BytesTheArchiveDoesNotProduce_ReportsABlockMismatch()
     {
-        var serializer = new N100FSerializer();
+        var serializer = Serializer.Create(GameVersion.N100F, Platform.GameCube);
         byte[] bytes = CanonicalArchive(serializer);
 
         string? failure = RoundTrip.Check(Load(bytes, serializer), [.. bytes, 0]);
@@ -76,7 +76,7 @@ public class RoundTripTests
     [Fact]
     public void Check_AssetThatDoesNotParse_ReportsItDespiteTheBytesMatching()
     {
-        var serializer = new N100FSerializer();
+        var serializer = Serializer.Create(GameVersion.N100F, Platform.GameCube);
         var archive = Load(CanonicalArchive(serializer), serializer);
         archive.Roots.OfType<EvilHop.Blocks.Dictionary>().Single().AssetTable.Headers.Single().Size = 0xFFFF;
         byte[] bytes = Save(archive);

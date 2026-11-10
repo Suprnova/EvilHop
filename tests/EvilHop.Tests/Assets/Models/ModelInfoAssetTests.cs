@@ -107,12 +107,12 @@ public class ModelInfoAssetTests
 
     [Fact]
     public void Read_ModelInfo_UnderN100F_ProducesModelInfoAsset() =>
-        Assert.IsType<ModelInfoAsset>(Read(N100FSampleData(), N100FSerializer.DefaultProfile));
+        Assert.IsType<ModelInfoAsset>(Read(N100FSampleData(), N100FSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_ModelInfo_UnderN100F_HasNoCombatOrBrainId()
     {
-        var asset = (ModelInfoAsset)Read(N100FSampleData(), N100FSerializer.DefaultProfile);
+        var asset = (ModelInfoAsset)Read(N100FSampleData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x8E62E340), asset.AnimTableId);
         Assert.Equal(AssetId.None, asset.CombatId);
@@ -122,7 +122,7 @@ public class ModelInfoAssetTests
     [Fact]
     public void Read_ModelInfo_UnderBFBB_PopulatesEveryField()
     {
-        var asset = (ModelInfoAsset)Read(BfbbSampleData(), BFBBSerializer.DefaultProfile);
+        var asset = (ModelInfoAsset)Read(BfbbSampleData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(0x464E494Du, asset.Physical.Magic);
         Assert.Equal(new AssetId(0xFF3D5858), asset.AnimTableId);
@@ -149,7 +149,7 @@ public class ModelInfoAssetTests
     [Fact]
     public void Read_ModelInfo_ModelInstanceCountKeepsDerivingAfterMutation()
     {
-        var asset = (ModelInfoAsset)Read(BfbbSampleData(), BFBBSerializer.DefaultProfile);
+        var asset = (ModelInfoAsset)Read(BfbbSampleData(), BFBBSerializer.DefaultProfile.OnGameCube());
         Assert.Equal(1u, asset.Physical.ModelInstanceCount);
 
         asset.ModelInstances.Add(new ModelInfoAsset.Instance());
@@ -161,7 +161,7 @@ public class ModelInfoAssetTests
     public void Read_ThenWrite_ModelInfoUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FSampleData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -170,7 +170,7 @@ public class ModelInfoAssetTests
     public void Read_ThenWrite_ModelInfoUnderBFBB_ReproducesInputBytes()
     {
         byte[] data = BfbbSampleData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -184,7 +184,7 @@ public class ModelInfoAssetTests
     public void Read_ThenWrite_ModelInfoParamWithVaryingStringLength_ReproducesInputBytes(string value)
     {
         byte[] data = [.. FullHeader(0, 0, 0, 0), .. Param(0x12345678, value)];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -193,7 +193,7 @@ public class ModelInfoAssetTests
     public void Read_ThenWrite_ModelInfoWithNoModelInstancesOrParams_ReproducesInputBytes()
     {
         byte[] data = FullHeader(0, 0, 0, 0);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -202,7 +202,7 @@ public class ModelInfoAssetTests
     public void Read_ThenWrite_ModelInfoWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbSampleData(), 0xDE, 0xAD, 0xBE];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

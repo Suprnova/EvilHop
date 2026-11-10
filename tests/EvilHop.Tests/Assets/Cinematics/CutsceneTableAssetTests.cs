@@ -98,12 +98,12 @@ public class CutsceneTableAssetTests
 
     [Fact]
     public void Read_CutsceneTable_ProducesCutsceneTableAsset() =>
-        Assert.IsType<CutsceneTableAsset>(Read(N100FData(), N100FSerializer.DefaultProfile, new N100FSerializer()));
+        Assert.IsType<CutsceneTableAsset>(Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer()));
 
     [Fact]
     public void Read_CutsceneTable_UnderN100F_PopulatesEntries()
     {
-        var asset = (CutsceneTableAsset)Read(N100FData(), N100FSerializer.DefaultProfile, new N100FSerializer());
+        var asset = (CutsceneTableAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer());
 
         Assert.Equal(2u, asset.Physical.Count);
         Assert.Equal(2, asset.Cutscenes.Count);
@@ -123,7 +123,7 @@ public class CutsceneTableAssetTests
     [Fact]
     public void Read_CutsceneTable_KeepsEachEntrysHeaderRemainderSeparate()
     {
-        var asset = (CutsceneTableAsset)Read(N100FData(), N100FSerializer.DefaultProfile, new N100FSerializer());
+        var asset = (CutsceneTableAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube(), new N100FSerializer());
 
         Assert.Equal(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, asset.Cutscenes[0].GetUnparsedTail().ToArray());
         Assert.Empty(asset.Cutscenes[1].GetUnparsedTail().ToArray());
@@ -133,7 +133,7 @@ public class CutsceneTableAssetTests
     public void Read_ThenWrite_CutsceneTable_UnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -142,7 +142,7 @@ public class CutsceneTableAssetTests
     public void Read_ThenWrite_CutsceneTableWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = N100FData([0xCA, 0xFE]);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -151,7 +151,7 @@ public class CutsceneTableAssetTests
     public void Read_ThenWrite_EmptyCutsceneTable_ReproducesInputBytes()
     {
         byte[] data = Count(0);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile, new N100FSerializer()), profile));
     }
@@ -161,7 +161,7 @@ public class CutsceneTableAssetTests
     {
         byte[] data = N100FData();
 
-        var asset = Read(data, RatatouilleSerializer.DefaultProfile, new RatatouilleSerializer());
+        var asset = Read(data, RatatouilleSerializer.DefaultProfile.OnGameCube(), new RatatouilleSerializer());
 
         Assert.IsNotType<CutsceneTableAsset>(asset);
     }

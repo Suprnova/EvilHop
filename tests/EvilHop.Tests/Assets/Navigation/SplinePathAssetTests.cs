@@ -31,7 +31,7 @@ public class SplinePathAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor();
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -39,7 +39,7 @@ public class SplinePathAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= IncrediblesSerializer.DefaultProfile;
+        profile ??= IncrediblesSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -411,11 +411,11 @@ public class SplinePathAssetTests
     {
         var profile = game switch
         {
-            GameVersion.BFBB => BFBBSerializer.DefaultProfile,
-            GameVersion.TSSM => TSSMSerializer.DefaultProfile,
-            GameVersion.ROTU => ROTUSerializer.DefaultProfile,
-            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile,
-            GameVersion.N100F => N100FSerializer.DefaultProfile,
+            GameVersion.BFBB => BFBBSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.TSSM => TSSMSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.ROTU => ROTUSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.Ratatouille => RatatouilleSerializer.DefaultProfile.OnGameCube(),
+            GameVersion.N100F => N100FSerializer.DefaultProfile.OnGameCube(),
             _ => throw new ArgumentOutOfRangeException(nameof(game)),
         };
 

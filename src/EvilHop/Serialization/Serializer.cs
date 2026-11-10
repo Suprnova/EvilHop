@@ -247,7 +247,26 @@ public abstract partial class Serializer
         };
     }
 
-    /// <summary>Returns <paramref name="game"/>'s <c>DefaultProfile</c>.</summary>
+    /// <summary>
+    /// Creates a block-only <see cref="Serializer"/> for <paramref name="game"/>, with no platform
+    /// stated. It reads and writes blocks, but <see cref="Archive.OpenAssets()"/> refuses it.
+    /// </summary>
+    /// <param name="game">The game to create a serializer for.</param>
+    /// <returns>A new serializer for <paramref name="game"/> that states no platform.</returns>
+    /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
+    public static Serializer Create(GameVersion game) => Create(DefaultProfileFor(game));
+
+    /// <summary>
+    /// Creates a <see cref="Serializer"/> for <paramref name="game"/> built for <paramref name="platform"/>.
+    /// </summary>
+    /// <param name="game">The game to create a serializer for.</param>
+    /// <param name="platform">The console the archives were built for.</param>
+    /// <returns>A new serializer for <paramref name="game"/> that states <paramref name="platform"/>.</returns>
+    /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
+    public static Serializer Create(GameVersion game, Platform platform) =>
+        Create(DefaultProfileFor(game) with { Platform = platform });
+
+    /// <summary>Returns <paramref name="game"/>'s <c>DefaultProfile</c>, which states no platform.</summary>
     /// <exception cref="NotSupportedException">Thrown when no serializer exists for that game.</exception>
     internal static FormatProfile DefaultProfileFor(GameVersion game) => game switch
     {

@@ -94,12 +94,12 @@ public class ElectricArcGeneratorAssetTests
 
     [Fact]
     public void Read_ElectricArcGenerator_ProducesElectricArcGeneratorAsset() =>
-        Assert.IsType<ElectricArcGeneratorAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<ElectricArcGeneratorAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_ElectricArcGenerator_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (ElectricArcGeneratorAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (ElectricArcGeneratorAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new System.Numerics.Vector3(1.0f, 2.0f, 3.0f), asset.SourceOffset);
         Assert.Equal(6, asset.DamageType);
@@ -112,7 +112,7 @@ public class ElectricArcGeneratorAssetTests
     [Fact]
     public void Read_ElectricArcGenerator_UnderTSSM_PopulatesEveryField()
     {
-        var asset = (ElectricArcGeneratorAsset)Read(TSSMData(), TSSMSerializer.DefaultProfile);
+        var asset = (ElectricArcGeneratorAsset)Read(TSSMData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new System.Numerics.Vector3(1.0f, 2.0f, 3.0f), asset.SourceOffset);
         Assert.Equal(6, asset.DamageType);
@@ -130,7 +130,7 @@ public class ElectricArcGeneratorAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -139,7 +139,7 @@ public class ElectricArcGeneratorAssetTests
     public void Read_ThenWrite_ElectricArcGeneratorUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = [.. TSSMData(linkCount: 1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -148,7 +148,7 @@ public class ElectricArcGeneratorAssetTests
     public void Read_ThenWrite_ElectricArcGeneratorUnderN100F_ReproducesInputBytes()
     {
         byte[] data = [.. TSSMData(linkCount: 1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -157,7 +157,7 @@ public class ElectricArcGeneratorAssetTests
     public void Read_ThenWrite_ElectricArcGeneratorWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -166,7 +166,7 @@ public class ElectricArcGeneratorAssetTests
     public void Read_ElectricArcGenerator_UnderIncredibles_DegradesToGenericEntityAsset()
     {
         byte[] data = BfbbData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 

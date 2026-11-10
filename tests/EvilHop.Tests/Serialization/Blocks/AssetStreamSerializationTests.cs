@@ -94,8 +94,8 @@ public class AssetStreamSerializationTests
         var block = new TestSerializer().CreateBlock<StreamData>();
         block.Data = [0xDE, 0xAD, 0xBE, 0xEF];
 
-        var withPaddingField = new TestSerializer(N100FSerializer.DefaultProfile with { StreamDataHasPaddingField = true });
-        var withoutPaddingField = new TestSerializer(N100FSerializer.DefaultProfile with { StreamDataHasPaddingField = false });
+        var withPaddingField = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = true });
+        var withoutPaddingField = new TestSerializer(N100FSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false });
 
         var expected = BlockBytes.Build("DPAK", BlockBytes.Content(w => w.Write([0xDE, 0xAD, 0xBE, 0xEF])));
         Assert.Equal(expected, BlockBytes.WriteBlock(withPaddingField, block));

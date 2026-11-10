@@ -32,7 +32,7 @@ public class TimerAssetTests
 
     private static Asset Read(byte[] data, FormatProfile? profile = null, uint id = 0x12345678)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         var (header, debug) = HeaderFor(id);
         using var reader = new EndianReader(new MemoryStream(data), profile.Endianness);
         return AssetCodecs.Read(reader, header, debug, profile);
@@ -40,7 +40,7 @@ public class TimerAssetTests
 
     private static byte[] Write(Asset asset, FormatProfile? profile = null)
     {
-        profile ??= BFBBSerializer.DefaultProfile;
+        profile ??= BFBBSerializer.DefaultProfile.OnGameCube();
         using var stream = new MemoryStream();
         using (var writer = new EndianWriter(stream, profile.Endianness, leaveOpen: true))
             AssetCodecs.Write(asset, writer, profile);
@@ -242,7 +242,7 @@ public class TimerAssetTests
     [InlineData(GameVersion.Ratatouille)]
     public void Read_UnderAllSupportedGames_ParsesAsTimerAsset(GameVersion game)
     {
-        var profile = Serializer.DefaultProfileFor(game);
+        var profile = Serializer.DefaultProfileFor(game).OnGameCube();
         bool bigEndian = profile.Endianness == Endianness.Big;
         byte[] data =
         [
@@ -275,7 +275,7 @@ public class TimerAssetTests
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         ];
 
-        var profile = Serializer.DefaultProfileFor(GameVersion.N100F);
+        var profile = Serializer.DefaultProfileFor(GameVersion.N100F).OnGameCube();
         var asset = (TimerAsset)Read(data, profile);
 
         Assert.Equal(new AssetId(0xAE422535), asset.Physical.BaseId);
@@ -302,7 +302,7 @@ public class TimerAssetTests
     [Fact]
     public void Read_LittleEndian_ParsesAndWritesCorrectly()
     {
-        var profile = BFBBSerializer.DefaultProfile with { Platform = Platform.Xbox };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { Platform = Platform.Xbox };
         byte[] data =
         [
             .. Prefix(linkCount: 0, bigEndian: false),
@@ -328,7 +328,7 @@ public class TimerAssetTests
             .. F32(5.0f),
             .. LinkBytes(20, 10, 0xAABBCCDD),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { TimerHasRandomRange = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { TimerHasRandomRange = false };
 
         var asset = (TimerAsset)Read(data, profile);
 

@@ -107,12 +107,12 @@ public class UIFontAssetTests
 
     [Fact]
     public void Read_UIFont_ProducesUIFontAsset() =>
-        Assert.IsType<UIFontAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<UIFontAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_UIFont_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (UIFontAsset)Read(BfbbData(maxHeight: 480), BFBBSerializer.DefaultProfile);
+        var asset = (UIFontAsset)Read(BfbbData(maxHeight: 480), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(UIFlags.RendersDirectly | UIFlags.ShowOnFocus | UIFlags.HideOnUnfocus, asset.Flags);
         Assert.Equal((ushort)600, asset.Width);
@@ -144,7 +144,7 @@ public class UIFontAssetTests
     [Fact]
     public void Read_UIFont_UnderN100F_PopulatesEveryField()
     {
-        var asset = (UIFontAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (UIFontAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal((ushort)500, asset.Width);
         Assert.Equal((ushort)100, asset.Height);
@@ -163,7 +163,7 @@ public class UIFontAssetTests
             .. new byte[4],  // ParamWidgetAssetId
             .. new byte[4],  // CheckAssetId
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -172,7 +172,7 @@ public class UIFontAssetTests
     public void Read_ThenWrite_UIFontUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData(linkCount: 0);
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -181,7 +181,7 @@ public class UIFontAssetTests
     public void Read_ThenWrite_UIFontWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -190,7 +190,7 @@ public class UIFontAssetTests
     public void Read_UIFont_UnderTSSM_DegradesToGenericEntityAsset()
     {
         byte[] data = N100FData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 

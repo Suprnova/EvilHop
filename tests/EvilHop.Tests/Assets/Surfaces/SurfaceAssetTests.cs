@@ -175,12 +175,12 @@ public class SurfaceAssetTests
 
     [Fact]
     public void Read_Surface_ProducesSurfaceAsset() =>
-        Assert.IsType<SurfaceAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<SurfaceAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Surface_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (SurfaceAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (SurfaceAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(DamageKind.Damage6, asset.Damage);
         Assert.False(asset.DamagePassthrough);
@@ -212,7 +212,7 @@ public class SurfaceAssetTests
     public void Read_ThenWrite_SurfaceUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -226,7 +226,7 @@ public class SurfaceAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -234,7 +234,7 @@ public class SurfaceAssetTests
     [Fact]
     public void Read_Surface_UnderTssm_PopulatesExtendedFields()
     {
-        var asset = (SurfaceAsset)Read(TssmData(), TSSMSerializer.DefaultProfile);
+        var asset = (SurfaceAsset)Read(TssmData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0xCAFEF00D), asset.Physical.ImpactSound);
         Assert.Equal(2, asset.Physical.DashImpactType);
@@ -264,7 +264,7 @@ public class SurfaceAssetTests
     public void Read_ThenWrite_SurfaceUnderTssm_ReproducesInputBytes(byte linkCount)
     {
         byte[] data = [.. TssmData(linkCount), .. Enumerable.Range(0, linkCount).SelectMany(i => LinkBytes((short)i, 2, 0xAABBCCDD))];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -272,7 +272,7 @@ public class SurfaceAssetTests
     [Fact]
     public void Write_NewSurfaceUnderTssm_WritesExtendedFields()
     {
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         byte[] written = Write(new SurfaceAsset(), profile);
 
@@ -282,7 +282,7 @@ public class SurfaceAssetTests
     [Fact]
     public void Read_Surface_UnderN100F_PopulatesEveryField()
     {
-        var asset = (SurfaceAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (SurfaceAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(DamageKind.Fatal1, asset.Damage);
         Assert.Equal(0.5f, asset.Friction);
@@ -296,7 +296,7 @@ public class SurfaceAssetTests
     public void Read_ThenWrite_SurfaceUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -305,7 +305,7 @@ public class SurfaceAssetTests
     public void Read_ThenWrite_SurfaceWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -317,7 +317,7 @@ public class SurfaceAssetTests
         // DamageTimer/DamageBounce - see BuildProfiles.json's "bfbb/**/b3/b301.hip" entry.
         byte[] core = Core(gameDamageType: 6, phys_flags: 0x10, friction: 1.0f, on: 1);
         byte[] data = [.. Prefix(linkCount: 0), .. core[..^8]];
-        var profile = BFBBSerializer.DefaultProfile with { SurfaceHasDamageFields = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { SurfaceHasDamageFields = false };
 
         var asset = (SurfaceAsset)Read(data, profile);
 

@@ -8,15 +8,15 @@ namespace EvilHop.Serialization;
 /// <param name="profile"><inheritdoc cref="Serializer.Profile"/></param>
 public sealed class RatatouilleSerializer(FormatProfile profile) : Serializer(profile)
 {
-    /// <summary>The profile every Ratatouille build reads correctly under.</summary>
-    public static FormatProfile DefaultProfile { get; } = new(
+    /// <summary>The profile every Ratatouille build reads correctly under once a platform is stated.</summary>
+    internal static FormatProfile DefaultProfile { get; } = new(
         GameVersion.Ratatouille,
-        Platform.GameCube,
+        null,
         PlatformFieldOrder.LanguageRegion,
         StreamDataHasPaddingField: true);
 
     /// <summary>
-    /// Initializes a new instance of <see cref="RatatouilleSerializer"/> with <see cref="DefaultProfile"/>.
+    /// Initializes a block-only instance of <see cref="RatatouilleSerializer"/>: no platform is stated, so assets cannot be opened.
     /// </summary>
     public RatatouilleSerializer() : this(DefaultProfile) { }
 }

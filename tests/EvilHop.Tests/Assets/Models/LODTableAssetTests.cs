@@ -79,12 +79,12 @@ public class LODTableAssetTests
 
     [Fact]
     public void Read_LODTable_UnderBfbb_ProducesLODTableAsset() =>
-        Assert.IsType<LODTableAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<LODTableAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_LODTable_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (LODTableAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (LODTableAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Entries.Count);
 
@@ -114,7 +114,7 @@ public class LODTableAssetTests
             .. EntryWithFlags(0x11111111, 35.0f, 0xCAFEF00D, 0, 0, 0, 0, 0, 0),
         ];
 
-        var asset = (LODTableAsset)Read(data, TSSMSerializer.DefaultProfile);
+        var asset = (LODTableAsset)Read(data, TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(0xCAFEF00Du, asset.Entries[0].Flags);
     }
@@ -123,7 +123,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -132,7 +132,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -141,7 +141,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableUnderIncredibles_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -150,7 +150,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableUnderROTU_ReproducesInputBytes()
     {
         byte[] data = TssmData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -159,7 +159,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableWithNoEntries_ReproducesInputBytes()
     {
         byte[] data = Count(0);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -168,7 +168,7 @@ public class LODTableAssetTests
     public void Read_ThenWrite_LODTableWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -178,7 +178,7 @@ public class LODTableAssetTests
     {
         byte[] data = BfbbData();
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<LODTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

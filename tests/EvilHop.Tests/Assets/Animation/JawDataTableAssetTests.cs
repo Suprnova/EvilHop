@@ -90,12 +90,12 @@ public class JawDataTableAssetTests
 
     [Fact]
     public void Read_JawDataTable_UnderBfbb_ProducesJawDataTableAsset() =>
-        Assert.IsType<JawDataTableAsset>(Read(ClassicData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<JawDataTableAsset>(Read(ClassicData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_JawDataTable_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (JawDataTableAsset)Read(ClassicData(), BFBBSerializer.DefaultProfile);
+        var asset = (JawDataTableAsset)Read(ClassicData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Entries.Count);
 
@@ -113,7 +113,7 @@ public class JawDataTableAssetTests
     [Fact]
     public void Read_JawDataTable_UnderROTU_PopulatesUnknownField()
     {
-        var asset = (JawDataTableAsset)Read(RotuData(), ROTUSerializer.DefaultProfile);
+        var asset = (JawDataTableAsset)Read(RotuData(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         var first = asset.Entries[0];
         Assert.Equal(JawData1, (byte[])[.. first.JawData]);
@@ -128,7 +128,7 @@ public class JawDataTableAssetTests
     public void Read_ThenWrite_JawDataTableUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = ClassicData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -137,7 +137,7 @@ public class JawDataTableAssetTests
     public void Read_ThenWrite_JawDataTableUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = ClassicData();
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -146,7 +146,7 @@ public class JawDataTableAssetTests
     public void Read_ThenWrite_JawDataTableUnderROTU_ReproducesInputBytes()
     {
         byte[] data = RotuData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -155,7 +155,7 @@ public class JawDataTableAssetTests
     public void Read_ThenWrite_JawDataTableWithNoEntries_ReproducesInputBytes()
     {
         byte[] data = Count(0);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -164,7 +164,7 @@ public class JawDataTableAssetTests
     public void Read_ThenWrite_JawDataTableWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. ClassicData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -174,7 +174,7 @@ public class JawDataTableAssetTests
     {
         byte[] data = ClassicData();
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<JawDataTableAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());

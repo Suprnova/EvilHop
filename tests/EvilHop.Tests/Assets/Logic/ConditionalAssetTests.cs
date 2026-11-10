@@ -77,7 +77,7 @@ public class ConditionalAssetTests
 
     [Fact]
     public void Read_Conditional_ProducesConditionalAsset() =>
-        Assert.IsType<ConditionalAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<ConditionalAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Conditional_UnderBfbb_PopulatesEveryField()
@@ -89,7 +89,7 @@ public class ConditionalAssetTests
             0xAA, 0xBB, 0xCC, 0xDD, // TargetId
         ];
 
-        var asset = (ConditionalAsset)Read(data, BFBBSerializer.DefaultProfile);
+        var asset = (ConditionalAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(10u, asset.EvaluationAmount);
         Assert.Equal(VariableKind.CounterValue, asset.Variable);
@@ -100,7 +100,7 @@ public class ConditionalAssetTests
     [Fact]
     public void Read_Conditional_UnderN100F_LeavesTargetIdAtDefault()
     {
-        var asset = (ConditionalAsset)Read(N100FData(), N100FSerializer.DefaultProfile);
+        var asset = (ConditionalAsset)Read(N100FData(), N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(10u, asset.EvaluationAmount);
         Assert.Equal(VariableKind.CounterValue, asset.Variable);
@@ -118,7 +118,7 @@ public class ConditionalAssetTests
             .. LinkBytes(3, 4, 0x11223344),
         ];
 
-        var asset = (ConditionalAsset)Read(data, BFBBSerializer.DefaultProfile);
+        var asset = (ConditionalAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Links.Count);
         Assert.Equal(1, asset.Links[0].SourceEvent);
@@ -135,7 +135,7 @@ public class ConditionalAssetTests
             .. BfbbData(linkCount: 1),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -148,7 +148,7 @@ public class ConditionalAssetTests
             .. N100FData(linkCount: 1),
             .. LinkBytes(1, 2, 0xAABBCCDD),
         ];
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -157,7 +157,7 @@ public class ConditionalAssetTests
     public void Read_ThenWrite_ConditionalWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

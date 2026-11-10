@@ -13,7 +13,7 @@ public class IncrediblesSerializerTests : SerializerContractTests
     [Fact]
     public void DefaultProfile_IsIncrediblesWithLanguageRegionPlatformOrder()
     {
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(GameVersion.Incredibles, profile.Game);
         Assert.Equal(PlatformFieldOrder.LanguageRegion, profile.PlatformFieldOrder);
@@ -26,16 +26,17 @@ public class IncrediblesSerializerTests : SerializerContractTests
         var serializer = new IncrediblesSerializer();
 
         Assert.Equal(IncrediblesSerializer.DefaultProfile, serializer.Profile);
+        Assert.Null(serializer.Profile.Platform);
     }
 
     [Fact]
     public void Constructor_WithOverride_KeepsOtherSwitches()
     {
-        var profile = IncrediblesSerializer.DefaultProfile with { StreamDataHasPaddingField = false };
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube() with { StreamDataHasPaddingField = false };
 
         var serializer = new IncrediblesSerializer(profile);
 
         Assert.False(serializer.Profile.StreamDataHasPaddingField);
-        Assert.Equal(IncrediblesSerializer.DefaultProfile.PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
+        Assert.Equal(IncrediblesSerializer.DefaultProfile.OnGameCube().PlatformFieldOrder, serializer.Profile.PlatformFieldOrder);
     }
 }

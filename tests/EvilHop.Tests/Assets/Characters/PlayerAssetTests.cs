@@ -85,14 +85,14 @@ public class PlayerAssetTests
 
     [Fact]
     public void Read_Player_ProducesPlayerAsset() =>
-        Assert.IsType<PlayerAsset>(Read([.. BfbbData(), .. LightKitId(0x4E24E022)], BFBBSerializer.DefaultProfile));
+        Assert.IsType<PlayerAsset>(Read([.. BfbbData(), .. LightKitId(0x4E24E022)], BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Player_UnderBfbb_PopulatesLightKitId()
     {
         byte[] data = [.. BfbbData(), .. LightKitId(0x4E24E022)];
 
-        var asset = (PlayerAsset)Read(data, BFBBSerializer.DefaultProfile);
+        var asset = (PlayerAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x4E24E022), asset.LightKitId);
     }
@@ -102,7 +102,7 @@ public class PlayerAssetTests
     {
         byte[] data = N100FData();
 
-        var asset = (PlayerAsset)Read(data, N100FSerializer.DefaultProfile);
+        var asset = (PlayerAsset)Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(default, asset.LightKitId);
     }
@@ -118,7 +118,7 @@ public class PlayerAssetTests
             .. LightKitId(0x99999999),
         ];
 
-        var asset = (PlayerAsset)Read(data, BFBBSerializer.DefaultProfile);
+        var asset = (PlayerAsset)Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Links.Count);
         Assert.Equal(1, asset.Links[0].SourceEvent);
@@ -130,7 +130,7 @@ public class PlayerAssetTests
     public void Read_ThenWrite_PlayerUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), .. LightKitId(0x4E24E022)];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -139,7 +139,7 @@ public class PlayerAssetTests
     public void Read_ThenWrite_PlayerUnderN100F_ReproducesInputBytes()
     {
         byte[] data = N100FData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -154,7 +154,7 @@ public class PlayerAssetTests
             .. LinkBytes(3, 4, 0x11223344),
             .. LightKitId(0x4E24E022),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -175,7 +175,7 @@ public class PlayerAssetTests
             0xD5, 0xF1, 0xE7, 0x96, // ModelId
         ];
 
-        var profile = N100FSerializer.DefaultProfile with
+        var profile = N100FSerializer.DefaultProfile.OnGameCube() with
         {
             Platform = Platform.PlayStation2,
             StreamDataHasPaddingField = false,
@@ -207,7 +207,7 @@ public class PlayerAssetTests
             .. EntityPrefix(hasPadding: false),
             .. LightKitId(0x4E24E022),
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false };
 
         var asset = (PlayerAsset)Read(data, profile);
 
@@ -219,7 +219,7 @@ public class PlayerAssetTests
     public void Read_ThenWrite_PlayerWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), .. LightKitId(0x4E24E022), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }

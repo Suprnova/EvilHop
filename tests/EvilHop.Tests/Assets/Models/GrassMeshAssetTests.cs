@@ -83,12 +83,12 @@ public class GrassMeshAssetTests
 
     [Fact]
     public void Read_GrassMesh_UnderIncredibles_ProducesGrassMeshAsset() =>
-        Assert.IsType<GrassMeshAsset>(Read(SampleData(), IncrediblesSerializer.DefaultProfile));
+        Assert.IsType<GrassMeshAsset>(Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_GrassMesh_PopulatesEveryField()
     {
-        var asset = (GrassMeshAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile);
+        var asset = (GrassMeshAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(Min, asset.MinBounds);
         Assert.Equal(Max, asset.MaxBounds);
@@ -110,7 +110,7 @@ public class GrassMeshAssetTests
     [Fact]
     public void Read_GrassMesh_VertexAndFaceCountKeepDerivingAfterMutation()
     {
-        var asset = (GrassMeshAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile);
+        var asset = (GrassMeshAsset)Read(SampleData(), IncrediblesSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(2, asset.Physical.VertexCount);
         Assert.Equal(1, asset.Physical.FaceCount);
@@ -126,7 +126,7 @@ public class GrassMeshAssetTests
     public void Read_ThenWrite_GrassMesh_ReproducesInputBytes()
     {
         byte[] data = SampleData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -135,7 +135,7 @@ public class GrassMeshAssetTests
     public void Read_ThenWrite_GrassMeshWithNoVerticesOrFaces_ReproducesInputBytes()
     {
         byte[] data = [.. Prefix(0), .. Header(0, 0, Vector3.Zero, Vector3.Zero)];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -144,7 +144,7 @@ public class GrassMeshAssetTests
     public void Read_ThenWrite_GrassMeshWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. SampleData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -154,7 +154,7 @@ public class GrassMeshAssetTests
     {
         byte[] data = SampleData();
 
-        var asset = Read(data, BFBBSerializer.DefaultProfile);
+        var asset = Read(data, BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<GrassMeshAsset>(asset);
         Assert.Equal(data[8..], asset.GetUnparsedTail().ToArray());

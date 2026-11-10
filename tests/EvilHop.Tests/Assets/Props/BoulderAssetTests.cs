@@ -113,12 +113,12 @@ public class BoulderAssetTests
 
     [Fact]
     public void Read_Boulder_ProducesBoulderAsset() =>
-        Assert.IsType<BoulderAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<BoulderAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_Boulder_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (BoulderAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (BoulderAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(15.0f, asset.Gravity);
         Assert.Equal(1.0f, asset.Mass);
@@ -146,7 +146,7 @@ public class BoulderAssetTests
     [Fact]
     public void Read_Boulder_UnderTSSM_PopulatesLaterFields()
     {
-        var asset = (BoulderAsset)Read(LaterData(), TSSMSerializer.DefaultProfile);
+        var asset = (BoulderAsset)Read(LaterData(), TSSMSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(15.0f, asset.Gravity);
         Assert.Equal(default, asset.StaticFriction);
@@ -162,7 +162,7 @@ public class BoulderAssetTests
     [Fact]
     public void Read_Boulder_UnderROTU_PopulatesInitialNonCollideTime()
     {
-        var asset = (BoulderAsset)Read(ROTUFullData(), ROTUSerializer.DefaultProfile);
+        var asset = (BoulderAsset)Read(ROTUFullData(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(1.0f, asset.SoundRadius);
         Assert.Equal(7, asset.BoneIndex);
@@ -178,7 +178,7 @@ public class BoulderAssetTests
             .. LinkBytes(1, 2, 0xAABBCCDD),
             .. LinkBytes(3, 4, 0x11223344),
         ];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -187,7 +187,7 @@ public class BoulderAssetTests
     public void Read_ThenWrite_BoulderUnderTSSM_ReproducesInputBytes()
     {
         byte[] data = [.. LaterData(linkCount: 1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = TSSMSerializer.DefaultProfile;
+        var profile = TSSMSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -196,7 +196,7 @@ public class BoulderAssetTests
     public void Read_ThenWrite_BoulderUnderIncredibles_ReproducesInputBytes()
     {
         byte[] data = LaterData();
-        var profile = IncrediblesSerializer.DefaultProfile;
+        var profile = IncrediblesSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -205,7 +205,7 @@ public class BoulderAssetTests
     public void Read_ThenWrite_BoulderUnderROTU_ReproducesInputBytes()
     {
         byte[] data = [.. ROTUFullData(linkCount: 1), .. LinkBytes(1, 2, 0xAABBCCDD)];
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -225,7 +225,7 @@ public class BoulderAssetTests
             .. U32(0x222), .. F32(5.0f), .. U32(1u), .. U32(0), // flags, killtimer, hitpoints, soundId
             .. F32(1.0f), .. F32(2.0f), // volume, minSoundVel
         ];
-        var profile = BFBBSerializer.DefaultProfile with { EntityHasPadding = false, BoulderHasSoundFalloff = false };
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube() with { EntityHasPadding = false, BoulderHasSoundFalloff = false };
 
         var asset = (BoulderAsset)Read(data, profile);
 
@@ -240,7 +240,7 @@ public class BoulderAssetTests
     public void Read_ThenWrite_BoulderWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -249,7 +249,7 @@ public class BoulderAssetTests
     public void Read_Boulder_UnderN100F_DegradesToGenericEntityAsset()
     {
         byte[] data = BfbbData();
-        var profile = N100FSerializer.DefaultProfile;
+        var profile = N100FSerializer.DefaultProfile.OnGameCube();
 
         var asset = Read(data, profile);
 

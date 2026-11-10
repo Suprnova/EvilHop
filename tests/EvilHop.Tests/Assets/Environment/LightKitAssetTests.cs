@@ -90,12 +90,12 @@ public class LightKitAssetTests
 
     [Fact]
     public void Read_LightKit_ProducesLightKitAsset() =>
-        Assert.IsType<LightKitAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile));
+        Assert.IsType<LightKitAsset>(Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube()));
 
     [Fact]
     public void Read_LightKit_UnderBfbb_PopulatesEveryField()
     {
-        var asset = (LightKitAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile);
+        var asset = (LightKitAsset)Read(BfbbData(), BFBBSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(default, asset.GroupId);
         Assert.Equal(2, asset.Lights.Count);
@@ -119,7 +119,7 @@ public class LightKitAssetTests
     [Fact]
     public void Read_LightKit_UnderROTU_PopulatesGroupIdAndIgnoresBlended()
     {
-        var asset = (LightKitAsset)Read(RotuData(), ROTUSerializer.DefaultProfile);
+        var asset = (LightKitAsset)Read(RotuData(), ROTUSerializer.DefaultProfile.OnGameCube());
 
         Assert.Equal(new AssetId(0x11111111), asset.GroupId);
         Assert.Single(asset.Lights);
@@ -129,7 +129,7 @@ public class LightKitAssetTests
     public void Read_ThenWrite_LightKitUnderBfbb_ReproducesInputBytes()
     {
         byte[] data = BfbbData();
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -138,7 +138,7 @@ public class LightKitAssetTests
     public void Read_ThenWrite_LightKitUnderROTU_ReproducesInputBytes()
     {
         byte[] data = RotuData();
-        var profile = ROTUSerializer.DefaultProfile;
+        var profile = ROTUSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -147,7 +147,7 @@ public class LightKitAssetTests
     public void Read_ThenWrite_LightKitUnderRatatouille_ReproducesInputBytes()
     {
         byte[] data = RotuData();
-        var profile = RatatouilleSerializer.DefaultProfile;
+        var profile = RatatouilleSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -156,7 +156,7 @@ public class LightKitAssetTests
     public void Read_ThenWrite_LightKitWithNoLights_ReproducesInputBytes()
     {
         byte[] data = Header(0, 0);
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -165,7 +165,7 @@ public class LightKitAssetTests
     public void Read_ThenWrite_LightKitWithUnparsedTail_ReproducesInputBytes()
     {
         byte[] data = [.. BfbbData(), 0xDE, 0xAD, 0xBE, 0xEF];
-        var profile = BFBBSerializer.DefaultProfile;
+        var profile = BFBBSerializer.DefaultProfile.OnGameCube();
 
         Assert.Equal(data, Write(Read(data, profile), profile));
     }
@@ -175,7 +175,7 @@ public class LightKitAssetTests
     {
         byte[] data = BfbbData();
 
-        var asset = Read(data, N100FSerializer.DefaultProfile);
+        var asset = Read(data, N100FSerializer.DefaultProfile.OnGameCube());
 
         Assert.IsNotType<LightKitAsset>(asset);
         Assert.Equal(data, asset.GetUnparsedTail().ToArray());
