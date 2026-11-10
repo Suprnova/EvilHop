@@ -89,6 +89,18 @@ variant row (yaw $\pi/2$; yaw turns +Z toward +X).
 - **Boot INIs**: Boot INIs must preserve CRLF line endings.
 - **Collision scales with `Scale`**: A tile scaled up collides across its full scaled footprint.
 - **Archive split**: Models and textures live in the HOP; game entities live in the HIP. Borrowed assets retain their source layer type.
+- **Solid collision pieces (TSSM)**: Build anything walkable from `pt01`'s plain 12-triangle `cube` (or `bl01`'s `test_cube`
+  only as a visual: it is a 60-triangle shell with a hollow centre) at *uniform* scale, with `PreciseCollision` on. Thin
+  platforms (a flat tile, 4 units or less), small stretched slabs and a static `SIMP` without `PreciseCollision` sink or
+  drop the player; a long shape is a grid of cubes. An invisible collider is an `EntityFlags.None` platform (shipped
+  `test_cylinder` is one). A deck rising faster than about 5 units/s can swallow a jumping player.
+- **Driven chains and Fully Manipulable platforms (TSSM)**: `Drivenby` mode 1 carries tilt; a Mechanism rotation loses it,
+  `FM` `RotLocalY` shears a non-uniformly scaled platform, and every finished `FM` command rounds the matrix to 0.01, which
+  walks a tilted platform off its plane. A Pendulum motion rotates about its model's Z axis using the scaled axis, so it
+  needs unit scale. Use unit-scale invisible driver platforms. Event IDs after 535 differ between BFBB and TSSM.
+- **Update culling**: A platform stops moving when the camera is over 70 units from its origin unless it has
+  `SetUpdateDistance` 0 or a driven entity in range.
+- **Skydome**: A second copy rotated half a turn about X (not mirrored, which culls its faces) covers the lower half.
 - **Debugging with Dolphin**: Dolphin's PC, LR, and callstack can be resolved against decomp symbols or by disassembling the GameCube DOL. Instruction breakpoints in Dolphin confirm whether code reading a field executes; use "Boot to Pause" for load-time logic. Use the `validating-asset-docs` skill if available for more information on decomp workflows.
 
 ### Copy a shipped rig rather than inventing one
