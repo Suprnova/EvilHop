@@ -8,7 +8,9 @@ project's conventions, [`architecture.md`](architecture.md) for how it is design
 
 [`Archive`](../src/EvilHop/Archive.cs) is the root object: a list of root
 [`Block`](../src/EvilHop/Blocks/Block.cs)s plus the [`Serializer`](../src/EvilHop/Serialization/Serializer.cs)
-that read them. `Archive.Load`/`Save` round-trip a stream through the block layer.
+that read them. `Archive.Load`/`Save` round-trip a stream through the block layer, and
+`Archive.Create` builds a new empty TSSM archive stamped for the serializer's platform - the only
+place EvilHop stamps a `PLAT` block; archives read from disk are never restamped.
 `Archive.OpenAssets()` enters the asset layer by returning an
 [`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs).
 

@@ -60,6 +60,36 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
         Load(stream, Serializer.Create(game, platform));
 
     /// <summary>
+    /// Creates a new, empty archive stamped as built for <paramref name="serializer"/>'s platform, with
+    /// the package values every NTSC-U US archive of that platform shares. Its creation and
+    /// modification times are the current time.
+    /// </summary>
+    /// <param name="serializer">
+    /// The <see cref="Serialization.Serializer"/> for the game and platform to create the archive for.
+    /// </param>
+    /// <returns>A new, empty <see cref="Archive"/>.</returns>
+    /// <exception cref="NotSupportedException">Thrown when <paramref name="serializer"/>'s game isn't <see cref="GameVersion.TSSM"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when <paramref name="serializer"/> states no platform to stamp.</exception>
+    public static Archive Create(Serializer serializer) => Create(serializer, DateTimeOffset.UtcNow);
+
+    internal static Archive Create(Serializer serializer, DateTimeOffset now)
+    {
+        ArgumentNullException.ThrowIfNull(serializer);
+
+        var profile = serializer.Profile;
+        if (profile.Game is not GameVersion.TSSM)
+            throw new NotSupportedException($"Creating {profile.Game} archives isn't supported yet.");
+
+        var platform = profile.Platform
+            ?? throw new InvalidOperationException(
+                $"A new archive can't be stamped without a platform: this {nameof(Serializer)} states none.");
+
+        var archive = new Archive(serializer, TSSMArchiveTemplate.Build(serializer, platform, now));
+        using (archive.OpenAssets()) { } // an empty commit lays out the counts and stream padding for the platform
+        return archive;
+    }
+
+    /// <summary>
     /// Saves a HIP archive to the provided <paramref name="stream"/> using <see cref="Serializer"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to save to.</param>
