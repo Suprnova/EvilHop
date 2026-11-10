@@ -1,5 +1,6 @@
 using EvilHop.Assets;
 using EvilHop.Blocks;
+using EvilHop.Common;
 using EvilHop.Serialization;
 
 namespace EvilHop;
@@ -38,37 +39,25 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     }
 
     /// <summary>
-    /// Loads a HIP archive from <paramref name="stream"/>, inferring its <see cref="Serialization.Serializer"/>
-    /// via <see cref="Serializer.Sniff"/> rather than requiring the caller to already know it.
+    /// Loads a HIP archive built for <paramref name="game"/> from <paramref name="stream"/>, without
+    /// stating a platform. The block layer works as usual; <see cref="OpenAssets()"/> refuses until a
+    /// platform is stated, which <see cref="OpenAssets(Platform)"/> can do.
     /// </summary>
-    /// <param name="stream">
-    /// The stream to load from. When non-seekable, it is buffered into memory in full before
-    /// sniffing, since <see cref="Serializer.Sniff"/> cannot rewind it on its own.
-    /// Closes <paramref name="stream"/> before returning, matching <see cref="Load(Stream, Serializer)"/>.
-    /// </param>
-    /// <returns>An <see cref="Archive"/> constructed from the sniffed stream.</returns>
-    /// <exception cref="FormatException">Thrown when the stream can't be recognized as a HIP archive.</exception>
-    public static Archive Load(Stream stream)
-    {
-        ArgumentNullException.ThrowIfNull(stream);
+    /// <param name="stream">The <see cref="Stream"/> to load from.</param>
+    /// <param name="game">The game the archive was built for.</param>
+    /// <returns>An <see cref="Archive"/> constructed from the provided parameters.</returns>
+    public static Archive Load(Stream stream, GameVersion game) => Load(stream, Serializer.Create(game));
 
-        Stream source = stream.CanSeek ? stream : Buffer(stream);
-        var sniff = Serializer.Sniff(source);
-        if (sniff.Profile is null)
-            throw new FormatException("Could not recognize this stream as a HIP archive.");
-
-        var serializer = Serializer.Create(sniff.Profile);
-        return new Archive(serializer, serializer.Read(source));
-    }
-
-    private static MemoryStream Buffer(Stream stream)
-    {
-        var buffer = new MemoryStream();
-        stream.CopyTo(buffer);
-        stream.Dispose();
-        buffer.Position = 0;
-        return buffer;
-    }
+    /// <summary>
+    /// Loads a HIP archive built for <paramref name="game"/> on <paramref name="platform"/> from
+    /// <paramref name="stream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to load from.</param>
+    /// <param name="game">The game the archive was built for.</param>
+    /// <param name="platform">The console the archive was built for.</param>
+    /// <returns>An <see cref="Archive"/> constructed from the provided parameters.</returns>
+    public static Archive Load(Stream stream, GameVersion game, Platform platform) =>
+        Load(stream, Serializer.Create(game, platform));
 
     /// <summary>
     /// Saves a HIP archive to the provided <paramref name="stream"/> using <see cref="Serializer"/>.
@@ -86,5 +75,19 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// is orphaned for the session's lifetime and is not reused afterward.
     /// </remarks>
     /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
-    public AssetSession OpenAssets() => AssetSession.Open(this);
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="Serializer"/> states no platform. Use <see cref="OpenAssets(Platform)"/> to supply one.
+    /// </exception>
+    public AssetSession OpenAssets() => AssetSession.Open(this, null);
+
+    /// <summary>
+    /// Enters Asset Mode like <see cref="OpenAssets()"/>, supplying the <paramref name="platform"/>
+    /// the assets were built for when <see cref="Serializer"/> states none.
+    /// </summary>
+    /// <param name="platform">The console the archive was built for.</param>
+    /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="Serializer"/> already states a different platform. A stated platform is never overridden.
+    /// </exception>
+    public AssetSession OpenAssets(Platform platform) => AssetSession.Open(this, platform);
 }

@@ -1,3 +1,4 @@
+using EvilHop.Common;
 using EvilHop.Serialization;
 
 namespace EvilHop.Tests;
@@ -23,27 +24,44 @@ public class ArchiveTests
         Assert.Equal(originalBytes, rewritten.ToArray());
     }
 
-    [Fact]
-    public void Load_Sniffed_ThenSave_MinimalFixture_ProducesIdenticalBytes()
+    private static byte[] MinimalFixtureBytes()
     {
         using var fixture = OpenMinimalFixture();
-        using var fixtureCopy = new MemoryStream();
-        fixture.CopyTo(fixtureCopy);
-        byte[] originalBytes = fixtureCopy.ToArray();
+        using var copy = new MemoryStream();
+        fixture.CopyTo(copy);
+        return copy.ToArray();
+    }
 
-        var archive = Archive.Load(new MemoryStream(originalBytes));
+    [Fact]
+    public void Load_GameOnly_ThenSave_MinimalFixture_ProducesIdenticalBytes()
+    {
+        byte[] originalBytes = MinimalFixtureBytes();
+
+        var archive = Archive.Load(new MemoryStream(originalBytes), GameVersion.N100F);
 
         using var rewritten = new MemoryStream();
         archive.Save(rewritten);
-
         Assert.Equal(originalBytes, rewritten.ToArray());
     }
 
     [Fact]
-    public void Load_Sniffed_NonHipStream_ThrowsFormatException()
+    public void Load_GameOnly_StatesNoPlatform()
     {
-        byte[] garbage = [1, 2, 3, 4, 5, 6, 7, 8];
+        var archive = Archive.Load(new MemoryStream(MinimalFixtureBytes()), GameVersion.N100F);
 
-        Assert.Throws<FormatException>(() => Archive.Load(new MemoryStream(garbage)));
+        Assert.Equal(GameVersion.N100F, archive.Serializer.Profile.Game);
+        Assert.Null(archive.Serializer.Profile.Platform);
+    }
+
+    [Theory]
+    [InlineData(Platform.GameCube)]
+    [InlineData(Platform.Xbox)]
+    [InlineData(Platform.PlayStation2)]
+    public void Load_GameAndPlatform_StatesBoth(Platform platform)
+    {
+        var archive = Archive.Load(new MemoryStream(MinimalFixtureBytes()), GameVersion.N100F, platform);
+
+        Assert.Equal(GameVersion.N100F, archive.Serializer.Profile.Game);
+        Assert.Equal(platform, archive.Serializer.Profile.Platform);
     }
 }

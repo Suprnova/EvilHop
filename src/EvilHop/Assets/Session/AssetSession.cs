@@ -180,12 +180,21 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     private static uint DataAlignmentFor(Platform platform) => platform == Platform.GameCube ? 32u : 2048u;
 
-    internal static AssetSession Open(Archive archive)
+    /// <summary>
+    /// Opens <paramref name="archive"/>'s assets under its serializer's profile, with
+    /// <paramref name="supplied"/> filling in a platform the profile doesn't state.
+    /// </summary>
+    internal static AssetSession Open(Archive archive, Platform? supplied)
     {
-        var profile = archive.Serializer.Profile;
-        var platform = profile.Platform
+        var stated = archive.Serializer.Profile;
+        if (stated.Platform is { } statedPlatform && supplied is { } suppliedPlatform && statedPlatform != suppliedPlatform)
+            throw new InvalidOperationException(
+                $"This archive's {nameof(Serializer)} states {statedPlatform}, so assets can't be opened as {suppliedPlatform}.");
+
+        var platform = stated.Platform ?? supplied
             ?? throw new InvalidOperationException(
                 $"Assets can't be opened without a platform: this archive's {nameof(Serializer)} states none.");
+        var profile = stated with { Platform = platform };
 
         var package = archive.Roots.OfType<Package>().Single();
         var dictionary = archive.Roots.OfType<Dictionary>().Single();

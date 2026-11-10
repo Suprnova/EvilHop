@@ -126,6 +126,66 @@ public class AssetSessionTests
 
     [Theory]
     [MemberData(nameof(Games))]
+    public void OpenAssets_WithPlatform_OnSerializerStatingNone_Opens(string game)
+    {
+        var gameVersion = SerializerFor(game).Profile.Game;
+        var archive = LoadRepaired(game, Serializer.Create(gameVersion));
+
+        using var session = archive.OpenAssets(Platform.GameCube);
+
+        Assert.Empty(session.Diagnostics);
+    }
+
+    [Fact]
+    public void OpenAssets_WithPlatform_CommitsAsIfTheSerializerHadStatedIt()
+    {
+        byte[] Committed(Archive archive, Func<Archive, AssetSession> open)
+        {
+            using (open(archive)) { }
+            return Save(archive);
+        }
+
+        byte[] stated = Committed(
+            LoadRepaired("n100f", Serializer.Create(GameVersion.N100F, Platform.Xbox)), archive => archive.OpenAssets());
+        byte[] supplied = Committed(
+            LoadRepaired("n100f", Serializer.Create(GameVersion.N100F)), archive => archive.OpenAssets(Platform.Xbox));
+        byte[] otherPlatform = Committed(
+            LoadRepaired("n100f", Serializer.Create(GameVersion.N100F)), archive => archive.OpenAssets(Platform.GameCube));
+
+        Assert.Equal(stated, supplied);
+        Assert.NotEqual(stated, otherPlatform);
+    }
+
+    [Fact]
+    public void OpenAssets_WithPlatform_MatchingTheStatedOne_Opens()
+    {
+        var archive = LoadRepaired("n100f", Serializer.Create(GameVersion.N100F, Platform.Xbox));
+
+        using var session = archive.OpenAssets(Platform.Xbox);
+
+        Assert.Empty(session.Diagnostics);
+    }
+
+    [Fact]
+    public void OpenAssets_WithPlatform_ConflictingWithTheStatedOne_ThrowsInvalidOperationException()
+    {
+        var archive = LoadRepaired("n100f", Serializer.Create(GameVersion.N100F, Platform.Xbox));
+
+        Assert.Throws<InvalidOperationException>(() => archive.OpenAssets(Platform.GameCube));
+    }
+
+    [Fact]
+    public void OpenAssets_WithPlatform_LeavesTheSerializerStatingNone()
+    {
+        var archive = LoadRepaired("n100f", Serializer.Create(GameVersion.N100F));
+
+        using (archive.OpenAssets(Platform.GameCube)) { }
+
+        Assert.Null(archive.Serializer.Profile.Platform);
+    }
+
+    [Theory]
+    [MemberData(nameof(Games))]
     public void OpenAssets_ReportsNoDiagnostics(string game)
     {
         var archive = LoadRepaired(game);
