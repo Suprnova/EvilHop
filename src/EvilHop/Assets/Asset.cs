@@ -49,6 +49,13 @@ public abstract class Asset(AssetType type) : Physical.IAsset
     /// </remarks>
     public virtual Physical.IAsset Physical => this;
 
+    /// <summary>
+    /// How much of this <see cref="Asset"/> EvilHop models. An asset of a typed type reports
+    /// <see cref="SupportState.Untyped"/> when its codec doesn't cover the game it was read under, or
+    /// when its parse failed and degraded it.
+    /// </summary>
+    public virtual SupportState Support => SupportState.Typed;
+
     internal byte[] UnparsedTail { get; set; } = [];
 
     private AssetType? _overriddenType;

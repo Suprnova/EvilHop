@@ -10,4 +10,7 @@ public sealed class GenericDynamicAsset(DynamicKind kind) : DynamicAsset
 {
     /// <inheritdoc/>
     public override DynamicKind Kind { get; } = kind;
+
+    /// <inheritdoc/>
+    public override SupportState Support => SupportState.Untyped;
 }

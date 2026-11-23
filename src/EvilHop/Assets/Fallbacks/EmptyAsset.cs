@@ -11,4 +11,8 @@ namespace EvilHop.Assets;
 /// <see cref="Asset.Type"/> still reports whatever type the header names.
 /// </remarks>
 /// TODO: should this be internal? or should GenericAssets.cs's classes be public?
-public sealed class EmptyAsset(AssetType type) : Asset(type);
+public sealed class EmptyAsset(AssetType type) : Asset(type)
+{
+    /// <inheritdoc/>
+    public override SupportState Support => SupportState.Untyped;
+}

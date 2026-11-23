@@ -10,6 +10,9 @@ public abstract class PayloadAsset(AssetType type) : Asset(type)
 {
     internal byte[] Data { get; set; } = [];
 
+    /// <inheritdoc/>
+    public override SupportState Support => SupportState.Payload;
+
     /// <summary>
     /// Writes this <see cref="PayloadAsset"/>'s embedded file to <paramref name="stream"/>.
     /// </summary>
