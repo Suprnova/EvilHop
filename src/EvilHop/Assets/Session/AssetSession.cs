@@ -4,7 +4,6 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.Frozen;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EvilHop.Assets;
 
@@ -27,7 +26,7 @@ public sealed class AssetSession : IDisposable
 {
     /// <summary>The archive's <see cref="Layer"/>s, in the order they are listed on disk.</summary>
     public IReadOnlyList<Layer> Layers => _layers;
-    private readonly List<Layer> _layers = [];
+    private readonly List<Layer> _layers;
 
     /// <summary>
     /// Creates an empty <see cref="Layer"/> of the given <paramref name="type"/> and places it in
@@ -60,7 +59,7 @@ public sealed class AssetSession : IDisposable
     /// and is reported here rather than throwing.
     /// </summary>
     public IReadOnlyList<AssetDiagnostic> Diagnostics => _diagnostics;
-    private readonly List<AssetDiagnostic> _diagnostics = [];
+    private readonly List<AssetDiagnostic> _diagnostics;
 
     /// <summary>
     /// The assets whose bytes differ from what they were at open, calculated via the session's checksum.
@@ -104,8 +103,10 @@ public sealed class AssetSession : IDisposable
         Dictionary<(AssetId Before, AssetId After), byte[]> CapturedGaps,
         Dictionary<AssetId, uint> OriginalZeroSizeOffsets);
 
-    private AssetSession(SessionTarget target, CapturedValues captured, ChangeTracking changeTracking)
+    private AssetSession(SessionTarget target, CapturedValues captured, AssetRead read, ChangeTracking changeTracking)
     {
+        _layers = read.Layers;
+        _diagnostics = read.Diagnostics;
         _archive = target.Archive;
         _profile = target.Profile;
         _platform = target.Platform;
@@ -186,15 +187,8 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     internal static AssetSession Open(Archive archive, Platform? supplied)
     {
-        var stated = archive.Serializer.Profile;
-        if (stated.Platform is { } statedPlatform && supplied is { } suppliedPlatform && statedPlatform != suppliedPlatform)
-            throw new InvalidOperationException(
-                $"This archive's {nameof(Serializer)} states {statedPlatform}, so assets can't be opened as {suppliedPlatform}.");
-
-        var platform = stated.Platform ?? supplied
-            ?? throw new InvalidOperationException(
-                $"Assets can't be opened without a platform: this archive's {nameof(Serializer)} states none.");
-        var profile = stated with { Platform = platform };
+        var profile = AssetReader.ResolveProfile(archive, supplied);
+        var read = AssetReader.Read(archive, profile);
 
         var package = archive.Roots.OfType<Package>().Single();
         var dictionary = archive.Roots.OfType<Dictionary>().Single();
@@ -203,11 +197,8 @@ public sealed class AssetSession : IDisposable
         var layerTable = dictionary.LayerTable;
         var streamData = stream.Data;
 
-        var headers = assetTable.Headers.ToList();
-        long dataStart = MeasureThrough(archive, stream) - streamData.Data.Length;
-
         var session = new AssetSession(
-            new SessionTarget(archive, profile, platform, package, dictionary, stream, streamData),
+            new SessionTarget(archive, profile, profile.Platform!.Value, package, dictionary, stream, streamData),
             new CapturedValues(
                 assetTable.Inf.Value,
                 layerTable.Inf.Value,
@@ -216,10 +207,12 @@ public sealed class AssetSession : IDisposable
                 // no-field archive's fill bytes get parsed as one anyway. Comparing the parsed value
                 // against the padding actually read is what tells a real field from a false one.
                 streamData.PaddingAmount == (uint?)streamData.Padding.Length),
-            new ChangeTracking([.. headers.Select(h => new AssetId(h.Id))], [], [], CaptureZeroSizeOffsets(headers)));
-
-        session.CaptureGaps(headers, dataStart);
-        session.ParseLayers(layerTable, headers, dataStart);
+            read,
+            new ChangeTracking(
+                [.. read.Placements.Select(p => p.Id)],
+                read.Checksums,
+                CaptureGaps(read.Placements, read.Data, read.DataStart),
+                CaptureZeroSizeOffsets(read.Placements)));
 
         assetTable.LockFields();
         layerTable.LockFields();
@@ -237,117 +230,35 @@ public sealed class AssetSession : IDisposable
     /// <summary>
     /// Captures every zero-size asset's <c>Offset</c> as read, for <see cref="BuildData"/> to replay.
     /// </summary>
-    private static Dictionary<AssetId, uint> CaptureZeroSizeOffsets(List<AssetHeader> headers)
+    private static Dictionary<AssetId, uint> CaptureZeroSizeOffsets(List<AssetPlacement> placements)
     {
         var offsets = new Dictionary<AssetId, uint>();
-        foreach (var header in headers.Where(h => h.Size == 0))
-            offsets[new AssetId(header.Id)] = header.Offset;
+        foreach (var placement in placements.Where(p => p.Size == 0))
+            offsets[placement.Id] = placement.Offset;
         return offsets;
     }
 
-    private void CaptureGaps(List<AssetHeader> headers, long dataStart)
+    /// <summary>
+    /// Captures the bytes between each pair of assets adjacent in the data, for
+    /// <see cref="GapBytesFor"/> to replay.
+    /// </summary>
+    private static Dictionary<(AssetId Before, AssetId After), byte[]> CaptureGaps(
+        List<AssetPlacement> placements, byte[] data, long dataStart)
     {
-        var ordered = headers.OrderBy(h => h.Offset).ToList();
+        var gaps = new Dictionary<(AssetId Before, AssetId After), byte[]>();
+        var ordered = placements.OrderBy(p => p.Offset).ToList();
         for (int i = 0; i < ordered.Count - 1; i++)
         {
             uint gapStart = ordered[i].Offset + ordered[i].Size;
             if (ordered[i + 1].Offset <= gapStart) continue;
 
             uint gapSize = ordered[i + 1].Offset - gapStart;
-            if (!TryGetRange(dataStart, _streamData.Data.Length, gapStart, gapSize, out var range)) continue;
+            if (!AssetReader.TryGetRange(dataStart, data.Length, gapStart, gapSize, out var range)) continue;
 
-            _capturedGaps[(new AssetId(ordered[i].Id), new AssetId(ordered[i + 1].Id))] =
-                _streamData.Data[range];
-        }
-    }
-
-    private void ParseLayers(LayerTable layerTable, List<AssetHeader> headers, long dataStart)
-    {
-        var byId = new Dictionary<uint, AssetHeader>();
-        foreach (var header in headers) byId.TryAdd(header.Id, header);
-
-        var seen = new HashSet<uint>();
-
-        foreach (var layerHeader in layerTable.Headers)
-        {
-            var layer = new Layer
-            {
-                Type = layerHeader.Type,
-                DebugValue = layerHeader.Debug.Value
-            };
-
-            foreach (uint id in layerHeader.AssetIds)
-            {
-                if (!byId.TryGetValue(id, out var header))
-                {
-                    _diagnostics.Add(new AssetDiagnostic(new AssetId(id), "Listed by a layer but has no ATOC entry. Skipped."));
-                    continue;
-                }
-
-                if (!seen.Add(id))
-                {
-                    _diagnostics.Add(new AssetDiagnostic(new AssetId(id), "Listed more than once. The duplicate listing is dropped."));
-                    continue;
-                }
-
-                layer.Add(ParseOne(header, dataStart));
-            }
-
-            _layers.Add(layer);
-        }
-    }
-
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Each asset is parsed independently; a malformed one must not abort the rest of the archive.")]
-    private Asset ParseOne(AssetHeader header, long dataStart)
-    {
-        var debug = header.Debug;
-        bool inRange = TryGetRange(dataStart, _streamData.Data.Length, header.Offset, header.Size, out var range);
-        ReadOnlySpan<byte> slice = inRange ? _streamData.Data.AsSpan(range) : [];
-
-        if (!inRange && header.Size > 0)
-            _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) declares bytes outside DPAK. Degraded to empty."));
-
-        uint computed = Crc32Mpeg2.Compute(slice);
-        _openChecksums[new AssetId(header.Id)] = computed;
-
-        if (header.Size == 0)
-        {
-            var empty = new EmptyAsset(header.Type);
-            AssetFields.Populate(empty, header, debug);
-            return AdoptChecksum(empty, computed, debug);
+            gaps[(ordered[i].Id, ordered[i + 1].Id)] = data[range];
         }
 
-        try
-        {
-            var (offset, length) = range.GetOffsetAndLength(_streamData.Data.Length);
-            using var stream = new MemoryStream(_streamData.Data, offset, length, writable: false);
-            using var reader = new EndianReader(stream, _profile.Endianness);
-            return AdoptChecksum(AssetCodecs.Read(reader, header, debug, _profile), computed, debug);
-        }
-        catch (Exception ex)
-        {
-            _diagnostics.Add(new AssetDiagnostic(new AssetId(header.Id), $"({header.Type}) failed to parse: {ex.Message}. Degraded to raw bytes."));
-            var fallback = new GenericAsset(header.Type);
-            AssetFields.Populate(fallback, header, debug);
-            fallback.SetUnparsedTail(slice.ToArray());
-            return AdoptChecksum(fallback, computed, debug);
-        }
-    }
-
-    /// <summary>
-    /// Gives <paramref name="asset"/> the checksum its <see cref="AssetDebug"/> declared, against a
-    /// baseline of what its data actually hashes to.
-    /// </summary>
-    /// <remarks>
-    /// Setting <see cref="Asset.ComputedChecksum"/> first is what makes the two agreeing the normal
-    /// case and leaves no override behind. They disagree only in archives that shipped a wrong
-    /// checksum, and there the declared value is recorded as an override so it survives back out.
-    /// </remarks>
-    private static Asset AdoptChecksum(Asset asset, uint computed, AssetDebug debug)
-    {
-        asset.ComputedChecksum = computed;
-        asset.Physical.Checksum = debug.Checksum;
-        return asset;
+        return gaps;
     }
 
     /// <summary>
@@ -630,90 +541,11 @@ public sealed class AssetSession : IDisposable
     /// </summary>
     private (long DataStart, int PaddingAmount) MeasureDataStart()
     {
-        long dataStart = MeasureThrough(_archive, _stream);
+        long dataStart = AssetReader.MeasureThrough(_archive, _stream);
         long dataAlignment = DataAlignmentFor(_platform);
         return (dataStart, (int)((dataAlignment - dataStart % dataAlignment) % dataAlignment));
     }
 
-    /// <summary>
-    /// The serialized length of <paramref name="archive"/>'s roots up to and including
-    /// <paramref name="stream"/>, measured by writing them without retaining the bytes.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="StreamData"/>'s data ends where <paramref name="stream"/> does, not where the
-    /// archive does: a <see cref="HIPB"/> can follow it.
-    /// </remarks>
-    private static long MeasureThrough(Archive archive, AssetStream stream)
-    {
-        var roots = archive.Roots.TakeWhile(root => root != stream).Append(stream);
-        using var counter = new LengthMeasuringStream();
-        archive.Serializer.Write(counter, roots);
-        return counter.Length;
-    }
-
-    private static bool TryGetRange(long dataStart, int dataLength, uint offset, uint size, out Range range)
-    {
-        long start = offset - dataStart;
-        if (start < 0 || size > int.MaxValue || start + size > dataLength)
-        {
-            range = default;
-            return false;
-        }
-
-        range = new Range((int)start, (int)(start + size));
-        return true;
-    }
-
     /// <inheritdoc/>
     public void Dispose() => Commit();
-
-    /// <summary>
-    /// A write-only <see cref="Stream"/> that records how many bytes pass through it without
-    /// keeping them. Seekable, because <see cref="Serializer"/> backpatches each block's size field.
-    /// </summary>
-    private sealed class LengthMeasuringStream : Stream
-    {
-        private long _position;
-        private long _length;
-
-        public override bool CanRead => false;
-        public override bool CanSeek => true;
-        public override bool CanWrite => true;
-        public override long Length => _length;
-
-        public override long Position
-        {
-            get => _position;
-            set => _position = value;
-        }
-
-        public override void Write(byte[] buffer, int offset, int count) =>
-            Advance(count);
-
-        public override void Write(ReadOnlySpan<byte> buffer) =>
-            Advance(buffer.Length);
-
-        public override void WriteByte(byte value) => Advance(1);
-
-        private void Advance(int count)
-        {
-            _position += count;
-            if (_position > _length) _length = _position;
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            _position = origin switch
-            {
-                SeekOrigin.Begin => offset,
-                SeekOrigin.Current => _position + offset,
-                _ => _length + offset
-            };
-            return _position;
-        }
-
-        public override void SetLength(long value) => _length = value;
-        public override void Flush() { }
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-    }
 }
