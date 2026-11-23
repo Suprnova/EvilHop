@@ -14,6 +14,8 @@ Asset codec support falls into three states, per type:
 - **Payload** - the asset wraps an embedded file (a RenderWare model, a Bink video, audio) that is imported and exported as a whole blob rather than parsed field-by-field. This is the intended shape for these types, not a gap: `BinkVideo`, `BSP`, `JSP`, `Model`, `RawImage`, `Sound`, `StreamingSound`, `StreamingTexture`, `Texture`.
 - **Untyped** - no codec exists yet. The asset reads through its shape's generic prefix if available and remains byte-preserved. Not yet supported: most `Dynamic` types.
 
+Every asset says which it is (`asset.Support`), including one that degraded to untyped because its parse failed; `AssetSupport.Of` answers for an asset type or a dynamic kind under a game before anything is read.
+
 A handful of Typed assets are only partially modeled, marked with a `// TODO: Partial implementation` comment at their definition:
 
 - `AnimationAsset` - ROTU and Ratatouille's revised SKB layout isn't modeled.

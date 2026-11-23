@@ -200,6 +200,15 @@ An asset type's codec support is one of three states, not a binary "done or not"
   file today; fields may follow.
 - **Untyped**: Structured, but not modelled yet. Fields may appear in a future version.
 
+The states are in the API as [`SupportState`](../src/EvilHop/Assets/SupportState.cs). Every asset
+carries its own (`Asset.Support`), answered by the class it was read into rather than derived from its
+data: concrete codec classes are typed, `PayloadAsset` is a payload, and the fallbacks,
+`GenericDynamicAsset` and `EmptyAsset` are untyped. So an asset that degraded - a failed parse, or a
+typed type read under a game its codec doesn't cover - says so, though the fallback classes are
+internal. [`AssetSupport.Of`](../src/EvilHop/Assets/AssetSupport.cs) answers for a type or a dynamic
+kind before any read, from the same codec resolution a read uses, so the two can't disagree. A partial
+model is still typed; what it doesn't cover is the asset's unparsed tail.
+
 ## Put The Developer First
 
 Every aspect of the library puts the developer first. We prioritize rich documentation, clear error

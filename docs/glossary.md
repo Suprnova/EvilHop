@@ -76,6 +76,9 @@ instead of failing the whole archive to load.
   `[OwnAssetId]`.
 - **Layer image** - a layer's bytes from its first asset's start to its last asset's end, gaps
   included: what the game loads into the layer's heap block. `AssetView.GetLayerImage` gives it.
+- **Support state** - how much of an asset EvilHop models: `Typed`, `Payload` or `Untyped`
+  ([`SupportState`](../src/EvilHop/Assets/SupportState.cs)). `Asset.Support` gives an asset's own;
+  [`AssetSupport.Of`](../src/EvilHop/Assets/AssetSupport.cs) gives a type's or a dynamic kind's.
 - **Layout** - a [`LayerLayout`](../src/EvilHop/Assets/Session/LayerLayout.cs) from
   `AssetView.GetLayout`: a layer image's assets and gaps in offset order, as read, and `Locate`, which
   says what sits at an offset.
