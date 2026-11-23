@@ -11,8 +11,9 @@ project's conventions, [`architecture.md`](architecture.md) for how it is design
 that read them. `Archive.Load`/`Save` round-trip a stream through the block layer, and
 `Archive.Create` builds a new empty TSSM archive stamped for the serializer's platform - the only
 place EvilHop stamps a `PLAT` block; archives read from disk are never restamped.
-`Archive.OpenAssets()` enters the asset layer by returning an
-[`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs).
+`Archive.OpenAssets()` enters the asset layer to edit by returning an
+[`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs), and `Archive.ReadAssets()` reads it
+by returning an [`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs).
 
 ## Block Layer
 
@@ -62,7 +63,13 @@ opening detaches and locks `Dictionary`/`AssetStream`'s managed blocks and parse
 `Asset`s from them; `Commit()` (explicit, or via `Dispose()`) rebuilds those blocks unconditionally
 from the current assets and reattaches them. A per-asset parse failure degrades that asset to its
 generic form and is recorded on `Diagnostics` rather than thrown. The archive knows its open
-session, and refuses a second one until it commits.
+session, and refuses a second one or a view until it commits.
+
+[`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs) is the read-only counterpart: it parses the
+same `Layer`s, `Asset`s and `Diagnostics` but leaves the blocks attached and unlocked and never
+commits, and it keeps a copy of the asset data so `GetBytes` and `GetLayerImage` answer with the
+bytes as read. Both parse through the internal
+[`AssetReader`](../src/EvilHop/Assets/Session/AssetReader.cs), which also resolves the platform.
 
 [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs) maps each
 [`AssetType`](../src/EvilHop/Common/AssetType.cs) to the reader/writer that (de)serializes it.

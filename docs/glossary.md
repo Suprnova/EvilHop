@@ -65,8 +65,14 @@ instead of failing the whole archive to load.
   depends on which event it's paired with. See [`Parameter`](../src/EvilHop/Assets/Parameter.cs).
 - **Session** - the scoped [`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs) that owns an
   archive's asset-describing blocks while Asset Mode is active, opened by `Archive.OpenAssets()`.
-- **Diagnostic** - a non-fatal problem recorded on `AssetSession.Diagnostics` when an asset fails to
-  parse and is degraded to its generic form instead of throwing. See
+- **View** - the read-only [`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs) returned by
+  `Archive.ReadAssets()`: the archive's assets parsed as a session parses them, with the blocks left
+  attached and nothing committed, and each asset's bytes and each layer's image as read.
+- **Layer image** - a layer's bytes from its first asset's start to its last asset's end, gaps
+  included: what the game loads into the layer's heap block. `AssetView.GetLayerImage` gives it.
+- **Diagnostic** - a non-fatal problem recorded on `AssetSession.Diagnostics` or
+  `AssetView.Diagnostics` when an asset fails to parse and is degraded to its generic form instead of
+  throwing. See
   [`AssetDiagnostic`](../src/EvilHop/Assets/Session/AssetDiagnostic.cs).
 - **Codec** - the reader/writer pair for one `AssetType`, registered with
   [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs). A codec can declare which

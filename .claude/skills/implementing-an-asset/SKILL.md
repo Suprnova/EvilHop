@@ -550,13 +550,13 @@ leading-count guess doesn't fit (e.g. no leading count at all).
 One exemplar per game proves a layout exists, not that it holds everywhere. Before relying on "always
 zero" or "always the same size", sweep every occurrence: a throwaway `dotnet run --file` script in
 `dump/` (gitignored) with `#:project ../src/EvilHop/EvilHop.csproj` can `Archive.Load` each archive,
-`OpenAssets()`, and read every asset of the type. A type without a codec yet parses as its generic
+`ReadAssets()`, and read every asset of the type. A type without a codec yet parses as its generic
 shape, so `GetUnparsedTail()` on the `EntityAsset`/`BaseAsset` is exactly the bytes after the shared
 prefix - tabulate sizes, discriminator bytes, and which regions are ever nonzero from that.
 
-Keep a sweep's memory bounded: restrict it to the games that carry the type, and when it opens an
-`AssetSession` per archive, cap `Parallel.ForEach` with `MaxDegreeOfParallelism` (2 is plenty).
-Unbounded parallelism over thousands of archives, each holding a full session, runs to gigabytes.
+Keep a sweep's memory bounded: restrict it to the games that carry the type, and when it reads an
+`AssetView` per archive, cap `Parallel.ForEach` with `MaxDegreeOfParallelism` (2 is plenty).
+Unbounded parallelism over thousands of archives, each holding a full view, runs to gigabytes.
 
 Build a sweep's profiles the way EvilHop.Corpus does, or it will misread archives that the library
 reads fine: the game's sniffed profile, then every matching override from

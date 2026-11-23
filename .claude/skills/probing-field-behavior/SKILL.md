@@ -19,7 +19,7 @@ design, not about the engine.
 Scan the asset type's real field values first. It costs one command and routinely changes the probe.
 
 Write a throwaway script under `dump/` (see the `reading-corpus-inventory` skill to query `corpus/`,
-or inspect local game archives if available with `Archive.Load` + `OpenAssets`) that tallies each
+or inspect local game archives if available with `Archive.Load` + `ReadAssets`) that tallies each
 field's distinct values with an exemplar archive per value. You are looking for:
 
 - **Unmodelled flag bits.** A raw number where an enum name was expected - a `PhysFlags` value
@@ -126,7 +126,7 @@ The script writes both archives into the extracted disc directory and points its
 
 Dolphin boots an extracted disc directly from `sys/main.dol`, which requires `sys/` (`main.dol`, `boot.bin`, `bi2.bin`, `apploader.img`) beside `files/`. **Restart Dolphin after each rebuild**; it caches files and will not pick up changes otherwise. Set `INDUSTRIALPARK_EDITORFILES` if your checkout of template files is not at the default path.
 
-Verify both archives parse back cleanly before booting (`Archive.Load` + `OpenAssets` with zero diagnostics). A malformed archive wastes a boot.
+Verify both archives parse back cleanly before booting (`Archive.Load` + `ReadAssets` with zero diagnostics). A malformed archive wastes a boot.
 
 When handing over to the user:
 1. List the variants with their numbers, tints, and parameter settings.

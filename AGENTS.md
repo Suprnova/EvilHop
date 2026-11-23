@@ -39,7 +39,8 @@ them wrong breaks the library.
 - **The two layers are mutually exclusive.** Never mix the block layer (raw blocks) and the asset
   layer (logical assets) in the same operation. Asset mode is a session: `OpenAssets()` detaches and
   locks the asset-describing blocks until `Commit()`, explicit or on `Dispose()`, and a failed parse
-  degrades to a diagnostic - it never throws.
+  degrades to a diagnostic - it never throws. Code that only reads takes a view (`ReadAssets()`),
+  which takes and commits nothing.
 - **Blocks and assets are dumb data holders.** They do not self-serialize, self-validate, derive one
   fact from another (an asset's `Id` must never be recomputed from its `Name`), or reference each
   other directly.

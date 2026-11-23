@@ -21,6 +21,7 @@ internal readonly record struct AssetPlacement(AssetId Id, uint Offset, uint Siz
 /// <param name="Layers">The parsed layers, in the order they are listed on disk.</param>
 /// <param name="Diagnostics">Problems encountered while parsing.</param>
 /// <param name="Placements">Every asset's placement, in the order <see cref="AssetTable"/> lists them.</param>
+/// <param name="PlacementOf">Each parsed asset's placement, matched by reference.</param>
 /// <param name="Checksums">Each asset's checksum, computed over its bytes as read.</param>
 /// <param name="Data">The <see cref="StreamData"/> data the assets were read from.</param>
 /// <param name="DataStart">The absolute offset of <paramref name="Data"/> in the archive.</param>
@@ -28,6 +29,7 @@ internal sealed record AssetRead(
     List<Layer> Layers,
     List<AssetDiagnostic> Diagnostics,
     List<AssetPlacement> Placements,
+    Dictionary<Asset, AssetPlacement> PlacementOf,
     Dictionary<AssetId, uint> Checksums,
     byte[] Data,
     long DataStart);
@@ -81,6 +83,7 @@ internal static class AssetReader
             [],
             [],
             [.. headers.Select(PlacementOf)],
+            new(ReferenceEqualityComparer.Instance),
             [],
             data,
             MeasureThrough(archive, stream) - data.Length);
@@ -112,7 +115,9 @@ internal static class AssetReader
                     continue;
                 }
 
-                layer.Add(ParseOne(header, read, profile));
+                var asset = ParseOne(header, read, profile);
+                read.PlacementOf[asset] = PlacementOf(header);
+                layer.Add(asset);
             }
 
             read.Layers.Add(layer);

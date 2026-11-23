@@ -127,4 +127,27 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// Also thrown while another session is open and hasn't committed.
     /// </exception>
     public AssetSession OpenAssets(Platform platform) => AssetSession.Open(this, platform);
+
+    /// <summary>
+    /// Reads this <see cref="Archive"/>'s assets into a read-only <see cref="AssetView"/>, taking
+    /// nothing from the archive: the blocks stay attached and unlocked, and nothing is committed.
+    /// </summary>
+    /// <returns>A new <see cref="AssetView"/> of this <see cref="Archive"/>'s assets.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="Serializer"/> states no platform; use <see cref="ReadAssets(Platform)"/> to supply one.
+    /// Also thrown while a session is open and hasn't committed.
+    /// </exception>
+    public AssetView ReadAssets() => AssetView.Read(this, null);
+
+    /// <summary>
+    /// Reads this <see cref="Archive"/>'s assets like <see cref="ReadAssets()"/>, supplying the
+    /// <paramref name="platform"/> the assets were built for when <see cref="Serializer"/> states none.
+    /// </summary>
+    /// <param name="platform">The console the archive was built for.</param>
+    /// <returns>A new <see cref="AssetView"/> of this <see cref="Archive"/>'s assets.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="Serializer"/> already states a different platform; a stated platform is never overridden.
+    /// Also thrown while a session is open and hasn't committed.
+    /// </exception>
+    public AssetView ReadAssets(Platform platform) => AssetView.Read(this, platform);
 }

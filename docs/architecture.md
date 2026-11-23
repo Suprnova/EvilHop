@@ -20,6 +20,14 @@ operation - because a session owns the blocks that describe assets while it is o
 the block tree and locks their fields; `Commit()` - explicit, or on `Dispose()` - rebuilds them from
 the assets and reattaches.
 
+Reading needs none of that. [`Archive.ReadAssets()`](../src/EvilHop/Archive.cs) returns an
+[`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs): the same parse, with the blocks left
+attached and unlocked and nothing committed, so a sweep over hundreds of archives pays no
+re-serialization. A view is a snapshot, not a third layer: it copies the asset data, so neither a
+later session nor an edit through the block layer changes what it reports, and its assets write
+back nowhere. It keeps each asset's bytes and each layer's image exactly as read, because a reader
+asking what sits at an offset needs the file's own layout, never the one EvilHop would rebuild.
+
 Committing from `Dispose()` is only safe because **commit is total**: every asset serializes
 unconditionally, typed assets writing their fields and untyped ones writing the bytes they were
 given. Nothing a consumer can set makes serialization impossible. If that ever stops being true,
@@ -161,8 +169,9 @@ supplied by the caller, and nothing defaults.
   or leaves the platform null. The block layer never reads the platform, so a block-only
   [`Serializer`](../src/EvilHop/Serialization/Serializer.cs) (`Serializer.Create(game)`) is complete
   for work such as diffing two archives' blocks.
-- Opening assets needs a platform. [`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs)
-  refuses a serializer that states none, unless `Archive.OpenAssets(Platform)` supplies one; it never
+- Opening or reading assets needs a platform. [`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs)
+  and [`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs) refuse a serializer that states none,
+  unless `Archive.OpenAssets(Platform)` or `Archive.ReadAssets(Platform)` supplies one; neither
   overrides a platform the serializer already states.
 - [`Serializer.Sniff`](../src/EvilHop/Serialization/Serializer.cs) is for callers who do not know.
   No load path consults it; a caller who builds a serializer from a sniffed profile does so
