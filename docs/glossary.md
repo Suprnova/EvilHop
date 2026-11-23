@@ -97,6 +97,10 @@ instead of failing the whole archive to load.
 - **Profile** - a [`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs), the per-game
   (sometimes per-build) quirks - platform, endianness, field order, padding - a serializer reads
   with.
+- **Sniff** - `Serializer.Sniff`, the best-effort identification of an archive's game and platform
+  from its bytes. A [`SniffResult`](../src/EvilHop/Serialization/Sniffing/SniffResult.cs) reports the
+  platform's source (`PlatStamp`, `PackFlags` or `None`) and is strong only when the caller stated the
+  game and the stream named the platform. See [architecture](architecture.md).
 - **GameVersion** - the enum identifying which Heavy Iron Studios game an archive or profile
   targets. See [`GameVersion`](../src/EvilHop/Common/GameVersion.cs).
 - **Platform** - the enum identifying which console a build targets, which also determines its byte

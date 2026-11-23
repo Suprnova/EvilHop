@@ -150,6 +150,28 @@ Concrete asset classes fix their own [`AssetType`](../src/EvilHop/Common/AssetTy
 primary constructor, so `new SurfaceAsset()` is written by the surface codec with nothing further
 supplied. The shape-generic classes serve many types and take theirs as an argument instead.
 
+## Game And Platform Are Stated, Not Guessed
+
+An archive's bytes do not reliably say which game or console built it. Every TSSM archive's `PFLG`
+carries no platform bit, its `PLAT` block names the game "Incredibles", and a wrong platform does not
+fail: it byte-swaps every asset field and reads without an error. So the game and the platform are
+supplied by the caller, and nothing defaults.
+
+- A [`FormatProfile`](../src/EvilHop/Serialization/FormatProfile.cs) states a game and a platform,
+  or leaves the platform null. The block layer never reads the platform, so a block-only
+  [`Serializer`](../src/EvilHop/Serialization/Serializer.cs) (`Serializer.Create(game)`) is complete
+  for work such as diffing two archives' blocks.
+- Opening assets needs a platform. [`AssetSession`](../src/EvilHop/Assets/Session/AssetSession.cs)
+  refuses a serializer that states none, unless `Archive.OpenAssets(Platform)` supplies one; it never
+  overrides a platform the serializer already states.
+- [`Serializer.Sniff`](../src/EvilHop/Serialization/Serializer.cs) is for callers who do not know.
+  No load path consults it; a caller who builds a serializer from a sniffed profile does so
+  explicitly. Its result says how sure it is. With the game stated, a platform named by the `PLAT` stamp (which
+  wins) or a `PFLG` bit is strong; a scored game, or a platform no byte named (null), is weak.
+- [`Archive.Create`](../src/EvilHop/Archive.cs) is the only place EvilHop stamps `PLAT`, so what it
+  writes sniffs as the platform it was created for. Archives read from disk are never restamped:
+  their stamps are data, and rewriting them would break byte-exact round trips.
+
 ## Support Is Three States, Not Two
 
 An asset type's codec support is one of three states, not a binary "done or not":

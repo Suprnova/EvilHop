@@ -36,6 +36,10 @@ A handful of Typed assets are only partially modeled, marked with a `// TODO: Pa
 
 EvilHop exposes a HIP archive's bytes two ways. The block layer is the container exactly as it sits on disk - a tree of tagged blocks - and is complete and permissive. The asset layer sits on top of it: opening a session parses those blocks into typed `Asset`s with names, positions, and links, maintaining offsets, sizes, and checksums for you rather than leaving them for you to get wrong. The two are mutually exclusive - while a session is open, it owns the blocks that describe assets.
 
+Every archive is opened with the game and platform you state. The platform decides the byte order of
+every asset field, and nothing in the files names it reliably, so EvilHop never guesses it: opening
+assets without one throws. `Serializer.Sniff` can help when you do not know, and says how sure it is.
+
 Reading an archive, listing its pickups, and doubling the Scooby Snack count of every snack gate:
 
 ```csharp

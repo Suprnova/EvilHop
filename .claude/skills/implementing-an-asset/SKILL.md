@@ -563,12 +563,13 @@ reads fine: the game's sniffed profile, then every matching override from
 `tools/EvilHop.Corpus/BuildProfiles.json` applied on top. Two corpus quirks that manifest covers, and
 that a sweep skipping it gets wrong:
 
-- **N100F's platform isn't sniffable.** Every N100F build's `PACK` flags carry no platform bits, so
-  `Serializer.Sniff` falls back to GameCube and Xbox/PS2 archives read their asset fields with the
+- **N100F's platform isn't sniffable.** Every N100F build's `PACK` flags carry no platform bits and it
+  has no `PLAT` block, so `Serializer.Sniff` reports its platform as unknown (null, source `None`). The
+  Corpus tool then falls back to GameCube, and Xbox/PS2 archives would read their asset fields with the
   wrong byte order. Round trips stay byte-exact, but field values don't. The manifest's `platform`
   overrides fix this; failing that, derive the platform from the archive's `artifacts/` path
-  (`GC`/`PS2`/`XBOX`) and override it - `Serializer.Create(sniffed with { Platform = ... })` - before
-  interpreting any N100F field value.
+  (`GC`/`PS2`/`XBOX`) and state it - `Serializer.Create(game, platform)` - before interpreting any N100F
+  field value.
 - **Leftover developer archives.** BFBB's `gl/Working/` and `gl/New Folder/` directories, and some of
   its `db05` archives, are developer leftovers the game never loads, and may predate format changes
   (e.g. BFBB's entity padding). Their per-build quirks live in `BuildProfiles.json`; a sweep that reads
