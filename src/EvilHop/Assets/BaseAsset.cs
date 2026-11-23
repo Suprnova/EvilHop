@@ -116,6 +116,7 @@ public static partial class Physical
         /// Stored in the asset's own data, independently of <see cref="Asset.Id"/>. When the two
         /// disagree, this field wins during serialization.
         /// </remarks>
+        [OwnAssetId]
         AssetId BaseId { get; set; }
         /// <summary>
         /// The <see cref="BaseAsset"/>'s base type.

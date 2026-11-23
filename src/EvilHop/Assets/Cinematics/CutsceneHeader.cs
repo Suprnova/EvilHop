@@ -213,6 +213,7 @@ public static partial class Physical
         /// <remarks>
         /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
         /// </remarks>
+        [OwnAssetId]
         AssetId AssetId { get; set; }
         /// <summary>
         /// The number of <see cref="Assets.ICutsceneHeader.Data"/> entries, read directly from the header.

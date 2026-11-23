@@ -161,6 +161,7 @@ public static partial class Physical
         /// When disagreements with <see cref="IBaseAsset.BaseId"/> exist, this field wins during
         /// serialization.
         /// </remarks>
+        [OwnAssetId]
         AssetId TemplateBaseId { get; set; }
 
         /// <summary>

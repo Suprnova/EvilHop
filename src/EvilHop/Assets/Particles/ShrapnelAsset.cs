@@ -137,6 +137,7 @@ public static partial class Physical
         /// <remarks>
         /// When disagreements with <see cref="Asset.Id"/> exist, this field wins during serialization.
         /// </remarks>
+        [OwnAssetId]
         AssetId ShrapnelId { get; set; }
     }
 }

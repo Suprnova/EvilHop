@@ -447,6 +447,13 @@ every GameCube profile (`.OnGameCube()`). `AssetId` is a `readonly record struct
 `uint Value`; `AssetId.None` is the zero value; `AssetId.FromName(name)`/`FromName(name, type)`
 compute one from a name (only relevant to `Asset.CalculateId()`, not to a codec).
 
+Type a field `AssetId` when the decompiled code treats it as a reference to another asset, nested
+types and collections included: `AssetIndex` finds references from the member types, with no list per
+asset. A field that never names an asset on any disc, or does nothing in the engine, keeps its
+`AssetId` type; that is grounds to move it to the physical surface, not to change its type. A member
+that stores the asset's own ID again (`Physical.BaseId`, `SelfId`) carries `[OwnAssetId]` on its
+`Physical` interface declaration.
+
 ### Worked precedents, condensed
 
 Each of these is the *entire* pattern for its case — you should not need to open the source file to

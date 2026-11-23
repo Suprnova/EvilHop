@@ -55,6 +55,11 @@ public sealed class AssetView
     public IReadOnlyList<AssetDiagnostic> Diagnostics { get; }
 
     /// <summary>
+    /// Lookups and references over <see cref="Layers"/>, built the first time this is read.
+    /// </summary>
+    public AssetIndex Index => field ??= new(Layers);
+
+    /// <summary>
     /// Reads <paramref name="archive"/>'s assets under its serializer's profile, with
     /// <paramref name="supplied"/> filling in a platform the profile doesn't state.
     /// </summary>

@@ -28,6 +28,16 @@ later session nor an edit through the block layer changes what it reports, and i
 back nowhere. It keeps each asset's bytes and each layer's image exactly as read, because a reader
 asking what sits at an offset needs the file's own layout, never the one EvilHop would rebuild.
 
+A view's [`AssetIndex`](../src/EvilHop/Assets/Session/AssetIndex.cs) finds an asset's references by
+walking its members ([`AssetReferenceWalker`](../src/EvilHop/Assets/Session/AssetReferenceWalker.cs)),
+not from a list kept per asset type: a member's type is the one statement that it holds an asset ID,
+so every typed asset is covered the day it lands, and a hand-kept list could only drift from the
+model. A member is typed `AssetId` when the decompiled code treats it as a reference to another
+asset, whether or not it names an asset on any disc, so a reference can lead nowhere; a member that
+stores the asset's own ID again is marked `[OwnAssetId]`. The walk reads the public members and the `Physical` members a type implements
+explicitly (an entity's `ModelId` lives only there); the trait interfaces alias those and are
+skipped.
+
 Committing from `Dispose()` is only safe because **commit is total**: every asset serializes
 unconditionally, typed assets writing their fields and untyped ones writing the bytes they were
 given. Nothing a consumer can set makes serialization impossible. If that ever stops being true,

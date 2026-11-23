@@ -68,6 +68,12 @@ instead of failing the whole archive to load.
 - **View** - the read-only [`AssetView`](../src/EvilHop/Assets/Session/AssetView.cs) returned by
   `Archive.ReadAssets()`: the archive's assets parsed as a session parses them, with the blocks left
   attached and nothing committed, and each asset's bytes and each layer's image as read.
+- **Index** - the [`AssetIndex`](../src/EvilHop/Assets/Session/AssetIndex.cs) on `AssetView.Index`:
+  lookups by ID, by name and by type, and the references between assets.
+- **Reference** - an [`AssetReference`](../src/EvilHop/Assets/Session/AssetIndex.cs): one asset ID an
+  asset names, with the member path that holds it (`Links[2].DestinationAssetId`, `Items[5]`,
+  `Physical.ModelId`). Any `AssetId` member is one, unless it is `AssetId.None` or marked
+  `[OwnAssetId]`.
 - **Layer image** - a layer's bytes from its first asset's start to its last asset's end, gaps
   included: what the game loads into the layer's heap block. `AssetView.GetLayerImage` gives it.
 - **Diagnostic** - a non-fatal problem recorded on `AssetSession.Diagnostics` or

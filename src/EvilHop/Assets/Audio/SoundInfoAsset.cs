@@ -134,6 +134,7 @@ public static partial class Physical
         /// <see cref="GameVersion.Incredibles"/> and <see cref="GameVersion.ROTU"/>. When disagreements with
         /// <see cref="Asset.Id"/> exist, this field wins during serialization.
         /// </remarks>
+        [OwnAssetId]
         AssetId SoundInfoId { get; set; }
 
         /// <summary>
