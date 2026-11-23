@@ -27,6 +27,8 @@ public sealed class AssetView
     private readonly Dictionary<Asset, Range> _assetRanges;
     private readonly Dictionary<Asset, int> _layerOf = new(ReferenceEqualityComparer.Instance);
     private readonly Range[] _layerRanges;
+    private readonly AssetEntry[][] _layerAssets;
+    private readonly LayerLayout?[] _layouts;
 
     private AssetView(FormatProfile profile, AssetRead read)
     {
@@ -41,6 +43,8 @@ public sealed class AssetView
         for (int layer = 0; layer < read.Layers.Count; layer++)
             foreach (var asset in read.Layers[layer].Assets)
                 _layerOf[asset] = layer;
+        _layerAssets = [.. read.Layers.Select((layer, index) => AssetEntriesOf(read, layer, _layerRanges[index]))];
+        _layouts = new LayerLayout?[read.Layers.Count];
     }
 
     /// <summary>
@@ -111,6 +115,19 @@ public sealed class AssetView
     public EndianReader OpenLayerReader(int layer) => ReaderOver(LayerRangeOf(layer));
 
     /// <summary>
+    /// The layout of the layer at <paramref name="layer"/> as read: its assets and the gaps between
+    /// them, which says what sits at any offset of <see cref="GetLayerImage"/>.
+    /// </summary>
+    /// <param name="layer">The layer's index in <see cref="Layers"/>.</param>
+    /// <returns>The layer's layout, built the first time it is asked for.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="layer"/> isn't an index into <see cref="Layers"/>.</exception>
+    public LayerLayout GetLayout(int layer)
+    {
+        var image = LayerRangeOf(layer);
+        return _layouts[layer] ??= new(layer, _layerAssets[layer], _data.AsSpan(image));
+    }
+
+    /// <summary>
     /// The index in <see cref="Layers"/> of the layer <paramref name="asset"/> was read in.
     /// </summary>
     /// <param name="asset">An asset of this view.</param>
@@ -156,6 +173,18 @@ public sealed class AssetView
             ? default
             : present.Min(range => range.Start.Value)..present.Max(range => range.End.Value);
     }
+
+    private static AssetEntry[] AssetEntriesOf(AssetRead read, Layer layer, Range image) =>
+    [
+        .. layer.Assets
+            .Select(asset => (Asset: asset, Placement: read.PlacementOf[asset], Range: RangeOf(read, read.PlacementOf[asset])))
+            .Where(entry => entry.Range.End.Value > entry.Range.Start.Value)
+            .Select(entry => new AssetEntry(
+                (uint)(entry.Range.Start.Value - image.Start.Value),
+                entry.Placement.Size,
+                entry.Asset,
+                entry.Placement.Alignment))
+    ];
 
     private static Range RangeOf(AssetRead read, AssetPlacement placement) =>
         AssetReader.TryGetRange(read.DataStart, read.Data.Length, placement.Offset, placement.Size, out var range)

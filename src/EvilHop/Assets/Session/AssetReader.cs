@@ -13,7 +13,8 @@ namespace EvilHop.Assets;
 /// <param name="Id">The asset's ID, as its <see cref="AssetHeader"/> stated it.</param>
 /// <param name="Offset">The absolute offset of the asset's bytes in the archive.</param>
 /// <param name="Size">The length of the asset's bytes.</param>
-internal readonly record struct AssetPlacement(AssetId Id, uint Offset, uint Size);
+/// <param name="Alignment">The alignment its <see cref="AssetDebug"/> stated.</param>
+internal readonly record struct AssetPlacement(AssetId Id, uint Offset, uint Size, int Alignment);
 
 /// <summary>
 /// An archive's assets as read from its blocks.
@@ -126,7 +127,8 @@ internal static class AssetReader
         return read;
     }
 
-    private static AssetPlacement PlacementOf(AssetHeader header) => new(new AssetId(header.Id), header.Offset, header.Size);
+    private static AssetPlacement PlacementOf(AssetHeader header) =>
+        new(new AssetId(header.Id), header.Offset, header.Size, header.Debug.Alignment);
 
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Each asset is parsed independently; a malformed one must not abort the rest of the archive.")]
     private static Asset ParseOne(AssetHeader header, AssetRead read, FormatProfile profile)
