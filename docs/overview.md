@@ -72,7 +72,9 @@ bytes as read. Both parse through the internal
 [`AssetReader`](../src/EvilHop/Assets/Session/AssetReader.cs), which also resolves the platform.
 A view's `Index`, built on first use, is an [`AssetIndex`](../src/EvilHop/Assets/Session/AssetIndex.cs):
 lookups by ID, name and type, and `AssetReference`s out of and into each asset, found by
-[`AssetReferenceWalker`](../src/EvilHop/Assets/Session/AssetReferenceWalker.cs).
+[`AssetReferenceWalker`](../src/EvilHop/Assets/Session/AssetReferenceWalker.cs). `GetLayout` gives a
+layer's [`LayerLayout`](../src/EvilHop/Assets/Session/LayerLayout.cs), built on first use from the
+placements as read: its asset and gap entries in offset order, and `Locate(offset)`.
 
 [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs) maps each
 [`AssetType`](../src/EvilHop/Common/AssetType.cs) to the reader/writer that (de)serializes it.
