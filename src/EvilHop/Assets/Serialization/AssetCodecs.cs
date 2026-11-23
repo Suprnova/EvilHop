@@ -38,14 +38,14 @@ internal static class AssetCodecs
     internal delegate void WriteFunc<in T>(T asset, EndianWriter writer, FormatProfile profile)
         where T : Asset;
 
-    private readonly record struct CodecHandler(ReadFunc Read, WriteFunc Write, IReadOnlySet<GameVersion>? Games = null);
+    private readonly record struct CodecHandler(ReadFunc Read, WriteFunc Write, SupportState Support, IReadOnlySet<GameVersion>? Games = null);
 
     private static readonly Dictionary<AssetType, CodecHandler> Handlers = [];
 
     /// <summary>
     /// Used for any <see cref="AssetType"/> with no entry at all.
     /// </summary>
-    private static readonly CodecHandler Fallback = new(ReadPlain, WritePlain);
+    private static readonly CodecHandler Fallback = new(ReadPlain, WritePlain, SupportState.Untyped);
 
     static AssetCodecs()
     {
@@ -162,6 +162,7 @@ internal static class AssetCodecs
         Handlers[type] = new CodecHandler(
             (data, header, debug, profile) => read(data, header, debug, profile),
             Guarded(write),
+            SupportState.Typed,
             games);
 
     /// <summary>
@@ -188,12 +189,18 @@ internal static class AssetCodecs
     /// back to <paramref name="type"/>'s shape-generic reader - or <see cref="Fallback"/> - when its
     /// registered codec declares <paramref name="game"/> unsupported.
     /// </summary>
-    private static ReadFunc ResolveRead(AssetType type, GameVersion game)
+    private static ReadFunc ResolveRead(AssetType type, GameVersion game) => ResolveFor(type, game).Read;
+
+    /// <summary>
+    /// How much of an asset of <paramref name="type"/> read under <paramref name="game"/> is modeled:
+    /// the state of the handler a read resolves to.
+    /// </summary>
+    public static SupportState SupportOf(AssetType type, GameVersion game) => ResolveFor(type, game).Support;
+
+    private static CodecHandler ResolveFor(AssetType type, GameVersion game)
     {
         var handler = Resolve(type);
-        return handler.Games is null || handler.Games.Contains(game)
-            ? handler.Read
-            : ShapeHandlerFor(type).Read;
+        return handler.Games is null || handler.Games.Contains(game) ? handler : ShapeHandlerFor(type);
     }
 
     private static void RegisterGenericShapes()
@@ -207,10 +214,10 @@ internal static class AssetCodecs
 
     private static CodecHandler ShapeHandler(AssetShape shape) => shape switch
     {
-        AssetShape.BaseAsset => new CodecHandler(ZeroSizeAware(ReadBase), Guarded<BaseAsset>(WriteBase)),
-        AssetShape.EntityAsset => new CodecHandler(ZeroSizeAware(ReadEntity), Guarded<EntityAsset>(WriteEntity)),
-        AssetShape.DynamicAsset => new CodecHandler(ZeroSizeAware(ReadDynamic), Guarded<DynamicAsset>(DynamicAsset.Write)),
-        AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload)),
+        AssetShape.BaseAsset => new CodecHandler(ZeroSizeAware(ReadBase), Guarded<BaseAsset>(WriteBase), SupportState.Untyped),
+        AssetShape.EntityAsset => new CodecHandler(ZeroSizeAware(ReadEntity), Guarded<EntityAsset>(WriteEntity), SupportState.Untyped),
+        AssetShape.DynamicAsset => new CodecHandler(ZeroSizeAware(ReadDynamic), Guarded<DynamicAsset>(DynamicAsset.Write), SupportState.Untyped),
+        AssetShape.Payload => new CodecHandler(ReadPayload, Guarded<PayloadAsset>(WritePayload), SupportState.Payload),
         _ => Fallback
     };
 

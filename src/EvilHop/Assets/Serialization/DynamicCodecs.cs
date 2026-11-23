@@ -71,9 +71,14 @@ internal static class DynamicCodecs
     /// <paramref name="version"/> reads into under <paramref name="game"/>.
     /// </summary>
     public static DynamicAsset Create(DynamicKind kind, short version, GameVersion game) =>
-        Handlers.TryGetValue(kind, out var handler) && handler.Layouts.Contains((game, version))
-            ? handler.Create()
-            : new GenericDynamicAsset(kind);
+        IsModeled(kind, version, game) ? Handlers[kind].Create() : new GenericDynamicAsset(kind);
+
+    /// <summary>
+    /// Whether a dynamic of <paramref name="kind"/> and <paramref name="version"/> has a typed model
+    /// under <paramref name="game"/>.
+    /// </summary>
+    public static bool IsModeled(DynamicKind kind, short version, GameVersion game) =>
+        Handlers.TryGetValue(kind, out var handler) && handler.Layouts.Contains((game, version));
 
     /// <summary>
     /// Reads <paramref name="asset"/>'s own fields, if it has a typed model.
