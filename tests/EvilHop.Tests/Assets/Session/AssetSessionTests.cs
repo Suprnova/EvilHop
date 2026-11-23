@@ -184,6 +184,27 @@ public class AssetSessionTests
         Assert.Null(archive.Serializer.Profile.Platform);
     }
 
+    [Fact]
+    public void OpenAssets_WhileASessionIsOpen_ThrowsInvalidOperationException()
+    {
+        var archive = LoadRepaired("tssm");
+
+        using var session = archive.OpenAssets();
+
+        Assert.Throws<InvalidOperationException>(() => archive.OpenAssets());
+    }
+
+    [Fact]
+    public void OpenAssets_AfterTheOpenSessionCommits_Opens()
+    {
+        var archive = LoadRepaired("tssm");
+        archive.OpenAssets().Commit();
+
+        using var session = archive.OpenAssets();
+
+        Assert.Single(session.Layers.Single().Assets);
+    }
+
     [Theory]
     [MemberData(nameof(Games))]
     public void OpenAssets_ReportsNoDiagnostics(string game)

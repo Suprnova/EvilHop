@@ -61,7 +61,8 @@ model a `BaseAsset`'s connections to other assets.
 opening detaches and locks `Dictionary`/`AssetStream`'s managed blocks and parses `Layer`s of
 `Asset`s from them; `Commit()` (explicit, or via `Dispose()`) rebuilds those blocks unconditionally
 from the current assets and reattaches them. A per-asset parse failure degrades that asset to its
-generic form and is recorded on `Diagnostics` rather than thrown.
+generic form and is recorded on `Diagnostics` rather than thrown. The archive knows its open
+session, and refuses a second one until it commits.
 
 [`AssetCodecs`](../src/EvilHop/Assets/Serialization/AssetCodecs.cs) maps each
 [`AssetType`](../src/EvilHop/Common/AssetType.cs) to the reader/writer that (de)serializes it.

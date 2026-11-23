@@ -26,6 +26,11 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     public IReadOnlyList<Block> Roots { get; private set; } = roots;
 
     /// <summary>
+    /// The session that owns this archive's assets, until it commits.
+    /// </summary>
+    internal AssetSession? OpenSession { get; set; }
+
+    /// <summary>
     /// Load a HIP archive using the provided <paramref name="stream"/> and
     /// <paramref name="serializer"/> and return the constructed <see cref="Archive"/>.
     /// </summary>
@@ -106,7 +111,8 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// </remarks>
     /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <see cref="Serializer"/> states no platform. Use <see cref="OpenAssets(Platform)"/> to supply one.
+    /// Thrown when <see cref="Serializer"/> states no platform; use <see cref="OpenAssets(Platform)"/> to supply one.
+    /// Also thrown while another session is open and hasn't committed.
     /// </exception>
     public AssetSession OpenAssets() => AssetSession.Open(this, null);
 
@@ -117,7 +123,8 @@ public class Archive(Serializer serializer, IReadOnlyList<Block> roots)
     /// <param name="platform">The console the archive was built for.</param>
     /// <returns>A new <see cref="AssetSession"/> over this <see cref="Archive"/>.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <see cref="Serializer"/> already states a different platform. A stated platform is never overridden.
+    /// Thrown when <see cref="Serializer"/> already states a different platform; a stated platform is never overridden.
+    /// Also thrown while another session is open and hasn't committed.
     /// </exception>
     public AssetSession OpenAssets(Platform platform) => AssetSession.Open(this, platform);
 }

@@ -63,8 +63,15 @@ internal static class AssetReader
     /// <paramref name="profile"/>. An asset that fails to parse degrades to its untyped form and is
     /// reported in <see cref="AssetRead.Diagnostics"/>.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a session owns <paramref name="archive"/>'s assets: their blocks are detached.
+    /// </exception>
     internal static AssetRead Read(Archive archive, FormatProfile profile)
     {
+        if (archive.OpenSession is not null)
+            throw new InvalidOperationException(
+                $"This archive's assets are open in an {nameof(AssetSession)}. Commit it before reading them again.");
+
         var dictionary = archive.Roots.OfType<Dictionary>().Single();
         var stream = archive.Roots.OfType<AssetStream>().Single();
         byte[] data = stream.Data.Data;

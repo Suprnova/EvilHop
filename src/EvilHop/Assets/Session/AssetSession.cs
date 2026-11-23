@@ -224,6 +224,7 @@ public sealed class AssetSession : IDisposable
         streamData.Data = [];
         stream.LockFields();
 
+        archive.OpenSession = session;
         return session;
     }
 
@@ -269,6 +270,7 @@ public sealed class AssetSession : IDisposable
     {
         if (_committed) return;
         _committed = true;
+        _archive.OpenSession = null;
 
         var ordered = _layers.SelectMany(layer => layer.Assets).ToList();
         var serialized = new Dictionary<AssetId, byte[]>();
