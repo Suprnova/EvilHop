@@ -25,6 +25,7 @@ public sealed class AssetView
 {
     private readonly byte[] _data;
     private readonly Dictionary<Asset, Range> _assetRanges;
+    private readonly Dictionary<Asset, int> _layerOf = new(ReferenceEqualityComparer.Instance);
     private readonly Range[] _layerRanges;
 
     private AssetView(FormatProfile profile, AssetRead read)
@@ -37,6 +38,9 @@ public sealed class AssetView
         foreach (var (asset, placement) in read.PlacementOf)
             _assetRanges[asset] = RangeOf(read, placement);
         _layerRanges = [.. read.Layers.Select(layer => LayerRangeOf(read, layer))];
+        for (int layer = 0; layer < read.Layers.Count; layer++)
+            foreach (var asset in read.Layers[layer].Assets)
+                _layerOf[asset] = layer;
     }
 
     /// <summary>
@@ -105,6 +109,20 @@ public sealed class AssetView
     /// <returns>A reader positioned at the image's first byte. Disposing it releases nothing the view needs.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="layer"/> isn't an index into <see cref="Layers"/>.</exception>
     public EndianReader OpenLayerReader(int layer) => ReaderOver(LayerRangeOf(layer));
+
+    /// <summary>
+    /// The index in <see cref="Layers"/> of the layer <paramref name="asset"/> was read in.
+    /// </summary>
+    /// <param name="asset">An asset of this view.</param>
+    /// <returns>The layer's index, as read: moving the asset to another layer afterwards doesn't change it.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="asset"/> wasn't read by this view.</exception>
+    public int LayerOf(Asset asset)
+    {
+        ArgumentNullException.ThrowIfNull(asset);
+        return _layerOf.TryGetValue(asset, out int layer)
+            ? layer
+            : throw new ArgumentException($"The asset wasn't read by this {nameof(AssetView)}.", nameof(asset));
+    }
 
     private Range AssetRangeOf(Asset asset)
     {

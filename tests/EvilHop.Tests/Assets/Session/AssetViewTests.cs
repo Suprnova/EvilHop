@@ -222,6 +222,29 @@ public class AssetViewTests
         Assert.Throws<ArgumentException>(() => view.GetBytes(new CounterAsset()));
     }
 
+    [Fact]
+    public void LayerOf_GivesEachAssetsLayerAsRead()
+    {
+        var view = Load(Fixture(Platform.Xbox), Platform.Xbox).ReadAssets();
+        var moved = AssetOf(view, 3);
+        view.Layers[EmptyAssetLayer].Remove(moved);
+        view.Layers[EmptyLayer].Add(moved);
+
+        Assert.Equal(CountersLayer, view.LayerOf(AssetOf(view, 1)));
+        Assert.Equal(CountersLayer, view.LayerOf(AssetOf(view, 2)));
+        Assert.Equal(EmptyAssetLayer, view.LayerOf(moved));
+    }
+
+    [Fact]
+    public void LayerOf_AssetOfAnotherView_ThrowsArgumentException()
+    {
+        byte[] bytes = Fixture(Platform.Xbox);
+        var view = Load(bytes, Platform.Xbox).ReadAssets();
+        var other = Load(bytes, Platform.Xbox).ReadAssets();
+
+        Assert.Throws<ArgumentException>(() => view.LayerOf(AssetOf(other, 1)));
+    }
+
     [Theory]
     [MemberData(nameof(AllPlatforms))]
     public void GetLayerImage_SpansTheFirstAssetsStartToTheLastOnesEndWithTheGapBetween(Platform platform)
