@@ -433,3 +433,6 @@ FodyWeavers.xsd
 
 # Local probe records - findings belong in XML documentation; these are working notes
 /probes/
+
+# Local implementation plans
+/plans/
