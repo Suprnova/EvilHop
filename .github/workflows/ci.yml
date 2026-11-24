@@ -2,23 +2,49 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  dotnet:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      # Every CI build is a prerelease of the next version, such as 0.4.0-ci.42.
+      VersionSuffix: ci.${{ github.run_number }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          global-json-file: global.json
 
       - name: Build
         run: dotnet build --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release
+        run: dotnet test --configuration Release --no-build
+
+      # The Corpus tool is frozen as it stands, analyzer findings included.
+      - name: Format
+        run: dotnet format --verify-no-changes --no-restore --exclude tools/EvilHop.Corpus
+
+      # The library targets the runtime, not an OS, so one package serves every platform.
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet pack src/EvilHop --configuration Release --no-build --output out
+
+      - uses: actions/upload-artifact@v7
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: evilhop-nupkg
+          path: out/*
