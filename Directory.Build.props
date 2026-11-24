@@ -29,6 +29,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>hip;hop;heavy-iron;evilengine;modding;spongebob;scooby-doo;incredibles</PackageTags>
+    <PackageReleaseNotes>https://github.com/Suprnova/EvilHop/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2026 Suprnova</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>

@@ -4,7 +4,11 @@ EvilHop is a C# .NET library for reading, writing, and manipulating **HIP archiv
 
 ## Status
 
-EvilHop is alpha software. Breaking changes are expected, and there is no NuGet package yet.
+EvilHop is alpha software, and breaking changes between versions are expected; [`CHANGELOG.md`](https://github.com/Suprnova/EvilHop/blob/main/CHANGELOG.md) names them. It ships on NuGet as [`EvilHop`](https://www.nuget.org/packages/EvilHop):
+
+```
+dotnet add package EvilHop
+```
 
 The block layer is complete: every serializer round-trips every archive tested byte-for-byte, including unknown fields and padding. The asset layer opens an archive through a session, parsing its blocks into typed `Asset`s and rebuilding them unconditionally on commit.
 
@@ -76,9 +80,9 @@ archive.Save(output);
 The architecture is documented in living documents that are updated in the same change that moves
 the code they describe:
 
-- [`docs/overview.md`](docs/overview.md) - the whole library, one level deep.
-- [`docs/architecture.md`](docs/architecture.md) - the design decisions behind how it is built.
-- [`docs/glossary.md`](docs/glossary.md) - every block and the asset/serialization jargon.
+- [`docs/overview.md`](https://github.com/Suprnova/EvilHop/blob/main/docs/overview.md) - the whole library, one level deep.
+- [`docs/architecture.md`](https://github.com/Suprnova/EvilHop/blob/main/docs/architecture.md) - the design decisions behind how it is built.
+- [`docs/glossary.md`](https://github.com/Suprnova/EvilHop/blob/main/docs/glossary.md) - every block and the asset/serialization jargon.
 
 ## Building
 
@@ -91,6 +95,6 @@ dotnet test
 
 ## License
 
-EvilHop's code is licensed under the [MIT License](LICENSE). A small number of third-party test
+EvilHop's code is licensed under the [MIT License](https://github.com/Suprnova/EvilHop/blob/main/LICENSE). A small number of third-party test
 fixtures are licensed separately under more restrictive, project-only terms - see
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for details.
+[`THIRD_PARTY_NOTICES.md`](https://github.com/Suprnova/EvilHop/blob/main/THIRD_PARTY_NOTICES.md) for details.
