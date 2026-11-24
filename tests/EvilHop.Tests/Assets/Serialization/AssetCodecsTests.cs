@@ -243,12 +243,9 @@ public class AssetCodecsTests
     [Fact]
     public void Register_OverwritesTheSeededGenericHandler()
     {
-        // Chosen for its own sake: this test permanently replaces the entry, and the registry is
-        // static, so it must be a type nothing else asserts on and nothing has implemented a codec
-        // for. Implementing one for this type will fail the guard below - move this test to another
-        // unimplemented type rather than deleting the guard, or every other test touching this type
-        // starts failing on scheduling order instead.
-        const AssetType type = AssetType.CutsceneStreamingSound;
+        // Not a real asset type: this permanently replaces the entry in a static registry, so a real
+        // type would change what every other test reading it sees, depending on scheduling order.
+        const AssetType type = (AssetType)0x52454753; // "REGS"
         Assert.IsType<GenericAsset>(Read(type, new byte[4]));
 
         AssetCodecs.Register(
