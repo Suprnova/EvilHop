@@ -1,0 +1,105 @@
+name: Release
+
+# Builds the EvilHop package at one version and attaches it to a draft GitHub release, then pushes it to nuget.org
+# once the push is approved in the nuget environment; the draft is published by hand after that. Push a tag such as
+# v0.4.0 to release, or run it by hand with a version to build, test and pack without releasing. The version comes
+# from here alone: the files in the repository aren't bumped.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to build, such as 0.4.0'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
+    steps:
+      # The whole history, so the release commit can be checked against main.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Read and check the version
+        run: |
+          VERSION="${VERSION#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::$VERSION isn't a SemVer version"
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_SHA isn't on main"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Read the changelog
+        if: github.event_name == 'push'
+        run: |
+          awk -v heading="## $VERSION" '$0 == heading { found = 1; next } found && /^## / { exit } found' CHANGELOG.md > notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error::CHANGELOG.md has no section for $VERSION"
+            exit 1
+          fi
+
+      - name: Build and test
+        run: |
+          dotnet build --configuration Release -p:Version=$VERSION
+          dotnet test --configuration Release --no-build
+
+      - name: Pack
+        run: dotnet pack src/EvilHop --configuration Release --no-build -p:Version=$VERSION --output out
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: evilhop-nupkg
+          path: out/*
+
+      - name: Attach to a draft release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" "out/EvilHop.$VERSION.nupkg" "out/EvilHop.$VERSION.snupkg" \
+            --draft --prerelease --title "EvilHop $VERSION" --notes-file notes.md
+
+  publish:
+    needs: release
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: nuget
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: evilhop-nupkg
+          path: out
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # The key lasts an hour, so it's taken right before the push.
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      # The .snupkg beside the .nupkg goes up with it.
+      - name: Push to nuget.org
+        run: dotnet nuget push "out/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json
