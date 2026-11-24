@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets;
 
@@ -102,20 +103,24 @@ public sealed class PlatformAsset() : EntityAsset(AssetType.Platform, baseType: 
 
         // Subtype derives from PlatformType, which derives from Motion - reassigned once both are read.
         byte subtype = asset.Physical.Subtype;
-        var platformType = (PlatformType)reader.ReadByte();
-        reader.ReadByte(); // padding
-        asset.Physical.PlatformFlags = (Behavior)reader.ReadUInt16();
+        var platformType = (PlatformType)reader.ReadByte(PhysicalPrefix + nameof(asset.Physical.PlatformType));
+        reader.SkipPadding(1);
+        asset.Physical.PlatformFlags = (Behavior)reader.ReadUInt16(PhysicalPrefix + nameof(asset.Physical.PlatformFlags));
 
         if (platformType <= PlatformType.Pendulum)
         {
             PlatformMotion.ReadEmpty(reader, profile);
-            asset.Motion = EntityMotion.Read(reader, profile);
+            using (reader.Field(nameof(asset.Motion)))
+                asset.Motion = EntityMotion.Read(reader, profile);
         }
         else
         {
-            var motion = PlatformMotion.Read(reader, profile, platformType);
-            motion.Flags = EntityMotion.ReadEmpty(reader, profile);
-            asset.Motion = motion;
+            using (reader.Field(nameof(asset.Motion)))
+            {
+                var motion = PlatformMotion.Read(reader, profile, platformType);
+                motion.Flags = EntityMotion.ReadEmpty(reader, profile);
+                asset.Motion = motion;
+            }
         }
 
         asset.Physical.PlatformType = platformType;

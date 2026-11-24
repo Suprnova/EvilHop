@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -34,14 +35,14 @@ public partial class EntityMotion
         {
             var motion = new Pendulum
             {
-                PendulumFlags = reader.ReadByte(),
-                Plane = reader.ReadByte(),
+                PendulumFlags = reader.ReadByte(nameof(PendulumFlags)),
+                Plane = reader.ReadByte(nameof(Plane)),
             };
-            reader.ReadBytes(2); // padding
-            motion.Length = reader.ReadSingle();
-            motion.Range = reader.ReadSingle();
-            motion.Period = reader.ReadSingle();
-            motion.Phase = reader.ReadSingle();
+            reader.SkipPadding(2);
+            motion.Length = reader.ReadSingle(nameof(Length));
+            motion.Range = reader.ReadSingle(nameof(Range));
+            motion.Period = reader.ReadSingle(nameof(Period));
+            motion.Phase = reader.ReadSingle(nameof(Phase));
             return motion;
         }
 

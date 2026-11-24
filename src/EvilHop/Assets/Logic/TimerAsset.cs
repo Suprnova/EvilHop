@@ -47,8 +47,8 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.Seconds = reader.ReadSingle();
-        if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) asset.RandomRange = reader.ReadSingle();
+        asset.Seconds = reader.ReadSingle(nameof(asset.Seconds));
+        if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) asset.RandomRange = reader.ReadSingle(nameof(asset.RandomRange));
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

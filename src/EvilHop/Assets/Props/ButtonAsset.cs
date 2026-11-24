@@ -129,7 +129,8 @@ public sealed partial class ButtonAsset() : EntityAsset(AssetType.Button, baseTy
             asset.ResetDelay = reader.ReadSingle();
             asset.ActivatedBy = (Activators)reader.ReadUInt32();
         }
-        asset.Motion = (EntityMotion.Mechanism)EntityMotion.Read(reader, profile);
+        using (reader.Field(nameof(asset.Motion)))
+            asset.Motion = (EntityMotion.Mechanism)EntityMotion.Read(reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

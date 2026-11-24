@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
@@ -27,10 +28,10 @@ public partial class EntityMotion
 
         internal static new Orbit Read(EndianReader reader, FormatProfile _) => new()
         {
-            Center = reader.ReadVector3(),
-            Width = reader.ReadSingle(),
-            Height = reader.ReadSingle(),
-            Period = reader.ReadSingle(),
+            Center = reader.ReadVector3(nameof(Center)),
+            Width = reader.ReadSingle(nameof(Width)),
+            Height = reader.ReadSingle(nameof(Height)),
+            Period = reader.ReadSingle(nameof(Period)),
         };
 
         internal static void Write(Orbit value, EndianWriter writer, FormatProfile _)

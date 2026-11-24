@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -75,14 +76,19 @@ public partial class PlatformMotion
             var game = profile.Game;
             var motion = new Springboard
             {
-                JumpHeights = [reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()],
+                JumpHeights =
+                [
+                    reader.ReadSingle($"{nameof(JumpHeights)}[0]"),
+                    reader.ReadSingle($"{nameof(JumpHeights)}[1]"),
+                    reader.ReadSingle($"{nameof(JumpHeights)}[2]"),
+                ],
             };
-            if (game is not GameVersion.N100F) motion.BounceHeight = reader.ReadSingle();
-            motion.SpringAnimationId = reader.ReadAssetId();
-            motion.IdleAnimationId = reader.ReadAssetId();
-            reader.ReadAssetId(); // padding
-            motion.JumpDirection = reader.ReadVector3();
-            if (game is not GameVersion.N100F) motion.SpringFlags = (LockingBehavior)reader.ReadUInt32();
+            if (game is not GameVersion.N100F) motion.BounceHeight = reader.ReadSingle(nameof(BounceHeight));
+            motion.SpringAnimationId = reader.ReadAssetId(nameof(SpringAnimationId));
+            motion.IdleAnimationId = reader.ReadAssetId(nameof(IdleAnimationId));
+            reader.SkipPadding(4);
+            motion.JumpDirection = reader.ReadVector3(nameof(JumpDirection));
+            if (game is not GameVersion.N100F) motion.SpringFlags = (LockingBehavior)reader.ReadUInt32(nameof(SpringFlags));
             return motion;
         }
 

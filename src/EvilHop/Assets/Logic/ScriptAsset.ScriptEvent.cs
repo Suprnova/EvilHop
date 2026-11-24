@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -66,24 +67,24 @@ public partial class ScriptAsset
         {
             var evt = new ScriptEvent
             {
-                Time = reader.ReadSingle(),
-                WidgetId = reader.ReadAssetId(),
-                ParamEvent = reader.ReadUInt32(),
+                Time = reader.ReadSingle(nameof(Time)),
+                WidgetId = reader.ReadAssetId(nameof(WidgetId)),
+                ParamEvent = reader.ReadUInt32(nameof(ParamEvent)),
                 Param =
                 [
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
-                    new RawParameter(reader.ReadBytes(4)),
+                    new RawParameter(reader.ReadBytes(4, $"{nameof(Param)}[0]")),
+                    new RawParameter(reader.ReadBytes(4, $"{nameof(Param)}[1]")),
+                    new RawParameter(reader.ReadBytes(4, $"{nameof(Param)}[2]")),
+                    new RawParameter(reader.ReadBytes(4, $"{nameof(Param)}[3]")),
                 ],
-                ParamWidgetId = reader.ReadAssetId(),
+                ParamWidgetId = reader.ReadAssetId(nameof(ParamWidgetId)),
             };
 
             bool hasEnabled = profile.Game is GameVersion.ROTU or GameVersion.Ratatouille;
             if (hasEnabled)
             {
-                evt.Enabled = reader.ReadByte() != 0;
-                reader.ReadBytes(3); // padding, always zero
+                evt.Enabled = reader.ReadByte(nameof(Enabled)) != 0;
+                reader.SkipPadding(3); // always zero
             }
 
             return evt;

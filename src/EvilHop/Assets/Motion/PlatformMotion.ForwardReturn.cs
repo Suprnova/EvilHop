@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -26,10 +27,10 @@ public partial class PlatformMotion
 
         internal static ForwardReturn Read(EndianReader reader, FormatProfile _) => new()
         {
-            ForwardSpeed = reader.ReadSingle(),
-            ReturnSpeed = reader.ReadSingle(),
-            ReturnDelay = reader.ReadSingle(),
-            PostReturnDelay = reader.ReadSingle(),
+            ForwardSpeed = reader.ReadSingle(nameof(ForwardSpeed)),
+            ReturnSpeed = reader.ReadSingle(nameof(ReturnSpeed)),
+            ReturnDelay = reader.ReadSingle(nameof(ReturnDelay)),
+            PostReturnDelay = reader.ReadSingle(nameof(PostReturnDelay)),
         };
 
         internal static void Write(ForwardReturn value, EndianWriter writer, FormatProfile _)

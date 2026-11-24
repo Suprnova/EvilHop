@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -47,14 +48,14 @@ public partial class PlatformMotion
         {
             var motion = new TeeterTotter
             {
-                InitialTilt = reader.ReadSingle(),
-                MaxTilt = reader.ReadSingle(),
-                InverseMass = reader.ReadSingle(),
+                InitialTilt = reader.ReadSingle(nameof(InitialTilt)),
+                MaxTilt = reader.ReadSingle(nameof(MaxTilt)),
+                InverseMass = reader.ReadSingle(nameof(InverseMass)),
             };
             if (HasSoundGroups(profile.Game))
             {
-                motion.CreakSoundGroupId = reader.ReadAssetId();
-                motion.EndSoundGroupId = reader.ReadAssetId();
+                motion.CreakSoundGroupId = reader.ReadAssetId(nameof(CreakSoundGroupId));
+                motion.EndSoundGroupId = reader.ReadAssetId(nameof(EndSoundGroupId));
             }
             return motion;
         }

@@ -3,6 +3,7 @@ using EvilHop.Blocks;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets;
 
@@ -121,11 +122,11 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.Physical.AnimationSpeed = reader.ReadSingle();
-        asset.Physical.InitialAnimationState = reader.ReadUInt32();
-        asset.Physical.Collision = (CollisionKind)reader.ReadByte();
-        asset.Physical.SimpleFlags = (Behavior)reader.ReadByte();
-        reader.ReadInt16(); // padding, always zero
+        asset.Physical.AnimationSpeed = reader.ReadSingle(PhysicalPrefix + nameof(asset.Physical.AnimationSpeed));
+        asset.Physical.InitialAnimationState = reader.ReadUInt32(PhysicalPrefix + nameof(asset.Physical.InitialAnimationState));
+        asset.Physical.Collision = (CollisionKind)reader.ReadByte(PhysicalPrefix + nameof(asset.Physical.Collision));
+        asset.Physical.SimpleFlags = (Behavior)reader.ReadByte(PhysicalPrefix + nameof(asset.Physical.SimpleFlags));
+        reader.SkipPadding(2); // always zero
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

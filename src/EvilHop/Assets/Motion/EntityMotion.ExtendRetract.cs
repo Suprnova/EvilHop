@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
@@ -33,12 +34,12 @@ public partial class EntityMotion
 
         internal static new ExtendRetract Read(EndianReader reader, FormatProfile _) => new()
         {
-            RetractPosition = reader.ReadVector3(),
-            ExtendOffset = reader.ReadVector3(),
-            ExtendTime = reader.ReadSingle(),
-            ExtendWaitTime = reader.ReadSingle(),
-            RetractTime = reader.ReadSingle(),
-            RetractWaitTime = reader.ReadSingle(),
+            RetractPosition = reader.ReadVector3(nameof(RetractPosition)),
+            ExtendOffset = reader.ReadVector3(nameof(ExtendOffset)),
+            ExtendTime = reader.ReadSingle(nameof(ExtendTime)),
+            ExtendWaitTime = reader.ReadSingle(nameof(ExtendWaitTime)),
+            RetractTime = reader.ReadSingle(nameof(RetractTime)),
+            RetractWaitTime = reader.ReadSingle(nameof(RetractWaitTime)),
         };
 
         internal static void Write(ExtendRetract value, EndianWriter writer, FormatProfile _)

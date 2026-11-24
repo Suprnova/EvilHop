@@ -57,9 +57,9 @@ public sealed partial class PickupAsset() : EntityAsset(AssetType.Pickup, baseTy
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.PickupHash = reader.ReadUInt32();
-        asset.Flags = (Behavior)reader.ReadInt16();
-        asset.PickupValue = reader.ReadInt16();
+        asset.PickupHash = reader.ReadUInt32(nameof(asset.PickupHash));
+        asset.Flags = (Behavior)reader.ReadInt16(nameof(asset.Flags));
+        asset.PickupValue = reader.ReadInt16(nameof(asset.PickupValue));
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

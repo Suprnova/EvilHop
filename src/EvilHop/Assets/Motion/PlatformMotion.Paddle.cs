@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -74,19 +75,19 @@ public partial class PlatformMotion
             if (profile.Game is GameVersion.N100F)
                 throw new InvalidDataException($"{nameof(GameVersion.N100F)} has no paddle platforms.");
 
-            var motion = new Paddle { StartOrientation = reader.ReadInt32() };
-            int count = reader.ReadInt32();
-            motion.OrientationLoop = reader.ReadSingle();
-            float[] slots = [.. Enumerable.Range(0, MaxOrientations).Select(_ => reader.ReadSingle())];
+            var motion = new Paddle { StartOrientation = reader.ReadInt32(nameof(StartOrientation)) };
+            int count = reader.ReadInt32($"{nameof(Orientations)}.{nameof(Orientations.Length)}");
             if (count is < 0 or > MaxOrientations)
                 throw new InvalidDataException($"Paddle orientation count {count} is outside 0-{MaxOrientations}.");
 
-            motion.Orientations = [.. slots.Take(count)];
-            motion.PaddleFlags = (PaddleBehavior)reader.ReadUInt32();
-            motion.RotateSpeed = reader.ReadSingle();
-            motion.AccelTime = reader.ReadSingle();
-            motion.DecelTime = reader.ReadSingle();
-            motion.HubRadius = reader.ReadSingle();
+            motion.OrientationLoop = reader.ReadSingle(nameof(OrientationLoop));
+            motion.Orientations = [.. Enumerable.Range(0, count).Select(i => reader.Element(nameof(Orientations), i).ReadSingle())];
+            reader.SkipPadding(sizeof(float) * (MaxOrientations - count));
+            motion.PaddleFlags = (PaddleBehavior)reader.ReadUInt32(nameof(PaddleFlags));
+            motion.RotateSpeed = reader.ReadSingle(nameof(RotateSpeed));
+            motion.AccelTime = reader.ReadSingle(nameof(AccelTime));
+            motion.DecelTime = reader.ReadSingle(nameof(DecelTime));
+            motion.HubRadius = reader.ReadSingle(nameof(HubRadius));
             return motion;
         }
 

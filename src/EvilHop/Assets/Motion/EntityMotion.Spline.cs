@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -35,11 +36,11 @@ public partial class EntityMotion
 
         internal static new Spline Read(EndianReader reader, FormatProfile profile)
         {
-            var motion = new Spline { SplineId = reader.ReadAssetId() };
+            var motion = new Spline { SplineId = reader.ReadAssetId(nameof(SplineId)) };
             if (IsBFBBOrEarlier(profile.Game)) return motion;
 
-            motion.Speed = reader.ReadSingle();
-            motion.LeanModifier = reader.ReadSingle();
+            motion.Speed = reader.ReadSingle(nameof(Speed));
+            motion.LeanModifier = reader.ReadSingle(nameof(LeanModifier));
             return motion;
         }
 

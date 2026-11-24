@@ -11,7 +11,7 @@ namespace EvilHop.Assets.Serialization;
 /// <remarks>
 /// A name is a member name, built with <see langword="nameof"/>: a member of a <c>Physical</c>
 /// surface is named under <see cref="PhysicalPrefix"/>. A nested type's reads are named inside a
-/// <see cref="Field"/> scope, which prefixes the element's path.
+/// <c>Field</c> scope, which prefixes the member's or element's path.
 /// </remarks>
 internal static class FieldReads
 {
@@ -21,13 +21,34 @@ internal static class FieldReads
     extension(EndianReader reader)
     {
         /// <summary>
+        /// Opens the scope of the member <paramref name="name"/>: the fields read until it is
+        /// disposed are named under <c>name</c>.
+        /// </summary>
+        public FieldScope Field(string name)
+        {
+            reader.Recorder?.Push(name);
+            return new FieldScope(reader.Recorder);
+        }
+
+        /// <summary>
         /// Opens the scope of the element at <paramref name="index"/> of <paramref name="name"/>:
         /// the fields read until it is disposed are named under <c>name[index]</c>.
         /// </summary>
         public FieldScope Field(string name, int index)
         {
-            reader.Recorder?.Push(name, index);
+            reader.Recorder?.Push($"{name}[{index}]");
             return new FieldScope(reader.Recorder);
+        }
+
+        /// <summary>
+        /// Names the next read the element at <paramref name="index"/> of <paramref name="name"/>,
+        /// for a list of primitives: <c>reader.Element(nameof(Items), i).ReadAssetId()</c>.
+        /// </summary>
+        /// <returns>This reader.</returns>
+        public EndianReader Element(string name, int index)
+        {
+            reader.Recorder?.Name($"{name}[{index}]");
+            return reader;
         }
 
         /// <summary>Reads <paramref name="name"/> with <see cref="EndianReader.ReadByte"/>.</summary>

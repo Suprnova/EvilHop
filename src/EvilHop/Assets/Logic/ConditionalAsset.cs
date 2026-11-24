@@ -56,12 +56,12 @@ public sealed partial class ConditionalAsset() : BaseAsset(AssetType.Conditional
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.EvaluationAmount = reader.ReadUInt32();
-        asset.Variable = (VariableKind)reader.ReadUInt32();
-        asset.Operation = (Operational)reader.ReadUInt32();
+        asset.EvaluationAmount = reader.ReadUInt32(nameof(asset.EvaluationAmount));
+        asset.Variable = (VariableKind)reader.ReadUInt32(nameof(asset.Variable));
+        asset.Operation = (Operational)reader.ReadUInt32(nameof(asset.Operation));
 
         if (profile.Game is not GameVersion.N100F)
-            asset.TargetId = reader.ReadAssetId();
+            asset.TargetId = reader.ReadAssetId(nameof(asset.TargetId));
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

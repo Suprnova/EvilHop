@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 
@@ -39,10 +40,16 @@ public abstract class Motion
     private protected static bool IsBFBBOrEarlier(GameVersion game) => game is GameVersion.N100F or GameVersion.BFBB;
 
     /// <summary>
-    /// Reads exactly <paramref name="size"/> bytes, returning a reader scoped to them.
+    /// Reads the rest of the <paramref name="size"/>-byte block that started at <paramref name="start"/>
+    /// as padding, once its fields are read.
     /// </summary>
-    private protected static EndianReader ReadBlock(EndianReader reader, int size) =>
-        new(new MemoryStream(reader.ReadBytes(size)), reader.Endianness);
+    /// <exception cref="InvalidDataException">The fields read ran past the block's end.</exception>
+    private protected static void EndBlock(EndianReader reader, long start, int size)
+    {
+        long rest = start + size - reader.BaseStream.Position;
+        if (rest < 0) throw new InvalidDataException($"A motion's fields ran {-rest} bytes past its {size}-byte block.");
+        reader.SkipPadding((int)rest);
+    }
 
     /// <summary>
     /// Writes whatever <paramref name="write"/> writes, then zeros up to exactly

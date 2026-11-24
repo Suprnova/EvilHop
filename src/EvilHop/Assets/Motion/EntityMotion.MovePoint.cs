@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -39,9 +40,9 @@ public partial class EntityMotion
         /// </remarks>
         internal static new MovePoint Read(EndianReader reader, FormatProfile _) => new()
         {
-            Pause = (PauseBehavior)reader.ReadUInt32(),
-            MovePointId = reader.ReadAssetId(),
-            Speed = reader.ReadSingle(),
+            Pause = (PauseBehavior)reader.ReadUInt32(nameof(Pause)),
+            MovePointId = reader.ReadAssetId(nameof(MovePointId)),
+            Speed = reader.ReadSingle(nameof(Speed)),
         };
 
         internal static void Write(MovePoint value, EndianWriter writer, FormatProfile _)

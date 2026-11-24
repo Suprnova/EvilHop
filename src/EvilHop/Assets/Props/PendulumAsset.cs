@@ -42,7 +42,8 @@ public sealed class PendulumAsset() : EntityAsset(AssetType.Pendulum, baseType: 
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.Motion = (EntityMotion.Pendulum)EntityMotion.Read(reader, profile);
+        using (reader.Field(nameof(asset.Motion)))
+            asset.Motion = (EntityMotion.Pendulum)EntityMotion.Read(reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

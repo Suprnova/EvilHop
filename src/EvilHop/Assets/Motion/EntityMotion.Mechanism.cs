@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -75,31 +76,31 @@ public partial class EntityMotion
         {
             var motion = new Mechanism
             {
-                Movement = (Sequence)reader.ReadByte(),
-                Loop = (LoopBehavior)reader.ReadByte(),
-                SlideAxis = (Axis)reader.ReadByte(),
-                RotateAxis = (Axis)reader.ReadByte(),
+                Movement = (Sequence)reader.ReadByte(nameof(Movement)),
+                Loop = (LoopBehavior)reader.ReadByte(nameof(Loop)),
+                SlideAxis = (Axis)reader.ReadByte(nameof(SlideAxis)),
+                RotateAxis = (Axis)reader.ReadByte(nameof(RotateAxis)),
             };
             if (!IsBFBBOrEarlier(profile.Game))
             {
-                motion.ScaleAxis = reader.ReadByte();
-                reader.ReadBytes(3); // padding
+                motion.ScaleAxis = reader.ReadByte(nameof(ScaleAxis));
+                reader.SkipPadding(3);
             }
 
-            motion.SlideDistance = reader.ReadSingle();
-            motion.SlideTime = reader.ReadSingle();
-            motion.SlideAccelTime = reader.ReadSingle();
-            motion.SlideDecelTime = reader.ReadSingle();
-            motion.RotateDistance = reader.ReadSingle();
-            motion.RotateTime = reader.ReadSingle();
-            motion.RotateAccelTime = reader.ReadSingle();
-            motion.RotateDecelTime = reader.ReadSingle();
-            motion.ReturnDelay = reader.ReadSingle();
-            motion.PostReturnDelay = reader.ReadSingle();
+            motion.SlideDistance = reader.ReadSingle(nameof(SlideDistance));
+            motion.SlideTime = reader.ReadSingle(nameof(SlideTime));
+            motion.SlideAccelTime = reader.ReadSingle(nameof(SlideAccelTime));
+            motion.SlideDecelTime = reader.ReadSingle(nameof(SlideDecelTime));
+            motion.RotateDistance = reader.ReadSingle(nameof(RotateDistance));
+            motion.RotateTime = reader.ReadSingle(nameof(RotateTime));
+            motion.RotateAccelTime = reader.ReadSingle(nameof(RotateAccelTime));
+            motion.RotateDecelTime = reader.ReadSingle(nameof(RotateDecelTime));
+            motion.ReturnDelay = reader.ReadSingle(nameof(ReturnDelay));
+            motion.PostReturnDelay = reader.ReadSingle(nameof(PostReturnDelay));
             if (IsBFBBOrEarlier(profile.Game)) return motion;
 
-            motion.ScaleAmount = reader.ReadSingle();
-            motion.ScaleDuration = reader.ReadSingle();
+            motion.ScaleAmount = reader.ReadSingle(nameof(ScaleAmount));
+            motion.ScaleDuration = reader.ReadSingle(nameof(ScaleDuration));
             return motion;
         }
 

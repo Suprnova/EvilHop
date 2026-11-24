@@ -17,6 +17,10 @@ public class FieldMapTests
     private const uint PayloadId = 4;
     private const uint EmptyId = 5;
     private const uint DynamicId = 6;
+    private const uint ScriptId = 7;
+    private const uint GroupId = 8;
+    private const uint ConveyorId = 9;
+    private const uint OrbitId = 10;
 
     private static readonly string[] BasePrefixPaths =
         ["Physical.BaseId", "Physical.BaseType", "Physical.LinkCount", "Physical.BaseFlags"];
@@ -26,6 +30,14 @@ public class FieldMapTests
         "Links[0].SourceEvent", "Links[0].DestinationEvent", "Links[0].DestinationAssetId",
         "Links[0].Params[0]", "Links[0].Params[1]", "Links[0].Params[2]", "Links[0].Params[3]",
         "Links[0].ParamWidgetAssetId", "Links[0].CheckAssetId",
+    ];
+
+    private static readonly (string, FieldSurface)[] EntityPrefixNames =
+    [
+        ("EntityFlags", FieldSurface.Logical),
+        .. Physical("Physical.Subtype", "Physical.PFlags", "Physical.CollisionFlags", "Physical.SurfaceId"),
+        .. Logical("Angle", "Position", "Scale", "ColorMultiplier"),
+        .. Physical("Physical.SeeThroughSpeed", "Physical.ModelId", "Physical.AnimListId"),
     ];
 
     private readonly AssetView view;
@@ -56,6 +68,18 @@ public class FieldMapTests
             var dynamic = new GenericDynamicAsset((DynamicKind)0x12345678) { Id = new AssetId(DynamicId) };
             dynamic.Links.Add(new Link());
             layer.Add(dynamic);
+
+            var script = new ScriptAsset { Id = new AssetId(ScriptId), Loop = true };
+            script.Events.Add(new ScriptAsset.ScriptEvent { Time = 1.5f });
+            layer.Add(script);
+
+            var group = new GroupAsset { Id = new AssetId(GroupId) };
+            group.Items.Add(new AssetId(CounterId));
+            group.Items.Add(new AssetId(ScriptId));
+            layer.Add(group);
+
+            layer.Add(new PlatformAsset { Id = new AssetId(ConveyorId), Motion = new PlatformMotion.ConveyorBelt { Speed = 3 } });
+            layer.Add(new PlatformAsset { Id = new AssetId(OrbitId), Motion = new EntityMotion.Orbit { Width = 4 } });
         }
 
         using var stream = new MemoryStream();
@@ -89,7 +113,7 @@ public class FieldMapTests
         Assert.Equal(
         [
             (0, 4, FieldKind.AssetId), (4, 1, FieldKind.U8), (5, 1, FieldKind.U8), (6, 2, FieldKind.S16),
-            (8, 2, FieldKind.S16), (10, 2, FieldKind.S16),
+            (8, 2, FieldKind.S16), (10, 2, FieldKind.Bytes),
             (12, 2, FieldKind.S16), (14, 2, FieldKind.S16), (16, 4, FieldKind.AssetId),
             (20, 4, FieldKind.Bytes), (24, 4, FieldKind.Bytes), (28, 4, FieldKind.Bytes), (32, 4, FieldKind.Bytes),
             (36, 4, FieldKind.AssetId), (40, 4, FieldKind.AssetId),
@@ -105,7 +129,8 @@ public class FieldMapTests
         Assert.Equal(
             [
                 .. Physical(BasePrefixPaths),
-                .. Logical(FieldMap.Unnamed, FieldMap.Unnamed),
+                .. Logical("InitialValue"),
+                ("InitialValue.Padding", FieldSurface.Unmodeled),
                 .. Logical(LinkPaths),
                 (FieldMap.UnparsedTail, FieldSurface.Unmodeled),
             ],
@@ -122,6 +147,78 @@ public class FieldMapTests
                 .. Physical(BasePrefixPaths),
                 .. Physical("Physical.Kind", "Physical.Version", "Physical.Handle"),
                 .. Logical(LinkPaths),
+            ],
+            Names(map));
+    }
+
+    [Fact]
+    public void Describe_Script_NamesEachEventUnderItsIndex()
+    {
+        var map = view.Describe(AssetOf(ScriptId));
+
+        Assert.Equal(
+            [
+                .. Physical(BasePrefixPaths),
+                .. Logical("ScaleFactor"),
+                .. Physical("Physical.EventCount", "Physical.Loop"),
+                ("Physical.Loop.Padding", FieldSurface.Unmodeled),
+                .. Logical(
+                    "Events[0].Time", "Events[0].WidgetId", "Events[0].ParamEvent",
+                    "Events[0].Param[0]", "Events[0].Param[1]", "Events[0].Param[2]", "Events[0].Param[3]",
+                    "Events[0].ParamWidgetId"),
+            ],
+            Names(map));
+    }
+
+    [Fact]
+    public void Describe_Group_NamesEachItemUnderItsIndex()
+    {
+        var map = view.Describe(AssetOf(GroupId));
+
+        Assert.Equal(
+            [.. Physical(BasePrefixPaths), .. Physical("Physical.ItemCount"), .. Logical("GroupFlags", "Items[0]", "Items[1]")],
+            Names(map));
+    }
+
+    [Fact]
+    public void Describe_PlatformWithPlatformMotion_NamesTheMotionUnderMotion()
+    {
+        var map = view.Describe(AssetOf(ConveyorId));
+
+        Assert.Equal(
+            [
+                .. Physical(BasePrefixPaths),
+                .. EntityPrefixNames,
+                .. Physical("Physical.PlatformType"),
+                ("Physical.PlatformType.Padding", FieldSurface.Unmodeled),
+                .. Physical("Physical.PlatformFlags"),
+                .. Logical("Motion.Speed"),
+                ("Motion.Speed.Padding", FieldSurface.Unmodeled),
+                .. Logical("Motion.Type"),
+                ("Motion.Type.Padding", FieldSurface.Unmodeled),
+                .. Logical("Motion.Flags"),
+                ("Motion.Flags.Padding", FieldSurface.Unmodeled),
+            ],
+            Names(map));
+    }
+
+    [Fact]
+    public void Describe_PlatformWithEntityMotion_NamesTheMotionUnderMotion()
+    {
+        var map = view.Describe(AssetOf(OrbitId));
+
+        Assert.Equal(
+            [
+                .. Physical(BasePrefixPaths),
+                .. EntityPrefixNames,
+                .. Physical("Physical.PlatformType"),
+                ("Physical.PlatformType.Padding", FieldSurface.Unmodeled),
+                .. Physical("Physical.PlatformFlags"),
+                ("Physical.PlatformFlags.Padding", FieldSurface.Unmodeled),
+                .. Logical("Motion.Type"),
+                ("Motion.Type.Padding", FieldSurface.Unmodeled),
+                .. Logical("Motion.Flags", "Motion.Center", "Motion.Width", "Motion.Height", "Motion.Period"),
+                ("Motion.Period.Padding", FieldSurface.Unmodeled),
             ],
             Names(map));
     }

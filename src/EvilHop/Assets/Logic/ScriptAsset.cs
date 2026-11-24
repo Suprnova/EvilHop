@@ -5,6 +5,7 @@ using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets;
 
@@ -73,18 +74,19 @@ public sealed partial class ScriptAsset() : BaseAsset(AssetType.Script, baseType
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        asset.ScaleFactor = reader.ReadSingle();
-        uint eventCount = reader.ReadUInt32();
+        asset.ScaleFactor = reader.ReadSingle(nameof(asset.ScaleFactor));
+        uint eventCount = reader.ReadUInt32(PhysicalPrefix + nameof(asset.Physical.EventCount));
 
         bool hasLoop = profile.Game is not (GameVersion.N100F or GameVersion.BFBB);
         if (hasLoop)
         {
-            asset.Physical.Loop = reader.ReadByte();
-            reader.ReadBytes(3); // padding, always zero
+            asset.Physical.Loop = reader.ReadByte(PhysicalPrefix + nameof(asset.Physical.Loop));
+            reader.SkipPadding(3); // always zero
         }
 
-        for (uint i = 0; i < eventCount; i++)
-            asset.Events.Add(ScriptEvent.Read(reader, profile));
+        for (int i = 0; i < eventCount; i++)
+            using (reader.Field(nameof(asset.Events), i))
+                asset.Events.Add(ScriptEvent.Read(reader, profile));
         asset.Physical.EventCount = (uint)asset.Events.Count;
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)

@@ -38,8 +38,8 @@ public sealed class CounterAsset() : BaseAsset(AssetType.Counter, baseType: 0x16
         var asset = new CounterAsset();
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
-        asset.InitialValue = reader.ReadInt16();
-        reader.ReadInt16(); // padding, always zero
+        asset.InitialValue = reader.ReadInt16(nameof(asset.InitialValue));
+        reader.SkipPadding(2); // always zero
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;

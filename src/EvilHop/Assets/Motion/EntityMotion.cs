@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -34,24 +35,27 @@ public abstract partial class EntityMotion : Motion
     /// <exception cref="InvalidDataException">The block's type is <see cref="Kind.None"/> or unknown.</exception>
     internal static EntityMotion Read(EndianReader reader, FormatProfile profile)
     {
-        using var block = ReadBlock(reader, BlockSize(profile.Game));
-        var type = (Kind)block.ReadByte();
-        byte useBanking = block.ReadByte();
-        var flags = (Behavior)block.ReadUInt16();
+        long start = reader.BaseStream.Position;
+        var type = (Kind)reader.ReadByte(nameof(Type));
+        bool useBanking = false;
+        if (type is Kind.MovePoint) useBanking = reader.ReadByte(nameof(MovePoint.UseBanking)) == 1;
+        else reader.SkipPadding(1); // use_banking, unused outside MovePoint
+        var flags = (Behavior)reader.ReadUInt16(nameof(Flags));
 
         EntityMotion motion = type switch
         {
-            Kind.ExtendRetract => ExtendRetract.Read(block, profile),
-            Kind.Orbit => Orbit.Read(block, profile),
-            Kind.Spline => Spline.Read(block, profile),
-            Kind.MovePoint => MovePoint.Read(block, profile),
-            Kind.Mechanism => Mechanism.Read(block, profile),
-            Kind.Pendulum => Pendulum.Read(block, profile),
+            Kind.ExtendRetract => ExtendRetract.Read(reader, profile),
+            Kind.Orbit => Orbit.Read(reader, profile),
+            Kind.Spline => Spline.Read(reader, profile),
+            Kind.MovePoint => MovePoint.Read(reader, profile),
+            Kind.Mechanism => Mechanism.Read(reader, profile),
+            Kind.Pendulum => Pendulum.Read(reader, profile),
             _ => throw new InvalidDataException($"Motion type 0x{(byte)type:X2} has no {nameof(EntityMotion)}."),
         };
+        EndBlock(reader, start, BlockSize(profile.Game));
 
         if (motion is MovePoint movePoint)
-            movePoint.UseBanking = useBanking == 1;
+            movePoint.UseBanking = useBanking;
         motion.Flags = flags;
         return motion;
     }
@@ -83,13 +87,15 @@ public abstract partial class EntityMotion : Motion
     /// <exception cref="InvalidDataException">The block's type isn't <see cref="Kind.None"/>.</exception>
     internal static Behavior ReadEmpty(EndianReader reader, FormatProfile profile)
     {
-        using var block = ReadBlock(reader, BlockSize(profile.Game));
-        var type = (Kind)block.ReadByte();
+        long start = reader.BaseStream.Position;
+        var type = (Kind)reader.ReadByte(nameof(Type));
         if (type is not Kind.None)
             throw new InvalidDataException($"Expected an empty Motion block, found motion type 0x{(byte)type:X2}.");
 
-        block.ReadByte(); // use_banking, always zero
-        return (Behavior)block.ReadUInt16();
+        reader.SkipPadding(1); // use_banking, always zero
+        var flags = (Behavior)reader.ReadUInt16(nameof(Flags));
+        EndBlock(reader, start, BlockSize(profile.Game));
+        return flags;
     }
 
     /// <summary>

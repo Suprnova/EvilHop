@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -23,19 +24,21 @@ public abstract partial class PlatformMotion : Motion
     /// <exception cref="InvalidDataException"><paramref name="discriminator"/> is unknown, or has no layout under this <see cref="FormatProfile"/>.</exception>
     internal static PlatformMotion Read(EndianReader reader, FormatProfile profile, PlatformType discriminator)
     {
-        using var block = ReadBlock(reader, BlockSize(profile.Game));
-        return discriminator switch
+        long start = reader.BaseStream.Position;
+        PlatformMotion motion = discriminator switch
         {
-            PlatformType.ConveyorBelt => ConveyorBelt.Read(block, profile),
-            PlatformType.Falling => Falling.Read(block, profile),
-            PlatformType.ForwardReturn => ForwardReturn.Read(block, profile),
-            PlatformType.Breakaway => Breakaway.Read(block, profile),
-            PlatformType.Springboard => Springboard.Read(block, profile),
-            PlatformType.TeeterTotter => TeeterTotter.Read(block, profile),
-            PlatformType.Paddle => Paddle.Read(block, profile),
-            PlatformType.FullyManipulable => FullyManipulable.Read(block, profile),
+            PlatformType.ConveyorBelt => ConveyorBelt.Read(reader, profile),
+            PlatformType.Falling => Falling.Read(reader, profile),
+            PlatformType.ForwardReturn => ForwardReturn.Read(reader, profile),
+            PlatformType.Breakaway => Breakaway.Read(reader, profile),
+            PlatformType.Springboard => Springboard.Read(reader, profile),
+            PlatformType.TeeterTotter => TeeterTotter.Read(reader, profile),
+            PlatformType.Paddle => Paddle.Read(reader, profile),
+            PlatformType.FullyManipulable => FullyManipulable.Read(reader, profile),
             _ => throw new InvalidDataException($"Unknown platform type 0x{(byte)discriminator:X2}."),
         };
+        EndBlock(reader, start, BlockSize(profile.Game));
+        return motion;
     }
 
     /// <summary>
@@ -61,7 +64,7 @@ public abstract partial class PlatformMotion : Motion
     /// Reads the empty type-specific block stored alongside an <see cref="EntityMotion"/>.
     /// </summary>
     internal static void ReadEmpty(EndianReader reader, FormatProfile profile) =>
-        reader.ReadBytes(BlockSize(profile.Game)); // padding
+        reader.SkipPadding(BlockSize(profile.Game));
 
     /// <summary>
     /// Writes the empty type-specific block stored alongside an <see cref="EntityMotion"/>.

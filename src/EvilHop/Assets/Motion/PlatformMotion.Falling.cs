@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -21,8 +22,8 @@ public partial class PlatformMotion
 
         internal static Falling Read(EndianReader reader, FormatProfile _) => new()
         {
-            Speed = reader.ReadSingle(),
-            BustModelId = reader.ReadAssetId(),
+            Speed = reader.ReadSingle(nameof(Speed)),
+            BustModelId = reader.ReadAssetId(nameof(BustModelId)),
         };
 
         internal static void Write(Falling value, EndianWriter writer, FormatProfile _)

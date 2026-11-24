@@ -4,6 +4,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Numerics;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets;
 
@@ -85,14 +86,14 @@ public sealed class TriggerAsset() : EntityAsset(AssetType.Trigger, baseType: 0x
         BaseAssetPrefix.Read(asset, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
 
-        asset.TriggerPosition0 = reader.ReadVector3();
-        asset.TriggerPosition1 = reader.ReadVector3();
-        asset.Physical.TriggerPosition2 = reader.ReadVector3();
-        asset.Physical.TriggerPosition3 = reader.ReadVector3();
+        asset.TriggerPosition0 = reader.ReadVector3(nameof(asset.TriggerPosition0));
+        asset.TriggerPosition1 = reader.ReadVector3(nameof(asset.TriggerPosition1));
+        asset.Physical.TriggerPosition2 = reader.ReadVector3(PhysicalPrefix + nameof(asset.Physical.TriggerPosition2));
+        asset.Physical.TriggerPosition3 = reader.ReadVector3(PhysicalPrefix + nameof(asset.Physical.TriggerPosition3));
         if (profile.TriggerHasDirectionAndFlags)
         {
-            asset.Direction = reader.ReadVector3();
-            asset.Flags = (Behavior)reader.ReadUInt32();
+            asset.Direction = reader.ReadVector3(nameof(asset.Direction));
+            asset.Flags = (Behavior)reader.ReadUInt32(nameof(asset.Flags));
         }
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)

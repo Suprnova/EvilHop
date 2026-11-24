@@ -36,8 +36,8 @@ internal sealed class FieldRecorder(Stream stream)
     public void NamePadding() =>
         _next = (_lastPath is null ? PathOf(Padding) : $"{_lastPath}.{Padding}", FieldSurface.Unmodeled);
 
-    /// <summary>Opens the scope of the element at <paramref name="index"/> of <paramref name="name"/>.</summary>
-    public void Push(string name, int index) => _scopes.Add($"{name}[{index}]");
+    /// <summary>Opens the scope <paramref name="segment"/>: a member, or an element <c>name[index]</c>.</summary>
+    public void Push(string segment) => _scopes.Add(segment);
 
     /// <summary>Closes the innermost scope.</summary>
     public void Pop() => _scopes.RemoveAt(_scopes.Count - 1);
@@ -126,7 +126,7 @@ internal readonly ref struct FieldRead
 }
 
 /// <summary>
-/// A scope opened by <see cref="FieldReads.Field"/>, closed on dispose; a no-op when none is recorded.
+/// A scope opened by a <c>Field</c> read of <see cref="FieldReads"/>, closed on dispose; a no-op when none is recorded.
 /// </summary>
 internal readonly ref struct FieldScope(FieldRecorder? recorder)
 {

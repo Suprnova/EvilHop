@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -51,18 +52,18 @@ public partial class PlatformMotion
         internal static Breakaway Read(EndianReader reader, FormatProfile profile)
         {
             var game = profile.Game;
-            var motion = new Breakaway { BreakDelay = reader.ReadSingle() };
+            var motion = new Breakaway { BreakDelay = reader.ReadSingle(nameof(BreakDelay)) };
             if (IsBFBBOrEarlier(game))
             {
-                motion.BustModelId = reader.ReadAssetId();
-                motion.ResetDelay = reader.ReadSingle();
-                if (game is GameVersion.BFBB) motion.BreakFlags = (BreakawayBehavior)reader.ReadUInt32();
+                motion.BustModelId = reader.ReadAssetId(nameof(BustModelId));
+                motion.ResetDelay = reader.ReadSingle(nameof(ResetDelay));
+                if (game is GameVersion.BFBB) motion.BreakFlags = (BreakawayBehavior)reader.ReadUInt32(nameof(BreakFlags));
             }
             else
             {
-                motion.ResetDelay = reader.ReadSingle();
-                motion.BreakFlags = (BreakawayBehavior)reader.ReadUInt32();
-                motion.CollisionOffTime = reader.ReadSingle();
+                motion.ResetDelay = reader.ReadSingle(nameof(ResetDelay));
+                motion.BreakFlags = (BreakawayBehavior)reader.ReadUInt32(nameof(BreakFlags));
+                motion.CollisionOffTime = reader.ReadSingle(nameof(CollisionOffTime));
             }
             return motion;
         }

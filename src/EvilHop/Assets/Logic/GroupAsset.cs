@@ -4,6 +4,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets;
 
@@ -51,11 +52,11 @@ public sealed class GroupAsset() : BaseAsset(AssetType.Group, baseType: 0x11), P
         AssetFields.Populate(asset, header, debug);
         BaseAssetPrefix.Read(asset, reader);
 
-        ushort itemCount = reader.ReadUInt16();
-        asset.GroupFlags = (EventMode)reader.ReadInt16();
+        ushort itemCount = reader.ReadUInt16(PhysicalPrefix + nameof(asset.Physical.ItemCount));
+        asset.GroupFlags = (EventMode)reader.ReadInt16(nameof(asset.GroupFlags));
 
         for (int i = 0; i < itemCount; i++)
-            asset.Items.Add(reader.ReadAssetId());
+            asset.Items.Add(reader.Element(nameof(asset.Items), i).ReadAssetId());
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
             asset.Links.Add(Link.Read(reader, profile, i));

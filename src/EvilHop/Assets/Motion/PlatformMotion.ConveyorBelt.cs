@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 
@@ -19,7 +20,7 @@ public partial class PlatformMotion
 
         internal static ConveyorBelt Read(EndianReader reader, FormatProfile _) => new()
         {
-            Speed = reader.ReadSingle(),
+            Speed = reader.ReadSingle(nameof(Speed)),
         };
 
         internal static void Write(ConveyorBelt value, EndianWriter writer, FormatProfile _) =>
