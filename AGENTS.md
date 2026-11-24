@@ -52,6 +52,10 @@ them wrong breaks the library.
   [`docs/architecture.md`](docs/architecture.md) are prescriptive, not a per-field judgement.
 - **Codec support has three states.** An asset type is **Typed**, **Payload**, or **Untyped** -
   never a binary "done or not".
+- **The public API is recorded.** Every public member is listed in `src/EvilHop/PublicAPI.Shipped.txt`
+  (released) or `src/EvilHop/PublicAPI.Unshipped.txt` (since the last release), and the build fails
+  on any public change that isn't. Breaking changes are allowed in alpha, and `CHANGELOG.md` names
+  each one.
 
 ## Corpus and Real Archives
 
