@@ -14,7 +14,8 @@ namespace EvilHop.Assets;
 /// <param name="Offset">The absolute offset of the asset's bytes in the archive.</param>
 /// <param name="Size">The length of the asset's bytes.</param>
 /// <param name="Alignment">The alignment its <see cref="AssetDebug"/> stated.</param>
-internal readonly record struct AssetPlacement(AssetId Id, uint Offset, uint Size, int Alignment);
+/// <param name="Type">The type its <see cref="AssetHeader"/> stated, which chose its codec.</param>
+internal readonly record struct AssetPlacement(AssetId Id, uint Offset, uint Size, int Alignment, AssetType Type);
 
 /// <summary>
 /// An archive's assets as read from its blocks.
@@ -128,7 +129,32 @@ internal static class AssetReader
     }
 
     private static AssetPlacement PlacementOf(AssetHeader header) =>
-        new(new AssetId(header.Id), header.Offset, header.Size, header.Debug.Alignment);
+        new(new AssetId(header.Id), header.Offset, header.Size, header.Debug.Alignment, header.Type);
+
+    /// <summary>
+    /// The fields of the asset of <paramref name="type"/> in <paramref name="range"/> of
+    /// <paramref name="data"/>, as <see cref="ParseOne"/> reads them under <paramref name="profile"/>.
+    /// </summary>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "A parse that fails degrades the asset to raw bytes, so it maps as an unparsed tail.")]
+    internal static FieldMap Describe(byte[] data, Range range, AssetType type, FormatProfile profile)
+    {
+        var (offset, length) = range.GetOffsetAndLength(data.Length);
+        using var stream = new MemoryStream(data, offset, length, writable: false);
+        var recorder = new FieldRecorder(stream);
+        if (length == 0) return recorder.Build(0);
+
+        try
+        {
+            using var reader = new EndianReader(stream, profile.Endianness, leaveOpen: true) { Recorder = recorder };
+            var header = new AssetHeader { Type = type, Debug = new AssetDebug() };
+            AssetCodecs.Read(reader, header, header.Debug, profile);
+            return recorder.Build((uint)length);
+        }
+        catch (Exception)
+        {
+            return new FieldRecorder(stream).Build((uint)length);
+        }
+    }
 
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Each asset is parsed independently; a malformed one must not abort the rest of the archive.")]
     private static Asset ParseOne(AssetHeader header, AssetRead read, FormatProfile profile)

@@ -70,9 +70,9 @@ public sealed class ElectricArcGeneratorAsset() : EntityAsset(AssetType.Electric
         asset.OnAnimationId = reader.ReadAssetId();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

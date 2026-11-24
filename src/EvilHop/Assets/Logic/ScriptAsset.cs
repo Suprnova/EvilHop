@@ -88,9 +88,9 @@ public sealed partial class ScriptAsset() : BaseAsset(AssetType.Script, baseType
         asset.Physical.EventCount = (uint)asset.Events.Count;
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

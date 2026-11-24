@@ -38,7 +38,7 @@ public sealed class MarkerAsset() : Asset(AssetType.Marker)
         var asset = new MarkerAsset();
         AssetFields.Populate(asset, header, debug);
         asset.Position = reader.ReadVector3();
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

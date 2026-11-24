@@ -103,7 +103,7 @@ public sealed partial class AttackTableAsset() : Asset(AssetType.AttackTable), P
         asset.Physical.EntryCount = entryCount;
         asset.Physical.TransitionCount = transitionCount;
         asset.Physical.StateCount = stateCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

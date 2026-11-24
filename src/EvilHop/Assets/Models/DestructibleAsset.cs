@@ -144,7 +144,7 @@ public sealed partial class DestructibleAsset() : Asset(AssetType.DestructibleAs
             asset.States.Add(State.Read(reader, profile));
 
         asset.Physical.StateCount = (uint)asset.States.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

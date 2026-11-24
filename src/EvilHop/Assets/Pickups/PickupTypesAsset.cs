@@ -58,7 +58,7 @@ public sealed partial class PickupTypesAsset() : BaseAsset(AssetType.PickupTypes
             asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.RowCount = rowCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

@@ -24,7 +24,8 @@ namespace EvilHop.Assets;
 public sealed class AssetView
 {
     private readonly byte[] _data;
-    private readonly Dictionary<Asset, Range> _assetRanges;
+    private readonly Dictionary<Asset, (Range Range, AssetType Type)> _assets;
+    private readonly Dictionary<Asset, FieldMap> _fieldMaps = new(ReferenceEqualityComparer.Instance);
     private readonly Dictionary<Asset, int> _layerOf = new(ReferenceEqualityComparer.Instance);
     private readonly Range[] _layerRanges;
     private readonly AssetEntry[][] _layerAssets;
@@ -36,9 +37,9 @@ public sealed class AssetView
         Layers = read.Layers;
         Diagnostics = read.Diagnostics;
         _data = [.. read.Data];
-        _assetRanges = new(ReferenceEqualityComparer.Instance);
+        _assets = new(ReferenceEqualityComparer.Instance);
         foreach (var (asset, placement) in read.PlacementOf)
-            _assetRanges[asset] = RangeOf(read, placement);
+            _assets[asset] = (RangeOf(read, placement), placement.Type);
         _layerRanges = [.. read.Layers.Select(layer => LayerRangeOf(read, layer))];
         for (int layer = 0; layer < read.Layers.Count; layer++)
             foreach (var asset in read.Layers[layer].Assets)
@@ -128,6 +129,24 @@ public sealed class AssetView
     }
 
     /// <summary>
+    /// The fields of <paramref name="asset"/>'s bytes as its codec read them: which member each byte
+    /// was read into, under <see cref="Profile"/>.
+    /// </summary>
+    /// <param name="asset">An asset of this view.</param>
+    /// <returns>
+    /// The asset's field map, covering <see cref="GetBytes"/> exactly, built the first time it is
+    /// asked for. Editing the asset afterwards doesn't change it.
+    /// </returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="asset"/> wasn't read by this view.</exception>
+    public FieldMap Describe(Asset asset)
+    {
+        var (range, type) = Read(asset);
+        if (!_fieldMaps.TryGetValue(asset, out var map))
+            _fieldMaps[asset] = map = AssetReader.Describe(_data, range, type, Profile);
+        return map;
+    }
+
+    /// <summary>
     /// The index in <see cref="Layers"/> of the layer <paramref name="asset"/> was read in.
     /// </summary>
     /// <param name="asset">An asset of this view.</param>
@@ -141,11 +160,13 @@ public sealed class AssetView
             : throw new ArgumentException($"The asset wasn't read by this {nameof(AssetView)}.", nameof(asset));
     }
 
-    private Range AssetRangeOf(Asset asset)
+    private Range AssetRangeOf(Asset asset) => Read(asset).Range;
+
+    private (Range Range, AssetType Type) Read(Asset asset)
     {
         ArgumentNullException.ThrowIfNull(asset);
-        return _assetRanges.TryGetValue(asset, out var range)
-            ? range
+        return _assets.TryGetValue(asset, out var read)
+            ? read
             : throw new ArgumentException($"The asset wasn't read by this {nameof(AssetView)}.", nameof(asset));
     }
 

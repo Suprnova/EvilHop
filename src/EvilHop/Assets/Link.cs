@@ -1,3 +1,4 @@
+using EvilHop.Assets.Serialization;
 using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
@@ -58,28 +59,30 @@ public sealed class Link()
         [new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4]), new RawParameter(new byte[4])];
 
     /// <summary>
-    /// Reads one <see cref="Link"/> from <paramref name="reader"/>'s current position. The caller owns
+    /// Reads the <see cref="Link"/> at <paramref name="index"/> of its asset's
+    /// <see cref="BaseAsset.Links"/> from <paramref name="reader"/>'s current position. The caller owns
     /// the loop over a link list, since the link count is <see cref="BaseAsset"/>'s physical field.
     /// </summary>
-    internal static Link Read(EndianReader reader, FormatProfile profile)
+    internal static Link Read(EndianReader reader, FormatProfile profile, int index)
     {
+        using var scope = reader.Field(nameof(BaseAsset.Links), index);
         var link = new Link
         {
-            SourceEvent = reader.ReadInt16(),
-            DestinationEvent = reader.ReadInt16(),
-            DestinationAssetId = reader.ReadAssetId(),
+            SourceEvent = reader.ReadInt16(nameof(SourceEvent)),
+            DestinationEvent = reader.ReadInt16(nameof(DestinationEvent)),
+            DestinationAssetId = reader.ReadAssetId(nameof(DestinationAssetId)),
             Params =
             [
-                new RawParameter(reader.ReadBytes(4)),
-                new RawParameter(reader.ReadBytes(4)),
-                new RawParameter(reader.ReadBytes(4)),
-                new RawParameter(reader.ReadBytes(4)),
+                new RawParameter(reader.ReadBytes(4, $"{nameof(Params)}[0]")),
+                new RawParameter(reader.ReadBytes(4, $"{nameof(Params)}[1]")),
+                new RawParameter(reader.ReadBytes(4, $"{nameof(Params)}[2]")),
+                new RawParameter(reader.ReadBytes(4, $"{nameof(Params)}[3]")),
             ],
         };
         if (profile.LinkHasExtendedFields)
         {
-            link.ParamWidgetAssetId = reader.ReadAssetId();
-            link.CheckAssetId = reader.ReadAssetId();
+            link.ParamWidgetAssetId = reader.ReadAssetId(nameof(ParamWidgetAssetId));
+            link.CheckAssetId = reader.ReadAssetId(nameof(CheckAssetId));
         }
         return link;
     }

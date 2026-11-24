@@ -58,7 +58,7 @@ public sealed partial class PickupTableAsset() : Asset(AssetType.PickupTable), P
             asset.Entries.Add(Entry.Read(reader, profile));
         asset.Physical.EntryCount = (uint)asset.Entries.Count;
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

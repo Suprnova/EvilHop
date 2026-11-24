@@ -68,7 +68,7 @@ public sealed class VillainPropertiesAsset() : Asset(AssetType.VillainProperties
         asset.Physical.Unknown8 = reader.ReadSingle();
         asset.Physical.Unknown9 = reader.ReadInt32();
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

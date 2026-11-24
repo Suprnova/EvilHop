@@ -49,7 +49,7 @@ public sealed partial class DiscoFloorAsset
         // Placed immediately after the fixed struct above, not addressed by any offset field of its
         // own - mirrors every other BaseAsset's link placement.
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
 
         // Each prefix's slice runs up to the next prefix's offset (or states_offset, for the last
@@ -88,7 +88,7 @@ public sealed partial class DiscoFloorAsset
         long alignedEnd = (maxOffsetTouched + 3) & ~3L;
         asset._rawTrailingPadding = reader.ReadBytes((int)(alignedEnd - maxOffsetTouched));
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

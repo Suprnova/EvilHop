@@ -128,9 +128,9 @@ public sealed class SimpleObjectAsset() : EntityAsset(AssetType.SimpleObject, ba
         reader.ReadInt16(); // padding, always zero
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

@@ -62,7 +62,7 @@ public sealed class SurfaceMapperAsset() : Asset(AssetType.SurfaceMapper), Physi
             asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

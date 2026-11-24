@@ -78,7 +78,7 @@ public sealed partial class NavigationMeshAsset() : BaseAsset(AssetType.Navigati
         reader.ReadBytes(PaddingAt(reader.BaseStream.Position)); // padding, always zero
 
         asset.Physical.SubMeshCount = subMeshCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

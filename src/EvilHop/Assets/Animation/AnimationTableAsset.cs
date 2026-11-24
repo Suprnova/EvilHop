@@ -98,7 +98,7 @@ public sealed partial class AnimationTableAsset() : Asset(AssetType.AnimationTab
         asset.Physical.RawCount = rawCount;
         asset.Physical.FileCount = fileCount;
         asset.Physical.StateCount = stateCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

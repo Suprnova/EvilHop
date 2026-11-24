@@ -86,9 +86,9 @@ public sealed class UIAsset() : EntityAsset(AssetType.UI, baseType: 0x20), IHasS
         asset.BottomLeftUV = reader.ReadVector2();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

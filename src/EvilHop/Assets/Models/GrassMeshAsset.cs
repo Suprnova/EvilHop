@@ -73,7 +73,7 @@ public sealed class GrassMeshAsset() : BaseAsset(AssetType.GrassMesh, baseType: 
 
         asset.Physical.VertexCount = vertexCount;
         asset.Physical.FaceCount = faceCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

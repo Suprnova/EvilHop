@@ -4,6 +4,7 @@ using EvilHop.Common;
 using EvilHop.Primitives;
 using EvilHop.Serialization;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace EvilHop.Assets;
@@ -88,12 +89,12 @@ public sealed class SplineAsset() : BaseAsset(AssetType.Spline, baseType: 0x49),
         GameVersion.Ratatouille,
     };
 
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "WithEndianness's reader shares this reader's stream and owns nothing.")]
     internal static SplineAsset Read(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = new SplineAsset();
         AssetFields.Populate(asset, header, debug);
-        using (var headerReader = new EndianReader(reader.BaseStream, HeaderEndianness(profile, reader.Endianness), leaveOpen: true))
-            BaseAssetPrefix.Read(asset, headerReader);
+        BaseAssetPrefix.Read(asset, reader.WithEndianness(HeaderEndianness(profile, reader.Endianness)));
 
         asset.Degree = reader.ReadInt32();
         int knotMaxIndex = reader.ReadInt32();
@@ -108,7 +109,7 @@ public sealed class SplineAsset() : BaseAsset(AssetType.Spline, baseType: 0x49),
 
         asset.Physical.KnotMaxIndex = knotMaxIndex;
         asset.Physical.ControlPointMaxIndex = controlPointMaxIndex;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

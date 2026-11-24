@@ -69,7 +69,7 @@ public sealed partial class LightKitAsset() : Asset(AssetType.LightKit), Physica
             asset.Lights.Add(Light.Read(reader, profile));
 
         asset.Physical.LightCount = lightCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

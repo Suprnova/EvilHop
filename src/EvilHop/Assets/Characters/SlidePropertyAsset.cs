@@ -78,9 +78,9 @@ public sealed class SlidePropertyAsset() : BaseAsset(AssetType.SlideProperty, ba
         asset.Physical.Unknown11 = reader.ReadSingle();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

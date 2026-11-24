@@ -65,9 +65,9 @@ public sealed class GustAsset() : BaseAsset(AssetType.Gust, baseType: 0x1C)
         asset.ParticleModifier = reader.ReadSingle();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

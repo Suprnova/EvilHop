@@ -57,7 +57,7 @@ public sealed partial class ThrowableTableAsset() : BaseAsset(AssetType.Throwabl
             asset.Rows.Add(Entry.Read(reader, profile, asset.Version));
 
         asset.Physical.RowCount = rowCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

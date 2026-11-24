@@ -120,9 +120,7 @@ internal interface ICutsceneHeader
     /// </remarks>
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see remarks.")]
     internal static EndianReader HeaderReader(EndianReader reader, FormatProfile profile) =>
-        profile.Game == GameVersion.N100F && reader.Endianness != Endianness.Little
-            ? new EndianReader(reader.BaseStream, Endianness.Little, leaveOpen: true)
-            : reader;
+        profile.Game == GameVersion.N100F ? reader.WithEndianness(Endianness.Little) : reader;
 
     /// <summary>See <see cref="HeaderReader"/>.</summary>
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see HeaderReader.")]

@@ -105,7 +105,7 @@ public sealed class CutsceneAsset() : Asset(AssetType.Cutscene), ICutsceneHeader
         var asset = new CutsceneAsset();
         AssetFields.Populate(asset, header, debug);
         ICutsceneHeader.ReadHeader(asset, reader, profile);
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

@@ -47,7 +47,7 @@ public sealed partial class FlyAsset() : Asset(AssetType.Fly)
         while (reader.BaseStream.Length - reader.BaseStream.Position >= KeySize)
             asset.Keys.Add(Key.Read(reader, profile));
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
@@ -73,9 +73,7 @@ public sealed partial class FlyAsset() : Asset(AssetType.Fly)
     /// </remarks>
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see remarks.")]
     private static EndianReader LittleEndianReader(EndianReader reader) =>
-        reader.Endianness == Endianness.Little
-            ? reader
-            : new EndianReader(reader.BaseStream, Endianness.Little, leaveOpen: true);
+        reader.WithEndianness(Endianness.Little);
 
     /// <summary>See <see cref="LittleEndianReader"/>.</summary>
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see LittleEndianReader.")]

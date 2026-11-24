@@ -108,10 +108,10 @@ public sealed partial class DuplicatorAsset() : BaseAsset(AssetType.Duplicator, 
         asset.Template = Villain.Read(reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         asset.Physical.TemplateLinkCount = templateLinkCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

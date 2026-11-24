@@ -83,7 +83,7 @@ public partial class SoundInfoAsset
         internal static SoundBank Read(EndianReader reader)
         {
             if (reader.ReadUInt32() != Magic) throw new InvalidDataException("Not an FSB3 sound bank.");
-            var bigEndian = new EndianReader(reader.BaseStream, Endianness.Big, leaveOpen: true);
+            var bigEndian = reader.WithEndianness(Endianness.Big);
 
             int sampleCount = reader.ReadInt32();
             reader.ReadInt32(); // total sample header size, derived from Samples on write

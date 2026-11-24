@@ -42,13 +42,13 @@ public sealed class PlayerAsset() : EntityAsset(AssetType.Player, baseType: 0x03
         EntityAssetPrefix.Read(asset, reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
 
         if (profile.Game is not GameVersion.N100F)
             asset.LightKitId = reader.ReadAssetId();
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

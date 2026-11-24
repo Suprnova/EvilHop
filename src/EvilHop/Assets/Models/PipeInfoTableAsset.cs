@@ -54,7 +54,7 @@ public sealed partial class PipeInfoTableAsset() : Asset(AssetType.PipeInfoTable
             asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

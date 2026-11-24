@@ -1,5 +1,6 @@
 using EvilHop.Primitives;
 using EvilHop.Serialization;
+using static EvilHop.Assets.Serialization.FieldReads;
 
 namespace EvilHop.Assets.Serialization;
 
@@ -18,10 +19,10 @@ internal static class BaseAssetPrefix
     /// </summary>
     public static void Read(BaseAsset asset, EndianReader reader)
     {
-        asset.Physical.BaseId = reader.ReadAssetId();
-        asset.Physical.BaseType = reader.ReadByte();
-        asset.Physical.LinkCount = reader.ReadByte();
-        asset.Physical.BaseFlags = (BaseAssetFlags)reader.ReadInt16();
+        asset.Physical.BaseId = reader.ReadAssetId(PhysicalPrefix + nameof(Physical.IBaseAsset.BaseId));
+        asset.Physical.BaseType = reader.ReadByte(PhysicalPrefix + nameof(Physical.IBaseAsset.BaseType));
+        asset.Physical.LinkCount = reader.ReadByte(PhysicalPrefix + nameof(Physical.IBaseAsset.LinkCount));
+        asset.Physical.BaseFlags = (BaseAssetFlags)reader.ReadInt16(PhysicalPrefix + nameof(Physical.IBaseAsset.BaseFlags));
     }
 
     /// <summary>
@@ -53,25 +54,25 @@ internal static class EntityAssetPrefix
     /// </param>
     public static void Read(IEntity entity, EndianReader reader, FormatProfile profile)
     {
-        entity.EntityFlags = (EntityFlags)reader.ReadByte();
-        entity.Physical.Subtype = reader.ReadByte();
-        entity.Physical.PFlags = reader.ReadByte();
-        entity.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte();
+        entity.EntityFlags = (EntityFlags)reader.ReadByte(nameof(IEntity.EntityFlags));
+        entity.Physical.Subtype = reader.ReadByte(PhysicalPrefix + nameof(Physical.IEntity.Subtype));
+        entity.Physical.PFlags = reader.ReadByte(PhysicalPrefix + nameof(Physical.IEntity.PFlags));
+        entity.Physical.CollisionFlags = (CollisionFlags)reader.ReadByte(PhysicalPrefix + nameof(Physical.IEntity.CollisionFlags));
 
         // Read and discarded, never modelled - it is always zero where it exists.
-        if (profile.EntityHasPadding) reader.ReadBytes(4);
+        if (profile.EntityHasPadding) reader.SkipPadding(4);
 
-        if (profile.EntityHasExtendedFields) entity.Physical.SurfaceId = reader.ReadAssetId();
-        entity.Angle = reader.ReadVector3();
-        entity.Position = reader.ReadVector3();
-        entity.Scale = reader.ReadVector3();
+        if (profile.EntityHasExtendedFields) entity.Physical.SurfaceId = reader.ReadAssetId(PhysicalPrefix + nameof(Physical.IEntity.SurfaceId));
+        entity.Angle = reader.ReadVector3(nameof(IEntity.Angle));
+        entity.Position = reader.ReadVector3(nameof(IEntity.Position));
+        entity.Scale = reader.ReadVector3(nameof(IEntity.Scale));
         if (profile.EntityHasExtendedFields)
         {
-            entity.ColorMultiplier = reader.ReadRgba();
-            entity.Physical.SeeThroughSpeed = reader.ReadSingle();
+            entity.ColorMultiplier = reader.ReadRgba(nameof(IEntity.ColorMultiplier));
+            entity.Physical.SeeThroughSpeed = reader.ReadSingle(PhysicalPrefix + nameof(Physical.IEntity.SeeThroughSpeed));
         }
-        entity.Physical.ModelId = reader.ReadAssetId();
-        if (profile.EntityHasExtendedFields) entity.Physical.AnimListId = reader.ReadAssetId();
+        entity.Physical.ModelId = reader.ReadAssetId(PhysicalPrefix + nameof(Physical.IEntity.ModelId));
+        if (profile.EntityHasExtendedFields) entity.Physical.AnimListId = reader.ReadAssetId(PhysicalPrefix + nameof(Physical.IEntity.AnimListId));
     }
 
     /// <summary>
@@ -138,9 +139,9 @@ internal static class DynamicAssetPrefix
     /// </summary>
     public static void Read(DynamicAsset asset, EndianReader reader)
     {
-        asset.Physical.Kind = (DynamicKind)reader.ReadUInt32();
-        asset.Physical.Version = reader.ReadInt16();
-        asset.Physical.Handle = reader.ReadInt16();
+        asset.Physical.Kind = (DynamicKind)reader.ReadUInt32(PhysicalPrefix + nameof(Physical.IDynamicAsset.Kind));
+        asset.Physical.Version = reader.ReadInt16(PhysicalPrefix + nameof(Physical.IDynamicAsset.Version));
+        asset.Physical.Handle = reader.ReadInt16(PhysicalPrefix + nameof(Physical.IDynamicAsset.Handle));
     }
 
     /// <summary>

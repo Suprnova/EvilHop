@@ -285,7 +285,7 @@ internal static class AssetCodecs
     {
         var asset = new GenericAsset(header.Type);
         AssetFields.Populate(asset, header, debug);
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
@@ -295,7 +295,7 @@ internal static class AssetCodecs
     private static GenericBaseAsset ReadBase(EndianReader reader, AssetHeader header, AssetDebug debug, FormatProfile profile)
     {
         var asset = PopulateBase(new GenericBaseAsset(header.Type), header, debug, reader);
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
@@ -309,7 +309,7 @@ internal static class AssetCodecs
     {
         var asset = PopulateBase(new GenericEntityAsset(header.Type), header, debug, reader);
         EntityAssetPrefix.Read(asset, reader, profile);
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
@@ -324,7 +324,7 @@ internal static class AssetCodecs
     {
         var asset = PopulateBase(new GenericDynamicAsset(DynamicAssetPrefix.Peek(reader).Kind), header, debug, reader);
         DynamicAssetPrefix.Read(asset, reader);
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
@@ -332,7 +332,7 @@ internal static class AssetCodecs
     {
         var asset = new GenericPayloadAsset(header.Type);
         AssetFields.Populate(asset, header, debug);
-        asset.Data = reader.ReadRemainingBytes();
+        asset.Data = reader.ReadUnmodeled(nameof(PayloadAsset.Data));
         return asset;
     }
 

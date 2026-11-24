@@ -76,7 +76,7 @@ public abstract class DynamicAsset(short version = 0) : BaseAsset(AssetType.Dyna
         if (bodySize < 0)
         {
             // the links can't be located, so leave them in the tail and keep LinkCount as read
-            asset.SetUnparsedTail(reader.ReadRemainingBytes());
+            asset.SetUnparsedTail(reader.ReadUnparsedTail());
             return asset;
         }
 
@@ -87,7 +87,7 @@ public abstract class DynamicAsset(short version = 0) : BaseAsset(AssetType.Dyna
         }
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
         return asset;
     }

@@ -80,7 +80,7 @@ public sealed class AnimationListAsset() : Asset(AssetType.AnimationList), Physi
             reader.ReadInt16(); // padding, always zero
         }
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

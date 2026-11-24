@@ -51,9 +51,9 @@ public sealed class TimerAsset() : BaseAsset(AssetType.Timer, baseType: 0x0E)
         if (profile.Game is not GameVersion.N100F && profile.TimerHasRandomRange) asset.RandomRange = reader.ReadSingle();
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

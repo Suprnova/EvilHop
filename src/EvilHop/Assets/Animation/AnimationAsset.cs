@@ -111,7 +111,7 @@ public sealed class AnimationAsset() : Asset(AssetType.Animation), Physical.IAni
 
         asset.Physical.KeyCount = keyCount;
         asset.Physical.TimeCount = timeCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

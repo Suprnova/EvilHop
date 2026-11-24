@@ -94,7 +94,7 @@ public sealed class UIMotionAsset() : BaseAsset(AssetType.UIMotion, baseType: 0x
 
         asset.Physical.CommandCount = (byte)asset.Commands.Count;
         asset.Physical.CommandsSize = asset.ComputedCommandsSize;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

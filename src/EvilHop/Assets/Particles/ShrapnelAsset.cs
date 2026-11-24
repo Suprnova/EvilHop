@@ -99,7 +99,7 @@ public sealed partial class ShrapnelAsset() : Asset(AssetType.Shrapnel), Physica
             asset.Frags.Add(Fragment.Read(reader, profile));
 
         asset.Physical.FragCount = asset.Frags.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

@@ -89,7 +89,7 @@ public sealed class WireframeAsset() : Asset(AssetType.Wireframe), Physical.IWir
         for (uint i = 0; i < lineCount; i++)
             asset.Lines.Add(Line.Read(reader, profile));
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         asset.Physical.VertexCount = vertexCount;
         asset.Physical.LineCount = lineCount;
         asset.Physical.Size = size;

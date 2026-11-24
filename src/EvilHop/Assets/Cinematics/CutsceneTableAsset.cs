@@ -68,7 +68,7 @@ public sealed class CutsceneTableAsset() : Asset(AssetType.CutsceneTable), Physi
         }
         asset.Physical.Count = (uint)asset.Cutscenes.Count;
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

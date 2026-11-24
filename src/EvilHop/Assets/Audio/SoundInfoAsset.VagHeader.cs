@@ -85,9 +85,7 @@ public partial class SoundInfoAsset
         /// </remarks>
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see remarks.")]
         private static EndianReader FieldReader(EndianReader reader, FormatProfile profile) =>
-            profile.Game == GameVersion.N100F && reader.Endianness != Endianness.Big
-                ? new EndianReader(reader.BaseStream, Endianness.Big, leaveOpen: true)
-                : reader;
+            profile.Game == GameVersion.N100F ? reader.WithEndianness(Endianness.Big) : reader;
 
         /// <summary>See <see cref="FieldReader"/>.</summary>
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Thin, non-owning wrapper over the caller's own stream - see FieldReader.")]

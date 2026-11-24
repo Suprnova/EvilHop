@@ -132,9 +132,9 @@ public sealed partial class ButtonAsset() : EntityAsset(AssetType.Button, baseTy
         asset.Motion = (EntityMotion.Mechanism)EntityMotion.Read(reader, profile);
 
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

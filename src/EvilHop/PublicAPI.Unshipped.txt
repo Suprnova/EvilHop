@@ -1,1 +1,66 @@
 #nullable enable
+EvilHop.Assets.AssetView.Describe(EvilHop.Assets.Asset! asset) -> EvilHop.Assets.FieldMap!
+EvilHop.Assets.FieldEntry
+EvilHop.Assets.FieldEntry.<Clone>$() -> EvilHop.Assets.FieldEntry!
+EvilHop.Assets.FieldEntry.Deconstruct(out uint Offset, out uint Size, out string! Path, out EvilHop.Assets.FieldSurface Surface, out EvilHop.Assets.FieldKind Kind) -> void
+EvilHop.Assets.FieldEntry.End.get -> uint
+EvilHop.Assets.FieldEntry.Equals(EvilHop.Assets.FieldEntry? other) -> bool
+EvilHop.Assets.FieldEntry.FieldEntry(uint Offset, uint Size, string! Path, EvilHop.Assets.FieldSurface Surface, EvilHop.Assets.FieldKind Kind) -> void
+EvilHop.Assets.FieldEntry.Kind.get -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldEntry.Kind.init -> void
+EvilHop.Assets.FieldEntry.Offset.get -> uint
+EvilHop.Assets.FieldEntry.Offset.init -> void
+EvilHop.Assets.FieldEntry.Path.get -> string!
+EvilHop.Assets.FieldEntry.Path.init -> void
+EvilHop.Assets.FieldEntry.Size.get -> uint
+EvilHop.Assets.FieldEntry.Size.init -> void
+EvilHop.Assets.FieldEntry.Surface.get -> EvilHop.Assets.FieldSurface
+EvilHop.Assets.FieldEntry.Surface.init -> void
+EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.AssetId = 13 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Bytes = 14 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.F32 = 6 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Rgb = 9 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Rgb24 = 10 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Rgba = 11 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Rgba32 = 12 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.S16 = 2 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.S32 = 4 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.S8 = 1 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.U16 = 3 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.U32 = 5 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.U8 = 0 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Vector2 = 7 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldKind.Vector3 = 8 -> EvilHop.Assets.FieldKind
+EvilHop.Assets.FieldLocation
+EvilHop.Assets.FieldLocation.Deconstruct(out EvilHop.Assets.FieldEntry! Field, out uint OffsetInField) -> void
+EvilHop.Assets.FieldLocation.Equals(EvilHop.Assets.FieldLocation other) -> bool
+EvilHop.Assets.FieldLocation.Field.get -> EvilHop.Assets.FieldEntry!
+EvilHop.Assets.FieldLocation.Field.init -> void
+EvilHop.Assets.FieldLocation.FieldLocation() -> void
+EvilHop.Assets.FieldLocation.FieldLocation(EvilHop.Assets.FieldEntry! Field, uint OffsetInField) -> void
+EvilHop.Assets.FieldLocation.OffsetInField.get -> uint
+EvilHop.Assets.FieldLocation.OffsetInField.init -> void
+EvilHop.Assets.FieldMap
+EvilHop.Assets.FieldMap.Fields.get -> System.Collections.Generic.IReadOnlyList<EvilHop.Assets.FieldEntry!>!
+EvilHop.Assets.FieldMap.Length.get -> uint
+EvilHop.Assets.FieldMap.Locate(uint offset) -> EvilHop.Assets.FieldLocation?
+EvilHop.Assets.FieldSurface
+EvilHop.Assets.FieldSurface.Logical = 0 -> EvilHop.Assets.FieldSurface
+EvilHop.Assets.FieldSurface.Physical = 1 -> EvilHop.Assets.FieldSurface
+EvilHop.Assets.FieldSurface.Unmodeled = 2 -> EvilHop.Assets.FieldSurface
+const EvilHop.Assets.FieldMap.Unnamed = "Unnamed" -> string!
+const EvilHop.Assets.FieldMap.UnparsedTail = "UnparsedTail" -> string!
+const EvilHop.Assets.FieldMap.Unread = "Unread" -> string!
+override EvilHop.Assets.FieldEntry.Equals(object? obj) -> bool
+override EvilHop.Assets.FieldEntry.GetHashCode() -> int
+override EvilHop.Assets.FieldEntry.ToString() -> string!
+override EvilHop.Assets.FieldLocation.GetHashCode() -> int
+override EvilHop.Primitives.EndianReader.ReadByte() -> byte
+override EvilHop.Primitives.EndianReader.ReadSByte() -> sbyte
+static EvilHop.Assets.FieldEntry.operator !=(EvilHop.Assets.FieldEntry? left, EvilHop.Assets.FieldEntry? right) -> bool
+static EvilHop.Assets.FieldEntry.operator ==(EvilHop.Assets.FieldEntry? left, EvilHop.Assets.FieldEntry? right) -> bool
+static EvilHop.Assets.FieldLocation.operator !=(EvilHop.Assets.FieldLocation left, EvilHop.Assets.FieldLocation right) -> bool
+static EvilHop.Assets.FieldLocation.operator ==(EvilHop.Assets.FieldLocation left, EvilHop.Assets.FieldLocation right) -> bool
+~override EvilHop.Assets.FieldLocation.Equals(object obj) -> bool
+~override EvilHop.Assets.FieldLocation.ToString() -> string

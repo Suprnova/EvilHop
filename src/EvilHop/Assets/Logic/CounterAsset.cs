@@ -41,9 +41,9 @@ public sealed class CounterAsset() : BaseAsset(AssetType.Counter, baseType: 0x16
         asset.InitialValue = reader.ReadInt16();
         reader.ReadInt16(); // padding, always zero
         for (var i = 0; i < asset.Physical.LinkCount; i++)
-            asset.Links.Add(Link.Read(reader, profile));
+            asset.Links.Add(Link.Read(reader, profile, i));
         asset.Physical.LinkCount = (byte)asset.Links.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

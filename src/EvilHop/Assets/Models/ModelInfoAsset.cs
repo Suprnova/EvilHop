@@ -103,7 +103,7 @@ public sealed partial class ModelInfoAsset() : Asset(AssetType.ModelInfo), Physi
         }
 
         asset.Physical.ModelInstanceCount = modelInstanceCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

@@ -55,7 +55,7 @@ public sealed partial class SoundInfoAsset
         asset.Physical.StreamCount = asset.Streams.Count;
         asset.Physical.CutsceneCount = asset.Cutscenes.Count;
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
     }
 
     private static void WriteHeaderTable(SoundInfoAsset asset, EndianWriter writer, FormatProfile profile)
@@ -112,7 +112,7 @@ public sealed partial class SoundInfoAsset
         asset.Physical.CutsceneCount = asset.Cutscenes.Count;
 
         reader.BaseStream.Position = footerEnd;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
     }
 
     private static SoundBank ReadPaddedBank(byte[] bytes)

@@ -57,7 +57,7 @@ public sealed partial class ReactiveAnimationAsset() : BaseAsset(AssetType.React
         for (int i = 0; i < rowCount; i++) asset.Rows.Add(Row.Read(reader, profile));
 
         asset.Physical.RowCount = asset.Rows.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

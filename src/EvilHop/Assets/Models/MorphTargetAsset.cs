@@ -87,7 +87,7 @@ public sealed partial class MorphTargetAsset() : Asset(AssetType.MorphTarget), P
 
         asset.Physical.TargetCount = targetCount;
         asset.Physical.VertexCount = vertexCount;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

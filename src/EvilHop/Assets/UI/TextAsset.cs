@@ -70,7 +70,7 @@ public sealed class TextAsset() : Asset(AssetType.Text), Physical.ITextAsset
             reader.ReadBytes(paddingToRead);
         }
 
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

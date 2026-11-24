@@ -48,7 +48,7 @@ public sealed partial class SimpleShadowTableAsset() : Asset(AssetType.SimpleSha
             asset.Entries.Add(Entry.Read(reader, profile));
 
         asset.Physical.Count = count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 

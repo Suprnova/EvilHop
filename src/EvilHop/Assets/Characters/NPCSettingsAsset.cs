@@ -48,7 +48,7 @@ public sealed class NPCSettingsAsset() : Asset(AssetType.NPCSettings), Physical.
             asset.Parameters.Add(ModelInfoParameter.Read(reader, profile));
 
         asset.Physical.ParameterCount = (uint)asset.Parameters.Count;
-        asset.SetUnparsedTail(reader.ReadRemainingBytes());
+        asset.SetUnparsedTail(reader.ReadUnparsedTail());
         return asset;
     }
 
